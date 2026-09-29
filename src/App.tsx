@@ -90,6 +90,50 @@ export default function App() {
   useEffect(() => { saveUsers(users); }, [users]);
   useEffect(() => { saveCurrentUser(currentUser); }, [currentUser]);
 
+  // ==================== Google Sheets CMS Sync ====================
+  useEffect(() => {
+    const fetchFahemData = async () => {
+      const SHEET_ID = '13I7wCX096i1okZU-3zEKxrci3kybEmZeczx2SMYb1Ec';
+      const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+      
+      try {
+        const res = await fetch(SHEET_URL);
+        const text = await res.text();
+        const json = JSON.parse(text.substring(47, text.length - 2));
+        const rows = json.table.rows;
+        
+        const sheetData = rows.map((row: any) => ({
+          title: row.c[0]?.v || '',
+          subject: row.c[1]?.v || '',
+          videoUrl: row.c[2]?.v || '',
+          level: row.c[3]?.v || ''
+        }));
+
+        if (sheetData && sheetData.length > 0) {
+          const mappedVideos: VideoLesson[] = sheetData.map((item: any, index: number) => ({
+            id: `sheet-vid-${index}`,
+            title: item.title,
+            subject: item.subject,
+            videoUrl: item.videoUrl,
+            difficulty: item.level || 'medium',
+            type: 'explanation',
+            unit: 'الباب الأول',
+            instructor: { name: 'الأستاذ', avatar: '' },
+            duration: '10:00',
+            viewsCount: 0,
+            likesCount: 0,
+            createdAt: new Date().toISOString()
+          }));
+          setVideos(mappedVideos);
+        }
+      } catch (error) {
+        console.error("خطأ في جلب بيانات منصة فاهم:", error);
+      }
+    };
+
+    fetchFahemData();
+  }, []);
+
   // Dynamic Subjects List from videos
   const subjectsList = useMemo(() => {
     return Array.from(new Set(videos.map(v => v.subject))).filter(Boolean);
@@ -112,7 +156,6 @@ export default function App() {
   // ==================== User & Auth Handlers ====================
 
   const handleLoginSuccess = (user: UserAccount) => {
-    // Add user to state if new
     const existingIndex = users.findIndex(u => u.id === user.id || u.email.toLowerCase() === user.email.toLowerCase());
     if (existingIndex === -1) {
       setUsers(prev => [user, ...prev]);
@@ -121,20 +164,17 @@ export default function App() {
       const existing = users[existingIndex];
       setCurrentUser(existing);
     }
-    // If teacher, can view dashboard or browse
     if (user.role === 'teacher') {
       setCurrentTab('browse');
     }
   };
 
   const handleLogout = () => {
-    // Switch to sample pending student to demonstrate the security gate, or open login modal
     setIsGoogleAuthModalOpen(true);
   };
 
   const handleActivateWithCode = (enteredCode: string): boolean => {
     const trimmed = enteredCode.trim();
-    // Validate if matching current user's assigned code or master teacher code
     if (
       trimmed === currentUser.accessCode ||
       trimmed === 'MASTER-2026' ||
@@ -163,7 +203,6 @@ export default function App() {
       }
       return u;
     }));
-    // If the approved user is the currently logged in student, update state immediately
     if (currentUser.id === userId) {
       setCurrentUser(prev => ({
         ...prev,
@@ -212,7 +251,6 @@ export default function App() {
 
   const handleSaveExam = (newExam: TimedExam) => {
     setExams(prev => [newExam, ...prev]);
-    // Also redirect to view the exams list
     setCurrentTab('exams');
   };
 
@@ -347,13 +385,11 @@ export default function App() {
   const explanationsCount = videos.filter(v => v.type === 'explanation').length;
   const problemsCount = videos.filter(v => v.type === 'problem-solving').length;
 
-  // Check if student access gate is active (student signed in with Google, but waiting for approval/code)
   const isStudentPending = currentUser.role === 'student' && currentUser.status !== 'approved';
 
   return (
     <div className="min-h-screen bg-[#0b0f17] text-slate-100 flex flex-col font-sans">
       
-      {/* 3-Zone Top Navigation Bar */}
       <Navbar
         currentTab={currentTab}
         onSelectTab={(tab) => {
@@ -371,10 +407,7 @@ export default function App() {
         pendingApprovalsCount={pendingStudentsCount}
       />
 
-      {/* RENDER MAIN CONTENT */}
       <main className="flex-1">
-        
-        {/* CASE 1: Student is signed in with Google, but NOT approved yet! (Teacher Approval Gate) */}
         {isStudentPending ? (
           <AccessGateScreen
             currentUser={currentUser}
@@ -386,7 +419,6 @@ export default function App() {
             }}
           />
         ) : activeExam ? (
-          /* CASE 2: Student is taking a Timed Exam */
           <ExamRunner
             exam={activeExam}
             currentUser={currentUser}
@@ -394,7 +426,6 @@ export default function App() {
             onExit={() => setActiveExam(null)}
           />
         ) : selectedVideo ? (
-          /* CASE 3: Single Video Theater Mode Player */
           <VideoPlayerView
             video={selectedVideo}
             allVideos={videos}
@@ -411,7 +442,6 @@ export default function App() {
             onUpdateProgress={handleUpdateProgressSeconds}
           />
         ) : currentTab === 'dashboard' ? (
-          /* CASE 4: Teacher / Creator Studio Dashboard (Videos + Student Access Codes + Timed Exams) */
           <TeacherDashboard
             videos={videos}
             users={users}
@@ -432,7 +462,6 @@ export default function App() {
             onDeleteExam={handleDeleteExam}
           />
         ) : currentTab === 'exams' ? (
-          /* CASE 5: Timed Exams Catalog */
           <ExamsListView
             exams={exams}
             submissions={submissions}
@@ -442,7 +471,6 @@ export default function App() {
             onDeleteExam={handleDeleteExam}
           />
         ) : currentTab === 'bookmarks' ? (
-          /* CASE 6: Bookmarked Questions & Lessons */
           <BookmarksView
             bookmarkedVideos={bookmarkedVideos}
             onSelectVideo={(v) => setSelectedVideo(v)}
@@ -451,9 +479,7 @@ export default function App() {
             onBackToBrowse={() => setCurrentTab('browse')}
           />
         ) : (
-          /* CASE 7: Library Catalog (Browse, Explanation, Problem Solving) */
           <>
-            {/* Hero Section */}
             <HeroSection
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
@@ -468,7 +494,6 @@ export default function App() {
               problemsCount={problemsCount}
             />
 
-            {/* Subjects Filter Bar */}
             <SubjectBar
               subjects={subjectsList}
               selectedSubject={selectedSubject}
@@ -476,13 +501,10 @@ export default function App() {
               videoCountsBySubject={videoCountsBySubject}
             />
 
-            {/* Content Area */}
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-6">
               
-              {/* Secondary Controls Bar */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800/80 pb-4">
                 
-                {/* Result count & active track label */}
                 <div className="flex items-center gap-2 text-xs text-slate-400">
                   <span className="font-semibold text-slate-200">
                     {currentTab === 'explanation'
@@ -505,9 +527,7 @@ export default function App() {
                   )}
                 </div>
 
-                {/* Filter Controls */}
                 <div className="flex items-center gap-3">
-                  {/* Difficulty selector */}
                   <div className="flex items-center gap-1.5 text-xs text-slate-400">
                     <SlidersHorizontal className="h-3.5 w-3.5 text-slate-500" />
                     <span>المستوى:</span>
@@ -524,7 +544,6 @@ export default function App() {
                     </select>
                   </div>
 
-                  {/* Group by Unit Toggle */}
                   <button
                     onClick={() => setGroupByUnit(!groupByUnit)}
                     className={`flex items-center gap-1.5 rounded-lg border py-1.5 px-3 text-xs transition-colors cursor-pointer ${
@@ -539,7 +558,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Videos Grid */}
               {filteredVideos.length > 0 ? (
                 groupByUnit ? (
                   <div className="space-y-8">
@@ -612,7 +630,6 @@ export default function App() {
         )}
       </main>
 
-      {/* Video Upload Modal */}
       <VideoUploadModal
         isOpen={isUploadModalOpen}
         onClose={() => setIsUploadModalOpen(false)}
@@ -620,7 +637,6 @@ export default function App() {
         existingSubjects={subjectsList}
       />
 
-      {/* Timed Exam Create Modal */}
       <ExamCreateModal
         isOpen={isExamCreateModalOpen}
         onClose={() => setIsExamCreateModalOpen(false)}
@@ -628,7 +644,6 @@ export default function App() {
         existingSubjects={subjectsList}
       />
 
-      {/* Google Authentication Dialog */}
       <GoogleAuthModal
         isOpen={isGoogleAuthModalOpen}
         onClose={() => setIsGoogleAuthModalOpen(false)}
@@ -636,7 +651,6 @@ export default function App() {
         allUsers={users}
       />
 
-      {/* Download & Export Project Modal */}
       <DownloadExportModal
         isOpen={isDownloadModalOpen}
         onClose={() => setIsDownloadModalOpen(false)}
@@ -652,7 +666,6 @@ export default function App() {
         }}
       />
 
-      {/* Google Play Store & PWA Publishing Guide Modal */}
       <PlayStoreGuideModal
         isOpen={isPlayStoreGuideOpen}
         onClose={() => setIsPlayStoreGuideOpen(false)}
@@ -661,7 +674,6 @@ export default function App() {
         isInstalled={isInstalled}
       />
 
-      {/* Domain-Native Footer */}
       <footer className="border-t border-slate-800/80 bg-[#090d14] text-slate-400 text-xs py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
@@ -683,25 +695,3 @@ export default function App() {
     </div>
   );
 }
-// دالة سحب بيانات "منصة فاهم" من جوجل شيت
-const fetchFahemData = async () => {
-  const SHEET_ID = '13I7wCX096i1okZU-3zEKxrci3kybEmZeczx2SMYb1Ec';
-  const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
-  
-  try {
-    const res = await fetch(SHEET_URL);
-    const text = await res.text();
-    const json = JSON.parse(text.substring(47, text.length - 2));
-    const rows = json.table.rows;
-    
-    return rows.map((row: any) => ({
-      title: row.c[0]?.v || '',
-      subject: row.c[1]?.v || '',
-      videoUrl: row.c[2]?.v || '',
-      level: row.c[3]?.v || ''
-    }));
-  } catch (error) {
-    console.error("خطأ في جلب بيانات منصة فاهم:", error);
-    return [];
-  }
-};
