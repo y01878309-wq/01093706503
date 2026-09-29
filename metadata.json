@@ -1,0 +1,6 @@
+{
+  "name": "منصة فاهم التعليمية | شروحات وحلول تمارين",
+  "description": "منصة تعليمية عربية متكاملة لرفع ومشاهدة فيديوهات الشرح وحل المسائل والتمارين التفاعلية مع مذكرات وتتبع الإنجاز",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
