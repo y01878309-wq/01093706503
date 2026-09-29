@@ -683,3 +683,25 @@ export default function App() {
     </div>
   );
 }
+// دالة سحب بيانات "منصة فاهم" من جوجل شيت
+const fetchFahemData = async () => {
+  const SHEET_ID = '13I7wCX096i1okZU-3zEKxrci3kybEmZeczx2SMYb1Ec';
+  const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+  
+  try {
+    const res = await fetch(SHEET_URL);
+    const text = await res.text();
+    const json = JSON.parse(text.substring(47, text.length - 2));
+    const rows = json.table.rows;
+    
+    return rows.map((row: any) => ({
+      title: row.c[0]?.v || '',
+      subject: row.c[1]?.v || '',
+      videoUrl: row.c[2]?.v || '',
+      level: row.c[3]?.v || ''
+    }));
+  } catch (error) {
+    console.error("خطأ في جلب بيانات منصة فاهم:", error);
+    return [];
+  }
+};
