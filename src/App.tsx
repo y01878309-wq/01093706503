@@ -1,275 +1,194 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة فاهم التعليمية</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        body {
-            background-color: #0b0f19;
-            color: #fff;
-            min-height: 100vh;
-        }
-        /* تصميم شاشة تسجيل الدخول */
-        #loginScreen {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            padding: 20px;
-        }
-        .login-card {
-            background: rgba(30, 41, 59, 0.9);
-            backdrop-filter: blur(10px);
-            padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            max-width: 400px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            text-align: center;
-        }
-        .login-card h2 {
-            margin-bottom: 1.5rem;
-            color: #38bdf8;
-            font-size: 1.8rem;
-        }
-        .input-group {
-            margin-bottom: 1.2rem;
-            text-align: right;
-        }
-        .input-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.95rem;
-            color: #cbd5e1;
-        }
-        .input-group input {
-            width: 100%;
-            padding: 0.75rem;
-            border-radius: 8px;
-            border: 1px solid #475569;
-            background: #0f172a;
-            color: #fff;
-            font-size: 1rem;
-            outline: none;
-        }
-        .btn {
-            width: 100%;
-            padding: 0.75rem;
-            border: none;
-            border-radius: 8px;
-            background: #0284c7;
-            color: white;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .btn:hover { background: #0369a1; }
-        .whatsapp-btn {
-            display: block;
-            width: 100%;
-            padding: 0.75rem;
-            margin-top: 1rem;
-            border-radius: 8px;
-            background: #25d366;
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-        .whatsapp-btn:hover { background: #20ba5a; }
-        .msg { margin-top: 1rem; font-size: 0.9rem; }
-        .error { color: #f87171; }
-        .success { color: #4ade80; }
+import React, { useState } from 'react';
 
-        /* تصميم واجهة المنصة بعد الدخول */
-        #appScreen { display: none; }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 25px;
-            background: #161e2e;
-            border-bottom: 1px solid #1e293b;
+type Section = 'videos' | 'exams' | 'solutions' | 'pdfs' | 'leaderboard';
+
+interface Question {
+  id: number;
+  questionText: string;
+  options: string[];
+  correctAnswer: number;
+}
+
+interface ContentItem {
+  id: number;
+  section: Section;
+  title: string;
+  description: string;
+  link?: string;
+  questions?: Question[];
+}
+
+export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [emailInput, setEmailInput] = useState<string>('');
+  const [errorMsg, setErrorMsg] = useState<string>('');
+  
+  const ADMIN_EMAIL = 'y01878309@gmail.com';
+  // قائمة الطلاب المقبولين (يمكنك إضافة أي إيميل هنا ليتمكن من الدخول)
+  const allowedStudents = ['student1@gmail.com', 'student2@gmail.com'];
+
+  const [currentSection, setCurrentSection] = useState<Section>('videos');
+
+  // بيانات المنصة الأساسية
+  const [contents] = useState<ContentItem[]>([
+    { id: 1, section: 'videos', title: 'مقدمة في المنهج التعليمي', description: 'شرح تفصيلي لأهم أساسيات المنهج.', link: '#' },
+    { 
+      id: 2, 
+      section: 'exams', 
+      title: 'امتحان الفيزياء التجريبي - الفصل الأول', 
+      description: 'اختبر معلوماتك في الفصل الأول.',
+      questions: [
+        {
+          id: 1,
+          questionText: 'ما هي وحدة قياس الشدة الكهربائية؟',
+          options: ['فولت', 'أمبير', 'اوم', 'جول'],
+          correctAnswer: 1
         }
-        header h1 { font-size: 1.2rem; color: #38bdf8; }
-        .logout-btn { background: #ef4444; color: #fff; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        
-        nav {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            padding: 15px;
-            background: #111827;
-            flex-wrap: wrap;
-        }
-        .nav-btn {
-            padding: 8px 16px;
-            border-radius: 8px;
-            border: none;
-            background: #1f2937;
-            color: #fff;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
-        .nav-btn.active { background: #3b82f6; }
+      ]
+    },
+    { id: 3, section: 'solutions', title: 'حل نموذج الاسترشادي', description: 'الخطوات الكاملة للحل النموذجي.', link: '#' },
+    { id: 4, section: 'pdfs', title: 'ملخص قوانين الفيزياء - الفصل الأول', description: 'ملف PDF شامل لأهم قوانين واشتقاقات المنهج.', link: '#' },
+  ]);
 
-        main { padding: 25px; max-width: 800px; margin: 0 auto; }
-        .section-box { display: none; }
-        .section-box.active { display: block; }
-        
-        .card {
-            background: #161e2e;
-            border: 1px solid #1e293b;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 15px;
-        }
-        .card h3 { color: #60a5fa; margin-bottom: 8px; }
-        .card p { color: #94a3b8; font-size: 0.9rem; margin-bottom: 12px; }
-    </style>
-</head>
-<body>
+  const [students] = useState([
+    { id: 1, rank: 1, name: 'أحمد البهي', score: 51, details: 'أكمل 2 اختبار' },
+    { id: 2, rank: 2, name: 'محمد مبارك', score: 49, details: 'أكمل 2 اختبار' },
+  ]);
 
-    <!-- شاشة تسجيل الدخول -->
-    <div id="loginScreen">
-        <div class="login-card">
-            <h2>منصة فاهم التعليمية</h2>
-            <form id="loginForm" onsubmit="handleLogin(event)">
-                <div class="input-group">
-                    <label for="email">البريد الإلكتروني (Gmail)</label>
-                    <input type="email" id="email" required placeholder="example@gmail.com">
-                </div>
-                <button type="submit" class="btn">دخول للمنصة</button>
-                <div id="message" class="msg"></div>
-            </form>
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanEmail = emailInput.trim().toLowerCase();
 
-            <a href="https://wa.me/20101878309?text=ازيك يا مستر يوسف، عاوز أقدم طلب انضمام للمنصة وده الإيميل بتاعي:" target="_blank" class="whatsapp-btn">
-                💬 تواصل مع المسؤول عبر واتساب
-            </a>
-        </div>
-    </div>
+    if (cleanEmail === ADMIN_EMAIL) {
+      setIsAuthenticated(true);
+      setErrorMsg('');
+    } else if (allowedStudents.includes(cleanEmail)) {
+      setIsAuthenticated(true);
+      setErrorMsg('');
+    } else {
+      setErrorMsg('عذراً، هذا البريد غير مفعل. تواصل عبر الواتساب لتفعيل حسابك.');
+    }
+  };
 
-    <!-- واجهة المنصة الرئيسية -->
-    <div id="appScreen">
-        <header>
-            <h1 id="welcomeTitle">منصة فاهم التعليمية</h1>
-            <button class="logout-btn" onclick="handleLogout()">تسجيل خروج</button>
-        </header>
-
-        <nav>
-            <button class="nav-btn active" onclick="switchTab('videos', this)">🎥 الفيديوهات</button>
-            <button class="nav-btn" onclick="switchTab('exams', this)">📝 الامتحانات</button>
-            <button class="nav-btn" onclick="switchTab('solutions', this)">💡 الحل</button>
-            <button class="nav-btn" onclick="switchTab('pdfs', this)">📁 ملفات PDF</button>
-            <button class="nav-btn" onclick="switchTab('leaderboard', this)">🏆 التقييم</button>
-        </nav>
-
-        <main>
-            <!-- قسم الفيديوهات -->
-            <div id="videos" class="section-box active">
-                <h2 style="margin-bottom: 15px; font-size: 1.2rem;">الفيديوهات والشرح</h2>
-                <div class="card">
-                    <h3>مقدمة في المنهج التعليمي</h3>
-                    <p>شرح تفصيلي لأهم أساسيات المنهج وتوجيهات البداية.</p>
-                    <a href="#" style="color: #38bdf8; text-decoration: none; font-weight: bold;">مشاهدة الفيديو ⬅</a>
-                </div>
-            </div>
-
-            <!-- قسم الامتحانات -->
-            <div id="exams" class="section-box">
-                <h2 style="margin-bottom: 15px; font-size: 1.2rem;">الامتحانات والاختبارات</h2>
-                <div class="card">
-                    <h3>امتحان الفيزياء التجريبي - الفصل الأول</h3>
-                    <p>اختبر معلوماتك في أساسيات الفصل الأول.</p>
-                    <button style="background: #10b981; color: #fff; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold;">ابدأ الامتحان ✍</button>
-                </div>
-            </div>
-
-            <!-- قسم الحلول -->
-            <div id="solutions" class="section-box">
-                <h2 style="margin-bottom: 15px; font-size: 1.2rem;">حل التدريبات والأسئلة</h2>
-                <div class="card">
-                    <h3>الخطوات الكاملة للحل النموذجي</h3>
-                    <p>ملخص الخطوات لحل مسائل الامتحانات السابقة.</p>
-                </div>
-            </div>
-
-            <!-- قسم ملفات الـ PDF -->
-            <div id="pdfs" class="section-box">
-                <h2 style="margin-bottom: 15px; font-size: 1.2rem;">ملفات PDF والملخصات</h2>
-                <div class="card">
-                    <h3>ملخص قوانين الفيزياء</h3>
-                    <p>ملف شامل لأهم القوانين واشتقاقات المنهج.</p>
-                </div>
-            </div>
-
-            <!-- قسم التقييم -->
-            <div id="leaderboard" class="section-box">
-                <h2 style="margin-bottom: 15px; font-size: 1.2rem;">ترتيب الطلاب المتفوقين</h2>
-                <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <h4 style="color: #fff; margin-bottom: 4px;">1. أحمد البهي</h4>
-                        <p style="margin: 0; font-size: 0.8rem;">أكمل اختبارين · دراجة كاملة</p>
-                    </div>
-                    <span style="font-size: 1.5rem;">🏆</span>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <script>
-        const adminEmail = "y01878309@gmail.com";
-        const allowedStudents = ["student1@domain.com"]; // تقدر تضيف هنا الإيميلات اللي بتوافق عليها
-
-        function handleLogin(event) {
-            event.preventDefault();
-            const email = document.getElementById("email").value.trim().toLowerCase();
-            const msgDiv = document.getElementById("message");
-
-            if (email === adminEmail) {
-                document.getElementById("loginScreen").style.display = "none";
-                document.getElementById("appScreen").style.display = "block";
-                document.getElementById("welcomeTitle").textContent = "منصة فاهم - لوحة تحكم الأدمن (يوسف فرج)";
-            } 
-            else if (allowedStudents.includes(email)) {
-                document.getElementById("loginScreen").style.display = "none";
-                document.getElementById("appScreen").style.display = "block";
-                document.getElementById("welcomeTitle").textContent = "منصة فاهم التعليمية - طالب";
-            } 
-            else {
-                msgDiv.className = "msg error";
-                msgDiv.textContent = "عذراً، هذا الإيميل غير مفعل. تواصل عبر الواتساب لتفعيل حسابك.";
-            }
-        }
-
-        function handleLogout() {
-            document.getElementById("appScreen").style.display = "none";
-            document.getElementById("loginScreen").style.display = "flex";
-            document.getElementById("email").value = "";
-            document.getElementById("message").textContent = "";
-        }
-
-        function switchTab(tabId, btn) {
-            document.querySelectorAll('.section-box').forEach(box => box.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if (!isAuthenticated) {
+    return (
+      <div style={{ minHeight: '100vh', backgroundColor: '#0b0f19', color: '#fff', display: 'flex', justifyContent: 'center', alignItems: 'center', fontFamily: 'Cairo, sans-serif', padding: '20px', direction: 'rtl' }}>
+        <div style={{ backgroundColor: '#161e2e', padding: '30px', borderRadius: '16px', width: '100%', maxWidth: '400px', boxShadow: '0 4px 20px rgba(0,0,0,0.5)', textAlign: 'center', border: '1px solid #1e293b' }}>
+          <h2 style={{ marginBottom: '10px', fontSize: '22px', color: '#3b82f6' }}>منصة فاهم التعليمية</h2>
+          <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '20px' }}>أدخل بريدك الإلكتروني (Gmail) للمتابعة.</p>
+          
+          <form onSubmit={handleLogin}>
+            <input 
+              type="email" 
+              placeholder="example@gmail.com" 
+              value={emailInput}
+              onChange={(e) => setEmailInput(e.target.value)}
+              required
+              style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #334155', backgroundColor: '#0b0f19', color: '#fff', marginBottom: '15px', outline: 'none', textAlign: 'center', fontSize: '14px' }}
+            />
+            {errorMsg && <p style={{ color: '#ef4444', fontSize: '12px', marginBottom: '15px' }}>{errorMsg}</p>}
             
-            document.getElementById(tabId).classList.add('active');
-            btn.classList.add('active');
-        }
-    </script>
+            <button 
+              type="submit" 
+              style={{ width: '100%', padding: '12px', borderRadius: '8px', border: 'none', backgroundColor: '#0284c7', color: '#fff', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px', marginBottom: '12px' }}
+            >
+              تسجيل الدخول
+            </button>
+          </form>
 
-</body>
-</html>
+          <a 
+            href="https://wa.me/20101878309?text=ازيك يا مستر يوسف، عاوز أقدم طلب انضمام للمنصة وده الإيميل بتاعي:" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={{ display: 'block', padding: '10px', backgroundColor: '#25d366', color: '#fff', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', fontSize: '13px' }}
+          >
+            💬 تواصل مع المسؤول عبر واتساب
+          </a>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ minHeight: '100vh', backgroundColor: '#0b0f19', color: '#fff', fontFamily: 'Cairo, sans-serif', direction: 'rtl' }}>
+      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px 25px', backgroundColor: '#161e2e', borderBottom: '1px solid #1e293b' }}>
+        <h1 style={{ fontSize: '16px', margin: 0, color: '#3b82f6' }}>
+          {emailInput.trim().toLowerCase() === ADMIN_EMAIL ? 'لوحة تحكم الأدمن (يوسف فرج)' : 'منصة فاهم التعليمية'}
+        </h1>
+        <button 
+          onClick={() => setIsAuthenticated(false)}
+          style={{ backgroundColor: '#ef4444', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '12px' }}
+        >
+          خروج
+        </button>
+      </header>
+
+      <nav style={{ display: 'flex', justifyContent: 'center', gap: '8px', padding: '15px', backgroundColor: '#111827', flexWrap: 'wrap' }}>
+        {[
+          { key: 'videos', label: '🎥 الفيديوهات' },
+          { key: 'exams', label: '📝 الامتحانات' },
+          { key: 'solutions', label: '💡 الحل' },
+          { key: 'pdfs', label: '📁 ملفات PDF' },
+          { key: 'leaderboard', label: '🏆 التقييم' },
+        ].map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setCurrentSection(tab.key as Section)}
+            style={{
+              padding: '8px 14px',
+              borderRadius: '8px',
+              border: 'none',
+              backgroundColor: currentSection === tab.key ? '#3b82f6' : '#1f2937',
+              color: '#fff',
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              fontSize: '12px'
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </nav>
+
+      <main style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
+        {currentSection === 'leaderboard' ? (
+          <div>
+            <h2 style={{ fontSize: '18px', marginBottom: '15px', color: '#f8fafc' }}>ترتيب الطلاب</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {students.map((st) => (
+                <div key={st.id} style={{ backgroundColor: '#161e2e', padding: '15px', borderRadius: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid #1e293b' }}>
+                  <div>
+                    <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', color: '#fff' }}>{st.rank}. {st.name}</h4>
+                    <p style={{ margin: 0, fontSize: '11px', color: '#94a3b8' }}>{st.details}</p>
+                  </div>
+                  <span style={{ fontSize: '18px' }}>🏆</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div>
+            <h2 style={{ borderBottom: '2px solid #1e293b', paddingBottom: '10px', marginBottom: '15px', fontSize: '16px', color: '#38bdf8' }}>
+              {currentSection === 'videos' && 'قسم الفيديوهات والشرح'}
+              {currentSection === 'exams' && 'قسم الامتحانات والاختبارات'}
+              {currentSection === 'solutions' && 'قسم الحل والتدريبات'}
+              {currentSection === 'pdfs' && 'قسم ملفات الـ PDF'}
+            </h2>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '15px' }}>
+              {contents.filter(item => item.section === currentSection).map(item => (
+                <div key={item.id} style={{ backgroundColor: '#161e2e', border: '1px solid #1e293b', borderRadius: '10px', padding: '15px' }}>
+                  <h3 style={{ margin: '0 0 8px 0', fontSize: '15px', color: '#60a5fa' }}>{item.title}</h3>
+                  <p style={{ color: '#94a3b8', fontSize: '12px', marginBottom: '12px' }}>{item.description}</p>
+                  <button style={{ backgroundColor: '#2563eb', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold' }}>
+                    عرض المحتوى ⬅
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}
