@@ -14,6 +14,7 @@ interface ExamItem {
   section: Section;
   title: string;
   description: string;
+  durationMinutes?: number; // وقت الامتحان بالدقائق
   questions?: Question[];
 }
 
@@ -47,6 +48,7 @@ export default function App() {
         section: 'exams', 
         title: 'امتحان الفيزياء التجريبي - الفصل الأول', 
         description: 'اختبر معلوماتك في الفصل الأول مع تصحيح فوري.',
+        durationMinutes: 10,
         questions: [
           {
             id: 1,
@@ -67,6 +69,12 @@ export default function App() {
     ];
   });
 
+  // حفظ الامتحانات التي تم حلها بواسطة الطالب الحالي لمنع تكرارها
+  const [submittedExams, setSubmittedExams] = useState<{ [userEmail: string]: number[] }>(() => {
+    const saved = localStorage.getItem('platform_submitted_exams_farag');
+    return saved ? JSON.parse(saved) : {};
+  });
+
   useEffect(() => {
     localStorage.setItem('platform_users_farag', JSON.stringify(usersAccounts));
   }, [usersAccounts]);
@@ -75,8 +83,13 @@ export default function App() {
     localStorage.setItem('platform_contents_farag', JSON.stringify(contents));
   }, [contents]);
 
+  useEffect(() => {
+    localStorage.setItem('platform_submitted_exams_farag', JSON.stringify(submittedExams));
+  }, [submittedExams]);
+
   const [newTitle, setNewTitle] = useState('');
   const [newDesc, setNewDesc] = useState('');
+  const [newDuration, setNewDuration] = useState<number>(10);
   const [newTargetSection, setNewTargetSection] = useState<Section>('videos');
   
   const [examQText, setExamQText] = useState('');
@@ -88,10 +101,11 @@ export default function App() {
   const [tempQuestions, setTempQuestions] = useState<Question[]>([]);
 
   const [activeExam, setActiveExam] = useState<ExamItem | null>(null);
-  const [activeMedia, setActiveMedia] = useState<ExamItem | null>(null); // لتشغيل الفيديو أو عرض المحتوى
+  const [activeMedia, setActiveMedia] = useState<ExamItem | null>(null);
   const [userAnswers, setUserAnswers] = useState<{ [key: number]: number }>({});
   const [isExamSubmitted, setIsExamSubmitted] = useState<boolean>(false);
   const [examScore, setExamScore] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<number>(0); // الوقت المتبقي بالثواني
 
   const [leaderboard, setLeaderboard] = useState<{ id: number; rank: number; name: string; score: string; details: string }[]>(() => {
     const saved = localStorage.getItem('platform_leaderboard_farag');
@@ -101,6 +115,24 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('platform_leaderboard_farag', JSON.stringify(leaderboard));
   }, [leaderboard]);
+
+  // عداد الوقت التنازلي للامتحان
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (activeExam && !isExamSubmitted && timeLeft > 0) {
+      timer = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            handleSubmitExam(true); // تسليم تلقائي عند انتهاء الوقت
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [activeExam, isExamSubmitted, timeLeft]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -166,6 +198,7 @@ export default function App() {
         section: newTargetSection,
         title: newTitle,
         description: newDesc,
+        durationMinutes: newTargetSection === 'exams' ? Number(newDuration) : undefined,
         questions: newTargetSection === 'exams' ? tempQuestions : undefined
       };
       setContents([newItem, ...contents]);
@@ -176,13 +209,26 @@ export default function App() {
     }
   };
 
+  const handleStartExam = (exam: ExamItem) => {
+    const userExams = submittedExams[emailInput] || [];
+    if (emailInput !== ADMIN_EMAIL && userExams.includes(exam.id)) {
+      alert('⚠️ لقد قمت بحل هذا الامتحان من قبل ولا يمكنك دخوله مره أخرى!');
+      return;
+    }
+    setActiveExam(exam);
+    setIsExamSubmitted(false);
+    setUserAnswers({});
+    setTimeLeft((exam.durationMinutes || 10) * 60); // تحويل الدقائق إلى ثواني
+  };
+
   const handleOptionSelect = (qId: number, optIdx: number) => {
     if (isExamSubmitted) return;
     setUserAnswers({ ...userAnswers, [qId]: optIdx });
   };
 
-  const handleSubmitExam = () => {
-    if (!activeExam || !activeExam.questions) return;
+  const handleSubmitExam = (isTimeout: boolean = false) => {
+    if (!activeExam || !activeExam.questions || isExamSubmitted) return;
+    
     let score = 0;
     activeExam.questions.forEach((q) => {
       if (userAnswers[q.id] === q.correctAnswer) {
@@ -192,18 +238,36 @@ export default function App() {
     setExamScore(score);
     setIsExamSubmitted(true);
 
-    const studentName = emailInput.split('@')[0];
-    const newEntry = {
-      id: Date.now(),
-      rank: leaderboard.length + 1,
-      name: studentName,
-      score: `${score} / ${activeExam.questions.length}`,
-      details: activeExam.title
-    };
-    setLeaderboard([newEntry, ...leaderboard]);
+    if (isTimeout) {
+      alert('⏰ انتهى وقت الامتحان المحدد! تم تسليم إجاباتك تلقائياً.');
+    }
+
+    // تسجيل الامتحان أنه تم حله لهذا الطالب لمنع تكراره
+    if (emailInput !== ADMIN_EMAIL) {
+      const userExams = submittedExams[emailInput] || [];
+      setSubmittedExams({
+        ...submittedExams,
+        [emailInput]: [...userExams, activeExam.id]
+      });
+
+      const studentName = emailInput.split('@')[0];
+      const newEntry = {
+        id: Date.now(),
+        rank: leaderboard.length + 1,
+        name: studentName,
+        score: `${score} / ${activeExam.questions.length}`,
+        details: activeExam.title
+      };
+      setLeaderboard([newEntry, ...leaderboard]);
+    }
   };
 
-  // دالة لتحويل رابط يوتيوب العادي إلى رابط إطار Embed عشان يشتغل جوه المنصة مباشرة
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
   const getEmbedUrl = (url: string) => {
     if (!url) return '';
     if (url.includes('embed/')) return url;
@@ -321,12 +385,20 @@ export default function App() {
       <main style={{ padding: '20px', maxWidth: '800px', width: '100%', margin: '0 auto', boxSizing: 'border-box', flex: 1 }}>
         {activeExam ? (
           <div style={{ backgroundColor: '#161e2e', padding: '25px', borderRadius: '12px', border: '1px solid #1e293b' }}>
-            <button 
-              onClick={() => { setActiveExam(null); setIsExamSubmitted(false); setUserAnswers({}); }}
-              style={{ backgroundColor: '#334155', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', marginBottom: '20px', fontSize: '12px' }}
-            >
-              ⬅ العودة لقائمة الامتحانات
-            </button>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+              <button 
+                onClick={() => { setActiveExam(null); setIsExamSubmitted(false); setUserAnswers({}); }}
+                style={{ backgroundColor: '#334155', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px' }}
+              >
+                ⬅ العودة لقائمة الامتحانات
+              </button>
+              
+              {!isExamSubmitted && (
+                <div style={{ backgroundColor: '#1e293b', padding: '6px 12px', borderRadius: '8px', border: '1px solid #ef4444', color: '#f87171', fontWeight: 'bold', fontSize: '13px' }}>
+                  ⏳ الوقت المتبقي: {formatTime(timeLeft)}
+                </div>
+              )}
+            </div>
 
             <h2 style={{ color: '#60a5fa', marginBottom: '10px', fontSize: '18px' }}>{activeExam.title}</h2>
             <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '20px' }}>{activeExam.description}</p>
@@ -334,7 +406,7 @@ export default function App() {
             {isExamSubmitted && (
               <div style={{ backgroundColor: '#065f46', padding: '15px', borderRadius: '8px', marginBottom: '20px', textAlign: 'center' }}>
                 <h3 style={{ margin: '0 0 5px 0', fontSize: '16px' }}>🎉 نتيجة الامتحان</h3>
-                <p style={{ fontSize: '15px', margin: 0 }}>لقد حصلت على {examScore} من {activeExam.questions?.length || 0}</p>
+                <p style={{ fontSize: '15px', margin: 0 }}>لقد حصلت على {examScore} من {activeExam.questions?.length || 0} (تم تسجيل محاولتك ولن تكرر)</p>
               </div>
             )}
 
@@ -380,7 +452,7 @@ export default function App() {
 
             {!isExamSubmitted && activeExam.questions && activeExam.questions.length > 0 && (
               <button 
-                onClick={handleSubmitExam}
+                onClick={() => handleSubmitExam(false)}
                 style={{ width: '100%', padding: '12px', backgroundColor: '#10b981', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', fontSize: '15px', marginTop: '10px' }}
               >
                 تسليم الإجابات ومعرفة النتيجة ✅
@@ -398,7 +470,6 @@ export default function App() {
 
             <h2 style={{ color: '#60a5fa', marginBottom: '10px', fontSize: '18px' }}>{activeMedia.title}</h2>
             
-            {/* عرض الفيديو إذا كان الرابط يوتيوب */}
             {activeMedia.description.includes('http') ? (
               <div>
                 {activeMedia.description.includes('youtu') ? (
@@ -468,7 +539,7 @@ export default function App() {
                     style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #334155', backgroundColor: '#0b0f19', color: '#fff', fontSize: '13px' }}
                   >
                     <option value="videos">الفيديوهات</option>
-                    <option value="exams">الامتحانات (بأسئلة وإجابات)</option>
+                    <option value="exams">الامتحانات (بأسئلة وإجابات ووقت محدد)</option>
                     <option value="solutions">الحل</option>
                     <option value="pdfs">ملفات PDF</option>
                   </select>
@@ -478,7 +549,7 @@ export default function App() {
                   <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '5px' }}>عنوان المحتوى / الامتحان:</label>
                   <input 
                     type="text" 
-                    placeholder="مثال: شرح درس البناء الضوئي" 
+                    placeholder="مثال: امتحان الفيزياء الفصل الأول" 
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
                     required
@@ -486,10 +557,25 @@ export default function App() {
                   />
                 </div>
 
+                {newTargetSection === 'exams' && (
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '5px' }}>وقت الامتحان (بالدقائق):</label>
+                    <input 
+                      type="number" 
+                      min="1" 
+                      max="120"
+                      value={newDuration}
+                      onChange={(e) => setNewDuration(Number(e.target.value))}
+                      required
+                      style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #334155', backgroundColor: '#0b0f19', color: '#fff', fontSize: '13px', boxSizing: 'border-box' }}
+                    />
+                  </div>
+                )}
+
                 <div>
-                  <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '5px' }}>رابط الفيديو (يوتيوب) أو تفاصيل المحتوى:</label>
+                  <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '5px' }}>وصف الامتحان أو رابط الفيديو:</label>
                   <textarea 
-                    placeholder="ضع رابط يوتيوب هنا أو التفاصيل..." 
+                    placeholder="ضع التفاصيل أو الرابط هنا..." 
                     value={newDesc}
                     onChange={(e) => setNewDesc(e.target.value)}
                     required
@@ -556,31 +642,47 @@ export default function App() {
               {contents.filter(item => item.section === currentSection).length === 0 ? (
                 <p style={{ color: '#94a3b8', fontSize: '13px' }}>لا يوجد محتوى مضاف في هذا القسم حتى الآن.</p>
               ) : (
-                contents.filter(item => item.section === currentSection).map(item => (
-                  <div key={item.id} style={{ backgroundColor: '#161e2e', border: '1px solid #1e293b', borderRadius: '10px', padding: '15px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                    <div>
-                      <h3 style={{ margin: '0 0 8px 0', fontSize: '15px', color: '#60a5fa' }}>{item.title}</h3>
-                      <p style={{ color: '#94a3b8', fontSize: '12px', marginBottom: '12px', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
-                        {item.description}
-                      </p>
+                contents.filter(item => item.section === currentSection).map(item => {
+                  const userExams = submittedExams[emailInput] || [];
+                  const isDone = emailInput !== ADMIN_EMAIL && item.section === 'exams' && userExams.includes(item.id);
+
+                  return (
+                    <div key={item.id} style={{ backgroundColor: '#161e2e', border: '1px solid #1e293b', borderRadius: '10px', padding: '15px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                      <div>
+                        <h3 style={{ margin: '0 0 8px 0', fontSize: '15px', color: '#60a5fa' }}>{item.title}</h3>
+                        <p style={{ color: '#94a3b8', fontSize: '12px', marginBottom: '12px' }}>
+                          {item.description}
+                          {item.durationMinutes && <span style={{ display: 'block', color: '#38bdf8', marginTop: '4px' }}>⏱ وقت الامتحان: {item.durationMinutes} دقائق</span>}
+                        </p>
+                      </div>
+
+                      {item.section === 'exams' ? (
+                        <button 
+                          onClick={() => handleStartExam(item)}
+                          style={{ 
+                            backgroundColor: isDone ? '#475569' : '#10b981', 
+                            color: '#fff', 
+                            border: 'none', 
+                            padding: '8px 12px', 
+                            borderRadius: '6px', 
+                            cursor: isDone ? 'not-allowed' : 'pointer', 
+                            fontSize: '12px', 
+                            fontWeight: 'bold' 
+                          }}
+                        >
+                          {isDone ? '✅ تم الحل مسبقاً' : 'ابدأ الامتحان الآن 📝'}
+                        </button>
+                      ) : (
+                        <button 
+                          onClick={() => setActiveMedia(item)}
+                          style={{ backgroundColor: '#2563eb', color: '#fff', border: 'none', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold' }}
+                        >
+                          عرض المحتوى ⬅
+                        </button>
+                      )}
                     </div>
-                    {item.section === 'exams' ? (
-                      <button 
-                        onClick={() => setActiveExam(item)}
-                        style={{ backgroundColor: '#10b981', color: '#fff', border: 'none', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold' }}
-                      >
-                        ابدأ الامتحان الآن 📝
-                      </button>
-                    ) : (
-                      <button 
-                        onClick={() => setActiveMedia(item)}
-                        style={{ backgroundColor: '#2563eb', color: '#fff', border: 'none', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold' }}
-                      >
-                        عرض المحتوى ⬅
-                      </button>
-                    )}
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
           </div>
