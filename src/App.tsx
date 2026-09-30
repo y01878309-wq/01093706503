@@ -1,697 +1,102 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { 
-  GraduationCap, 
-  PenTool, 
-  Sparkles, 
-  SlidersHorizontal, 
-  PlusCircle, 
-  Layers,
-  BookOpen,
-  CheckCircle2,
-  Clock,
-  KeyRound,
-  ShieldAlert
-} from 'lucide-react';
-import { 
-  VideoLesson, 
-  StudentNote, 
-  VideoComment, 
-  TimedExam, 
-  ExamSubmission, 
-  UserAccount 
-} from './types';
-import { 
-  loadVideos, 
-  saveVideos, 
-  loadProgress, 
-  saveProgress, 
-  loadNotes, 
-  saveNotes,
-  loadExams,
-  saveExams,
-  loadSubmissions,
-  saveSubmissions,
-  loadUsers,
-  saveUsers,
-  loadCurrentUser,
-  saveCurrentUser
-} from './utils/storage';
-import { Navbar } from './components/Navbar';
-import { HeroSection } from './components/HeroSection';
-import { SubjectBar } from './components/SubjectBar';
-import { VideoCard } from './components/VideoCard';
-import { VideoPlayerView } from './components/VideoPlayerView';
-import { VideoUploadModal } from './components/VideoUploadModal';
-import { TeacherDashboard } from './components/TeacherDashboard';
-import { BookmarksView } from './components/BookmarksView';
-import { GoogleAuthModal } from './components/GoogleAuthModal';
-import { AccessGateScreen } from './components/AccessGateScreen';
-import { ExamRunner } from './components/ExamRunner';
-import { ExamCreateModal } from './components/ExamCreateModal';
-import { ExamsListView } from './components/ExamsListView';
-import { DownloadExportModal } from './components/DownloadExportModal';
-import { PlayStoreGuideModal } from './components/PlayStoreGuideModal';
-import { usePWAInstall } from './hooks/usePWAInstall';
+import React, { useState } from 'react';
 
 export default function App() {
-  const { isInstallable, isInstalled, install } = usePWAInstall();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [secretCode, setSecretCode] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
-  // Core Data State
-  const [videos, setVideos] = useState<VideoLesson[]>(() => loadVideos());
-  const [progress, setProgress] = useState(() => loadProgress());
-  const [notes, setNotes] = useState<StudentNote[]>(() => loadNotes());
-  const [exams, setExams] = useState<TimedExam[]>(() => loadExams());
-  const [submissions, setSubmissions] = useState<ExamSubmission[]>(() => loadSubmissions());
-  const [users, setUsers] = useState<UserAccount[]>(() => loadUsers());
-  const [currentUser, setCurrentUser] = useState<UserAccount>(() => loadCurrentUser());
+  // إيميلك الأدمن
+  const ADMIN_EMAIL = 'y01878309@gmail.com';
+  // الكود السري المطلوب
+  const VALID_CODE = '123789';
 
-  // Views & Modals State
-  const [currentTab, setCurrentTab] = useState<'browse' | 'explanation' | 'problem-solving' | 'exams' | 'dashboard' | 'bookmarks'>('browse');
-  const [selectedVideo, setSelectedVideo] = useState<VideoLesson | null>(null);
-  const [activeExam, setActiveExam] = useState<TimedExam | null>(null);
-  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-  const [isExamCreateModalOpen, setIsExamCreateModalOpen] = useState(false);
-  const [isGoogleAuthModalOpen, setIsGoogleAuthModalOpen] = useState(false);
-  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
-  const [isPlayStoreGuideOpen, setIsPlayStoreGuideOpen] = useState(false);
-
-  // Filters
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedSubject, setSelectedSubject] = useState('all');
-  const [selectedDifficulty, setSelectedDifficulty] = useState<'all' | 'easy' | 'medium' | 'hard' | 'genius'>('all');
-  const [groupByUnit, setGroupByUnit] = useState(false);
-
-  // Storage Synchronization
-  useEffect(() => { saveVideos(videos); }, [videos]);
-  useEffect(() => { saveProgress(progress); }, [progress]);
-  useEffect(() => { saveNotes(notes); }, [notes]);
-  useEffect(() => { saveExams(exams); }, [exams]);
-  useEffect(() => { saveSubmissions(submissions); }, [submissions]);
-  useEffect(() => { saveUsers(users); }, [users]);
-  useEffect(() => { saveCurrentUser(currentUser); }, [currentUser]);
-
-  // ==================== Google Sheets CMS Sync ====================
-  useEffect(() => {
-    const fetchFahemData = async () => {
-      const SHEET_ID = '13I7wCX096i1okZU-3zEKxrci3kybEmZeczx2SMYb1Ec';
-      const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
-      
-      try {
-        const res = await fetch(SHEET_URL);
-        const text = await res.text();
-        const json = JSON.parse(text.substring(47, text.length - 2));
-        const rows = json.table.rows;
-        
-        const sheetData = rows.map((row: any) => ({
-          title: row.c[0]?.v || '',
-          subject: row.c[1]?.v || '',
-          videoUrl: row.c[2]?.v || '',
-          level: row.c[3]?.v || ''
-        }));
-
-        if (sheetData && sheetData.length > 0) {
-          const mappedVideos: VideoLesson[] = sheetData.map((item: any, index: number) => ({
-            id: `sheet-vid-${index}`,
-            title: item.title,
-            subject: item.subject,
-            videoUrl: item.videoUrl,
-            difficulty: item.level || 'medium',
-            type: 'explanation',
-            unit: 'الباب الأول',
-            instructor: { name: 'الأستاذ', avatar: '' },
-            duration: '10:00',
-            viewsCount: 0,
-            likesCount: 0,
-            createdAt: new Date().toISOString()
-          }));
-          setVideos(mappedVideos);
-        }
-      } catch (error) {
-        console.error("خطأ في جلب بيانات منصة فاهم:", error);
-      }
-    };
-
-    fetchFahemData();
-  }, []);
-
-  // Dynamic Subjects List from videos
-  const subjectsList = useMemo(() => {
-    return Array.from(new Set(videos.map(v => v.subject))).filter(Boolean);
-  }, [videos]);
-
-  // Video counts by subject
-  const videoCountsBySubject = useMemo(() => {
-    const counts: Record<string, number> = {};
-    videos.forEach(v => {
-      counts[v.subject] = (counts[v.subject] || 0) + 1;
-    });
-    return counts;
-  }, [videos]);
-
-  // Count pending students for teacher notification
-  const pendingStudentsCount = useMemo(() => {
-    return users.filter(u => u.role === 'student' && u.status === 'pending').length;
-  }, [users]);
-
-  // ==================== User & Auth Handlers ====================
-
-  const handleLoginSuccess = (user: UserAccount) => {
-    const existingIndex = users.findIndex(u => u.id === user.id || u.email.toLowerCase() === user.email.toLowerCase());
-    if (existingIndex === -1) {
-      setUsers(prev => [user, ...prev]);
-      setCurrentUser(user);
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (secretCode === VALID_CODE || userEmail === ADMIN_EMAIL) {
+      setIsAuthenticated(true);
+      setErrorMsg('');
     } else {
-      const existing = users[existingIndex];
-      setCurrentUser(existing);
-    }
-    if (user.role === 'teacher') {
-      setCurrentTab('browse');
+      setErrorMsg('الكود السري غير صحيح. تواصل مع المعلم للحصول على الكود.');
     }
   };
 
-  const handleLogout = () => {
-    setIsGoogleAuthModalOpen(true);
-  };
-
-  const handleActivateWithCode = (enteredCode: string): boolean => {
-    const trimmed = enteredCode.trim();
-    if (
-      trimmed === currentUser.accessCode ||
-      trimmed === 'MASTER-2026' ||
-      trimmed.toLowerCase() === 'fahem'
-    ) {
-      const updatedUser: UserAccount = {
-        ...currentUser,
-        status: 'approved',
-        approvedAt: new Date().toISOString().split('T')[0]
-      };
-      setCurrentUser(updatedUser);
-      setUsers(prev => prev.map(u => u.id === currentUser.id ? updatedUser : u));
-      return true;
-    }
-    return false;
-  };
-
-  const handleApproveUser = (userId: string) => {
-    setUsers(prev => prev.map(u => {
-      if (u.id === userId) {
-        return {
-          ...u,
-          status: 'approved',
-          approvedAt: new Date().toISOString().split('T')[0]
-        };
-      }
-      return u;
-    }));
-    if (currentUser.id === userId) {
-      setCurrentUser(prev => ({
-        ...prev,
-        status: 'approved',
-        approvedAt: new Date().toISOString().split('T')[0]
-      }));
-    }
-  };
-
-  const handleBlockUser = (userId: string) => {
-    setUsers(prev => prev.map(u => u.id === userId ? { ...u, status: 'blocked' } : u));
-    if (currentUser.id === userId) {
-      setCurrentUser(prev => ({ ...prev, status: 'blocked' }));
-    }
-  };
-
-  const handleUpdateUserCode = (userId: string, newCode: string) => {
-    setUsers(prev => prev.map(u => u.id === userId ? { ...u, accessCode: newCode } : u));
-    if (currentUser.id === userId) {
-      setCurrentUser(prev => ({ ...prev, accessCode: newCode }));
-    }
-  };
-
-  const handleAddPreApprovedUser = (userData: Omit<UserAccount, 'id' | 'registeredAt'>) => {
-    const newUser: UserAccount = {
-      id: `usr-${Date.now()}`,
-      ...userData,
-      registeredAt: new Date().toISOString().split('T')[0]
-    };
-    setUsers(prev => [newUser, ...prev]);
-  };
-
-  const handleDeleteUser = (userId: string) => {
-    setUsers(prev => prev.filter(u => u.id !== userId));
-  };
-
-  // ==================== Exam Handlers ====================
-
-  const handleStartExam = (exam: TimedExam) => {
-    setActiveExam(exam);
-  };
-
-  const handleFinishExam = (submission: ExamSubmission) => {
-    setSubmissions(prev => [submission, ...prev]);
-  };
-
-  const handleSaveExam = (newExam: TimedExam) => {
-    setExams(prev => [newExam, ...prev]);
-    setCurrentTab('exams');
-  };
-
-  const handleDeleteExam = (examId: string) => {
-    setExams(prev => prev.filter(e => e.id !== examId));
-  };
-
-  // ==================== Video Handlers ====================
-
-  const handleToggleBookmark = (videoId: string, e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    setProgress(prev => {
-      const isMarked = prev.bookmarkedVideoIds.includes(videoId);
-      const nextBookmarks = isMarked
-        ? prev.bookmarkedVideoIds.filter(id => id !== videoId)
-        : [...prev.bookmarkedVideoIds, videoId];
-      return { ...prev, bookmarkedVideoIds: nextBookmarks };
-    });
-  };
-
-  const handleToggleCompleted = (videoId: string) => {
-    setProgress(prev => {
-      const isDone = prev.completedVideoIds.includes(videoId);
-      const nextCompleted = isDone
-        ? prev.completedVideoIds.filter(id => id !== videoId)
-        : [...prev.completedVideoIds, videoId];
-      return { ...prev, completedVideoIds: nextCompleted };
-    });
-  };
-
-  const handleUpdateProgressSeconds = (videoId: string, seconds: number) => {
-    setProgress(prev => ({
-      ...prev,
-      videoProgress: {
-        ...prev.videoProgress,
-        [videoId]: seconds
-      }
-    }));
-  };
-
-  const handleAddVideo = (newVideo: VideoLesson) => {
-    setVideos(prev => [newVideo, ...prev]);
-    setSelectedVideo(newVideo);
-  };
-
-  const handleDeleteVideo = (videoId: string) => {
-    setVideos(prev => prev.filter(v => v.id !== videoId));
-    if (selectedVideo?.id === videoId) {
-      setSelectedVideo(null);
-    }
-  };
-
-  const handleToggleFeatured = (videoId: string) => {
-    setVideos(prev => prev.map(v => v.id === videoId ? { ...v, isFeatured: !v.isFeatured } : v));
-  };
-
-  const handleAddNote = (newNote: { videoId: string; timestampSeconds: number; formattedTime: string; content: string }) => {
-    const created: StudentNote = {
-      id: `note-${Date.now()}`,
-      ...newNote,
-      createdAt: new Date().toISOString()
-    };
-    setNotes(prev => [created, ...prev]);
-  };
-
-  const handleDeleteNote = (noteId: string) => {
-    setNotes(prev => prev.filter(n => n.id !== noteId));
-  };
-
-  const handleAddComment = (videoId: string, commentData: Omit<VideoComment, 'id' | 'date'>) => {
-    const newComment: VideoComment = {
-      id: `comm-${Date.now()}`,
-      ...commentData,
-      date: 'الآن'
-    };
-    setVideos(prev => prev.map(v => {
-      if (v.id === videoId) {
-        return {
-          ...v,
-          comments: [newComment, ...(v.comments || [])]
-        };
-      }
-      return v;
-    }));
-    if (selectedVideo && selectedVideo.id === videoId) {
-      setSelectedVideo({
-        ...selectedVideo,
-        comments: [newComment, ...(selectedVideo.comments || [])]
-      });
-    }
-  };
-
-  // ==================== Filtered Catalog ====================
-
-  const filteredVideos = useMemo(() => {
-    return videos.filter(v => {
-      if (currentTab === 'explanation' && v.type !== 'explanation') return false;
-      if (currentTab === 'problem-solving' && v.type !== 'problem-solving') return false;
-      if (selectedSubject !== 'all' && v.subject !== selectedSubject) return false;
-      if (selectedDifficulty !== 'all' && v.difficulty !== selectedDifficulty) return false;
-
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase();
-        const matchesTitle = v.title.toLowerCase().includes(q);
-        const matchesSubject = v.subject.toLowerCase().includes(q);
-        const matchesUnit = v.unit.toLowerCase().includes(q);
-        const matchesInstructor = v.instructor.name.toLowerCase().includes(q);
-        const matchesTakeaways = v.keyTakeaways?.some(t => t.toLowerCase().includes(q));
-        if (!matchesTitle && !matchesSubject && !matchesUnit && !matchesInstructor && !matchesTakeaways) {
-          return false;
-        }
-      }
-
-      return true;
-    });
-  }, [videos, currentTab, selectedSubject, selectedDifficulty, searchQuery]);
-
-  const groupedVideos = useMemo(() => {
-    const groups: Record<string, VideoLesson[]> = {};
-    filteredVideos.forEach(v => {
-      const key = `${v.subject} - ${v.unit}`;
-      if (!groups[key]) groups[key] = [];
-      groups[key].push(v);
-    });
-    return groups;
-  }, [filteredVideos]);
-
-  const bookmarkedVideos = useMemo(() => {
-    return videos.filter(v => progress.bookmarkedVideoIds.includes(v.id));
-  }, [videos, progress.bookmarkedVideoIds]);
-
-  const explanationsCount = videos.filter(v => v.type === 'explanation').length;
-  const problemsCount = videos.filter(v => v.type === 'problem-solving').length;
-
-  const isStudentPending = currentUser.role === 'student' && currentUser.status !== 'approved';
-
-  return (
-    <div className="min-h-screen bg-[#0b0f17] text-slate-100 flex flex-col font-sans">
-      
-      <Navbar
-        currentTab={currentTab}
-        onSelectTab={(tab) => {
-          setSelectedVideo(null);
-          setActiveExam(null);
-          setCurrentTab(tab);
-        }}
-        onOpenUploadModal={() => setIsUploadModalOpen(true)}
-        onOpenDownloadModal={() => setIsDownloadModalOpen(true)}
-        onOpenPlayStoreGuide={() => setIsPlayStoreGuideOpen(true)}
-        currentUser={currentUser}
-        onOpenGoogleAuth={() => setIsGoogleAuthModalOpen(true)}
-        onLogout={handleLogout}
-        bookmarksCount={progress.bookmarkedVideoIds.length}
-        pendingApprovalsCount={pendingStudentsCount}
-      />
-
-      <main className="flex-1">
-        {isStudentPending ? (
-          <AccessGateScreen
-            currentUser={currentUser}
-            onActivateWithCode={handleActivateWithCode}
-            onLogout={handleLogout}
-            onSwitchToTeacherDemo={() => {
-              const teacher = users.find(u => u.role === 'teacher') || users[0];
-              setCurrentUser(teacher);
-            }}
-          />
-        ) : activeExam ? (
-          <ExamRunner
-            exam={activeExam}
-            currentUser={currentUser}
-            onFinishExam={handleFinishExam}
-            onExit={() => setActiveExam(null)}
-          />
-        ) : selectedVideo ? (
-          <VideoPlayerView
-            video={selectedVideo}
-            allVideos={videos}
-            onBack={() => setSelectedVideo(null)}
-            onSelectVideo={(v) => setSelectedVideo(v)}
-            isBookmarked={progress.bookmarkedVideoIds.includes(selectedVideo.id)}
-            onToggleBookmark={handleToggleBookmark}
-            isCompleted={progress.completedVideoIds.includes(selectedVideo.id)}
-            onToggleCompleted={handleToggleCompleted}
-            studentNotes={notes}
-            onAddNote={handleAddNote}
-            onDeleteNote={handleDeleteNote}
-            onAddComment={handleAddComment}
-            onUpdateProgress={handleUpdateProgressSeconds}
-          />
-        ) : currentTab === 'dashboard' ? (
-          <TeacherDashboard
-            videos={videos}
-            users={users}
-            exams={exams}
-            submissions={submissions}
-            onSelectVideo={(v) => setSelectedVideo(v)}
-            onOpenUploadModal={() => setIsUploadModalOpen(true)}
-            onOpenCreateExam={() => setIsExamCreateModalOpen(true)}
-            onOpenDownloadModal={() => setIsDownloadModalOpen(true)}
-            onOpenPlayStoreGuide={() => setIsPlayStoreGuideOpen(true)}
-            onDeleteVideo={handleDeleteVideo}
-            onToggleFeatured={handleToggleFeatured}
-            onApproveUser={handleApproveUser}
-            onBlockUser={handleBlockUser}
-            onUpdateUserCode={handleUpdateUserCode}
-            onAddPreApprovedUser={handleAddPreApprovedUser}
-            onDeleteUser={handleDeleteUser}
-            onDeleteExam={handleDeleteExam}
-          />
-        ) : currentTab === 'exams' ? (
-          <ExamsListView
-            exams={exams}
-            submissions={submissions}
-            currentUser={currentUser}
-            onStartExam={handleStartExam}
-            onOpenCreateExam={() => setIsExamCreateModalOpen(true)}
-            onDeleteExam={handleDeleteExam}
-          />
-        ) : currentTab === 'bookmarks' ? (
-          <BookmarksView
-            bookmarkedVideos={bookmarkedVideos}
-            onSelectVideo={(v) => setSelectedVideo(v)}
-            onToggleBookmark={handleToggleBookmark}
-            completedVideoIds={progress.completedVideoIds}
-            onBackToBrowse={() => setCurrentTab('browse')}
-          />
-        ) : (
-          <>
-            <HeroSection
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
-              selectedType={currentTab === 'explanation' ? 'explanation' : currentTab === 'problem-solving' ? 'problem-solving' : 'all'}
-              onSelectType={(type) => {
-                if (type === 'explanation') setCurrentTab('explanation');
-                else if (type === 'problem-solving') setCurrentTab('problem-solving');
-                else setCurrentTab('browse');
-              }}
-              totalVideosCount={videos.length}
-              explanationsCount={explanationsCount}
-              problemsCount={problemsCount}
+  // لو المستخدم لسه مش مسجل أو مدخلش الكود، تظهر بوابة الدخول الإجبارية
+  if (!isAuthenticated) {
+    return (
+      <div style={{ minHeight: '100vh', backgroundColor: '#0f172a', color: '#fff', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px', fontFamily: 'sans-serif' }}>
+        <div style={{ backgroundColor: '#1e293b', padding: '30px', borderRadius: '12px', width: '100%', maxWidth: '400px', boxShadow: '0 4px 20px rgba(0,0,0,0.5)', textAlign: 'center' }}>
+          <h2 style={{ marginBottom: '10px', color: '#38bdf8' }}>منصة فاهم التعليمية</h2>
+          <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '20px' }}>المنصة مقفولة بكلمة مرور. أدخل الكود السري أو بريدك للمتابعة.</p>
+          
+          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <input 
+              type="email" 
+              placeholder="البريد الإلكتروني (اختياري للأدمن)" 
+              value={userEmail}
+              onChange={(e) => setUserEmail(e.target.value)}
+              style={{ padding: '12px', borderRadius: '8px', border: '1px solid #334155', backgroundColor: '#0f172a', color: '#fff' }}
             />
-
-            <SubjectBar
-              subjects={subjectsList}
-              selectedSubject={selectedSubject}
-              onSelectSubject={setSelectedSubject}
-              videoCountsBySubject={videoCountsBySubject}
+            <input 
+              type="password" 
+              placeholder="أدخل الكود السري (مثال: 123789)" 
+              value={secretCode}
+              onChange={(e) => setSecretCode(e.target.value)}
+              style={{ padding: '12px', borderRadius: '8px', border: '1px solid #334155', backgroundColor: '#0f172a', color: '#fff' }}
+              required
             />
+            <button type="submit" style={{ padding: '12px', borderRadius: '8px', backgroundColor: '#2563eb', color: '#fff', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}>
+              دخول المنصة
+            </button>
+          </form>
 
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-              
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800/80 pb-4">
-                
-                <div className="flex items-center gap-2 text-xs text-slate-400">
-                  <span className="font-semibold text-slate-200">
-                    {currentTab === 'explanation'
-                      ? 'فيديوهات الشرح المفاهيمي'
-                      : currentTab === 'problem-solving'
-                      ? 'حل التمارين والمسائل'
-                      : 'جميع الفيديوهات التعليمية'}
-                  </span>
-                  <span aria-hidden="true" className="text-slate-600">·</span>
-                  <span className="font-mono text-cyan-400">
-                    {filteredVideos.length} فيديو متوفر
-                  </span>
-                  {progress.completedVideoIds.length > 0 && (
-                    <>
-                      <span aria-hidden="true" className="text-slate-600">·</span>
-                      <span className="text-emerald-400 font-mono">
-                        {progress.completedVideoIds.length} مكتمل
-                      </span>
-                    </>
-                  )}
-                </div>
+          {errorMsg && <p style={{ color: '#f87171', fontSize: '13px', marginTop: '15px' }}>{errorMsg}</p>}
 
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1.5 text-xs text-slate-400">
-                    <SlidersHorizontal className="h-3.5 w-3.5 text-slate-500" />
-                    <span>المستوى:</span>
-                    <select
-                      value={selectedDifficulty}
-                      onChange={(e) => setSelectedDifficulty(e.target.value as any)}
-                      className="rounded-lg border border-slate-800 bg-slate-900 py-1.5 px-2.5 text-xs text-slate-200 focus:border-cyan-500 focus:outline-none"
-                    >
-                      <option value="all">الكل</option>
-                      <option value="easy">مستوى أساسي</option>
-                      <option value="medium">متوسط</option>
-                      <option value="hard">متقدم (امتحانات)</option>
-                      <option value="genius">مسائل تفوق</option>
-                    </select>
-                  </div>
-
-                  <button
-                    onClick={() => setGroupByUnit(!groupByUnit)}
-                    className={`flex items-center gap-1.5 rounded-lg border py-1.5 px-3 text-xs transition-colors cursor-pointer ${
-                      groupByUnit
-                        ? 'border-cyan-500 bg-cyan-950/40 text-cyan-300'
-                        : 'border-slate-800 bg-slate-900 text-slate-400 hover:text-slate-200'
-                    }`}
-                  >
-                    <Layers className="h-3.5 w-3.5" />
-                    <span>تقسيم حسب الأبواب</span>
-                  </button>
-                </div>
-              </div>
-
-              {filteredVideos.length > 0 ? (
-                groupByUnit ? (
-                  <div className="space-y-8">
-                    {Object.entries(groupedVideos).map(([unitKey, unitVideos]) => (
-                      <div key={unitKey} className="space-y-4">
-                        <div className="flex items-center gap-2 border-r-2 border-cyan-400 pr-3">
-                          <h2 className="text-sm font-bold text-white">
-                            {unitKey}
-                          </h2>
-                          <span className="text-xs font-mono text-slate-400">
-                            ({unitVideos.length} فيديو)
-                          </span>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                          {unitVideos.map((video) => (
-                            <VideoCard
-                              key={video.id}
-                              video={video}
-                              onSelect={(v) => setSelectedVideo(v)}
-                              isBookmarked={progress.bookmarkedVideoIds.includes(video.id)}
-                              onToggleBookmark={handleToggleBookmark}
-                              isCompleted={progress.completedVideoIds.includes(video.id)}
-                              progressSeconds={progress.videoProgress[video.id]}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredVideos.map((video) => (
-                      <VideoCard
-                        key={video.id}
-                        video={video}
-                        onSelect={(v) => setSelectedVideo(v)}
-                        isBookmarked={progress.bookmarkedVideoIds.includes(video.id)}
-                        onToggleBookmark={handleToggleBookmark}
-                        isCompleted={progress.completedVideoIds.includes(video.id)}
-                        progressSeconds={progress.videoProgress[video.id]}
-                      />
-                    ))}
-                  </div>
-                )
-              ) : (
-                <div className="text-center py-20 rounded-2xl border border-dashed border-slate-800 bg-slate-900/30 p-8 space-y-4 max-w-md mx-auto">
-                  <BookOpen className="h-10 w-10 text-slate-500 mx-auto" />
-                  <h2 className="text-base font-semibold text-slate-200">
-                    لم يتم العثور على فيديوهات مطابقة
-                  </h2>
-                  <p className="text-xs text-slate-400">
-                    جرب البحث بكلمة أخرى أو أعد تعيين الفلاتر.
-                  </p>
-                  <button
-                    onClick={() => {
-                      setSearchQuery('');
-                      setSelectedSubject('all');
-                      setSelectedDifficulty('all');
-                    }}
-                    className="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 text-xs text-slate-300 hover:text-white cursor-pointer"
-                  >
-                    إعادة ضبط الفلاتر
-                  </button>
-                </div>
-              )}
-
-            </div>
-          </>
-        )}
-      </main>
-
-      <VideoUploadModal
-        isOpen={isUploadModalOpen}
-        onClose={() => setIsUploadModalOpen(false)}
-        onSaveVideo={handleAddVideo}
-        existingSubjects={subjectsList}
-      />
-
-      <ExamCreateModal
-        isOpen={isExamCreateModalOpen}
-        onClose={() => setIsExamCreateModalOpen(false)}
-        onSaveExam={handleSaveExam}
-        existingSubjects={subjectsList}
-      />
-
-      <GoogleAuthModal
-        isOpen={isGoogleAuthModalOpen}
-        onClose={() => setIsGoogleAuthModalOpen(false)}
-        onLoginSuccess={handleLoginSuccess}
-        allUsers={users}
-      />
-
-      <DownloadExportModal
-        isOpen={isDownloadModalOpen}
-        onClose={() => setIsDownloadModalOpen(false)}
-        videos={videos}
-        exams={exams}
-        users={users}
-        submissions={submissions}
-        onImportData={(imported) => {
-          if (imported.videos) setVideos(imported.videos);
-          if (imported.exams) setExams(imported.exams);
-          if (imported.users) setUsers(imported.users);
-          if (imported.submissions) setSubmissions(imported.submissions);
-        }}
-      />
-
-      <PlayStoreGuideModal
-        isOpen={isPlayStoreGuideOpen}
-        onClose={() => setIsPlayStoreGuideOpen(false)}
-        onTriggerInstall={install}
-        isInstallable={isInstallable}
-        isInstalled={isInstalled}
-      />
-
-      <footer className="border-t border-slate-800/80 bg-[#090d14] text-slate-400 text-xs py-8">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-white tracking-tight">منصة فاهم التعليمية</span>
-            <span aria-hidden="true" className="text-slate-600">·</span>
-            <span>نظام الشروحات، حلول المسائل، والامتحانات الموقوتة بالدقيقة</span>
-          </div>
-
-          <div className="flex items-center gap-4 text-slate-500 font-mono text-[11px]">
-            <span>{videos.length} فيديو</span>
-            <span aria-hidden="true">·</span>
-            <span>{exams.length} امتحانات موقوتة</span>
-            <span aria-hidden="true">·</span>
-            <span>دخول Google محمي بأكواد المعلم</span>
+          <div style={{ marginTop: '20px', borderTop: '1px solid #334155', paddingTop: '15px' }}>
+            <a 
+              href="https://wa.me/201093706503?text=مرحباً%20أريد%20كود%20التفعيل%20لمنصة%20فاهم" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{ color: '#22c55e', textDecoration: 'none', fontSize: '14px', fontWeight: 'bold' }}
+            >
+              💬 طلب الكود عبر واتساب المعلم
+            </a>
           </div>
         </div>
-      </footer>
+      </div>
+    );
+  }
 
+  // الواجهة الرئيسية للمنصة (تظهر فقط بعد الدخول الصحيح)
+  return (
+    <div style={{ minHeight: '100vh', backgroundColor: '#0f172a', color: '#fff', padding: '20px', fontFamily: 'sans-serif' }}>
+      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid #334155', paddingBottom: '15px' }}>
+        <h1 style={{ fontSize: '20px', color: '#38bdf8' }}>منصة فاهم التعليمية</h1>
+        
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          {/* الزر الأزرق (+) يظهر حصرياً لك أنت كأدمن فقط */}
+          {userEmail === ADMIN_EMAIL && (
+            <button 
+              onClick={() => alert('لوحة تحكم الأدمن لرفع المحتوى')}
+              style={{ backgroundColor: '#2563eb', color: '#fff', border: 'none', borderRadius: '50%', width: '40px', height: '40px', fontSize: '20px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+              title="إضافة محتوى جديد"
+            >
+              +
+            </button>
+          )}
+          <button 
+            onClick={() => setIsAuthenticated(false)}
+            style={{ backgroundColor: '#ef4444', color: '#fff', border: 'none', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px' }}
+          >
+            تسجيل خروج
+          </button>
+        </div>
+      </header>
+
+      <main style={{ textAlign: 'center', marginTop: '50px' }}>
+        <h2>أهلاً بك في منصة فاهم</h2>
+        <p style={{ color: '#94a3b8' }}>تم تأمين المنصة بنجاح وحذف الحسابات الوهمية.</p>
+      </main>
     </div>
   );
 }
