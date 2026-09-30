@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // الأقسام الأساسية للمنصة
 type Section = 'videos' | 'exams' | 'solutions' | 'leaderboard';
@@ -16,17 +16,23 @@ export default function App() {
   const [inputVal, setInputVal] = useState<string>('');
   const [errorMsg, setErrorMsg] = useState<string>('');
   
-  // الإيميل المعتمد للأدمن والكود السري
+  // الإيميل الأساسي للأدمن والكود السري العام
   const ADMIN_EMAIL = 'y01878309@gmail.com';
   const SECRET_CODE = '123789';
 
-  // قائمة الإيميلات أو الأكواد المسموح لها بالدخول (يمكنك إضافتها هنا)
-  const allowedEmails = [ADMIN_EMAIL];
+  // قائمة الإيميلات المسموح لها بالدخول (محفوظة في الذاكرة لتستمر)
+  const [allowedEmails, setAllowedEmails] = useState<string[]>(() => {
+    const saved = localStorage.getItem('fahem_allowed_emails');
+    return saved ? JSON.parse(saved) : [ADMIN_EMAIL];
+  });
+
+  const [newEmailInput, setNewEmailInput] = useState<string>('');
 
   const [currentSection, setCurrentSection] = useState<Section>('videos');
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
+  const [showEmailManager, setShowEmailManager] = useState<boolean>(false);
 
-  // بيانات المحتوى التجريبية للأقسام
+  // بيانات المحتوى للأقسام
   const [contents, setContents] = useState<ContentItem[]>([
     { id: 1, section: 'videos', title: 'مقدمة في المنهج التعليمي', description: 'شرح تفصيلي لأهم أساسيات المنهج.', link: '#' },
     { id: 2, section: 'exams', title: 'امتحان الشامل رقم 1', description: 'اختبر معلوماتك في الفصل الأول.', link: '#' },
@@ -34,7 +40,7 @@ export default function App() {
     { id: 4, section: 'leaderboard', title: 'لوحة الشرف والتقييمات', description: 'أوائل الطلاب والمميزين هذا الأسبوع.', link: '#' },
   ]);
 
-  // حقول إضافة محتوى جديد للأدمن
+  // حقول إضافة محتوى جديد
   const [newTitle, setNewTitle] = useState('');
   const [newDesc, setNewDesc] = useState('');
   const [newLink, setNewLink] = useState('');
@@ -45,18 +51,40 @@ export default function App() {
     e.preventDefault();
     const trimmed = inputVal.trim().toLowerCase();
 
+    // السماح بالدخول إذا كان الكود السري صحيحاً، أو إذا كان الإيميل موجوداً في قائمة المسموح لهم
     if (trimmed === SECRET_CODE || allowedEmails.includes(trimmed)) {
       setIsAuthenticated(true);
       setErrorMsg('');
     } else {
-      setErrorMsg('البريد الإلكتروني أو الكود السري غير صحيح.');
+      setErrorMsg('البريد الإلكتروني غير مسموح له أو الكود غير صحيح.');
     }
   };
 
-  // هل المستخدم الحالي هو الأدمن الأساسي؟
-  const isAdmin = inputVal.trim().toLowerCase() === ADMIN_EMAIL || inputVal.trim() === SECRET_CODE;
+  // هل المستخدم الحالي هو الأدمن الأساسي (يظهر له زرار التحكم والإدارة)؟
+  const trimmedInput = inputVal.trim().toLowerCase();
+  const isAdmin = trimmedInput === ADMIN_EMAIL;
 
-  // إضافة عنصر جديد
+  // إضافة إيميل جديد لقائمة المسموح لهم
+  const handleAddEmail = (e: React.FormEvent) => {
+    e.preventDefault();
+    const emailToAdd = newEmailInput.trim().toLowerCase();
+    if (emailToAdd && !allowedEmails.includes(emailToAdd)) {
+      const updated = [...allowedEmails, emailToAdd];
+      setAllowedEmails(updated);
+      localStorage.setItem('fahem_allowed_emails', JSON.stringify(updated));
+      setNewEmailInput('');
+    }
+  };
+
+  // حذف إيميل من القائمة
+  const handleRemoveEmail = (emailToRemove: string) => {
+    if (emailToRemove === ADMIN_EMAIL) return; // منع حذف الأدمن الأساسي
+    const updated = allowedEmails.filter(e => e !== emailToRemove);
+    setAllowedEmails(updated);
+    localStorage.setItem('fahem_allowed_emails', JSON.stringify(updated));
+  };
+
+  // إضافة عنصر محتوى جديد
   const handleAddItem = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTitle.trim()) return;
@@ -76,13 +104,13 @@ export default function App() {
     setShowAddModal(false);
   };
 
-  // إذا لم يتم تسجيل الدخول، اعرض بوابة الحماية
+  // شاشة تسجيل الدخول
   if (!isAuthenticated) {
     return (
       <div style={{ minHeight: '100vh', backgroundColor: '#0b0f19', color: '#fff', display: 'flex', justifyContent: 'center', alignItems: 'center', fontFamily: 'Cairo, sans-serif', padding: '20px' }}>
         <div style={{ backgroundColor: '#161e2e', padding: '30px', borderRadius: '12px', width: '100%', maxWidth: '400px', boxShadow: '0 4px 20px rgba(0,0,0,0.5)', textAlign: 'center' }}>
           <h2 style={{ marginBottom: '10px', fontSize: '22px', color: '#3b82f6' }}>منصة فاهم التعليمية</h2>
-          <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '20px' }}>المنصة مقفولة. أدخل البريد الإلكتروني أو الكود السري للمتابعة.</p>
+          <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '20px' }}>أدخل البريد الإلكتروني المعتمد أو الكود السري للمتابعة.</p>
           
           <form onSubmit={handleLogin}>
             <input 
@@ -105,22 +133,31 @@ export default function App() {
     );
   }
 
-  // واجهة المنصة بعد الدخول بنجاح
+  // واجهة المنصة بعد الدخول
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#0b0f19', color: '#fff', fontFamily: 'Cairo, sans-serif', direction: 'rtl' }}>
-      {/* شريط العلوى */}
+      {/* الشريط العلوي */}
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px 30px', backgroundColor: '#161e2e', borderBottom: '1px solid #1e293b' }}>
         <h1 style={{ fontSize: '20px', margin: 0, color: '#3b82f6' }}>منصة فاهم التعليمية</h1>
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-          {/* زرار الأدمن يظهر فقط لصاحب الصلاحية */}
+          {/* أزرار التحكم تظهر للأدمن الأساسي فقط */}
           {isAdmin && (
-            <button 
-              onClick={() => setShowAddModal(true)}
-              style={{ backgroundColor: '#2563eb', color: '#fff', border: 'none', borderRadius: '50%', width: '40px', height: '40px', fontSize: '20px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 2px 5px rgba(0,0,0,0.3)' }}
-              title="إضافة محتوى جديد"
-            >
-              +
-            </button>
+            <>
+              <button 
+                onClick={() => setShowEmailManager(true)}
+                style={{ backgroundColor: '#0ea5e9', color: '#fff', border: 'none', padding: '8px 14px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px' }}
+                title="إدارة إيميلات الطلاب"
+              >
+                📧 إدارة الإيميلات
+              </button>
+              <button 
+                onClick={() => setShowAddModal(true)}
+                style={{ backgroundColor: '#2563eb', color: '#fff', border: 'none', borderRadius: '50%', width: '40px', height: '40px', fontSize: '20px', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', boxShadow: '0 2px 5px rgba(0,0,0,0.3)' }}
+                title="إضافة محتوى جديد"
+              >
+                +
+              </button>
+            </>
           )}
           <button 
             onClick={() => setIsAuthenticated(false)}
@@ -160,7 +197,7 @@ export default function App() {
 
       {/* محتوى القسم الحالي */}
       <main style={{ padding: '30px', maxWidth: '1000px', margin: '0 auto' }}>
-        <h2 style={{ borderBottom: '2px solid #1e293b', paddingBottom: '10px', marginBottom: '20px', textTransform: 'capitalize' }}>
+        <h2 style={{ borderBottom: '2px solid #1e293b', paddingBottom: '10px', marginBottom: '20px' }}>
           {currentSection === 'videos' && 'قسم الفيديوهات والشرح'}
           {currentSection === 'exams' && 'قسم الامتحانات والاختبارات'}
           {currentSection === 'solutions' && 'قسم الحل والتدريبات'}
@@ -188,7 +225,58 @@ export default function App() {
         </div>
       </main>
 
-      {/* نافذة إضافة محتوى (تظهر فقط للأدمن عند الضغط على زر +) */}
+      {/* نافذة إدارة إيميلات الطلاب (تظهر للأدمن فقط) */}
+      {showEmailManager && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000, padding: '20px' }}>
+          <div style={{ backgroundColor: '#161e2e', padding: '30px', borderRadius: '12px', width: '100%', maxWidth: '450px', border: '1px solid #334155' }}>
+            <h3 style={{ marginTop: 0, marginBottom: '15px', color: '#0ea5e9' }}>إدارة البريد الإلكتروني للطلاب</h3>
+            <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '15px' }}>أضف إيميلات الطلاب المسموح لهم بالدخول إلى المنصة:</p>
+            
+            <form onSubmit={handleAddEmail} style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+              <input 
+                type="email" 
+                value={newEmailInput} 
+                onChange={(e) => setNewEmailInput(e.target.value)} 
+                placeholder="student@gmail.com" 
+                required
+                style={{ flex: 1, padding: '10px', borderRadius: '6px', border: '1px solid #334155', backgroundColor: '#0b0f19', color: '#fff', fontSize: '14px' }}
+              />
+              <button 
+                type="submit" 
+                style={{ padding: '10px 15px', backgroundColor: '#0ea5e9', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}
+              >
+                إضافة
+              </button>
+            </form>
+
+            <div style={{ maxHeight: '150px', overflowY: 'auto', marginBottom: '20px', border: '1px solid #334155', borderRadius: '6px', padding: '10px' }}>
+              {allowedEmails.map((email) => (
+                <div key={email} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 0', borderBottom: '1px solid #1f2937' }}>
+                  <span style={{ fontSize: '13px', color: '#cbd5e1' }}>{email} {email === ADMIN_EMAIL && '(أدمن أساسي)'}</span>
+                  {email !== ADMIN_EMAIL && (
+                    <button 
+                      onClick={() => handleRemoveEmail(email)}
+                      style={{ backgroundColor: '#ef4444', color: '#fff', border: 'none', padding: '4px 8px', borderRadius: '4px', fontSize: '11px', cursor: 'pointer' }}
+                    >
+                      حذف
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <button 
+              type="button" 
+              onClick={() => setShowEmailManager(false)}
+              style={{ width: '100%', padding: '10px', backgroundColor: '#334155', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer' }}
+            >
+              إغلاق
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* نافذة إضافة محتوى جديد */}
       {showAddModal && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000, padding: '20px' }}>
           <div style={{ backgroundColor: '#161e2e', padding: '30px', borderRadius: '12px', width: '100%', maxWidth: '450px', border: '1px solid #334155' }}>
