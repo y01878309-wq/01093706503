@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 type Section = 'videos' | 'exams' | 'solutions' | 'pdfs' | 'leaderboard' | 'adminPanel';
 
-interface ContentItem {
+interface Question {
+  id: number;
+  questionText: string;
+  options: string[];
+  correctAnswer: number;
+}
+
+interface ExamItem {
   id: number;
   section: Section;
   title: string;
   description: string;
-  link?: string;
+  questions?: Question[];
 }
 
 export default function App() {
@@ -17,28 +24,82 @@ export default function App() {
   
   const ADMIN_EMAIL = 'y01878309@gmail.com';
   
-  // قائمة الطلاب المقبولين
-  const [allowedStudents, setAllowedStudents] = useState<string[]>([
-    'student1@gmail.com'
-  ]);
+  const [allowedStudents, setAllowedStudents] = useState<string[]>(() => {
+    const saved = localStorage.getItem('allowed_students_farag');
+    return saved ? JSON.parse(saved) : ['student1@gmail.com', 'mohammedfarag692@gmail.com'];
+  });
 
   const [newStudentEmail, setNewStudentEmail] = useState<string>('');
   const [currentSection, setCurrentSection] = useState<Section>('videos');
 
-  // محتوى المنصة (قابل للإضافة مباشرة من الأدمن)
-  const [contents, setContents] = useState<ContentItem[]>([
-    { id: 1, section: 'videos', title: 'مقدمة في المنهج التعليمي', description: 'شرح تفصيلي لأهم أساسيات المنهج.' },
-    { id: 2, section: 'exams', title: 'امتحان الفيزياء التجريبي - الفصل الأول', description: 'اختبر معلوماتك في الفصل الأول.' },
-    { id: 3, section: 'solutions', title: 'حل نموذج الاسترشادي', description: 'الخطوات الكاملة للحل النموذجي.' },
-    { id: 4, section: 'pdfs', title: 'ملخص قوانين الفيزياء - الفصل الأول', description: 'ملف PDF شامل لأهم قوانين واشتقاقات المنهج.' },
-  ]);
+  // المحتوى مع امتحان تجريبي جاهز بأسئلة واختيارات حقيقية
+  const [contents, setContents] = useState<ExamItem[]>(() => {
+    const saved = localStorage.getItem('platform_contents_farag');
+    return saved ? JSON.parse(saved) : [
+      { id: 1, section: 'videos', title: 'مقدمة في المنهج التعليمي', description: 'شرح تفصيلي لأهم أساسيات المنهج.' },
+      { 
+        id: 2, 
+        section: 'exams', 
+        title: 'امتحان الفيزياء التجريبي - الفصل الأول', 
+        description: 'اختبر معلوماتك في الفصل الأول مع تصحيح فوري.',
+        questions: [
+          {
+            id: 1,
+            questionType: 'mcq',
+            questionText: 'وحدة قياس الشحنة الكهربية هي:',
+            options: ['أمبير', 'فولت', 'كولوم', 'اوم'],
+            correctAnswer: 2
+          },
+          {
+            id: 2,
+            questionType: 'mcq',
+            questionText: 'العوامل التي يتوقف عليها مقاومة موصل هي:',
+            options: ['طول الموصل فقط', 'مساحة الصليب فقط', 'نوع المواد ودرجة الحرارة', 'جميع ما سبق'],
+            correctAnswer: 3
+          }
+        ]
+      },
+      { id: 3, section: 'solutions', title: 'حل نموذج الاسترشادي', description: 'الخطوات الكاملة للحل النموذجي.' },
+      { id: 4, section: 'pdfs', title: 'ملخص قوانين الفيزياء - الفصل الأول', description: 'ملف PDF شامل لأهم قوانين واشتقاقات المنهج.' },
+    ];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('allowed_students_farag', JSON.stringify(allowedStudents));
+  }, [allowedStudents]);
+
+  useEffect(() => {
+    localStorage.setItem('platform_contents_farag', JSON.stringify(contents));
+  }, [contents]);
 
   // حقول إضافة محتوى جديد للأدمن
   const [newTitle, setNewTitle] = useState('');
   const [newDesc, setNewDesc] = useState('');
   const [newTargetSection, setNewTargetSection] = useState<Section>('videos');
+  
+  // حقول إضافة امتحان بأسئلة
+  const [examQText, setExamQText] = useState('');
+  const [opt1, setOpt1] = useState('');
+  const [opt2, setOpt2] = useState('');
+  const [opt3, setOpt3] = useState('');
+  const [opt4, setOpt4] = useState('');
+  const [correctOptIdx, setCorrectOptIdx] = useState<number>(0);
+  const [tempQuestions, setTempQuestions] = useState<Question[]>([]);
 
-  const [leaderboard] = useState<{ id: number; rank: number; name: string; score: string; details: string }[]>([]);
+  // حالة الامتحان الحالي للطلاب
+  const [activeExam, setActiveExam] = useState<ExamItem | null>(null);
+  const [userAnswers, setUserAnswers] = useState<{ [key: number]: number }>({});
+  const [isExamSubmitted, setIsExamSubmitted] = useState<boolean>(false);
+  const [examScore, setExamScore] = useState<number>(0);
+
+  const [leaderboard, setLeaderboard] = useState<{ id: number; rank: number; name: string; score: string; details: string }[]>(() => {
+    const saved = localStorage.getItem('platform_leaderboard_farag');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('platform_leaderboard_farag', JSON.stringify(leaderboard));
+  }, [leaderboard]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,27 +117,77 @@ export default function App() {
     e.preventDefault();
     const emailToAdd = newStudentEmail.trim().toLowerCase();
     if (emailToAdd && !allowedStudents.includes(emailToAdd)) {
-      setAllowedStudents([...allowedStudents, emailToAdd]);
+      const updated = [...allowedStudents, emailToAdd];
+      setAllowedStudents(updated);
       setNewStudentEmail('');
-      alert('تم إضافة الطالب بنجاح وأصبح بإمكانه الدخول!');
+      alert('تم إضافة الطالب بنجاح!');
     }
   };
 
-  // دالة إضافة محتوى جديد للمنصة
+  const handleAddQuestionToTemp = () => {
+    if (examQText && opt1 && opt2) {
+      const newQ: Question = {
+        id: Date.now(),
+        questionText: examQText,
+        options: [opt1, opt2, opt3, opt4].filter(Boolean),
+        correctAnswer: Number(correctOptIdx)
+      };
+      setTempQuestions([...tempQuestions, newQ]);
+      setExamQText('');
+      setOpt1('');
+      setOpt2('');
+      setOpt3('');
+      setOpt4('');
+      alert('تم إضافة السؤال بنجاح إلى الامتحان الجديد!');
+    } else {
+      alert('الرجاء كتابة السؤال واختيارين على الأقل.');
+    }
+  };
+
   const handleAddContent = (e: React.FormEvent) => {
     e.preventDefault();
     if (newTitle && newDesc) {
-      const newItem: ContentItem = {
+      const newItem: ExamItem = {
         id: Date.now(),
         section: newTargetSection,
         title: newTitle,
-        description: newDesc
+        description: newDesc,
+        questions: newTargetSection === 'exams' ? tempQuestions : undefined
       };
       setContents([newItem, ...contents]);
       setNewTitle('');
       setNewDesc('');
-      alert('تم إضافة المحتوى بنجاح إلى المنصة وسيراه الطلاب فوراً!');
+      setTempQuestions([]);
+      alert('تم نشر المحتوى بنجاح على المنصة!');
     }
+  };
+
+  const handleOptionSelect = (qId: number, optIdx: number) => {
+    if (isExamSubmitted) return;
+    setUserAnswers({ ...userAnswers, [qId]: optIdx });
+  };
+
+  const handleSubmitExam = () => {
+    if (!activeExam || !activeExam.questions) return;
+    let score = 0;
+    activeExam.questions.forEach((q) => {
+      if (userAnswers[q.id] === q.correctAnswer) {
+        score += 1;
+      }
+    });
+    setExamScore(score);
+    setIsExamSubmitted(true);
+
+    // تسجيل النتيجة في لوحة التقييم
+    const studentName = emailInput.split('@')[0];
+    const newEntry = {
+      id: Date.now(),
+      rank: leaderboard.length + 1,
+      name: studentName,
+      score: `${score} / ${activeExam.questions.length}`,
+      details: activeExam.title
+    };
+    setLeaderboard([newEntry, ...leaderboard]);
   };
 
   if (!isAuthenticated) {
@@ -127,7 +238,7 @@ export default function App() {
           {isAdmin ? 'لوحة تحكم الأدمن (يوسف فرج)' : 'منصة فاهم التعليمية'}
         </h1>
         <button 
-          onClick={() => setIsAuthenticated(false)}
+          onClick={() => { setIsAuthenticated(false); setActiveExam(null); }}
           style={{ backgroundColor: '#ef4444', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '12px' }}
         >
           خروج
@@ -145,7 +256,7 @@ export default function App() {
         ].map((tab) => (
           <button
             key={tab.key}
-            onClick={() => setCurrentSection(tab.key as Section)}
+            onClick={() => { setCurrentSection(tab.key as Section); setActiveExam(null); }}
             style={{
               padding: '8px 14px',
               borderRadius: '8px',
@@ -163,24 +274,106 @@ export default function App() {
       </nav>
 
       <main style={{ padding: '20px', maxWidth: '800px', width: '100%', margin: '0 auto', boxSizing: 'border-box', flex: 1 }}>
-        {currentSection === 'leaderboard' ? (
+        {activeExam ? (
+          <div style={{ backgroundColor: '#161e2e', padding: '25px', borderRadius: '12px', border: '1px solid #1e293b' }}>
+            <button 
+              onClick={() => { setActiveExam(null); setIsExamSubmitted(false); setUserAnswers({}); }}
+              style={{ backgroundColor: '#334155', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', marginBottom: '20px', fontSize: '12px' }}
+            >
+              ⬅ العودة لقائمة الامتحانات
+            </button>
+
+            <h2 style={{ color: '#60a5fa', marginBottom: '10px', fontSize: '18px' }}>{activeExam.title}</h2>
+            <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '20px' }}>{activeExam.description}</p>
+
+            {isExamSubmitted && (
+              <div style={{ backgroundColor: '#065f46', padding: '15px', borderRadius: '8px', marginBottom: '20px', textAlign: 'center' }}>
+                <h3 style={{ margin: '0 0 5px 0', fontSize: '16px' }}>🎉 نتيجة الامتحان</h3>
+                <p style={{ fontSize: '15px', margin: 0 }}>لقد حصلت على {examScore} من {activeExam.questions?.length || 0}</p>
+              </div>
+            )}
+
+            {activeExam.questions && activeExam.questions.length > 0 ? (
+              activeExam.questions.map((q, qIndex) => (
+                <div key={q.id} style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#0b0f19', borderRadius: '8px', border: '1px solid #1e293b' }}>
+                  <p style={{ fontWeight: 'bold', fontSize: '14px', marginBottom: '10px' }}>{qIndex + 1}. {q.questionText}</p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {q.options.map((opt, optIdx) => {
+                      let btnBg = '#1f2937';
+                      if (isExamSubmitted) {
+                        if (optIdx === q.correctAnswer) btnBg = '#059669'; // صح أخضر
+                        else if (userAnswers[q.id] === optIdx) btnBg = '#dc2626'; // خطأ أحمر
+                      } else if (userAnswers[q.id] === optIdx) {
+                        btnBg = '#2563eb'; // اختيار المستخدم الأزرق
+                      }
+
+                      return (
+                        <button
+                          key={optIdx}
+                          onClick={() => handleOptionSelect(q.id, optIdx)}
+                          style={{
+                            padding: '10px',
+                            borderRadius: '6px',
+                            border: 'none',
+                            backgroundColor: btnBg,
+                            color: '#fff',
+                            textAlign: 'right',
+                            cursor: isExamSubmitted ? 'default' : 'pointer',
+                            fontSize: '13px'
+                          }}
+                        >
+                          {opt}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p style={{ color: '#94a3b8', fontSize: '13px' }}>لا توجد أسئلة مضافة لهذا الامتحان حالياً.</p>
+            )}
+
+            {!isExamSubmitted && activeExam.questions && activeExam.questions.length > 0 && (
+              <button 
+                onClick={handleSubmitExam}
+                style={{ width: '100%', padding: '12px', backgroundColor: '#10b981', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', fontSize: '15px', marginTop: '10px' }}
+              >
+                تسليم الإجابات ومعرفة النتيجة ✅
+              </button>
+            )}
+          </div>
+        ) : currentSection === 'leaderboard' ? (
           <div>
             <h2 style={{ fontSize: '18px', marginBottom: '15px', color: '#f8fafc' }}>ترتيب الطلاب الأوائل</h2>
             {leaderboard.length === 0 ? (
               <div style={{ backgroundColor: '#161e2e', padding: '40px', borderRadius: '10px', textAlign: 'center', border: '1px solid #1e293b', color: '#94a3b8' }}>
                 <p style={{ fontSize: '15px', margin: 0 }}>لا توجد نتائج مسجلة حتى الآن. سيتم عرض ترتيب الطلاب هنا فور انتهاء أول اختبار! ⏳</p>
               </div>
-            ) : null}
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {leaderboard.map((item, idx) => (
+                  <div key={item.id} style={{ backgroundColor: '#161e2e', padding: '12px 15px', borderRadius: '8px', border: '1px solid #1e293b', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <span style={{ color: '#3b82f6', fontWeight: 'bold', marginLeft: '10px' }}>#{idx + 1}</span>
+                      <span style={{ fontSize: '14px' }}>{item.name}</span>
+                      <span style={{ display: 'block', fontSize: '11px', color: '#94a3b8' }}>{item.details}</span>
+                    </div>
+                    <div style={{ backgroundColor: '#1e293b', padding: '5px 10px', borderRadius: '6px', color: '#10b981', fontWeight: 'bold', fontSize: '13px' }}>
+                      {item.score}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         ) : currentSection === 'adminPanel' && isAdmin ? (
           <div>
             <h2 style={{ borderBottom: '2px solid #1e293b', paddingBottom: '10px', marginBottom: '15px', fontSize: '16px', color: '#38bdf8' }}>
-              لوحة تحكم الأدمن والتحكم الكامل
+              لوحة تحكم الأدمن وإضافة المحتوى
             </h2>
 
-            {/* قسم إضافة محتوى جديد */}
             <div style={{ backgroundColor: '#161e2e', padding: '20px', borderRadius: '10px', border: '1px solid #1e293b', marginBottom: '25px' }}>
-              <h3 style={{ fontSize: '15px', marginBottom: '12px', color: '#60a5fa' }}>✍️ إضافة درس، امتحان، أو ملف جديد:</h3>
+              <h3 style={{ fontSize: '15px', marginBottom: '12px', color: '#60a5fa' }}>✍️️ إضافة محتوى أو امتحان جديد بالأسئلة:</h3>
               <form onSubmit={handleAddContent} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '5px' }}>اختر القسم:</label>
@@ -190,17 +383,17 @@ export default function App() {
                     style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #334155', backgroundColor: '#0b0f19', color: '#fff', fontSize: '13px' }}
                   >
                     <option value="videos">الفيديوهات</option>
-                    <option value="exams">الامتحانات</option>
+                    <option value="exams">الامتحانات (بأسئلة وإجابات)</option>
                     <option value="solutions">الحل</option>
                     <option value="pdfs">ملفات PDF</option>
                   </select>
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '5px' }}>عنوان المحتوى:</label>
+                  <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '5px' }}>عنوان المحتوى / الامتحان:</label>
                   <input 
                     type="text" 
-                    placeholder="مثال: شرح الفصل الثاني - الدرس الأول" 
+                    placeholder="مثال: امتحان الفيزياء - الفصل الثاني" 
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
                     required
@@ -209,24 +402,62 @@ export default function App() {
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '5px' }}>وصف أو تفاصيل المحتوى:</label>
+                  <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '5px' }}>وصف المحتوى:</label>
                   <textarea 
-                    placeholder="اكتب تفاصيل الدرس أو رابط المحتوى هنا..." 
+                    placeholder="تفاصيل المحتوى..." 
                     value={newDesc}
                     onChange={(e) => setNewDesc(e.target.value)}
                     required
-                    rows={3}
+                    rows={2}
                     style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #334155', backgroundColor: '#0b0f19', color: '#fff', fontSize: '13px', boxSizing: 'border-box', fontFamily: 'Cairo' }}
                   />
                 </div>
 
-                <button type="submit" style={{ padding: '12px', backgroundColor: '#3b82f6', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px' }}>
-                  نشر المحتوى على المنصة 🚀
+                {newTargetSection === 'exams' && (
+                  <div style={{ backgroundColor: '#0b0f19', padding: '15px', borderRadius: '8px', border: '1px dashed #334155', marginTop: '5px' }}>
+                    <h4 style={{ color: '#38bdf8', fontSize: '13px', margin: '0 0 10px 0' }}>إضافة أسئلة لـ هذا الامتحان ({tempQuestions.length} أسئلة مضافة حتى الآن)</h4>
+                    
+                    <input 
+                      type="text" 
+                      placeholder="نص السؤال..." 
+                      value={examQText} 
+                      onChange={(e) => setExamQText(e.target.value)}
+                      style={{ width: '100%', padding: '8px', marginBottom: '8px', borderRadius: '6px', backgroundColor: '#161e2e', border: '1px solid #334155', color: '#fff', fontSize: '12px' }}
+                    />
+                    
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
+                      <input type="text" placeholder="الاختيار الأول" value={opt1} onChange={(e) => setOpt1(e.target.value)} style={{ padding: '8px', borderRadius: '6px', backgroundColor: '#161e2e', border: '1px solid #334155', color: '#fff', fontSize: '12px' }} />
+                      <input type="text" placeholder="الاختيار الثاني" value={opt2} onChange={(e) => setOpt2(e.target.value)} style={{ padding: '8px', borderRadius: '6px', backgroundColor: '#161e2e', border: '1px solid #334155', color: '#fff', fontSize: '12px' }} />
+                      <input type="text" placeholder="الاختيار الثالث (اختياري)" value={opt3} onChange={(e) => setOpt3(e.target.value)} style={{ padding: '8px', borderRadius: '6px', backgroundColor: '#161e2e', border: '1px solid #334155', color: '#fff', fontSize: '12px' }} />
+                      <input type="text" placeholder="الاختيار الرابع (اختياري)" value={opt4} onChange={(e) => setOpt4(e.target.value)} style={{ padding: '8px', borderRadius: '6px', backgroundColor: '#161e2e', border: '1px solid #334155', color: '#fff', fontSize: '12px' }} />
+                    </div>
+
+                    <label style={{ display: 'block', fontSize: '11px', color: '#94a3b8', marginBottom: '4px' }}>رقم الإجابة الصحيحة (0 للأول، 1 للثاني، وهكذا):</label>
+                    <input 
+                      type="number" 
+                      min="0" 
+                      max="3" 
+                      value={correctOptIdx} 
+                      onChange={(e) => setCorrectOptIdx(Number(e.target.value))}
+                      style={{ width: '80px', padding: '6px', marginBottom: '10px', borderRadius: '6px', backgroundColor: '#161e2e', border: '1px solid #334155', color: '#fff', fontSize: '12px' }}
+                    />
+
+                    <button 
+                      type="button" 
+                      onClick={handleAddQuestionToTemp}
+                      style={{ display: 'block', width: '100%', padding: '8px', backgroundColor: '#0284c7', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', fontSize: '12px' }}
+                    >
+                      ➕ إضافة هذا السؤال للامتحان
+                    </button>
+                  </div>
+                )}
+
+                <button type="submit" style={{ padding: '12px', backgroundColor: '#3b82f6', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px', marginTop: '10px' }}>
+                  نشر المحتوى النهائي على المنصة 🚀
                 </button>
               </form>
             </div>
 
-            {/* قسم إدارة إيميلات الطلاب */}
             <div style={{ backgroundColor: '#161e2e', padding: '20px', borderRadius: '10px', border: '1px solid #1e293b', marginBottom: '20px' }}>
               <h3 style={{ fontSize: '14px', marginBottom: '10px', color: '#60a5fa' }}>إضافة إيميل طالب جديد لتفعيل دخوله:</h3>
               <form onSubmit={handleAddStudent} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
@@ -243,15 +474,6 @@ export default function App() {
                 </button>
               </form>
             </div>
-
-            <div style={{ backgroundColor: '#161e2e', padding: '20px', borderRadius: '10px', border: '1px solid #1e293b' }}>
-              <h3 style={{ fontSize: '14px', marginBottom: '10px', color: '#94a3b8' }}>الإيميلات المفعلة حالياً ({allowedStudents.length}):</h3>
-              <ul style={{ margin: 0, paddingRight: '20px', color: '#cbd5e1', fontSize: '13px' }}>
-                {allowedStudents.map((mail, idx) => (
-                  <li key={idx} style={{ marginBottom: '6px' }}>{mail}</li>
-                ))}
-              </ul>
-            </div>
           </div>
         ) : (
           <div>
@@ -267,12 +489,23 @@ export default function App() {
                 <p style={{ color: '#94a3b8', fontSize: '13px' }}>لا يوجد محتوى مضاف في هذا القسم حتى الآن.</p>
               ) : (
                 contents.filter(item => item.section === currentSection).map(item => (
-                  <div key={item.id} style={{ backgroundColor: '#161e2e', border: '1px solid #1e293b', borderRadius: '10px', padding: '15px' }}>
-                    <h3 style={{ margin: '0 0 8px 0', fontSize: '15px', color: '#60a5fa' }}>{item.title}</h3>
-                    <p style={{ color: '#94a3b8', fontSize: '12px', marginBottom: '12px', whiteSpace: 'pre-wrap' }}>{item.description}</p>
-                    <button style={{ backgroundColor: '#2563eb', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold' }}>
-                      عرض المحتوى ⬅
-                    </button>
+                  <div key={item.id} style={{ backgroundColor: '#161e2e', border: '1px solid #1e293b', borderRadius: '10px', padding: '15px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <div>
+                      <h3 style={{ margin: '0 0 8px 0', fontSize: '15px', color: '#60a5fa' }}>{item.title}</h3>
+                      <p style={{ color: '#94a3b8', fontSize: '12px', marginBottom: '12px', whiteSpace: 'pre-wrap' }}>{item.description}</p>
+                    </div>
+                    {item.section === 'exams' ? (
+                      <button 
+                        onClick={() => setActiveExam(item)}
+                        style={{ backgroundColor: '#10b981', color: '#fff', border: 'none', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold' }}
+                      >
+                        ابدأ الامتحان الآن 📝
+                      </button>
+                    ) : (
+                      <button style={{ backgroundColor: '#2563eb', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold' }}>
+                        عرض المحتوى ⬅
+                      </button>
+                    )}
                   </div>
                 ))
               )}
