@@ -7,6 +7,7 @@ interface ContentItem {
   section: Section;
   title: string;
   description: string;
+  link?: string;
 }
 
 export default function App() {
@@ -16,6 +17,7 @@ export default function App() {
   
   const ADMIN_EMAIL = 'y01878309@gmail.com';
   
+  // قائمة الطلاب المقبولين
   const [allowedStudents, setAllowedStudents] = useState<string[]>([
     'student1@gmail.com'
   ]);
@@ -23,12 +25,18 @@ export default function App() {
   const [newStudentEmail, setNewStudentEmail] = useState<string>('');
   const [currentSection, setCurrentSection] = useState<Section>('videos');
 
-  const [contents] = useState<ContentItem[]>([
+  // محتوى المنصة (قابل للإضافة مباشرة من الأدمن)
+  const [contents, setContents] = useState<ContentItem[]>([
     { id: 1, section: 'videos', title: 'مقدمة في المنهج التعليمي', description: 'شرح تفصيلي لأهم أساسيات المنهج.' },
     { id: 2, section: 'exams', title: 'امتحان الفيزياء التجريبي - الفصل الأول', description: 'اختبر معلوماتك في الفصل الأول.' },
     { id: 3, section: 'solutions', title: 'حل نموذج الاسترشادي', description: 'الخطوات الكاملة للحل النموذجي.' },
     { id: 4, section: 'pdfs', title: 'ملخص قوانين الفيزياء - الفصل الأول', description: 'ملف PDF شامل لأهم قوانين واشتقاقات المنهج.' },
   ]);
+
+  // حقول إضافة محتوى جديد للأدمن
+  const [newTitle, setNewTitle] = useState('');
+  const [newDesc, setNewDesc] = useState('');
+  const [newTargetSection, setNewTargetSection] = useState<Section>('videos');
 
   const [leaderboard] = useState<{ id: number; rank: number; name: string; score: string; details: string }[]>([]);
 
@@ -51,6 +59,23 @@ export default function App() {
       setAllowedStudents([...allowedStudents, emailToAdd]);
       setNewStudentEmail('');
       alert('تم إضافة الطالب بنجاح وأصبح بإمكانه الدخول!');
+    }
+  };
+
+  // دالة إضافة محتوى جديد للمنصة
+  const handleAddContent = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newTitle && newDesc) {
+      const newItem: ContentItem = {
+        id: Date.now(),
+        section: newTargetSection,
+        title: newTitle,
+        description: newDesc
+      };
+      setContents([newItem, ...contents]);
+      setNewTitle('');
+      setNewDesc('');
+      alert('تم إضافة المحتوى بنجاح إلى المنصة وسيراه الطلاب فوراً!');
     }
   };
 
@@ -86,7 +111,7 @@ export default function App() {
             rel="noopener noreferrer"
             style={{ display: 'block', padding: '10px', backgroundColor: '#25d366', color: '#fff', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', fontSize: '13px' }}
           >
-            💬 تواصل مع المسؤول عبر واتساب
+            💬 تواصل مع المسؤول عبر واتساب (01093706503)
           </a>
         </div>
       </div>
@@ -109,14 +134,14 @@ export default function App() {
         </button>
       </header>
 
-      <nav style={{ display: 'flex', justifyContent: 'center', gap: '8px', padding: '15px', backgroundColor: '#111827', flexWrap: 'wrap', borderBottom: '1px solid #1e293b' }}>
+      <nav style={{ display: 'flex', justifyContent: 'center', gap: '8px', padding: '12px', backgroundColor: '#111827', flexWrap: 'wrap', borderBottom: '1px solid #1e293b' }}>
         {[
           { key: 'videos', label: '🎥 الفيديوهات' },
           { key: 'exams', label: '📝 الامتحانات' },
           { key: 'solutions', label: '💡 الحل' },
           { key: 'pdfs', label: '📁 ملفات PDF' },
           { key: 'leaderboard', label: '🏆 التقييم والترتيب' },
-          ...(isAdmin ? [{ key: 'adminPanel', label: '⚙️ إدارة الطلاب' }] : [])
+          ...(isAdmin ? [{ key: 'adminPanel', label: '⚙️ لوحة التحكم والإضافة' }] : [])
         ].map((tab) => (
           <button
             key={tab.key}
@@ -150,8 +175,58 @@ export default function App() {
         ) : currentSection === 'adminPanel' && isAdmin ? (
           <div>
             <h2 style={{ borderBottom: '2px solid #1e293b', paddingBottom: '10px', marginBottom: '15px', fontSize: '16px', color: '#38bdf8' }}>
-              إدارة وقبول إيميلات الطلاب
+              لوحة تحكم الأدمن والتحكم الكامل
             </h2>
+
+            {/* قسم إضافة محتوى جديد */}
+            <div style={{ backgroundColor: '#161e2e', padding: '20px', borderRadius: '10px', border: '1px solid #1e293b', marginBottom: '25px' }}>
+              <h3 style={{ fontSize: '15px', marginBottom: '12px', color: '#60a5fa' }}>✍️ إضافة درس، امتحان، أو ملف جديد:</h3>
+              <form onSubmit={handleAddContent} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '5px' }}>اختر القسم:</label>
+                  <select 
+                    value={newTargetSection} 
+                    onChange={(e) => setNewTargetSection(e.target.value as Section)}
+                    style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #334155', backgroundColor: '#0b0f19', color: '#fff', fontSize: '13px' }}
+                  >
+                    <option value="videos">الفيديوهات</option>
+                    <option value="exams">الامتحانات</option>
+                    <option value="solutions">الحل</option>
+                    <option value="pdfs">ملفات PDF</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '5px' }}>عنوان المحتوى:</label>
+                  <input 
+                    type="text" 
+                    placeholder="مثال: شرح الفصل الثاني - الدرس الأول" 
+                    value={newTitle}
+                    onChange={(e) => setNewTitle(e.target.value)}
+                    required
+                    style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #334155', backgroundColor: '#0b0f19', color: '#fff', fontSize: '13px', boxSizing: 'border-box' }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '5px' }}>وصف أو تفاصيل المحتوى:</label>
+                  <textarea 
+                    placeholder="اكتب تفاصيل الدرس أو رابط المحتوى هنا..." 
+                    value={newDesc}
+                    onChange={(e) => setNewDesc(e.target.value)}
+                    required
+                    rows={3}
+                    style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #334155', backgroundColor: '#0b0f19', color: '#fff', fontSize: '13px', boxSizing: 'border-box', fontFamily: 'Cairo' }}
+                  />
+                </div>
+
+                <button type="submit" style={{ padding: '12px', backgroundColor: '#3b82f6', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px' }}>
+                  نشر المحتوى على المنصة 🚀
+                </button>
+              </form>
+            </div>
+
+            {/* قسم إدارة إيميلات الطلاب */}
             <div style={{ backgroundColor: '#161e2e', padding: '20px', borderRadius: '10px', border: '1px solid #1e293b', marginBottom: '20px' }}>
               <h3 style={{ fontSize: '14px', marginBottom: '10px', color: '#60a5fa' }}>إضافة إيميل طالب جديد لتفعيل دخوله:</h3>
               <form onSubmit={handleAddStudent} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
@@ -188,15 +263,19 @@ export default function App() {
             </h2>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '15px' }}>
-              {contents.filter(item => item.section === currentSection).map(item => (
-                <div key={item.id} style={{ backgroundColor: '#161e2e', border: '1px solid #1e293b', borderRadius: '10px', padding: '15px' }}>
-                  <h3 style={{ margin: '0 0 8px 0', fontSize: '15px', color: '#60a5fa' }}>{item.title}</h3>
-                  <p style={{ color: '#94a3b8', fontSize: '12px', marginBottom: '12px' }}>{item.description}</p>
-                  <button style={{ backgroundColor: '#2563eb', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold' }}>
-                    عرض المحتوى ⬅
-                  </button>
-                </div>
-              ))}
+              {contents.filter(item => item.section === currentSection).length === 0 ? (
+                <p style={{ color: '#94a3b8', fontSize: '13px' }}>لا يوجد محتوى مضاف في هذا القسم حتى الآن.</p>
+              ) : (
+                contents.filter(item => item.section === currentSection).map(item => (
+                  <div key={item.id} style={{ backgroundColor: '#161e2e', border: '1px solid #1e293b', borderRadius: '10px', padding: '15px' }}>
+                    <h3 style={{ margin: '0 0 8px 0', fontSize: '15px', color: '#60a5fa' }}>{item.title}</h3>
+                    <p style={{ color: '#94a3b8', fontSize: '12px', marginBottom: '12px', whiteSpace: 'pre-wrap' }}>{item.description}</p>
+                    <button style={{ backgroundColor: '#2563eb', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold' }}>
+                      عرض المحتوى ⬅
+                    </button>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         )}
