@@ -17,22 +17,29 @@ interface ExamItem {
   questions?: Question[];
 }
 
+interface UserAccount {
+  email: string;
+  pass: string;
+}
+
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [emailInput, setEmailInput] = useState<string>('');
+  const [passInput, setPassInput] = useState<string>('');
+  const [codeInput, setCodeInput] = useState<string>('');
   const [errorMsg, setErrorMsg] = useState<string>('');
   
   const ADMIN_EMAIL = 'y01878309@gmail.com';
   
-  const [allowedStudents, setAllowedStudents] = useState<string[]>(() => {
-    const saved = localStorage.getItem('allowed_students_farag');
-    return saved ? JSON.parse(saved) : ['student1@gmail.com', 'mohammedfarag692@gmail.com'];
+  // تخزين الحسابات المسجلة للطلاب عشان الباسورد والجميل يثبتوا معهم
+  const [usersAccounts, setUsersAccounts] = useState<UserAccount[]>(() => {
+    const saved = localStorage.getItem('platform_users_farag');
+    return saved ? JSON.parse(saved) : [];
   });
 
-  const [newStudentEmail, setNewStudentEmail] = useState<string>('');
   const [currentSection, setCurrentSection] = useState<Section>('videos');
 
-  // المحتوى مع امتحان تجريبي جاهز بأسئلة واختيارات حقيقية
+  // المحتوى مع امتحان تجريبي جاهز
   const [contents, setContents] = useState<ExamItem[]>(() => {
     const saved = localStorage.getItem('platform_contents_farag');
     return saved ? JSON.parse(saved) : [
@@ -45,14 +52,12 @@ export default function App() {
         questions: [
           {
             id: 1,
-            questionType: 'mcq',
             questionText: 'وحدة قياس الشحنة الكهربية هي:',
             options: ['أمبير', 'فولت', 'كولوم', 'اوم'],
             correctAnswer: 2
           },
           {
             id: 2,
-            questionType: 'mcq',
             questionText: 'العوامل التي يتوقف عليها مقاومة موصل هي:',
             options: ['طول الموصل فقط', 'مساحة الصليب فقط', 'نوع المواد ودرجة الحرارة', 'جميع ما سبق'],
             correctAnswer: 3
@@ -65,8 +70,8 @@ export default function App() {
   });
 
   useEffect(() => {
-    localStorage.setItem('allowed_students_farag', JSON.stringify(allowedStudents));
-  }, [allowedStudents]);
+    localStorage.setItem('platform_users_farag', JSON.stringify(usersAccounts));
+  }, [usersAccounts]);
 
   useEffect(() => {
     localStorage.setItem('platform_contents_farag', JSON.stringify(contents));
@@ -104,24 +109,40 @@ export default function App() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     const cleanEmail = emailInput.trim().toLowerCase();
+    const cleanPass = passInput.trim();
+    const cleanCode = codeInput.trim();
 
-    if (cleanEmail === ADMIN_EMAIL || allowedStudents.includes(cleanEmail)) {
+    if (!cleanEmail.includes('@gmail.com')) {
+      setErrorMsg('الرجاء إدخال بريد إلكتروني صحيح (Gmail).');
+      return;
+    }
+
+    if (cleanEmail === ADMIN_EMAIL) {
       setIsAuthenticated(true);
       setErrorMsg('');
-    } else {
-      setErrorMsg('عذراً، هذا البريد غير مفعل. تواصل عبر الواتساب لتفعيل حسابك.');
+      return;
     }
-  };
 
-  const handleAddStudent = (e: React.FormEvent) => {
-    e.preventDefault();
-    const emailToAdd = newStudentEmail.trim().toLowerCase();
-    if (emailToAdd && !allowedStudents.includes(emailToAdd)) {
-      const updated = [...allowedStudents, emailToAdd];
-      setAllowedStudents(updated);
-      setNewStudentEmail('');
-      alert('تم إضافة الطالب بنجاح!');
+    // التحقق من رمز المنصة
+    if (cleanCode !== '78') {
+      setErrorMsg('رمز المنصة غير صحيح! رمز المنصة هو 78');
+      return;
     }
+
+    // تسجيل أو التحقق من الحساب
+    const existingUser = usersAccounts.find(u => u.email === cleanEmail);
+    if (existingUser) {
+      if (existingUser.pass !== cleanPass) {
+        setErrorMsg('كلمة السر غير صحيحة لهذا البريد!');
+        return;
+      }
+    } else {
+      // تسجيل طالب جديد تلقائياً
+      setUsersAccounts([...usersAccounts, { email: cleanEmail, pass: cleanPass }]);
+    }
+
+    setIsAuthenticated(true);
+    setErrorMsg('');
   };
 
   const handleAddQuestionToTemp = () => {
@@ -178,7 +199,6 @@ export default function App() {
     setExamScore(score);
     setIsExamSubmitted(true);
 
-    // تسجيل النتيجة في لوحة التقييم
     const studentName = emailInput.split('@')[0];
     const newEntry = {
       id: Date.now(),
@@ -195,32 +215,49 @@ export default function App() {
       <div style={{ minHeight: '100vh', backgroundColor: '#0b0f19', color: '#fff', display: 'flex', justifyContent: 'center', alignItems: 'center', fontFamily: 'Cairo, sans-serif', padding: '20px', direction: 'rtl' }}>
         <div style={{ backgroundColor: '#161e2e', padding: '30px', borderRadius: '16px', width: '100%', maxWidth: '400px', boxShadow: '0 4px 20px rgba(0,0,0,0.5)', textAlign: 'center', border: '1px solid #1e293b' }}>
           <h2 style={{ marginBottom: '10px', fontSize: '22px', color: '#3b82f6' }}>منصة فاهم التعليمية</h2>
-          <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '20px' }}>أدخل بريدك الإلكتروني (Gmail) للمتابعة.</p>
+          <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '20px' }}>سجل ببريدك الإلكتروني، كلمة المرور، ورمز المنصة (78).</p>
           
-          <form onSubmit={handleLogin}>
+          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <input 
               type="email" 
-              placeholder="example@gmail.com" 
+              placeholder="بريدك الإلكتروني (Gmail)" 
               value={emailInput}
               onChange={(e) => setEmailInput(e.target.value)}
               required
-              style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #334155', backgroundColor: '#0b0f19', color: '#fff', marginBottom: '15px', outline: 'none', textAlign: 'center', fontSize: '14px' }}
+              style={{ width: '100%', padding: '11px', borderRadius: '8px', border: '1px solid #334155', backgroundColor: '#0b0f19', color: '#fff', outline: 'none', textAlign: 'center', fontSize: '13px', boxSizing: 'border-box' }}
             />
-            {errorMsg && <p style={{ color: '#ef4444', fontSize: '12px', marginBottom: '15px' }}>{errorMsg}</p>}
+            <input 
+              type="password" 
+              placeholder="كلمة السر الخاصة بك" 
+              value={passInput}
+              onChange={(e) => setPassInput(e.target.value)}
+              required
+              style={{ width: '100%', padding: '11px', borderRadius: '8px', border: '1px solid #334155', backgroundColor: '#0b0f19', color: '#fff', outline: 'none', textAlign: 'center', fontSize: '13px', boxSizing: 'border-box' }}
+            />
+            <input 
+              type="password" 
+              placeholder="رمز المنصة (78)" 
+              value={codeInput}
+              onChange={(e) => setCodeInput(e.target.value)}
+              required
+              style={{ width: '100%', padding: '11px', borderRadius: '8px', border: '1px solid #334155', backgroundColor: '#0b0f19', color: '#fff', outline: 'none', textAlign: 'center', fontSize: '13px', boxSizing: 'border-box' }}
+            />
+
+            {errorMsg && <p style={{ color: '#ef4444', fontSize: '12px', margin: 0 }}>{errorMsg}</p>}
             
             <button 
               type="submit" 
-              style={{ width: '100%', padding: '12px', borderRadius: '8px', border: 'none', backgroundColor: '#0284c7', color: '#fff', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px', marginBottom: '12px' }}
+              style={{ width: '100%', padding: '12px', borderRadius: '8px', border: 'none', backgroundColor: '#0284c7', color: '#fff', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px', marginTop: '5px' }}
             >
-              تسجيل الدخول
+              تسجيل الدخول / إنشاء حساب 🚀
             </button>
           </form>
 
           <a 
-            href="https://wa.me/201093706503?text=ازيك يا مستر يوسف، عاوز أقدم طلب انضمام للمنصة وده الإيميل بتاعي:" 
+            href="https://wa.me/201093706503?text=ازيك يا مستر يوسف، محتاج استفسار بخصوص منصة فاهم التعليمية" 
             target="_blank" 
             rel="noopener noreferrer"
-            style={{ display: 'block', padding: '10px', backgroundColor: '#25d366', color: '#fff', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', fontSize: '13px' }}
+            style={{ display: 'block', padding: '10px', marginTop: '15px', backgroundColor: '#25d366', color: '#fff', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', fontSize: '12px' }}
           >
             💬 تواصل مع المسؤول عبر واتساب (01093706503)
           </a>
@@ -301,10 +338,10 @@ export default function App() {
                     {q.options.map((opt, optIdx) => {
                       let btnBg = '#1f2937';
                       if (isExamSubmitted) {
-                        if (optIdx === q.correctAnswer) btnBg = '#059669'; // صح أخضر
-                        else if (userAnswers[q.id] === optIdx) btnBg = '#dc2626'; // خطأ أحمر
+                        if (optIdx === q.correctAnswer) btnBg = '#059669';
+                        else if (userAnswers[q.id] === optIdx) btnBg = '#dc2626';
                       } else if (userAnswers[q.id] === optIdx) {
-                        btnBg = '#2563eb'; // اختيار المستخدم الأزرق
+                        btnBg = '#2563eb';
                       }
 
                       return (
@@ -373,7 +410,7 @@ export default function App() {
             </h2>
 
             <div style={{ backgroundColor: '#161e2e', padding: '20px', borderRadius: '10px', border: '1px solid #1e293b', marginBottom: '25px' }}>
-              <h3 style={{ fontSize: '15px', marginBottom: '12px', color: '#60a5fa' }}>✍️️ إضافة محتوى أو امتحان جديد بالأسئلة:</h3>
+              <h3 style={{ fontSize: '15px', marginBottom: '12px', color: '#60a5fa' }}>✍ إضافة محتوى أو امتحان جديد بالأسئلة:</h3>
               <form onSubmit={handleAddContent} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '5px' }}>اختر القسم:</label>
@@ -454,23 +491,6 @@ export default function App() {
 
                 <button type="submit" style={{ padding: '12px', backgroundColor: '#3b82f6', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px', marginTop: '10px' }}>
                   نشر المحتوى النهائي على المنصة 🚀
-                </button>
-              </form>
-            </div>
-
-            <div style={{ backgroundColor: '#161e2e', padding: '20px', borderRadius: '10px', border: '1px solid #1e293b', marginBottom: '20px' }}>
-              <h3 style={{ fontSize: '14px', marginBottom: '10px', color: '#60a5fa' }}>إضافة إيميل طالب جديد لتفعيل دخوله:</h3>
-              <form onSubmit={handleAddStudent} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                <input 
-                  type="email" 
-                  placeholder="student@gmail.com" 
-                  value={newStudentEmail}
-                  onChange={(e) => setNewStudentEmail(e.target.value)}
-                  required
-                  style={{ flex: 1, minWidth: '220px', padding: '10px', borderRadius: '6px', border: '1px solid #334155', backgroundColor: '#0b0f19', color: '#fff', fontSize: '13px' }}
-                />
-                <button type="submit" style={{ padding: '10px 20px', backgroundColor: '#10b981', color: '#fff', border: 'none', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', fontSize: '13px' }}>
-                  تفعيل وإضافة
                 </button>
               </form>
             </div>
