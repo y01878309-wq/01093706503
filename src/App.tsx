@@ -14,7 +14,7 @@ interface ExamItem {
   section: Section;
   title: string;
   description: string;
-  durationMinutes?: number; // وقت الامتحان بالدقائق
+  durationMinutes?: number;
   questions?: Question[];
 }
 
@@ -69,7 +69,6 @@ export default function App() {
     ];
   });
 
-  // حفظ الامتحانات التي تم حلها بواسطة الطالب الحالي لمنع تكرارها
   const [submittedExams, setSubmittedExams] = useState<{ [userEmail: string]: number[] }>(() => {
     const saved = localStorage.getItem('platform_submitted_exams_farag');
     return saved ? JSON.parse(saved) : {};
@@ -105,7 +104,7 @@ export default function App() {
   const [userAnswers, setUserAnswers] = useState<{ [key: number]: number }>({});
   const [isExamSubmitted, setIsExamSubmitted] = useState<boolean>(false);
   const [examScore, setExamScore] = useState<number>(0);
-  const [timeLeft, setTimeLeft] = useState<number>(0); // الوقت المتبقي بالثواني
+  const [timeLeft, setTimeLeft] = useState<number>(0);
 
   const [leaderboard, setLeaderboard] = useState<{ id: number; rank: number; name: string; score: string; details: string }[]>(() => {
     const saved = localStorage.getItem('platform_leaderboard_farag');
@@ -116,7 +115,6 @@ export default function App() {
     localStorage.setItem('platform_leaderboard_farag', JSON.stringify(leaderboard));
   }, [leaderboard]);
 
-  // عداد الوقت التنازلي للامتحان
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (activeExam && !isExamSubmitted && timeLeft > 0) {
@@ -124,7 +122,7 @@ export default function App() {
         setTimeLeft((prev) => {
           if (prev <= 1) {
             clearInterval(timer);
-            handleSubmitExam(true); // تسليم تلقائي عند انتهاء الوقت
+            handleSubmitExam(true);
             return 0;
           }
           return prev - 1;
@@ -209,6 +207,13 @@ export default function App() {
     }
   };
 
+  // دالة حذف أي محتوى أو امتحان
+  const handleDeleteContent = (id: number) => {
+    if (window.confirm('هل أنت متأكد من حذف هذا المحتوى نهائياً؟')) {
+      setContents(contents.filter(item => item.id !== id));
+    }
+  };
+
   const handleStartExam = (exam: ExamItem) => {
     const userExams = submittedExams[emailInput] || [];
     if (emailInput !== ADMIN_EMAIL && userExams.includes(exam.id)) {
@@ -218,7 +223,7 @@ export default function App() {
     setActiveExam(exam);
     setIsExamSubmitted(false);
     setUserAnswers({});
-    setTimeLeft((exam.durationMinutes || 10) * 60); // تحويل الدقائق إلى ثواني
+    setTimeLeft((exam.durationMinutes || 10) * 60);
   };
 
   const handleOptionSelect = (qId: number, optIdx: number) => {
@@ -242,7 +247,6 @@ export default function App() {
       alert('⏰ انتهى وقت الامتحان المحدد! تم تسليم إجاباتك تلقائياً.');
     }
 
-    // تسجيل الامتحان أنه تم حله لهذا الطالب لمنع تكراره
     if (emailInput !== ADMIN_EMAIL) {
       const userExams = submittedExams[emailInput] || [];
       setSubmittedExams({
@@ -528,6 +532,7 @@ export default function App() {
               لوحة تحكم الأدمن وإضافة المحتوى
             </h2>
 
+            {/* قسم إضافة محتوى */}
             <div style={{ backgroundColor: '#161e2e', padding: '20px', borderRadius: '10px', border: '1px solid #1e293b', marginBottom: '25px' }}>
               <h3 style={{ fontSize: '15px', marginBottom: '12px', color: '#60a5fa' }}>✍ إضافة محتوى أو امتحان جديد بالأسئلة:</h3>
               <form onSubmit={handleAddContent} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -627,6 +632,31 @@ export default function App() {
                   نشر المحتوى النهائي على المنصة 🚀
                 </button>
               </form>
+            </div>
+
+            {/* قسم إدارة وحذف المحتوى الحالي */}
+            <div style={{ backgroundColor: '#161e2e', padding: '20px', borderRadius: '10px', border: '1px solid #1e293b' }}>
+              <h3 style={{ fontSize: '15px', marginBottom: '12px', color: '#f87171' }}>🗑️ إدارة وحذف المحتوى الحالي:</h3>
+              {contents.length === 0 ? (
+                <p style={{ color: '#94a3b8', fontSize: '13px' }}>لا توجد أي محتويات مضافة حالياً.</p>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {contents.map(item => (
+                    <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#0b0f19', padding: '10px 14px', borderRadius: '6px', border: '1px solid #1e293b' }}>
+                      <div>
+                        <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#fff' }}>{item.title}</span>
+                        <span style={{ display: 'block', fontSize: '11px', color: '#94a3b8' }}>القسم: {item.section}</span>
+                      </div>
+                      <button 
+                        onClick={() => handleDeleteContent(item.id)}
+                        style={{ backgroundColor: '#dc2626', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold' }}
+                      >
+                        حذف 🗑️
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         ) : (
