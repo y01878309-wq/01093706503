@@ -31,7 +31,6 @@ export default function App() {
   
   const ADMIN_EMAIL = 'y01878309@gmail.com';
   
-  // تخزين الحسابات المسجلة للطلاب عشان الباسورد والجميل يثبتوا معهم
   const [usersAccounts, setUsersAccounts] = useState<UserAccount[]>(() => {
     const saved = localStorage.getItem('platform_users_farag');
     return saved ? JSON.parse(saved) : [];
@@ -39,11 +38,10 @@ export default function App() {
 
   const [currentSection, setCurrentSection] = useState<Section>('videos');
 
-  // المحتوى مع امتحان تجريبي جاهز
   const [contents, setContents] = useState<ExamItem[]>(() => {
     const saved = localStorage.getItem('platform_contents_farag');
     return saved ? JSON.parse(saved) : [
-      { id: 1, section: 'videos', title: 'مقدمة في المنهج التعليمي', description: 'شرح تفصيلي لأهم أساسيات المنهج.' },
+      { id: 1, section: 'videos', title: 'مراجعة باب التنسيق الهرموني', description: 'https://youtu.be/t2MV5U4KnKm?si=nANL5lpT-iguRuV5' },
       { 
         id: 2, 
         section: 'exams', 
@@ -77,12 +75,10 @@ export default function App() {
     localStorage.setItem('platform_contents_farag', JSON.stringify(contents));
   }, [contents]);
 
-  // حقول إضافة محتوى جديد للأدمن
   const [newTitle, setNewTitle] = useState('');
   const [newDesc, setNewDesc] = useState('');
   const [newTargetSection, setNewTargetSection] = useState<Section>('videos');
   
-  // حقول إضافة امتحان بأسئلة
   const [examQText, setExamQText] = useState('');
   const [opt1, setOpt1] = useState('');
   const [opt2, setOpt2] = useState('');
@@ -91,8 +87,8 @@ export default function App() {
   const [correctOptIdx, setCorrectOptIdx] = useState<number>(0);
   const [tempQuestions, setTempQuestions] = useState<Question[]>([]);
 
-  // حالة الامتحان الحالي للطلاب
   const [activeExam, setActiveExam] = useState<ExamItem | null>(null);
+  const [activeMedia, setActiveMedia] = useState<ExamItem | null>(null); // لتشغيل الفيديو أو عرض المحتوى
   const [userAnswers, setUserAnswers] = useState<{ [key: number]: number }>({});
   const [isExamSubmitted, setIsExamSubmitted] = useState<boolean>(false);
   const [examScore, setExamScore] = useState<number>(0);
@@ -123,13 +119,11 @@ export default function App() {
       return;
     }
 
-    // التحقق من رمز المنصة
     if (cleanCode !== '78') {
       setErrorMsg('رمز المنصة غير صحيح! رمز المنصة هو 78');
       return;
     }
 
-    // تسجيل أو التحقق من الحساب
     const existingUser = usersAccounts.find(u => u.email === cleanEmail);
     if (existingUser) {
       if (existingUser.pass !== cleanPass) {
@@ -137,7 +131,6 @@ export default function App() {
         return;
       }
     } else {
-      // تسجيل طالب جديد تلقائياً
       setUsersAccounts([...usersAccounts, { email: cleanEmail, pass: cleanPass }]);
     }
 
@@ -210,6 +203,21 @@ export default function App() {
     setLeaderboard([newEntry, ...leaderboard]);
   };
 
+  // دالة لتحويل رابط يوتيوب العادي إلى رابط إطار Embed عشان يشتغل جوه المنصة مباشرة
+  const getEmbedUrl = (url: string) => {
+    if (!url) return '';
+    if (url.includes('embed/')) return url;
+    if (url.includes('youtu.be/')) {
+      const videoId = url.split('youtu.be/')[1]?.split('?')[0];
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+    if (url.includes('watch?v=')) {
+      const videoId = url.split('watch?v=')[1]?.split('&')[0];
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+    return url;
+  };
+
   if (!isAuthenticated) {
     return (
       <div style={{ minHeight: '100vh', backgroundColor: '#0b0f19', color: '#fff', display: 'flex', justifyContent: 'center', alignItems: 'center', fontFamily: 'Cairo, sans-serif', padding: '20px', direction: 'rtl' }}>
@@ -275,7 +283,7 @@ export default function App() {
           {isAdmin ? 'لوحة تحكم الأدمن (يوسف فرج)' : 'منصة فاهم التعليمية'}
         </h1>
         <button 
-          onClick={() => { setIsAuthenticated(false); setActiveExam(null); }}
+          onClick={() => { setIsAuthenticated(false); setActiveExam(null); setActiveMedia(null); }}
           style={{ backgroundColor: '#ef4444', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '12px' }}
         >
           خروج
@@ -293,7 +301,7 @@ export default function App() {
         ].map((tab) => (
           <button
             key={tab.key}
-            onClick={() => { setCurrentSection(tab.key as Section); setActiveExam(null); }}
+            onClick={() => { setCurrentSection(tab.key as Section); setActiveExam(null); setActiveMedia(null); }}
             style={{
               padding: '8px 14px',
               borderRadius: '8px',
@@ -379,6 +387,46 @@ export default function App() {
               </button>
             )}
           </div>
+        ) : activeMedia ? (
+          <div style={{ backgroundColor: '#161e2e', padding: '25px', borderRadius: '12px', border: '1px solid #1e293b' }}>
+            <button 
+              onClick={() => setActiveMedia(null)}
+              style={{ backgroundColor: '#334155', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', marginBottom: '20px', fontSize: '12px' }}
+            >
+              ⬅ العودة لقائمة القسم
+            </button>
+
+            <h2 style={{ color: '#60a5fa', marginBottom: '10px', fontSize: '18px' }}>{activeMedia.title}</h2>
+            
+            {/* عرض الفيديو إذا كان الرابط يوتيوب */}
+            {activeMedia.description.includes('http') ? (
+              <div>
+                {activeMedia.description.includes('youtu') ? (
+                  <div style={{ position: 'relative', width: '100%', paddingBottom: '56.25%', height: 0, marginBottom: '15px' }}>
+                    <iframe 
+                      src={getEmbedUrl(activeMedia.description)} 
+                      title={activeMedia.title}
+                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', borderRadius: '8px', border: 'none' }}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                      allowFullScreen
+                    ></iframe>
+                  </div>
+                ) : null}
+                <a 
+                  href={activeMedia.description} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style={{ display: 'inline-block', padding: '10px 16px', backgroundColor: '#2563eb', color: '#fff', borderRadius: '6px', textDecoration: 'none', fontSize: '13px', fontWeight: 'bold', marginBottom: '15px' }}
+                >
+                  🔗 فتح الرابط في نافذة خارجية
+                </a>
+              </div>
+            ) : (
+              <p style={{ color: '#e2e8f0', fontSize: '14px', lineHeight: '1.6', whiteSpace: 'pre-wrap', backgroundColor: '#0b0f19', padding: '15px', borderRadius: '8px', border: '1px solid #1e293b' }}>
+                {activeMedia.description}
+              </p>
+            )}
+          </div>
         ) : currentSection === 'leaderboard' ? (
           <div>
             <h2 style={{ fontSize: '18px', marginBottom: '15px', color: '#f8fafc' }}>ترتيب الطلاب الأوائل</h2>
@@ -430,7 +478,7 @@ export default function App() {
                   <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '5px' }}>عنوان المحتوى / الامتحان:</label>
                   <input 
                     type="text" 
-                    placeholder="مثال: امتحان الفيزياء - الفصل الثاني" 
+                    placeholder="مثال: شرح درس البناء الضوئي" 
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
                     required
@@ -439,9 +487,9 @@ export default function App() {
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '5px' }}>وصف المحتوى:</label>
+                  <label style={{ display: 'block', fontSize: '12px', color: '#94a3b8', marginBottom: '5px' }}>رابط الفيديو (يوتيوب) أو تفاصيل المحتوى:</label>
                   <textarea 
-                    placeholder="تفاصيل المحتوى..." 
+                    placeholder="ضع رابط يوتيوب هنا أو التفاصيل..." 
                     value={newDesc}
                     onChange={(e) => setNewDesc(e.target.value)}
                     required
@@ -512,7 +560,9 @@ export default function App() {
                   <div key={item.id} style={{ backgroundColor: '#161e2e', border: '1px solid #1e293b', borderRadius: '10px', padding: '15px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                     <div>
                       <h3 style={{ margin: '0 0 8px 0', fontSize: '15px', color: '#60a5fa' }}>{item.title}</h3>
-                      <p style={{ color: '#94a3b8', fontSize: '12px', marginBottom: '12px', whiteSpace: 'pre-wrap' }}>{item.description}</p>
+                      <p style={{ color: '#94a3b8', fontSize: '12px', marginBottom: '12px', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                        {item.description}
+                      </p>
                     </div>
                     {item.section === 'exams' ? (
                       <button 
@@ -522,7 +572,10 @@ export default function App() {
                         ابدأ الامتحان الآن 📝
                       </button>
                     ) : (
-                      <button style={{ backgroundColor: '#2563eb', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold' }}>
+                      <button 
+                        onClick={() => setActiveMedia(item)}
+                        style={{ backgroundColor: '#2563eb', color: '#fff', border: 'none', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 'bold' }}
+                      >
                         عرض المحتوى ⬅
                       </button>
                     )}
