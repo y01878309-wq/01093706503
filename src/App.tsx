@@ -13,14 +13,13 @@ function App() {
       setUser(savedUser);
     }
 
-    // تحميل قائمة الإيميلات اللي دخلت المنصة قبل كده
+    // تحميل قائمة الإيميلات اللي دخلت المنصة
     const savedEmails = JSON.parse(localStorage.getItem('fahem_visited_emails') || '[]');
     setVisitedEmails(savedEmails);
 
     // تحديث عناوين محركات البحث (SEO) بالأسماء الثلاثة
     document.title = "منصة فاهم التعليمية | فروج | farag1.vercel.app";
     
-    // إضافة الـ Meta Tags للأسماء والكلمات المفتاحية ديناميكياً
     let metaDesc = document.querySelector("meta[name='description']");
     if (!metaDesc) {
       metaDesc = document.createElement('meta');
@@ -38,20 +37,16 @@ function App() {
       return;
     }
 
-    // حفظ المستخدم في الـ localStorage عشان ميسجلش تاني كل ما يفتح
     localStorage.setItem('fahem_user_email', email);
     setUser(email);
-
-    // رسالة ترحيبية مخصصة
     setWelcomeMessage(`أهلاً بك يا بطل في منصة فاهم التعليمية! سعيد جداً بوجودك معنا.`);
 
-    // حفظ الإيميل في قائمة الزوار لتتبع من دخل المنصة
     const updatedEmails = [...visitedEmails, { email, time: new Date().toLocaleString() }];
     setVisitedEmails(updatedEmails);
     localStorage.setItem('fahem_visited_emails', JSON.stringify(updatedEmails));
   };
 
-  // زر تسجيل الخروج لو حابب تجرب من تاني
+  // زر تسجيل الخروج للتجربة
   const handleLogout = () => {
     localStorage.removeItem('fahem_user_email');
     setUser(null);
@@ -96,19 +91,31 @@ function App() {
             <h3>{welcomeMessage || `أهلاً بك مجدداً يا قهرمان (${user})! 🚀`}</h3>
           </div>
 
-          {/* محتوى المنصة الرئيسي */}
-          <div style={{ background: 'white', padding: '20px', borderRadius: '8px', boxShadow: '0 2px 5px rgba(0,0,0,0.1)', marginBottom: '20px' }}>
-            <h2>محتوى الشرح والامتحانات</h2>
-            <p>أهلاً بك في لوحة تحكم الطالب. يمكنك متابعة الدروس والامتحانات الخاصة بك من هنا.</p>
+          {/* محتوى المنصة والشرح القديم (مدمج بالكامل مكان المربع الفاضي) */}
+          <div style={{ background: 'white', padding: '25px', borderRadius: '8px', boxShadow: '0 2px 5px rgba(0,0,0,0.1)', marginBottom: '20px' }}>
+            <h2 style={{ color: '#2c3e50', marginBottom: '15px' }}>محتوى الشرح والامتحانات</h2>
+            <p style={{ color: '#555', lineHeight: '1.6', marginBottom: '15px' }}>
+              مرحباً بك في لوحة تحكم الطالب بمنصة فاهم التعليمية (فروج). يمكنك متابعة الحصص، مراجعات المناهج، والامتحانات التدريبية من الأقسام أدناه:
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', marginTop: '15px' }}>
+              <div style={{ background: '#e8f4fd', padding: '15px', borderRadius: '6px', border: '1px solid #bbe1fa', textAlign: 'center' }}>
+                <h4>📖 الشرح والمذكرات</h4>
+                <p style={{ fontSize: '13px', color: '#666', marginTop: '5px' }}>تصفح الدروس والملخصات</p>
+              </div>
+              <div style={{ background: '#e8f8f5', padding: '15px', borderRadius: '6px', border: '1px solid #a3e4d7', textAlign: 'center' }}>
+                <h4>📝 الامتحانات والتدريبات</h4>
+                <p style={{ fontSize: '13px', color: '#666', marginTop: '5px' }}>اختبر مستواك وحل الأسئلة</p>
+              </div>
+            </div>
           </div>
 
-          {/* لوحة تحكم المدير (لعرض الإيميلات اللي دخلت المنصة) */}
-          <div style={{ background: '#fff3cd', color: '#856404', padding: '20px', borderRadius: '8px', border: '1px solid #ffeeba' }}>
+          {/* لوحة متابعة الإيميلات */}
+          <div style={{ background: '#fff3cd', color: '#856404', padding: '20px', borderRadius: '8px', border: '1px solid #ffeeba', marginBottom: '20px' }}>
             <h3>لوحة المتابعة (خاصة بك لمعرفة من دخل):</h3>
             <p>إجمالي عدد الطلاب الذين سجلوا دخولهم: <strong>{visitedEmails.length}</strong></p>
-            <ul style={{ maxHeight: '150px', overflowY: 'auto', paddingRight: '20px' }}>
+            <ul style={{ maxHeight: '150px', overflowY: 'auto', paddingRight: '20px', marginTop: '10px' }}>
               {visitedEmails.map((item, index) => (
-                <li key5={index} style={{ marginBottom: '5px' }}>
+                <li key={index} style={{ marginBottom: '5px' }}>
                   {item.email} — <span style={{ fontSize: '12px', color: '#666' }}>({item.time})</span>
                 </li>
               ))}
@@ -116,7 +123,7 @@ function App() {
           </div>
 
           {/* زر خروج للتجربة */}
-          <div style={{ textAlign: 'center', marginTop: '20px' }}>
+          <div style={{ textAlign: 'center' }}>
             <button 
               onClick={handleLogout}
               style={{ padding: '8px 15px', background: '#e74c3c', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
