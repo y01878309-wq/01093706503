@@ -298,7 +298,7 @@
   <!-- شريط العنوان العلوي -->
   <div class="top-app-bar">
     <div class="logo-title">
-      <div class="mini-logo">🛡️️</div>
+      <div class="mini-logo">🛡</div>
       <span>منصه فاهم التعليميه.farag</span>
     </div>
     <div id="top-bar-user-status" style="font-size: 11px; color: #38bdf8;">مرحباً بك</div>
@@ -341,14 +341,15 @@
 
     <!-- لوحة التحكم الكاملة للأدمن -->
     <div id="admin-panel-box">
-      <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 10px;">⚙️️ لوحة تحكم الأدمن (يوسف فرج)</div>
+      <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 10px;">⚙ لوحة تحكم الأدمن (يوسف فرج)</div>
       
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد:</div>
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد (حدد عدد الأسئلة براحتك):</div>
       <input type="text" id="new-exam-title" class="auth-input" placeholder="عنوان الامتحان..." style="background: white; color: #1e293b; margin-bottom: 6px;">
+      <input type="number" id="new-exam-count" class="auth-input" placeholder="عدد الأسئلة (مثلاً: 4 أو 200 أو أكثر...)" value="4" style="background: white; color: #1e293b; margin-bottom: 6px;">
       <button class="btn-main" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة الامتحان 📝</button>
 
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة فيديو شرح (رابط أو رفع من الهاتف):</div>
-      <input type="text" id="new-video-title" class="auth-input" placeholder="عنوان الفيديو..." style="background: white; color: #1e293b; margin-bottom: 6px;">
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة فيديو المنصة:</div>
+      <input type="text" id="new-video-title" class="auth-input" placeholder="اكتب اسم الفيديو هنا..." style="background: white; color: #1e293b; margin-bottom: 6px;">
       <input type="text" id="new-video-link" class="auth-input" placeholder="رابط يوتيوب أو تليجرام (اختياري)..." style="background: white; color: #1e293b; margin-bottom: 6px;">
       
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">أو ارفع فيديو / صورة من جهازك:</div>
@@ -455,14 +456,14 @@
       <div class="settings-group-title">تحميل التطبيق والروابط</div>
       <div class="settings-card-box">
         <div class="settings-row" onclick="downloadApp(event)"><span>📦 تحميل تطبيق المنصة (APK)</span> <span>⬇️</span></div>
-        <div class="settings-row" onclick="window.open('https://t.me', '_blank')"><span>✈️ قناة التليجرام الرسمية</span> <span>‹</span></div>
-        <div class="settings-row" onclick="window.open('https://youtube.com', '_blank')"><span>📺 قناة اليوتيوب التعليمية</span> <span>‹</span></div>
+        <div class="settings-row" onclick="window.open('https://t.me/boost/farag1farag1', '_blank')"><span>✈️ قناة التليجرام الرسمية</span> <span>‹</span></div>
+        <div class="settings-row" onclick="window.open('https://www.youtube.com/@youssef-po1xd', '_blank')"><span>📺 قناة اليوتيوب التعليمية</span> <span>‹</span></div>
       </div>
 
       <div class="settings-group-title">الإدارة والتحكم</div>
       <div class="settings-card-box">
         <div class="settings-row" onclick="resetAppData()"><span>🔄 إعادة ضبط وتصفير البيانات</span> <span>‹</span></div>
-        <div class="settings-row" onclick="alert('منصة فاهم التعليمية - إصدار الأدمن الخاص بيوسف فرج')"><span>ℹ️️ حول التطبيق</span> <span>‹</span></div>
+        <div class="settings-row" onclick="alert('منصة فاهم التعليمية - إصدار الأدمن الخاص بيوسف فرج')"><span>ℹ حول التطبيق</span> <span>‹</span></div>
       </div>
 
       <div class="settings-group-title">التفضيلات والحساب</div>
@@ -516,11 +517,11 @@
     const ADMIN_EMAIL = "y01878309@gmail.com";
 
     let examsList = JSON.parse(localStorage.getItem('fahem_exams')) || [
-      { id: 1, title: 'امتحان الفيزياء التجريبي (الباب الأول)', info: 'المدة: 15 دقيقة | متاح الآن' }
+      { id: 1, title: 'امتحان الفيزياء التجريبي (الباب الأول)', count: 4, info: 'عدد الأسئلة: 4 | متاح الآن' }
     ];
 
     let videosList = JSON.parse(localStorage.getItem('fahem_videos')) || [
-      { id: 1, title: 'محاضرة قوانين كيرشوف', link: 'https://www.youtube.com', type: 'link', info: 'شرح تفصيلي مع المسائل' }
+      { id: 1, title: 'محاضرة قوانين كيرشوف', link: 'https://www.youtube.com/@youssef-po1xd', type: 'link', info: 'شرح تفصيلي مع المسائل' }
     ];
 
     let pdfsList = JSON.parse(localStorage.getItem('fahem_pdfs')) || [
@@ -608,12 +609,15 @@
 
     function addExam() {
       const title = document.getElementById('new-exam-title').value.trim();
+      const countVal = parseInt(document.getElementById('new-exam-count').value.trim()) || 4;
       if(!title) { alert('الرجاء كتابة عنوان الامتحان'); return; }
-      examsList.push({ id: Date.now(), title: title, info: 'متاح الآن للحل' });
+      
+      examsList.push({ id: Date.now(), title: title, count: countVal, info: `عدد الأسئلة: ${countVal} | متاح الآن` });
       localStorage.setItem('fahem_exams', JSON.stringify(examsList));
       document.getElementById('new-exam-title').value = '';
+      document.getElementById('new-exam-count').value = '4';
       renderExams();
-      alert('تم إضافة الامتحان بنجاح! ✅');
+      alert('تم إضافة الامتحان بنجاح بالعدد المحدد من الأسئلة! ✅');
     }
 
     function deleteExam(id) {
@@ -638,9 +642,24 @@
       examsList.forEach(ex => {
         let isDone = finishedExams.includes(ex.id);
         let deleteBtn = isAdmin ? `<button class="btn-delete" onclick="deleteExam(${ex.id})">حذف 🗑️</button>` : '';
+        
+        // توليد عدد الأسئلة المطلوبة ديناميكياً (افتراضياً 4 خيارات لكل سؤال)
+        let sampleQuestions = [];
+        let totalQ = ex.count || 4;
+        for(let i=1; i<=totalQ; i++) {
+          sampleQuestions.push({
+            q: `السؤال رقم (${i}) في امتحان ${ex.title}:`,
+            o1: 'الخيار الأول (أ)',
+            o2: 'الخيار الثاني (ب)',
+            o3: 'الخيار الثالث (جـ)',
+            o4: 'الخيار الرابع (د)',
+            ans: 'الخيار الأول (أ)'
+          });
+        }
+
         let actionBtn = isDone ? 
           `<button class="btn-main" disabled style="background:#94a3b8;">تم الحل ✅</button>` : 
-          `<button class="btn-main" onclick="startExam(${ex.id}, '${ex.title}', [{q:'ما هي وحدة قياس التيار الكهربائي؟', o1:'أمبير', o2:'فولت', o3:'أوم', o4:'كولوم', ans:'أمبير'}])">بدء 📝</button>`;
+          `<button class="btn-main" onclick='startExam(${ex.id}, "${ex.title}", ${JSON.stringify(sampleQuestions)})'>بدء 📝</button>`;
         
         let subtitleText = isDone ? `${ex.info} - (تم اجتيازه)` : ex.info;
 
@@ -666,7 +685,7 @@
       let link = document.getElementById('new-video-link').value.trim();
       const fileInput = document.getElementById('new-media-file');
       
-      if(!title) { alert('الرجاء كتابة عنوان الفيديو'); return; }
+      if(!title) { alert('الرجاء كتابة اسم أو عنوان الفيديو'); return; }
 
       if (fileInput.files && fileInput.files[0]) {
         const file = fileInput.files[0];
@@ -686,7 +705,7 @@
           document.getElementById('new-video-link').value = '';
           fileInput.value = '';
           renderVideos();
-          alert('تم رفع الملف بنجاح! 🎥');
+          alert('تم إضافة الفيديو للمنصة بنجاح! 🎥');
         };
         reader.readAsDataURL(file);
       } else if (link) {
@@ -701,7 +720,7 @@
         document.getElementById('new-video-title').value = '';
         document.getElementById('new-video-link').value = '';
         renderVideos();
-        alert('تم إضافة الرابط بنجاح! 🔗');
+        alert('تم إضافة الفيديو للمنصة بنجاح! 🔗');
       } else {
         alert('الرجاء إدخال رابط أو اختيار ملف فيديو/صورة من جهازك.');
       }
@@ -711,7 +730,7 @@
       videosList = videosList.filter(v => v.id !== id);
       localStorage.setItem('fahem_videos', JSON.stringify(videosList));
       renderVideos();
-      alert('تم حذف العنصر بنجاح 🗑️');
+      alert('تم حذف العنصر بنجاح 🗑️️');
     }
 
     function renderVideos() {
@@ -733,7 +752,7 @@
         } else if (vid.type === 'image') {
           mediaHtml = `<div class="media-preview-container"><img src="${vid.content}" alt="مرفق"></div>`;
         } else {
-          mediaHtml = `<div style="margin-top: 8px;"><a class="btn-main" href="${vid.content}" target="_blank">فتح الرابط 📺</a></div>`;
+          mediaHtml = `<div style="margin-top: 8px;"><a class="btn-main" href="${vid.content}" target="_blank">مشاهدة الفيديو 📺</a></div>`;
         }
 
         container.innerHTML += `
@@ -864,7 +883,6 @@
       let finishedExams = JSON.parse(localStorage.getItem('finished_exams_' + currentEmail)) || [];
       if(!finishedExams.includes(currentExamId)) {
         finishedExams.push(currentExamId);
-        localStorage.getItem('finished_exams_' + currentEmail, JSON.stringify(finishedExams));
         localStorage.setItem('finished_exams_' + currentEmail, JSON.stringify(finishedExams));
       }
 
