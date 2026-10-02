@@ -343,10 +343,14 @@
     <div id="admin-panel-box">
       <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 10px;">⚙ لوحة تحكم الأدمن (يوسف فرج)</div>
       
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد (حدد عدد الأسئلة براحتك):</div>
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد:</div>
       <input type="text" id="new-exam-title" class="auth-input" placeholder="عنوان الامتحان..." style="background: white; color: #1e293b; margin-bottom: 6px;">
-      <input type="number" id="new-exam-count" class="auth-input" placeholder="عدد الأسئلة (مثلاً: 4 أو 200 أو أكثر...)" value="4" style="background: white; color: #1e293b; margin-bottom: 6px;">
-      <button class="btn-main" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة الامتحان 📝</button>
+      <input type="number" id="new-exam-count" class="auth-input" placeholder="عدد الأسئلة (مثلاً: 1، 4، 10...)" value="1" oninput="generateQuestionFields()" style="background: white; color: #1e293b; margin-bottom: 6px;">
+      
+      <!-- منطقة توليد حقول الأسئلة والاختيارات والإجابة الصحيحة -->
+      <div id="dynamic-questions-builder" style="margin-bottom: 10px;"></div>
+
+      <button class="btn-main" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة الامتحان وتخزينه 📝</button>
 
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة فيديو المنصة:</div>
       <input type="text" id="new-video-title" class="auth-input" placeholder="اكتب اسم الفيديو هنا..." style="background: white; color: #1e293b; margin-bottom: 6px;">
@@ -517,7 +521,9 @@
     const ADMIN_EMAIL = "y01878309@gmail.com";
 
     let examsList = JSON.parse(localStorage.getItem('fahem_exams')) || [
-      { id: 1, title: 'امتحان الفيزياء التجريبي (الباب الأول)', count: 4, info: 'عدد الأسئلة: 4 | متاح الآن' }
+      { id: 1, title: 'امتحان الفيزياء التجريبي (الباب الأول)', questions: [
+        { q: 'ما وحدة قياس شدة التيار الكهربي؟', o1: 'الأمبير', o2: 'الفولت', o3: 'الأوم', o4: 'الوات', ans: 'الأمبير' }
+      ], info: 'عدد الأسئلة: 1 | متاح الآن' }
     ];
 
     let videosList = JSON.parse(localStorage.getItem('fahem_videos')) || [
@@ -535,6 +541,7 @@
       if (savedEmail) {
         setupSession(savedEmail);
       }
+      generateQuestionFields();
       renderExams();
       renderVideos();
       renderPdfs();
@@ -566,7 +573,7 @@
         alert('الرمز السري غير صحيح!');
         return;
       }
-      let email = localStorage.getItem('fahem_email') || "student@fahem.com";
+      let email = localStorage.getItem('fahem_email'] || "student@fahem.com";
       localStorage.setItem('fahem_email', email);
       setupSession(email);
     }
@@ -607,17 +614,64 @@
       alert('تم بدء تحميل تطبيق المنصة (APK) بنجاح على هاتفك! 📦');
     }
 
+    // توليد حقول الأسئلة والاختيارات والإجابة الصحيحة ديناميكياً
+    function generateQuestionFields() {
+      const countVal = parseInt(document.getElementById('new-exam-count').value) || 1;
+      const container = document.getElementById('dynamic-questions-builder');
+      container.innerHTML = '';
+
+      for(let i=1; i<=countVal; i++) {
+        container.innerHTML += `
+          <div style="background: #ffffff; padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #cbd5e1;">
+            <div style="font-size: 11px; font-weight: bold; color: #0284c7; margin-bottom: 4px;">السؤال رقم (${i})</div>
+            <input type="text" id="q_text_${i}" class="auth-input" placeholder="اكتب اسم أو نص السؤال هنا..." style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
+            <input type="text" id="q_opt1_${i}" class="auth-input" placeholder="الاختيار الأول (أ)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
+            <input type="text" id="q_opt2_${i}" class="auth-input" placeholder="الاختيار الثاني (ب)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
+            <input type="text" id="q_opt3_${i}" class="auth-input" placeholder="الاختيار الثالث (جـ)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
+            <input type="text" id="q_opt4_${i}" class="auth-input" placeholder="الاختيار الرابع (د)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
+            <input type="text" id="q_ans_${i}" class="auth-input" placeholder="اكتب الإجابة الصحيحة هنا بالضبط..." style="background: #f0fdf4; border-color: #86efac; color: #166534; margin-bottom: 0;">
+          </div>
+        `;
+      }
+    }
+
     function addExam() {
       const title = document.getElementById('new-exam-title').value.trim();
-      const countVal = parseInt(document.getElementById('new-exam-count').value.trim()) || 4;
+      const countVal = parseInt(document.getElementById('new-exam-count').value.trim()) || 1;
       if(!title) { alert('الرجاء كتابة عنوان الامتحان'); return; }
       
-      examsList.push({ id: Date.now(), title: title, count: countVal, info: `عدد الأسئلة: ${countVal} | متاح الآن` });
+      let questionsArr = [];
+      for(let i=1; i<=countVal; i++) {
+        let qText = document.getElementById(`q_text_${i}`).value.trim();
+        let o1 = document.getElementById(`q_opt1_${i}`).value.trim();
+        let o2 = document.getElementById(`q_opt2_${i}`).value.trim();
+        let o3 = document.getElementById(`q_opt3_${i}`).value.trim();
+        let o4 = document.getElementById(`q_opt4_${i}`).value.trim();
+        let ans = document.getElementById(`q_ans_${i}`).value.trim();
+
+        if(!qText) qText = `السؤال (${i})`;
+        if(!o1) o1 = 'الخيار الأول';
+        if(!o2) o2 = 'الخيار الثاني';
+        if(!o3) o3 = 'الخيار الثالث';
+        if(!o4) o4 = 'الخيار الرابع';
+        if(!ans) ans = o1;
+
+        questionsArr.push({ q: qText, o1: o1, o2: o2, o3: o3, o4: o4, ans: ans });
+      }
+
+      examsList.push({ 
+        id: Date.now(), 
+        title: title, 
+        questions: questionsArr, 
+        info: `عدد الأسئلة: ${countVal} | متاح الآن` 
+      });
+
       localStorage.setItem('fahem_exams', JSON.stringify(examsList));
       document.getElementById('new-exam-title').value = '';
-      document.getElementById('new-exam-count').value = '4';
+      document.getElementById('new-exam-count').value = '1';
+      generateQuestionFields();
       renderExams();
-      alert('تم إضافة الامتحان بنجاح بالعدد المحدد من الأسئلة! ✅');
+      alert('تم إضافة الامتحان بالأسئلة والاختيارات والإجابات بنجاح! ✅');
     }
 
     function deleteExam(id) {
@@ -642,24 +696,11 @@
       examsList.forEach(ex => {
         let isDone = finishedExams.includes(ex.id);
         let deleteBtn = isAdmin ? `<button class="btn-delete" onclick="deleteExam(${ex.id})">حذف 🗑️</button>` : '';
-        
-        // توليد عدد الأسئلة المطلوبة ديناميكياً (افتراضياً 4 خيارات لكل سؤال)
-        let sampleQuestions = [];
-        let totalQ = ex.count || 4;
-        for(let i=1; i<=totalQ; i++) {
-          sampleQuestions.push({
-            q: `السؤال رقم (${i}) في امتحان ${ex.title}:`,
-            o1: 'الخيار الأول (أ)',
-            o2: 'الخيار الثاني (ب)',
-            o3: 'الخيار الثالث (جـ)',
-            o4: 'الخيار الرابع (د)',
-            ans: 'الخيار الأول (أ)'
-          });
-        }
+        let qData = ex.questions || [];
 
         let actionBtn = isDone ? 
           `<button class="btn-main" disabled style="background:#94a3b8;">تم الحل ✅</button>` : 
-          `<button class="btn-main" onclick='startExam(${ex.id}, "${ex.title}", ${JSON.stringify(sampleQuestions)})'>بدء 📝</button>`;
+          `<button class="btn-main" onclick='startExam(${ex.id}, "${ex.title}", ${JSON.stringify(qData)})'>بدء 📝</button>`;
         
         let subtitleText = isDone ? `${ex.info} - (تم اجتيازه)` : ex.info;
 
@@ -730,7 +771,7 @@
       videosList = videosList.filter(v => v.id !== id);
       localStorage.setItem('fahem_videos', JSON.stringify(videosList));
       renderVideos();
-      alert('تم حذف العنصر بنجاح 🗑️️');
+      alert('تم حذف العنصر بنجاح 🗑');
     }
 
     function renderVideos() {
@@ -861,7 +902,7 @@
             <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o1}"> ${q.o1}</label>
             <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o2}"> ${q.o2}</label>
             <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o3}"> ${q.o3}</label>
-            <label style="display:block; font-size:12px;"><input type="radio" name="q_${i}" value="${q.o4}"> ${q.o4}</label>
+            <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o4}"> ${q.o4}</label>
           </div>
         `;
       });
@@ -876,7 +917,7 @@
       let score = 0;
       activeQuestions.forEach((q, i) => {
         let sel = document.querySelector(`input[name="q_${i}"]:checked`);
-        if(sel && sel.value === q.ans) score++;
+        if(sel && sel.value.trim() === q.ans.trim()) score++;
       });
 
       const currentEmail = localStorage.getItem('fahem_email') || 'guest';
