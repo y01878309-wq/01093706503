@@ -11,17 +11,93 @@
       color: #ffffff;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       padding: 15px;
+    }
+    
+    /* شاشة تسجيل الدخول */
+    .login-container {
+      background: rgba(17, 24, 39, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 30px 20px;
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+    }
+    .login-container h1 {
+      font-size: 22px;
+      color: #38bdf8;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    .subtitle {
+      color: #94a3b8;
+      font-size: 13px;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+    .input-box {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(15, 23, 42, 0.9);
+      color: white;
+      font-size: 14px;
+      margin-bottom: 15px;
+      text-align: right;
+    }
+    .input-box::placeholder { color: #64748b; }
+    .input-box:focus { outline: none; border-color: #38bdf8; }
+    
+    .action-btn {
+      background: #0284c7;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 12px;
+      transition: background 0.3s;
+    }
+    .action-btn:hover { background: #0369a1; }
+    
+    .whatsapp-btn {
+      background: #22c55e;
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 14px;
+      text-decoration: none;
+      display: block;
+      width: 100%;
+    }
+
+    /* لوحة التحكم (مخفية حتى يتم تسجيل الدخول) */
+    #dashboard-view {
+      display: none;
+      width: 100%;
+      max-width: 450px;
     }
     .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
+      width: 100%;
     }
     .admin-title {
       color: #38bdf8;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
     }
     .logout-btn {
@@ -34,12 +110,14 @@
       font-weight: bold;
       cursor: pointer;
     }
+    
+    /* شريط الأزرار تماماً مثل الصورة الأصلية */
     .nav-grid {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
       justify-content: center;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
     .nav-btn {
       background: #1e293b;
@@ -52,13 +130,39 @@
       display: flex;
       align-items: center;
       gap: 5px;
-      transition: all 0.2s;
     }
     .nav-btn.active {
       background: #0284c7;
       color: white;
       border-color: #38bdf8;
     }
+
+    /* زرار الإعدادات والتنزيل الإضافي */
+    .download-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .settings-download-btn {
+      flex: 1;
+      background: #334155;
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .settings-download-btn:hover {
+      background: #475569;
+    }
+
     .section-title {
       text-align: center;
       font-size: 16px;
@@ -76,20 +180,9 @@
       justify-content: space-between;
       align-items: center;
     }
-    .student-info {
-      text-align: right;
-    }
-    .student-id {
-      color: #38bdf8;
-      font-size: 14px;
-      font-weight: bold;
-      direction: ltr;
-    }
-    .exam-name {
-      color: #94a3b8;
-      font-size: 12px;
-      margin-top: 3px;
-    }
+    .student-info { text-align: right; }
+    .student-id { color: #38bdf8; font-size: 14px; font-weight: bold; direction: ltr; }
+    .exam-name { color: #94a3b8; font-size: 12px; margin-top: 3px; }
     .score-badge {
       background: #1e293b;
       color: #38bdf8;
@@ -103,45 +196,104 @@
 </head>
 <body>
 
-  <div class="top-bar">
-    <button class="logout-btn" onclick="alert('تم تسجيل الخروج')">خروج</button>
-    <div class="admin-title">لوحة تحكم الأدمن (يوسف فرج)</div>
+  <!-- شاشة تسجيل الدخول -->
+  <div class="login-container" id="login-section">
+    <h1>منصة فاهم التعليمية</h1>
+    <div class="subtitle">سجل بريدك، كلمة المرور، ورمز المنصة (78).</div>
+    
+    <form onsubmit="handleLogin(event)">
+      <input type="email" id="email" class="input-box" placeholder="البريد الإلكتروني (Gmail)" required>
+      <input type="password" id="password" class="input-box" placeholder="كلمة المرور" required>
+      <input type="text" id="passcode" class="input-box" placeholder="رمز المنصة (78)" required>
+      
+      <button type="submit" class="action-btn">تسجيل الدخول 🚀</button>
+    </form>
+
+    <a href="https://wa.me/201093706503?text=مرحباً%20يوسف،%20أريد%20رمز%20منصة%20فاهم" target="_blank" class="whatsapp-btn">
+      💬 تواصل مع المسؤول (واتساب)
+    </a>
   </div>
 
-  <div class="nav-grid">
-    <button class="nav-btn">🎥 الفيديوهات</button>
-    <button class="nav-btn">📝 الامتحانات</button>
-    <button class="nav-btn">💡 الحل</button>
-    <button class="nav-btn active">🏆 التقييم والترتيب</button>
-    <button class="nav-btn">📁 ملفات PDF</button>
-    <button class="nav-btn">⚙️️ لوحة التحكم والإضافة</button>
-  </div>
+  <!-- لوحة التحكم الأصلية (تظهر بعد تسجيل الدخول) -->
+  <div id="dashboard-view">
+    <div class="top-bar">
+      <button class="logout-btn" onclick="logout()">خروج</button>
+      <div class="admin-title">لوحة تحكم الأدمن (يوسف فرج)</div>[span_0](start_span)[span_0](end_span)
+    </div>
 
-  <div class="section-title">ترتيب الطلاب الأوائل</div>
+    <div class="nav-grid">
+      <button class="nav-btn">🎥 الفيديوهات</button>
+      <button class="nav-btn">📝 الامتحانات</button>
+      <button class="nav-btn">💡 الحل</button>
+      <button class="nav-btn active">🏆 التقييم والترتيب</button>
+      <button class="nav-btn">📁 ملفات PDF</button>
+      <button class="nav-btn">⚙ لوحة التحكم والإضافة</button>
+    </div>
 
-  <div class="student-card">
-    <div class="score-badge">2 / 0</div>
-    <div class="student-info">
-      <div class="student-id">#1y01878309</div>
-      <div class="exam-name">امتحان الفيزياء التجريبي - الفصل الأول</div>
+    <!-- زرار الإعدادات والتنزيل اللي طلبته -->
+    <div class="download-bar">
+      <button class="settings-download-btn" onclick="downloadPlatformCode()">📥 تنزيل ملفات المنصة</button>
+      <button class="settings-download-btn" onclick="alert('لوحة الإعدادات وجاهزة للتحكم الكامل')">⚙ إعدادات الأدمن</button>
+    </div>
+
+    <div class="section-title">ترتيب الطلاب الأوائل</div>[span_1](start_span)[span_1](end_span)
+
+    <div class="student-card">
+      <div class="score-badge">2 / 0</div>
+      <div class="student-info">
+        <div class="student-id">#1y01878309</div>[span_2](start_span)[span_2](end_span)
+        <div class="exam-name">امتحان الفيزياء التجريبي - الفصل الأول</div>[span_3](start_span)[span_3](end_span)
+      </div>
+    </div>
+
+    <div class="student-card">
+      <div class="score-badge">2 / 2</div>
+      <div class="student-info">
+        <div class="student-id">#2y01878309</div>[span_4](start_span)[span_4](end_span)
+        <div class="exam-name">امتحان الفيزياء التجريبي - الفصل الأول</div>[span_5](start_span)[span_5](end_span)
+      </div>
+    </div>
+
+    <div class="student-card">
+      <div class="score-badge">2 / 1</div>
+      <div class="student-info">
+        <div class="student-id">#3y01878309</div>[span_6](start_span)[span_6](end_span)
+        <div class="exam-name">امتحان الفيزياء التجريبي - الفصل الأول</div>[span_7](start_span)[span_7](end_span)
+      </div>
     </div>
   </div>
 
-  <div class="student-card">
-    <div class="score-badge">2 / 2</div>
-    <div class="student-info">
-      <div class="student-id">#2y01878309</div>
-      <div class="exam-name">امتحان الفيزياء التجريبي - الفصل الأول</div>
-    </div>
-  </div>
+  <script>
+    function handleLogin(event) {
+      event.preventDefault();
+      const code = document.getElementById('passcode').value.trim();
+      
+      if (code === '78') {
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('dashboard-view').style.display = 'block';
+      } else {
+        alert('رمز المنصة غير صحيح! أدخل الرمز (78).');
+      }
+    }
 
-  <div class="student-card">
-    <div class="score-badge">2 / 1</div>
-    <div class="student-info">
-      <div class="student-id">#3y01878309</div>
-      <div class="exam-name">امتحان الفيزياء التجريبي - الفصل الأول</div>
-    </div>
-  </div>
+    function logout() {
+      document.getElementById('dashboard-view').style.display = 'none';
+      document.getElementById('login-section').style.display = 'block';
+      document.getElementById('passcode').value = '';
+      document.getElementById('password').value = '';
+    }
+
+    function downloadPlatformCode() {
+      const htmlContent = document.documentElement.outerHTML;
+      const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'fahim_platform_farag.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  </script>
 
 </body>
 </html>
