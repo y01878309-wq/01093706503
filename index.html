@@ -79,6 +79,8 @@
       box-shadow: 0 6px 20px rgba(2, 132, 199, 0.4);
       margin-bottom: 15px;
       transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
     }
     .action-btn:hover { transform: translateY(-2px); }
 
@@ -91,7 +93,6 @@
     }
     .support-link:hover { text-decoration: underline; }
 
-    /* محتوى المنصة المخفي لحين إدخال الكود 78 */
     #platform-content {
       display: none;
       margin-top: 20px;
@@ -103,7 +104,7 @@
 <body>
 
   <div class="ticker-bar">
-    🚨 أخلِ مسؤوليتك: أدخل كود المنصة للمتابعة!
+    🚨 تنبيه هام: أدخل كود المنصة للمتابعة!
   </div>
 
   <div class="container">
@@ -111,9 +112,8 @@
     <h1>منصة فاهم التعليمية</h1>
     <p>أدخل رمز المرور الخاص للوصول إلى محتوى المنصة</p>
     
-    <!-- حقل ادخال الكود -->
     <div id="auth-section">
-      <input type="password" id="passcode" class="input-box" placeholder="أدخل الكود هنا (مثال: 78)">
+      <input type="password" id="passcode" class="input-box" placeholder="أدخل الكود هنا (78)">
       <button onclick="checkCode()" class="action-btn">دخول للمنصة</button>
       <div>
         <a href="https://wa.me/201093706503?text=مرحباً، أريـد%20الحصول%20على%20رمز%20منصة%20فاهم" target="_blank" class="support-link">
@@ -122,12 +122,11 @@
       </div>
     </div>
 
-    <!-- محتوى المنصة بعد الدخول بالكود الصحيح -->
     <div id="platform-content">
-      <h2 style="color: #38bdf8; margin-bottom: 15px; font-size: 20px;">🎉 أهلاً بك يا بطل في المنصة</h2>
-      <p>تم تفعيل الحساب بنجاح، يمكنك الآن استعراض المحتوى والدروس بكل فاعلية.</p>
+      <h2 style="color: #38bdf8; margin-bottom: 15px; font-size: 20px;">🎉 أهلاً بك يا بطل</h2>
+      <p>تم التحقق بنجاح، يمكنك الآن تحميل الملفات مباشرة.</p>
       <a href="https://drive.google.com/file/d/1BQLReYa_kd0B29EvyBIyHX5xaeLJlLq9/view?usp=drivesdk" target="_blank" class="action-btn" style="background: linear-gradient(135deg, #16a34a, #15803d);">
-        📥 تحميل ملفات المادة الدراسية
+        📥 تحميل الملفات (APK)
       </a>
     </div>
   </div>
@@ -139,7 +138,7 @@
         document.getElementById('auth-section').style.display = 'none';
         document.getElementById('platform-content').style.display = 'block';
       } else {
-        alert('الكود غير صحيح يا بطل، تواصل عبر الواتساب للحصول على الكود (78)');
+        alert('الكود غير صحيح، تواصل عبر الواتساب للحصول على الكود الصحيح.');
       }
     }
   </script>
