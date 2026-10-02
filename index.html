@@ -69,6 +69,8 @@
       width: 100%;
       margin-bottom: 12px;
       transition: background 0.3s;
+      text-decoration: none;
+      display: block;
     }
     .action-btn:hover {
       background: #0369a1;
@@ -88,25 +90,48 @@
     .whatsapp-btn:hover {
       background: #16a34a;
     }
+    /* واجهة المنصة الداخلية (تكون مخفية حتى يتم الدخول بنجاح) */
+    #platform-content {
+      display: none;
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <h1>منصة فاهم التعليمية</h1>
-    <div class="subtitle">سجل بريدك الإلكتروني، كلمة المرور، ورمز المنصة (78).</div>
     
-    <form onsubmit="handleLogin(event)">
-      <input type="email" id="email" class="input-box" placeholder="بريدك الإلكتروني (Gmail)" required>
-      <input type="password" id="password" class="input-box" placeholder="كلمة السر الخاصة بك" required>
-      <input type="text" id="passcode" class="input-box" placeholder="رمز المنصة (78)" required>
+    <!-- قسم تسجيل الدخول الأساسي -->
+    <div id="login-section">
+      <h1>منصة فاهم التعليمية</h1>
+      <div class="subtitle">سجل بريدك الإلكتروني، كلمة المرور، ورمز المنصة (78).</div>
       
-      <button type="submit" class="action-btn">تسجيل الدخول / إنشاء حساب 🚀</button>
-    </form>
+      <form onsubmit="handleLogin(event)">
+        <input type="email" id="email" class="input-box" placeholder="بريدك الإلكتروني (Gmail)" required>
+        <input type="password" id="password" class="input-box" placeholder="كلمة السر الخاصة بك" required>
+        <input type="text" id="passcode" class="input-box" placeholder="رمز المنصة (78)" required>
+        
+        <button type="submit" class="action-btn">تسجيل الدخول / إنشاء حساب 🚀</button>
+      </form>
 
-    <a href="https://wa.me/201093706503?text=مرحباً، أريـد%20الحصول%20على%20رمز%20منصة%20فاهم" target="_blank" class="whatsapp-btn">
-      💬 تواصل مع المسؤول عبر واتساب (01093706503)
-    </a>
+      <a href="https://wa.me/201093706503?text=مرحباً، أريـد%20الحصول%20على%20رمز%20منصة%20فاهم" target="_blank" class="whatsapp-btn">
+        💬 تواصل مع المسؤول عبر واتساب (01093706503)
+      </a>
+    </div>
+
+    <!-- قسم المنصة الداخلية (يظهر بعد إدخال الكود 78 بنجاح) -->
+    <div id="platform-content">
+      <h1>🎉 أهلاً بك يا بطل</h1>
+      <div class="subtitle">تم تسجيل الدخول بنجاح إلى منصة فاهم التعليمية. يمكنك الآن استعراض وتحميل المحتوى الخاص بك.</div>
+      
+      <a href="https://drive.google.com/file/d/1BQLReYa_kd0B29EvyBIyHX5xaeLJlLq9/view?usp=drivesdk" target="_blank" class="action-btn" style="background: #16a34a;">
+        📥 تحميل ملفات المنصة / التطبيق
+      </a>
+
+      <button onclick="logout()" class="action-btn" style="background: #64748b; margin-top: 10px;">
+        تسجيل الخروج 🔄
+      </button>
+    </div>
+
   </div>
 
   <script>
@@ -115,11 +140,19 @@
       const passcode = document.getElementById('passcode').value.trim();
       
       if (passcode === '78') {
-        alert('أهلاً بك يا بطل! تم تسجيل الدخول بنجاح.');
-        // تقدر تضيف هنا توجيه أو فتح المحتوى لو حابب
+        // إخفاء نموذج الدخول وإظهار محتوى المنصة
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('platform-content').style.display = 'block';
       } else {
-        alert('رمز المنصة غير صحيح! تأكد من إدخال الرمز (78) أو تواصل عبر الواتساب.');
+        alert('رمز المنصة غير صحيح! تأكد من إدخال الرمز (78).');
       }
+    }
+
+    function logout() {
+      // العودة لصفحة تسجيل الدخول
+      document.getElementById('platform-content').style.display = 'none';
+      document.getElementById('login-section').style.display = 'block';
+      document.getElementById('passcode').value = '';
     }
   </script>
 
