@@ -1,179 +1,32 @@
-د<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>منصه فاهم التعليميه.farag</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background-color: #0b0f19;
-      color: #ffffff;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 15px;
-    }
-    .container {
-      background: rgba(17, 24, 39, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 20px;
-      padding: 30px 20px;
-      text-align: center;
-      max-width: 400px;
-      width: 100%;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-    }
-    h1 {
-      font-size: 22px;
-      color: #38bdf8;
-      margin-bottom: 10px;
-      font-weight: 700;
-    }
-    .subtitle {
-      color: #94a3b8;
-      font-size: 13px;
-      margin-bottom: 25px;
-      line-height: 1.5;
-    }
-    .input-box {
-      width: 100%;
-      padding: 12px 15px;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(15, 23, 42, 0.9);
-      color: white;
-      font-size: 14px;
-      margin-bottom: 15px;
-      text-align: right;
-    }
-    .input-box::placeholder {
-      color: #64748b;
-    }
-    .input-box:focus {
-      outline: none;
-      border-color: #38bdf8;
-    }
-    .action-btn {
-      background: #0284c7;
-      color: white;
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      font-weight: bold;
-      font-size: 15px;
-      cursor: pointer;
-      width: 100%;
-      margin-bottom: 12px;
-      transition: background 0.3s;
-    }
-    .action-btn:hover {
-      background: #0369a1;
-    }
-    .whatsapp-btn {
-      background: #22c55e;
-      color: white;
-      padding: 12px;
-      border-radius: 10px;
-      font-weight: bold;
-      font-size: 14px;
-      text-decoration: none;
-      display: block;
-      width: 100%;
-      transition: background 0.3s;
-    }
-    .whatsapp-btn:hover {
-      background: #16a34a;
-    }
-    
-    /* تصميم محتوى المنصة من جوه (مخفي لحد ما يتم الدخول بالكود 78) */
-    #platform-view {
-      display: none;
-    }
-    .platform-card {
-      background: rgba(2, 132, 199, 0.1);
-      border: 1px solid #0284c7;
-      border-radius: 12px;
-      padding: 20px;
-      margin-top: 15px;
-      text-align: right;
-    }
-    .platform-card h3 {
-      color: #38bdf8;
-      font-size: 18px;
-      margin-bottom: 8px;
-    }
-    .platform-card p {
-      color: #cbd5e1;
-      font-size: 13px;
-      line-height: 1.6;
-    }
-  </style>
+  <title>منصة فاهم التعليمية</title>
+  <style>body{background:#0b0f19;color:#fff;font-family:sans-serif;text-align:center;padding:50px;}input,button{display:block;width:100%;max-width:300px;margin:10px auto;padding:10px;background:#111827;color:#fff;border:1px solid #374151;border-radius:5px;}button{background:#0284c7;border:none;font-weight:bold;cursor:pointer;}</style>
 </head>
 <body>
-
-  <div class="container">
-    
-    <!-- واجهة تسجيل الدخول الأصلية -->
-    <div id="login-section">
-      <h1>منصة فاهم التعليمية</h1>
-      <div class="subtitle">سجل بريدك الإلكتروني، كلمة المرور، ورمز المنصة (78).</div>
-      
-      <form onsubmit="handleLogin(event)">
-        <input type="email" id="email" class="input-box" placeholder="بريدك الإلكتروني (Gmail)" required>
-        <input type="password" id="password" class="input-box" placeholder="كلمة السر الخاصة بك" required>
-        <input type="text" id="passcode" class="input-box" placeholder="رمز المنصة (78)" required>
-        
-        <button type="submit" class="action-btn">تسجيل الدخول / إنشاء حساب 🚀</button>
-      </form>
-
-      <a href="https://wa.me/201093706503?text=مرحباً، أريـد%20الحصول%20على%20رمز%20منصة%20فاهم" target="_blank" class="whatsapp-btn">
-        💬 تواصل مع المسؤول عبر واتساب (01093706503)
-      </a>
-    </div>
-
-    <!-- واجهة المنصة الداخلية (تفتح من جوه فوراً بعد كتابة الكود 78) -->
-    <div id="platform-view">
-      <h1>🎓 منصة فاهم التعليمية</h1>
-      <div class="subtitle" style="color: #22c55e; margin-bottom: 15px;">تم تسجيل الدخول بنجاح - أهلاً بك يا بطل!</div>
-      
-      <div class="platform-card">
-        <h3>📚 المحتوى التعليمي المتاح</h3>
-        <p>• تم تفعيل حسابك وصلاحيات الدخول للمنصة بالكامل.<br>• يمكنك الآن متابعة الشروحات والدروس مباشرة من هنا.</p>
-      </div>
-
-      <button onclick="logout()" class="action-btn" style="background: #ef4444; margin-top: 20px;">
-        تسجيل الخروج 🚪
-      </button>
-    </div>
-
+  <div id="login">
+    <h2>منصة فاهم التعليمية</h2>
+    <input type="email" id="e" placeholder="بريدك الإلكتروني (Gmail)">
+    <input type="password" id="p" placeholder="كلمة السر الخاصة بك">
+    <input type="text" id="c" placeholder="رمز المنصة (78)">
+    <button onclick="check()">تسجيل الدخول / إنشاء حساب 🚀</button>
   </div>
-
+  <div id="app" style="display:none;">
+    <h2>🎓 أهلاً بك داخل المنصة</h2>
+    <p>فيديوهات ومحتوى المنصة شغالين هنا يا بطل!</p>
+    <!-- هنا الفيديوهات بتاعتك -->
+  </div>
   <script>
-    function handleLogin(event) {
-      event.preventDefault();
-      const passcode = document.getElementById('passcode').value.trim();
-      
-      if (passcode === '78') {
-        // إخفاء شاشة تسجيل الدخول وإظهار المنصة من جوه
-        document.getElementById('login-section').style.display = 'none';
-        document.getElementById('platform-view').style.display = 'block';
-      } else {
-        alert('رمز المنصة غير صحيح! تأكد من إدخال الرمز (78) أو تواصل عبر الواتساب.');
+    function check(){
+      if(document.getElementById('c').value.trim() === '78'){
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+      }else{
+        alert('الكود خطأ، اكتب 78');
       }
     }
-
-    function logout() {
-      // الرجوع لشاشة تسجيل الدخول وتفريغ الخانات
-      document.getElementById('platform-view').style.display = 'none';
-      document.getElementById('login-section').style.display = 'block';
-      document.getElementById('passcode').value = '';
-      document.getElementById('password').value = '';
-    }
   </script>
-
 </body>
 </html>
