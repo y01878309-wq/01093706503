@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+د<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -69,8 +69,6 @@
       width: 100%;
       margin-bottom: 12px;
       transition: background 0.3s;
-      text-decoration: none;
-      display: block;
     }
     .action-btn:hover {
       background: #0369a1;
@@ -90,9 +88,28 @@
     .whatsapp-btn:hover {
       background: #16a34a;
     }
-    /* واجهة المنصة الداخلية (تكون مخفية حتى يتم الدخول بنجاح) */
-    #platform-content {
+    
+    /* تصميم محتوى المنصة من جوه (مخفي لحد ما يتم الدخول بالكود 78) */
+    #platform-view {
       display: none;
+    }
+    .platform-card {
+      background: rgba(2, 132, 199, 0.1);
+      border: 1px solid #0284c7;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 15px;
+      text-align: right;
+    }
+    .platform-card h3 {
+      color: #38bdf8;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .platform-card p {
+      color: #cbd5e1;
+      font-size: 13px;
+      line-height: 1.6;
     }
   </style>
 </head>
@@ -100,7 +117,7 @@
 
   <div class="container">
     
-    <!-- قسم تسجيل الدخول الأساسي -->
+    <!-- واجهة تسجيل الدخول الأصلية -->
     <div id="login-section">
       <h1>منصة فاهم التعليمية</h1>
       <div class="subtitle">سجل بريدك الإلكتروني، كلمة المرور، ورمز المنصة (78).</div>
@@ -118,17 +135,18 @@
       </a>
     </div>
 
-    <!-- قسم المنصة الداخلية (يظهر بعد إدخال الكود 78 بنجاح) -->
-    <div id="platform-content">
-      <h1>🎉 أهلاً بك يا بطل</h1>
-      <div class="subtitle">تم تسجيل الدخول بنجاح إلى منصة فاهم التعليمية. يمكنك الآن استعراض وتحميل المحتوى الخاص بك.</div>
+    <!-- واجهة المنصة الداخلية (تفتح من جوه فوراً بعد كتابة الكود 78) -->
+    <div id="platform-view">
+      <h1>🎓 منصة فاهم التعليمية</h1>
+      <div class="subtitle" style="color: #22c55e; margin-bottom: 15px;">تم تسجيل الدخول بنجاح - أهلاً بك يا بطل!</div>
       
-      <a href="https://drive.google.com/file/d/1BQLReYa_kd0B29EvyBIyHX5xaeLJlLq9/view?usp=drivesdk" target="_blank" class="action-btn" style="background: #16a34a;">
-        📥 تحميل ملفات المنصة / التطبيق
-      </a>
+      <div class="platform-card">
+        <h3>📚 المحتوى التعليمي المتاح</h3>
+        <p>• تم تفعيل حسابك وصلاحيات الدخول للمنصة بالكامل.<br>• يمكنك الآن متابعة الشروحات والدروس مباشرة من هنا.</p>
+      </div>
 
-      <button onclick="logout()" class="action-btn" style="background: #64748b; margin-top: 10px;">
-        تسجيل الخروج 🔄
+      <button onclick="logout()" class="action-btn" style="background: #ef4444; margin-top: 20px;">
+        تسجيل الخروج 🚪
       </button>
     </div>
 
@@ -140,19 +158,20 @@
       const passcode = document.getElementById('passcode').value.trim();
       
       if (passcode === '78') {
-        // إخفاء نموذج الدخول وإظهار محتوى المنصة
+        // إخفاء شاشة تسجيل الدخول وإظهار المنصة من جوه
         document.getElementById('login-section').style.display = 'none';
-        document.getElementById('platform-content').style.display = 'block';
+        document.getElementById('platform-view').style.display = 'block';
       } else {
-        alert('رمز المنصة غير صحيح! تأكد من إدخال الرمز (78).');
+        alert('رمز المنصة غير صحيح! تأكد من إدخال الرمز (78) أو تواصل عبر الواتساب.');
       }
     }
 
     function logout() {
-      // العودة لصفحة تسجيل الدخول
-      document.getElementById('platform-content').style.display = 'none';
+      // الرجوع لشاشة تسجيل الدخول وتفريغ الخانات
+      document.getElementById('platform-view').style.display = 'none';
       document.getElementById('login-section').style.display = 'block';
       document.getElementById('passcode').value = '';
+      document.getElementById('password').value = '';
     }
   </script>
 
