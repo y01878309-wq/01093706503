@@ -201,19 +201,35 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.03);
       border: 1px solid #f1f5f9;
       display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .card-row {
+      display: flex;
       justify-content: space-between;
       align-items: center;
+      width: 100%;
     }
     .card-info { text-align: right; flex: 1; }
     .card-title { font-size: 14px; font-weight: bold; color: #0f172a; }
     .card-subtitle { font-size: 12px; color: #64748b; margin-top: 3px; }
     .btn-main {
       background: #0284c7; color: white; border: none; padding: 8px 14px;
-      border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block;
+      border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; text-align: center;
     }
+    .btn-main:disabled { background: #94a3b8; cursor: not-allowed; }
     .btn-delete {
       background: #ef4444; color: white; border: none; padding: 6px 10px;
       border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; margin-right: 6px;
+    }
+
+    /* عرض الوسائط المرفوعة داخل البطاقات */
+    .media-preview-container img, .media-preview-container video {
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-top: 8px;
     }
 
     /* صفحة الإعدادات */
@@ -282,7 +298,7 @@
   <!-- شريط العنوان العلوي -->
   <div class="top-app-bar">
     <div class="logo-title">
-      <div class="mini-logo">🛡️</div>
+      <div class="mini-logo">🛡️️</div>
       <span>منصه فاهم التعليميه.farag</span>
     </div>
     <div id="top-bar-user-status" style="font-size: 11px; color: #38bdf8;">مرحباً بك</div>
@@ -291,7 +307,7 @@
   <!-- شاشة الدخول -->
   <div id="auth-screen-container">
     <div class="login-card">
-      <div style="font-size: 40px; margin-bottom: 10px;">🛡️️</div>
+      <div style="font-size: 40px; margin-bottom: 10px;">🛡</div>
       <h2 style="margin-bottom: 5px; font-size: 20px;">منصة فاهم التعليمية</h2>
       <p style="color: #94a3b8; font-size: 12px; margin-bottom: 20px;">تطبيق التعليم الذكي</p>
 
@@ -323,23 +339,26 @@
       <div class="admin-badge-top" id="role-badge">أدمن (يوسف فرج)</div>
     </div>
 
-    <!-- لوحة التحكم الكاملة للأدمن (إضافة امتحانات، فيديوهات/روابط، ورفع ملفات PDF) -->
+    <!-- لوحة التحكم الكاملة للأدمن -->
     <div id="admin-panel-box">
-      <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 10px;">⚙️ لوحة تحكم الأدمن (يوسف فرج)</div>
+      <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 10px;">⚙️️ لوحة تحكم الأدمن (يوسف فرج)</div>
       
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد:</div>
       <input type="text" id="new-exam-title" class="auth-input" placeholder="عنوان الامتحان..." style="background: white; color: #1e293b; margin-bottom: 6px;">
       <button class="btn-main" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة الامتحان 📝</button>
 
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة فيديو أو رابط (يوتيوب / تليجرام):</div>
-      <input type="text" id="new-video-title" class="auth-input" placeholder="عنوان الفيديو أو الرابط..." style="background: white; color: #1e293b; margin-bottom: 6px;">
-      <input type="text" id="new-video-link" class="auth-input" placeholder="الرابط (https://...) اليوتيوب أو التليجرام" style="background: white; color: #1e293b; margin-bottom: 6px;">
-      <button class="btn-main" onclick="addVideo()" style="width: 100%; margin-bottom: 10px;">إضافة الرابط للمنصة 🔗</button>
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة فيديو شرح (رابط أو رفع من الهاتف):</div>
+      <input type="text" id="new-video-title" class="auth-input" placeholder="عنوان الفيديو..." style="background: white; color: #1e293b; margin-bottom: 6px;">
+      <input type="text" id="new-video-link" class="auth-input" placeholder="رابط يوتيوب أو تليجرام (اختياري)..." style="background: white; color: #1e293b; margin-bottom: 6px;">
+      
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">أو ارفع فيديو / صورة من جهازك:</div>
+      <input type="file" id="new-media-file" class="auth-input" accept="video/*,image/*" style="background: white; color: #1e293b; margin-bottom: 6px; padding: 8px;">
+      <button class="btn-main" onclick="addVideo()" style="width: 100%; margin-bottom: 10px;">إضافة الفيديو للمنصة 🎥</button>
 
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">رفع ملف PDF أو مذكرة من الهاتف:</div>
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة ملف PDF (رابط مباشر أو جوجل درايف):</div>
       <input type="text" id="new-pdf-title" class="auth-input" placeholder="عنوان ملف الـ PDF..." style="background: white; color: #1e293b; margin-bottom: 6px;">
-      <input type="file" id="pdf-file-input" accept=".pdf" class="auth-input" style="background: white; color: #1e293b; margin-bottom: 6px; padding: 8px;">
-      <button class="btn-main" onclick="addPdfFile()" style="width: 100%; margin-bottom: 10px; background: #7c3aed;">رفع ملف الـ PDF 📁</button>
+      <input type="text" id="new-pdf-link" class="auth-input" placeholder="رابط ملف الـ PDF (https://...)" style="background: white; color: #1e293b; margin-bottom: 6px;">
+      <button class="btn-main" onclick="addPdfLink()" style="width: 100%; margin-bottom: 10px; background: #7c3aed;">إضافة ملف الـ PDF 📁</button>
 
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">التحكم في الإحصائيات (عدد الامتحانات والترتيب):</div>
       <div class="admin-control-row">
@@ -401,27 +420,29 @@
     <div id="sec-homework" class="content-section">
       <div class="section-header-title">الواجبات والمهام الدراسية</div>
       <div class="card-item">
-        <div class="card-info">
-          <div class="card-title">واجب الفصل الأول فيزياء</div>
-          <div class="card-subtitle">تاريخ التسليم: غداً</div>
+        <div class="card-row">
+          <div class="card-info">
+            <div class="card-title">واجب الفصل الأول فيزياء</div>
+            <div class="card-subtitle">تاريخ التسليم: غداً</div>
+          </div>
+          <span style="color: #10b981; font-weight: bold; font-size: 12px;">مكتمل ✅</span>
         </div>
-        <span style="color: #10b981; font-weight: bold; font-size: 12px;">مكتمل ✅</span>
       </div>
     </div>
 
     <!-- 4. الفيديوهات وروابط يوتيوب/تليجرام -->
     <div id="sec-videos" class="content-section">
-      <div class="section-header-title">فيديوهات وروابط الشرح (يوتيوب وتليجرام)</div>
+      <div class="section-header-title">فيديوهات الشرح التعليمية</div>
       <div id="videos-container"></div>
     </div>
 
-    <!-- 5. ملفات PDF المرفوعة والمحلية -->
+    <!-- 5. ملفات PDF -->
     <div id="sec-pdfs" class="content-section">
       <div class="section-header-title">ملفات الـ PDF والمذكرات التعليمية</div>
       <div id="pdfs-container"></div>
     </div>
 
-    <!-- 6. الإعدادات (تجميع كل روابط التنزيل والتفضيلات هنا) -->
+    <!-- 6. الإعدادات -->
     <div id="sec-settings" class="content-section">
       <div class="settings-profile-box">
         <div class="profile-avatar">YF</div>
@@ -441,7 +462,7 @@
       <div class="settings-group-title">الإدارة والتحكم</div>
       <div class="settings-card-box">
         <div class="settings-row" onclick="resetAppData()"><span>🔄 إعادة ضبط وتصفير البيانات</span> <span>‹</span></div>
-        <div class="settings-row" onclick="alert('منصة فاهم التعليمية - إصدار الأدمن الخاص بيوسف فرج')"><span>ℹ️ حول التطبيق</span> <span>‹</span></div>
+        <div class="settings-row" onclick="alert('منصة فاهم التعليمية - إصدار الأدمن الخاص بيوسف فرج')"><span>ℹ️️ حول التطبيق</span> <span>‹</span></div>
       </div>
 
       <div class="settings-group-title">التفضيلات والحساب</div>
@@ -491,19 +512,19 @@
 
   <script>
     let activeQuestions = [];
+    let currentExamId = null;
     const ADMIN_EMAIL = "y01878309@gmail.com";
 
-    // البيانات المخزنة
     let examsList = JSON.parse(localStorage.getItem('fahem_exams')) || [
       { id: 1, title: 'امتحان الفيزياء التجريبي (الباب الأول)', info: 'المدة: 15 دقيقة | متاح الآن' }
     ];
 
     let videosList = JSON.parse(localStorage.getItem('fahem_videos')) || [
-      { id: 1, title: 'محاضرة قوانين كيرشوف', link: 'https://www.youtube.com', info: 'شرح تفصيلي مع المسائل' }
+      { id: 1, title: 'محاضرة قوانين كيرشوف', link: 'https://www.youtube.com', type: 'link', info: 'شرح تفصيلي مع المسائل' }
     ];
 
     let pdfsList = JSON.parse(localStorage.getItem('fahem_pdfs')) || [
-      { id: 1, title: 'ملخص قوانين الفيزياء كاملة', data: '#', info: 'صيغة PDF - جاهز للتحميل' }
+      { id: 1, title: 'ملخص قوانين الفيزياء كاملة', link: 'https://www.google.com', info: 'صيغة PDF - جاهز للفتح والتحميل' }
     ];
 
     let statsData = JSON.parse(localStorage.getItem('fahem_stats')) || { exams: '2', rank: '1' };
@@ -572,6 +593,7 @@
         adminBox.style.display = 'none';
         roleBadge.style.display = 'none';
       }
+      renderExams();
     }
 
     function logout() {
@@ -584,7 +606,6 @@
       alert('تم بدء تحميل تطبيق المنصة (APK) بنجاح على هاتفك! 📦');
     }
 
-    // إدارة الامتحانات
     function addExam() {
       const title = document.getElementById('new-exam-title').value.trim();
       if(!title) { alert('الرجاء كتابة عنوان الامتحان'); return; }
@@ -606,6 +627,8 @@
       const container = document.getElementById('exams-container');
       container.innerHTML = '';
       const isAdmin = localStorage.getItem('fahem_email') === ADMIN_EMAIL;
+      const currentEmail = localStorage.getItem('fahem_email') || 'guest';
+      let finishedExams = JSON.parse(localStorage.getItem('finished_exams_' + currentEmail)) || [];
 
       if(examsList.length === 0) {
         container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد امتحانات متاحة حالياً</p>';
@@ -613,35 +636,75 @@
       }
 
       examsList.forEach(ex => {
+        let isDone = finishedExams.includes(ex.id);
         let deleteBtn = isAdmin ? `<button class="btn-delete" onclick="deleteExam(${ex.id})">حذف 🗑️</button>` : '';
+        let actionBtn = isDone ? 
+          `<button class="btn-main" disabled style="background:#94a3b8;">تم الحل ✅</button>` : 
+          `<button class="btn-main" onclick="startExam(${ex.id}, '${ex.title}', [{q:'ما هي وحدة قياس التيار الكهربائي؟', o1:'أمبير', o2:'فولت', o3:'أوم', o4:'كولوم', ans:'أمبير'}])">بدء 📝</button>`;
+        
+        let subtitleText = isDone ? `${ex.info} - (تم اجتيازه)` : ex.info;
+
         container.innerHTML += `
           <div class="card-item">
-            <div class="card-info">
-              <div class="card-title">${ex.title}</div>
-              <div class="card-subtitle">${ex.info}</div>
-            </div>
-            <div>
-              ${deleteBtn}
-              <button class="btn-main" onclick="startExam('${ex.title}', [{q:'ما هي وحدة قياس التيار الكهربائي؟', o1:'أمبير', o2:'فولت', o3:'أوم', o4:'كولوم', ans:'أمبير'}])">بدء 📝</button>
+            <div class="card-row">
+              <div class="card-info">
+                <div class="card-title">${ex.title}</div>
+                <div class="card-subtitle">${subtitleText}</div>
+              </div>
+              <div>
+                ${deleteBtn}
+                ${actionBtn}
+              </div>
             </div>
           </div>
         `;
       });
     }
 
-    // إدارة الفيديوهات والروابط (يوتيوب / تليجرام)
     function addVideo() {
       const title = document.getElementById('new-video-title').value.trim();
       let link = document.getElementById('new-video-link').value.trim();
-      if(!title) { alert('الرجاء كتابة عنوان الفيديو أو الرابط'); return; }
-      if(!link) link = 'https://www.youtube.com';
+      const fileInput = document.getElementById('new-media-file');
       
-      videosList.push({ id: Date.now(), title: title, link: link, info: 'رابط تعليمي / شرح' });
-      localStorage.setItem('fahem_videos', JSON.stringify(videosList));
-      document.getElementById('new-video-title').value = '';
-      document.getElementById('new-video-link').value = '';
-      renderVideos();
-      alert('تم إضافة الرابط بنجاح! 🔗');
+      if(!title) { alert('الرجاء كتابة عنوان الفيديو'); return; }
+
+      if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const fileData = e.target.result;
+          const isVideo = file.type.startsWith('video');
+          videosList.push({
+            id: Date.now(),
+            title: title,
+            type: isVideo ? 'video' : 'image',
+            content: fileData,
+            info: isVideo ? 'فيديو مرفوع محلياً' : 'صورة توضيحية مرفوعة'
+          });
+          localStorage.setItem('fahem_videos', JSON.stringify(videosList));
+          document.getElementById('new-video-title').value = '';
+          document.getElementById('new-video-link').value = '';
+          fileInput.value = '';
+          renderVideos();
+          alert('تم رفع الملف بنجاح! 🎥');
+        };
+        reader.readAsDataURL(file);
+      } else if (link) {
+        videosList.push({
+          id: Date.now(),
+          title: title,
+          type: 'link',
+          content: link,
+          info: 'رابط تعليمي / شرح خارجي'
+        });
+        localStorage.setItem('fahem_videos', JSON.stringify(videosList));
+        document.getElementById('new-video-title').value = '';
+        document.getElementById('new-video-link').value = '';
+        renderVideos();
+        alert('تم إضافة الرابط بنجاح! 🔗');
+      } else {
+        alert('الرجاء إدخال رابط أو اختيار ملف فيديو/صورة من جهازك.');
+      }
     }
 
     function deleteVideo(id) {
@@ -657,59 +720,59 @@
       const isAdmin = localStorage.getItem('fahem_email') === ADMIN_EMAIL;
 
       if(videosList.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد فيديوهات أو روابط متاحة حالياً</p>';
+        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد فيديوهات أو دروس متاحة حالياً</p>';
         return;
       }
 
       videosList.forEach(vid => {
         let deleteBtn = isAdmin ? `<button class="btn-delete" onclick="deleteVideo(${vid.id})">حذف 🗑️</button>` : '';
+        let mediaHtml = '';
+
+        if (vid.type === 'video') {
+          mediaHtml = `<div class="media-preview-container"><video src="${vid.content}" controls></video></div>`;
+        } else if (vid.type === 'image') {
+          mediaHtml = `<div class="media-preview-container"><img src="${vid.content}" alt="مرفق"></div>`;
+        } else {
+          mediaHtml = `<div style="margin-top: 8px;"><a class="btn-main" href="${vid.content}" target="_blank">فتح الرابط 📺</a></div>`;
+        }
+
         container.innerHTML += `
           <div class="card-item">
-            <div class="card-info">
-              <div class="card-title">${vid.title}</div>
-              <div class="card-subtitle">${vid.info}</div>
+            <div class="card-row">
+              <div class="card-info">
+                <div class="card-title">${vid.title}</div>
+                <div class="card-subtitle">${vid.info}</div>
+              </div>
+              <div>
+                ${deleteBtn}
+              </div>
             </div>
-            <div>
-              ${deleteBtn}
-              <a class="btn-main" href="${vid.link}" target="_blank">فتح 📺</a>
-            </div>
+            ${mediaHtml}
           </div>
         `;
       });
     }
 
-    // إدارة ملفات الـ PDF (رفع من الهاتف أو إضافة روابط)
-    function addPdfFile() {
+    function addPdfLink() {
       const title = document.getElementById('new-pdf-title').value.trim();
-      const fileInput = document.getElementById('pdf-file-input');
+      let link = document.getElementById('new-pdf-link').value.trim();
       
       if(!title) { alert('الرجاء كتابة عنوان ملف الـ PDF'); return; }
+      if(!link) link = 'https://www.google.com';
       
-      if(fileInput.files && fileInput.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          pdfsList.push({ id: Date.now(), title: title, data: e.target.result, info: 'ملف PDF مرفوع محلياً' });
-          localStorage.setItem('fahem_pdfs', JSON.stringify(pdfsList));
-          document.getElementById('new-pdf-title').value = '';
-          fileInput.value = '';
-          renderPdfs();
-          alert('تم رفع ملف الـ PDF بنجاح! 📁');
-        };
-        reader.readAsDataURL(fileInput.files[0]);
-      } else {
-        pdfsList.push({ id: Date.now(), title: title, data: '#', info: 'مذكرة تعليمية' });
-        localStorage.setItem('fahem_pdfs', JSON.stringify(pdfsList));
-        document.getElementById('new-pdf-title').value = '';
-        renderPdfs();
-        alert('تم إضافة ملف الـ PDF بنجاح! 📁');
-      }
+      pdfsList.push({ id: Date.now(), title: title, link: link, info: 'مذكرة تعليمية PDF' });
+      localStorage.setItem('fahem_pdfs', JSON.stringify(pdfsList));
+      document.getElementById('new-pdf-title').value = '';
+      document.getElementById('new-pdf-link').value = '';
+      renderPdfs();
+      alert('تم إضافة ملف الـ PDF بنجاح! 📁');
     }
 
     function deletePdf(id) {
       pdfsList = pdfsList.filter(p => p.id !== id);
       localStorage.setItem('fahem_pdfs', JSON.stringify(pdfsList));
       renderPdfs();
-      alert('تم حذف ملف الـ PDF بنجاح 🗑️');
+      alert('تم حذف ملف الـ PDF بنجاح 🗑');
     }
 
     function renderPdfs() {
@@ -724,23 +787,23 @@
 
       pdfsList.forEach(pdf => {
         let deleteBtn = isAdmin ? `<button class="btn-delete" onclick="deletePdf(${pdf.id})">حذف 🗑️</button>` : '';
-        let actionBtn = pdf.data !== '#' ? `<a class="btn-main" href="${pdf.data}" download="${pdf.title}.pdf">تحميل 📥</a>` : `<button class="btn-main" onclick="alert('الملف غير متوفر حالياً')">فتح 📄</button>`;
         container.innerHTML += `
           <div class="card-item">
-            <div class="card-info">
-              <div class="card-title">${pdf.title}</div>
-              <div class="card-subtitle">${pdf.info}</div>
-            </div>
-            <div>
-              ${deleteBtn}
-              ${actionBtn}
+            <div class="card-row">
+              <div class="card-info">
+                <div class="card-title">${pdf.title}</div>
+                <div class="card-subtitle">${pdf.info}</div>
+              </div>
+              <div>
+                ${deleteBtn}
+                <a class="btn-main" href="${pdf.link}" target="_blank">فتح 📄</a>
+              </div>
             </div>
           </div>
         `;
       });
     }
 
-    // إحصائيات وترتيب المنصة
     function updateStats() {
       const examsCount = document.getElementById('set-exams-count').value.trim();
       const rankVal = document.getElementById('set-rank-val').value.trim();
@@ -765,7 +828,8 @@
       }
     }
 
-    function startExam(title, questions) {
+    function startExam(id, title, questions) {
+      currentExamId = id;
       document.getElementById('modal-title').innerText = title;
       activeQuestions = questions;
       let container = document.getElementById('modal-questions-container');
@@ -795,8 +859,18 @@
         let sel = document.querySelector(`input[name="q_${i}"]:checked`);
         if(sel && sel.value === q.ans) score++;
       });
-      alert(`انتهى الامتحان! نتيجتك: ${score} من ${activeQuestions.length} 🎉`);
+
+      const currentEmail = localStorage.getItem('fahem_email') || 'guest';
+      let finishedExams = JSON.parse(localStorage.getItem('finished_exams_' + currentEmail)) || [];
+      if(!finishedExams.includes(currentExamId)) {
+        finishedExams.push(currentExamId);
+        localStorage.getItem('finished_exams_' + currentEmail, JSON.stringify(finishedExams));
+        localStorage.setItem('finished_exams_' + currentEmail, JSON.stringify(finishedExams));
+      }
+
+      alert(`انتهى الامتحان! نتيجتك: ${score} من ${activeQuestions.length} 🎉 (تم حفظ النتيجة ولن يمكنك إعادة الامتحان مرة أخرى)`);
       closeExam();
+      renderExams();
     }
   </script>
 </body>
