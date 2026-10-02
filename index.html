@@ -5,39 +5,144 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>منصة فاهم التعليمية</title>
   <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background-color: #0f172a;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
       color: #ffffff;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 50px 20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
     }
-    h1 { margin-bottom: 20px; font-size: 24px; }
-    p { color: #94a3b8; margin-bottom: 30px; }
-    .btn {
-      display: block;
-      background: #0284c7;
-      color: white;
-      padding: 15px;
-      text-decoration: none;
-      border-radius: 8px;
-      font-size: 18px;
+    .ticker-bar {
+      background: linear-gradient(90deg, #0284c7, #38bdf8);
+      color: #0f172a;
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
+      text-align: center;
+      max-width: 450px;
+      width: 100%;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 35px 25px;
+      text-align: center;
+      max-width: 450px;
+      width: 100%;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    }
+    .logo {
+      width: 110px;
+      height: 110px;
+      border-radius: 25px;
+      object-fit: cover;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
       margin-bottom: 15px;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+    }
+    h1 { font-size: 26px; margin-bottom: 8px; color: #ffffff; font-weight: 700; }
+    p { color: #94a3b8; font-size: 14px; margin-bottom: 25px; }
+    
+    .input-box {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.07);
+      color: white;
+      font-size: 16px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .input-box:focus { outline: none; border-color: #38bdf8; }
+
+    .action-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 50px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.4);
+      margin-bottom: 15px;
+      transition: all 0.3s ease;
+    }
+    .action-btn:hover { transform: translateY(-2px); }
+
+    .support-link {
+      color: #22c55e;
+      text-decoration: none;
+      font-size: 14px;
+      display: inline-block;
       font-weight: bold;
     }
-    .wa {
-      background: #22c55e;
+    .support-link:hover { text-decoration: underline; }
+
+    /* محتوى المنصة المخفي لحين إدخال الكود 78 */
+    #platform-content {
+      display: none;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
   </style>
 </head>
 <body>
 
-  <h1>منصة فاهم التعليمية</h1>
-  <p>أهلاً بك يا بطل، حمل التطبيق أو تواصل معنا مباشرة</p>
+  <div class="ticker-bar">
+    🚨 أخلِ مسؤوليتك: أدخل كود المنصة للمتابعة!
+  </div>
 
-  <a href="https://drive.google.com/file/d/1BQLReYa_kd0B29EvyBIyHX5xaeLJlLq9/view?usp=drivesdk" class="btn">تحميل التطبيق (APK)</a>
-  
-  <a href="https://wa.me/201093706503?text=مرحباً، أريـد%20الحصول%20على%20رمز%20منصة%20فاهم" class="btn wa">طلب رمز المنصة عبر واتساب</a>
+  <div class="container">
+    <img src="https://lh3.googleusercontent.com/d/13f5hYTuiTwFpb_mXm84w32JkhpFF_czT" alt="شعار منصة فاهم" class="logo">
+    <h1>منصة فاهم التعليمية</h1>
+    <p>أدخل رمز المرور الخاص للوصول إلى محتوى المنصة</p>
+    
+    <!-- حقل ادخال الكود -->
+    <div id="auth-section">
+      <input type="password" id="passcode" class="input-box" placeholder="أدخل الكود هنا (مثال: 78)">
+      <button onclick="checkCode()" class="action-btn">دخول للمنصة</button>
+      <div>
+        <a href="https://wa.me/201093706503?text=مرحباً، أريـد%20الحصول%20على%20رمز%20منصة%20فاهم" target="_blank" class="support-link">
+          💬 تواصل مع المسؤول عبر واتساب للحصول على الكود
+        </a>
+      </div>
+    </div>
+
+    <!-- محتوى المنصة بعد الدخول بالكود الصحيح -->
+    <div id="platform-content">
+      <h2 style="color: #38bdf8; margin-bottom: 15px; font-size: 20px;">🎉 أهلاً بك يا بطل في المنصة</h2>
+      <p>تم تفعيل الحساب بنجاح، يمكنك الآن استعراض المحتوى والدروس بكل فاعلية.</p>
+      <a href="https://drive.google.com/file/d/1BQLReYa_kd0B29EvyBIyHX5xaeLJlLq9/view?usp=drivesdk" target="_blank" class="action-btn" style="background: linear-gradient(135deg, #16a34a, #15803d);">
+        📥 تحميل ملفات المادة الدراسية
+      </a>
+    </div>
+  </div>
+
+  <script>
+    function checkCode() {
+      const code = document.getElementById('passcode').value.trim();
+      if (code === '78') {
+        document.getElementById('auth-section').style.display = 'none';
+        document.getElementById('platform-content').style.display = 'block';
+      } else {
+        alert('الكود غير صحيح يا بطل، تواصل عبر الواتساب للحصول على الكود (78)');
+      }
+    }
+  </script>
 
 </body>
 </html>
