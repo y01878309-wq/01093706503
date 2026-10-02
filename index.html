@@ -61,6 +61,17 @@
       width: 100%;
       box-shadow: 0 15px 35px rgba(0,0,0,0.6);
       color: white;
+      position: relative;
+    }
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: white;
+      cursor: pointer;
     }
     .auth-input {
       width: 100%;
@@ -73,6 +84,9 @@
       margin-bottom: 12px;
       outline: none;
       text-align: right;
+    }
+    .auth-input:focus {
+      border-color: #38bdf8;
     }
     .auth-btn {
       background: #0284c7;
@@ -100,6 +114,19 @@
       margin-bottom: 15px;
       text-decoration: none;
       display: inline-block;
+    }
+    .auth-screen-pane {
+      display: none;
+    }
+    .auth-screen-pane.active {
+      display: block;
+    }
+    .text-link-auth {
+      margin-top: 15px;
+      font-size: 13px;
+      color: #38bdf8;
+      cursor: pointer;
+      text-decoration: underline;
     }
 
     #dashboard-view {
@@ -292,19 +319,50 @@
 
   <div id="auth-screen-container">
     <div class="login-card">
-      <div style="font-size: 40px; margin-bottom: 10px;">🛡</div>
-      <h2 style="margin-bottom: 5px; font-size: 20px;">منصة فاهم التعليمية</h2>
-      <p style="color: #94a3b8; font-size: 12px; margin-bottom: 20px;">تطبيق التعليم الذكي</p>
+      
+      <!-- شاشة تسجيل الدخول الرئيسية -->
+      <div id="pane-login" class="auth-screen-pane active">
+        <div style="font-size: 40px; margin-bottom: 10px;">🛡</div>
+        <h2 style="margin-bottom: 5px; font-size: 20px;">مرحباً بعودتك!</h2>
+        <p style="color: #94a3b8; font-size: 12px; margin-bottom: 20px;">سجل الدخول للمتابعة</p>
 
-      <a href="#" class="download-btn" onclick="downloadApp(event)">
-        📦 تحميل تطبيق المنصة (APK)
-      </a>
+        <a href="#" class="download-btn" onclick="downloadApp(event)">
+          📦 تحميل تطبيق المنصة (APK)
+        </a>
 
-      <div style="margin: 15px 0; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
-        <input type="password" id="user-pass" class="auth-input" placeholder="كلمة المرور">
-        <button class="auth-btn" onclick="customLogin()">دخول سريع بالرمز ✅</button>
-        <button class="auth-btn" onclick="adminQuickLogin()" style="background: #1e293b; border: 1px solid #38bdf8; margin-top: 8px; font-size: 12px;">🔑 دخول بصفتي يوسف (الأدمن)</button>
+        <div style="margin: 15px 0; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+          <input type="email" id="login-email" class="auth-input" placeholder="البريد الإلكتروني">
+          <input type="password" id="user-pass" class="auth-input" placeholder="كلمة المرور (الافتراضية: ٠nH2Fyg_yw8lqy@e)">
+          <button class="auth-btn" onclick="customLogin()">تسجيل الدخول ✅</button>
+          <div class="text-link-auth" onclick="switchAuthPane('pane-forgot')">نسيت كلمة المرور؟</div>
+          <button class="auth-btn" onclick="adminQuickLogin()" style="background: #1e293b; border: 1px solid #38bdf8; margin-top: 12px; font-size: 12px;">🔑 دخول بصفتي يوسف (الأدمن)</button>
+        </div>
       </div>
+
+      <!-- شاشة نسيت كلمة المرور (إدخال البريد) -->
+      <div id="pane-forgot" class="auth-screen-pane">
+        <button class="back-btn" onclick="switchAuthPane('pane-login')">‹</button>
+        <div style="font-size: 40px; margin-bottom: 10px; margin-top: 15px;">🔒</div>
+        <h2 style="margin-bottom: 5px; font-size: 18px;">نسيت كلمة المرور؟</h2>
+        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 20px;">أدخل بريدك الإلكتروني وسنرسل لك رمزاً لإعادة تعيين كلمة المرور.</p>
+        
+        <input type="email" id="forgot-email" class="auth-input" placeholder="البريد الإلكتروني">
+        <button class="auth-btn" onclick="sendResetCode()">إرسال الرمز ✉️</button>
+      </div>
+
+      <!-- شاشة إدخال الرمز وكلمة المرور الجديدة -->
+      <div id="pane-reset" class="auth-screen-pane">
+        <button class="back-btn" onclick="switchAuthPane('pane-forgot')">‹</button>
+        <div style="font-size: 40px; margin-bottom: 10px; margin-top: 15px;">🔑</div>
+        <h2 style="margin-bottom: 5px; font-size: 18px;">إعادة تعيين كلمة المرور</h2>
+        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 15px;">أدخل رمز التحقق المرسل لبريدك وكلمة المرور الجديدة.</p>
+        
+        <input type="text" id="verification-code-input" class="auth-input" placeholder="أدخل رمز التحقق (4 أرقام)" style="text-align: center; letter-spacing: 3px;">
+        <input type="password" id="new-password-input" class="auth-input" placeholder="كلمة المرور الجديدة">
+        <input type="password" id="confirm-password-input" class="auth-input" placeholder="تأكيد كلمة المرور الجديدة">
+        <button class="auth-btn" onclick="verifyAndResetPassword()">تحقق وإعادة التعيين ✅</button>
+      </div>
+
     </div>
   </div>
 
@@ -427,6 +485,12 @@
         </div>
       </div>
 
+      <div class="settings-group-title">تغيير كلمة المرور الخاصة بك</div>
+      <div class="settings-card-box" style="padding: 15px;">
+        <input type="password" id="change-pass-input" class="auth-input" placeholder="كلمة المرور الجديدة" style="background: #f8fafc; color: #1e293b; margin-bottom: 8px;">
+        <button class="btn-main" onclick="updateUserPassword()" style="width: 100%;">حفظ كلمة المرور الجديدة 🔐</button>
+      </div>
+
       <div class="settings-group-title">تحميل التطبيق والروابط</div>
       <div class="settings-card-box">
         <div class="settings-row" onclick="downloadApp(event)"><span>📦 تحميل تطبيق المنصة (APK)</span> <span>⬇️</span></div>
@@ -468,6 +532,10 @@
     let activeQuestions = [];
     let currentExamId = null;
     const ADMIN_EMAIL = "y01878309@gmail.com";
+    const DEFAULT_PASS = "٠nH2Fyg_yw8lqy@e";
+
+    let activeResetEmail = "";
+    let generatedResetCode = "";
 
     let examsList = JSON.parse(localStorage.getItem('fahem_exams')) || [
       { id: 1, title: 'امتحان الفيزياء التجريبي (الباب الأول)', questions: [
@@ -497,6 +565,11 @@
       renderStats();
     };
 
+    function switchAuthPane(paneId) {
+      document.querySelectorAll('.auth-screen-pane').forEach(p => p.classList.remove('active'));
+      document.getElementById(paneId).classList.add('active');
+    }
+
     function switchTab(sectionId, navId) {
       document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-section'));
       document.getElementById(sectionId).classList.add('active-section');
@@ -505,18 +578,67 @@
     }
 
     function customLogin() {
-      const code = document.getElementById('user-pass').value.trim();
-      if(code !== "78") {
-        alert('الرمز السري غير صحيح! (الرمز هو 78)');
+      const email = document.getElementById('login-email').value.trim() || ADMIN_EMAIL;
+      const pass = document.getElementById('user-pass').value.trim();
+
+      let userStoredPass = localStorage.getItem('pass_' + email) || DEFAULT_PASS;
+
+      if(pass !== userStoredPass) {
+        alert('كلمة المرور غير صحيحة! (كلمة المرور الافتراضية هي: ٠nH2Fyg_yw8lqy@e)');
         return;
       }
-      localStorage.setItem('fahem_email', ADMIN_EMAIL);
-      setupSession(ADMIN_EMAIL);
+      localStorage.setItem('fahem_email', email);
+      setupSession(email);
     }
 
     function adminQuickLogin() {
       localStorage.setItem('fahem_email', ADMIN_EMAIL);
       setupSession(ADMIN_EMAIL);
+    }
+
+    // دوال نسيت كلمة المرور وإرسال الرمز وإعادة التعيين
+    function sendResetCode() {
+      const email = document.getElementById('forgot-email').value.trim();
+      if(!email) {
+        alert('الرجاء إدخال البريد الإلكتروني');
+        return;
+      }
+      activeResetEmail = email;
+      generatedResetCode = Math.floor(1000 + Math.random() * 9000).toString();
+      
+      alert(`تم إرسال رمز التحقق إلى بريدك الإلكتروني (${email}).\nكود التحقق الخاص بك هو: [ ${generatedResetCode} ]`);
+      switchAuthPane('pane-reset');
+    }
+
+    function verifyAndResetPassword() {
+      const code = document.getElementById('verification-code-input').value.trim();
+      const newPass = document.getElementById('new-password-input').value;
+      const confirmPass = document.getElementById('confirm-password-input').value;
+
+      if(code !== generatedResetCode) {
+        alert('رمز التحقق غير صحيح!');
+        return;
+      }
+      if(!newPass || newPass !== confirmPass) {
+        alert('كلمتا المرور غير متطابقتين أو فارغتين!');
+        return;
+      }
+
+      localStorage.setItem('pass_' + activeResetEmail, newPass);
+      alert('تم تغيير كلمة المرور بنجاح! يمكنك تسجيل الدخول الآن بكلمة المرور الجديدة.');
+      switchAuthPane('pane-login');
+    }
+
+    function updateUserPassword() {
+      const newPass = document.getElementById('change-pass-input').value.trim();
+      const currentEmail = localStorage.getItem('fahem_email');
+      if(!newPass) {
+        alert('الرجاء إدخال كلمة المرور الجديدة');
+        return;
+      }
+      localStorage.setItem('pass_' + currentEmail, newPass);
+      alert('تم تحديث كلمة المرور بنجاح!');
+      document.getElementById('change-pass-input').value = '';
     }
 
     function setupSession(email) {
@@ -525,10 +647,16 @@
       document.getElementById('bottom-navigation').style.display = 'flex';
 
       document.getElementById('profile-email-display').innerText = email;
-      document.getElementById('top-bar-user-status').innerText = 'أدمن (يوسف فرج)';
+      document.getElementById('welcome-user-name').innerText = `👋 مرحباً، ${email === ADMIN_EMAIL ? 'يوسف فرج' : email}`;
+      document.getElementById('top-bar-user-status').innerText = email === ADMIN_EMAIL ? 'أدمن (يوسف فرج)' : email;
       
-      document.getElementById('admin-panel-box').style.display = 'block';
-      document.getElementById('role-badge').style.display = 'block';
+      if(email === ADMIN_EMAIL) {
+        document.getElementById('admin-panel-box').style.display = 'block';
+        document.getElementById('role-badge').style.display = 'block';
+      } else {
+        document.getElementById('admin-panel-box').style.display = 'none';
+        document.getElementById('role-badge').style.display = 'none';
+      }
       renderExams();
     }
 
@@ -606,6 +734,7 @@
       container.innerHTML = '';
       const currentEmail = localStorage.getItem('fahem_email') || 'guest';
       let finishedExams = JSON.parse(localStorage.getItem('finished_exams_' + currentEmail)) || [];
+      const isUserAdmin = currentEmail === ADMIN_EMAIL;
 
       if(examsList.length === 0) {
         container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد امتحانات متاحة حالياً</p>';
@@ -614,7 +743,7 @@
 
       examsList.forEach(ex => {
         let isDone = finishedExams.includes(ex.id);
-        let deleteBtn = `<button class="btn-delete" onclick="deleteExam(${ex.id})">حذف 🗑️</button>`;
+        let deleteBtn = isUserAdmin ? `<button class="btn-delete" onclick="deleteExam(${ex.id})">حذف 🗑️</button>` : '';
         let qData = ex.questions || [];
 
         let actionBtn = isDone ? 
@@ -696,6 +825,8 @@
     function renderVideos() {
       const container = document.getElementById('videos-container');
       container.innerHTML = '';
+      const currentEmail = localStorage.getItem('fahem_email') || 'guest';
+      const isUserAdmin = currentEmail === ADMIN_EMAIL;
 
       if(videosList.length === 0) {
         container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد فيديوهات متاحة حالياً</p>';
@@ -703,7 +834,7 @@
       }
 
       videosList.forEach(vid => {
-        let deleteBtn = `<button class="btn-delete" onclick="deleteVideo(${vid.id})">حذف 🗑️</button>`;
+        let deleteBtn = isUserAdmin ? `<button class="btn-delete" onclick="deleteVideo(${vid.id})">حذف 🗑️</button>` : '';
         let mediaHtml = '';
 
         if (vid.type === 'video') {
@@ -754,6 +885,8 @@
     function renderPdfs() {
       const container = document.getElementById('pdfs-container');
       container.innerHTML = '';
+      const currentEmail = localStorage.getItem('fahem_email') || 'guest';
+      const isUserAdmin = currentEmail === ADMIN_EMAIL;
 
       if(pdfsList.length === 0) {
         container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد ملفات PDF متاحة حالياً</p>';
@@ -761,7 +894,7 @@
       }
 
       pdfsList.forEach(pdf => {
-        let deleteBtn = `<button class="btn-delete" onclick="deletePdf(${pdf.id})">حذف 🗑️</button>`;
+        let deleteBtn = isUserAdmin ? `<button class="btn-delete" onclick="deletePdf(${pdf.id})">حذف 🗑️</button>` : '';
         container.innerHTML += `
           <div class="card-item">
             <div class="card-row">
