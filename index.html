@@ -77,7 +77,23 @@
       text-decoration: none;
       display: block;
       width: 100%;
+      margin-bottom: 12px;
     }
+    .apk-btn {
+      background: #8b5cf6;
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 14px;
+      text-decoration: none;
+      display: block;
+      width: 100%;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+    }
+    .apk-btn:hover { background: #7c3aed; }
 
     /* لوحة التحكم الأساسية */
     #dashboard-view {
@@ -344,19 +360,23 @@
   <!-- شاشة تسجيل الدخول -->
   <div class="login-container" id="login-section">
     <h1>منصة فاهم التعليمية</h1>
-    <div class="subtitle">مخصص للأدمن يوسف فرج فقط.</div>
+    <div class="subtitle">سجل بريدك، كلمة المرور, ورمز المنصة (78).</div>
     
     <form onsubmit="handleLogin(event)">
-      <input type="email" id="email" class="input-box" value="y01878309@gmail.com" readonly style="background: rgba(15,23,42,0.5); color: #38bdf8; cursor: not-allowed;">
-      <input type="password" id="password" class="input-box" placeholder="كلمة المرور الخاصة بك" required>
-      <input type="text" id="passcode" class="input-box" value="78" readonly style="background: rgba(15,23,42,0.5); color: #38bdf8; cursor: not-allowed;">
+      <input type="email" id="email" class="input-box" placeholder="البريد الإلكتروني (Gmail)" required>
+      <input type="password" id="password" class="input-box" placeholder="كلمة المرور" required>
+      <input type="text" id="passcode" class="input-box" placeholder="رمز المنصة (78)" required>
       
-      <button type="submit" class="action-btn">دخول لوحة التحكم 🚀</button>
+      <button type="submit" class="action-btn">تسجيل الدخول 🚀</button>
     </form>
 
     <a href="https://wa.me/201093706503?text=مرحباً%20يوسف،%20أريد%20الاستفسار%20عن%20منصة%20فاهم" target="_blank" class="whatsapp-btn">
-      💬 تواصل عبر واتساب
+      💬 تواصل مع المسؤول (واتساب)
     </a>
+
+    <button onclick="downloadApkApp()" class="apk-btn">
+      📥 تحميل تطبيق المنصة (APK)
+    </button>
   </div>
 
   <!-- لوحة التحكم الأساسية -->
@@ -574,13 +594,14 @@
     function handleLogin(event) {
       event.preventDefault();
       const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
       const code = document.getElementById('passcode').value.trim();
       
       if (email === 'y01878309@gmail.com' && code === '78') {
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('dashboard-view').style.display = 'block';
       } else {
-        alert('عذراً، البريد الإلكتروني غير مسموح له بالتحكم في المنصة!');
+        alert('عذراً، البريد الإلكتروني أو رمز المنصة غير صحيح!');
       }
     }
 
@@ -602,64 +623,29 @@
       const el = document.getElementById(elementId);
       if (el) {
         el.remove();
-        alert('تم الحذف بنجاح! 🗑️');
+        alert('تم الحذف بنجاح!');
       }
     }
 
     function addCoinsToStudent() {
       const studentId = document.getElementById('targetStudentId').value.trim();
-      const coins = document.getElementById('coinAmount').value.trim();
-      if (!studentId || !coins) {
-        alert('من فضلك أدخل كود الطالب وعدد الكوينز!');
+      const amount = document.getElementById('coinAmount').value.trim();
+      if (!studentId || !amount) {
+        alert('برجاء إدخال كود الطالب وعدد الكوينز بشكل صحيح.');
         return;
       }
-      alert(`تم بنجاح إضافة ${coins} كوينز للطالب: ${studentId} 🚀`);
+      alert(`تم شحن عدد ${amount} كوينز بنجاح للطالب: ${studentId} ⚡`);
       document.getElementById('targetStudentId').value = '';
       document.getElementById('coinAmount').value = '';
-    }
-
-    function addOrUpdateStudentRank() {
-      const sId = document.getElementById('rankStudentId').value.trim();
-      const eName = document.getElementById('rankExamName').value.trim();
-      const score = document.getElementById('rankScore').value.trim();
-
-      if (!sId || !eName || !score) {
-        alert('من فضلك املأ جميع حقول الطالب والترتيب!');
-        return;
-      }
-
-      uniqueIdCounter++;
-      const uniqueId = 'rank-item-' + uniqueIdCounter;
-      const container = document.getElementById('ranking-list-container');
-      
-      const newCard = document.createElement('div');
-      newCard.className = 'student-card';
-      newCard.id = uniqueId;
-      newCard.innerHTML = `
-        <div style="display: flex; gap: 5px;">
-          <button class="action-link-btn delete-btn" onclick="removeElement('${uniqueId}')">حذف 🗑️</button>
-        </div>
-        <div class="student-info">
-          <div class="student-id">${sId}</div>
-          <div class="exam-name">${eName}</div>
-        </div>
-        <div class="score-badge">${score}</div>
-      `;
-      container.prepend(newCard);
-      alert('تم إضافة أو تعديل ترتيب الطالب بنجاح في لوحة الأوائل! 🏆');
-      
-      document.getElementById('rankStudentId').value = '';
-      document.getElementById('rankExamName').value = '';
-      document.getElementById('rankScore').value = '';
     }
 
     function addQuestionBox() {
       questionCounter++;
       const container = document.getElementById('questions-container');
-      const block = document.createElement('div');
-      block.className = 'single-question-block';
-      block.innerHTML = `
-        <label style="color:#38bdf8; font-weight:bold; margin-top:5px;">السؤال رقم (${questionCounter})</label>
+      const div = document.createElement('div');
+      div.className = 'single-question-block';
+      div.innerHTML = `
+        <label>السؤال رقم ${questionCounter}</label>
         <input type="text" class="q-text" placeholder="اكتب السؤال هنا...">
         <label>الخيار الأول (أ)</label>
         <input type="text" class="o1" placeholder="الاختيار الأول">
@@ -669,7 +655,6 @@
         <input type="text" class="o3" placeholder="الاختيار الثالث">
         <label>الخيار الرابع (د)</label>
         <input type="text" class="o4" placeholder="الاختيار الرابع">
-        
         <label style="color:#38bdf8; margin-top: 6px;">⭐ حدد الإجابة الصحيحة لهذا السؤال:</label>
         <select class="correct-ans">
           <option value="1">الخيار الأول (أ)</option>
@@ -678,141 +663,133 @@
           <option value="4">الخيار الرابع (د)</option>
         </select>
       `;
-      container.appendChild(block);
+      container.appendChild(div);
     }
 
     function addNewExamWithMultipleQuestions() {
-      const title = document.getElementById('examTitleInput').value.trim();
-      const minutes = parseInt(document.getElementById('examTimeInput').value) || 15;
+      const examTitle = document.getElementById('examTitleInput').value.trim();
+      const examTime = document.getElementById('examTimeInput').value.trim();
       
-      if (!title) {
-        alert('من فضلك أدخل عنوان الامتحان أولاً!');
+      if (!examTitle || !examTime) {
+        alert('برجاء كتابة عنوان الامتحان وتحديد وقت الإجابة بالدقائق.');
         return;
       }
 
-      const qBlocks = document.querySelectorAll('.single-question-block');
-      let examArr = [];
-      let solutionSummary = '';
+      uniqueIdCounter++;
+      const newExamId = 'exam-item-' + uniqueIdCounter;
+      const examsList = document.getElementById('exams-list');
 
-      qBlocks.forEach((block, idx) => {
+      const qBlocks = document.querySelectorAll('.single-question-block');
+      let questionsArray = [];
+      let firstCorrectAnswerText = '';
+
+      qBlocks.forEach((block, index) => {
         const qText = block.querySelector('.q-text').value.trim();
         const o1 = block.querySelector('.o1').value.trim();
         const o2 = block.querySelector('.o2').value.trim();
         const o3 = block.querySelector('.o3').value.trim();
         const o4 = block.querySelector('.o4').value.trim();
-        const correctIndex = parseInt(block.querySelector('.correct-ans').value);
+        const correctIndex = block.querySelector('.correct-ans').value;
 
-        if (qText !== '') {
-          let correctText = o1;
-          if (correctIndex === 2) correctText = o2;
-          if (correctIndex === 3) correctText = o3;
-          if (correctIndex === 4) correctText = o4;
+        if (qText && o1 && o2) {
+          let ansText = o1;
+          if (correctIndex === '2') ansText = o2;
+          if (correctIndex === '3') ansText = o3;
+          if (correctIndex === '4') ansText = o4;
 
-          examArr.push({ q: qText, o1: o1, o2: o2, o3: o3, o4: o4, correct: correctText });
-          solutionSummary += `س${idx+1}: ${correctText} | `;
+          if (index === 0) firstCorrectAnswerText = ansText;
+
+          questionsArray.push({
+            q: qText,
+            o1: o1,
+            o2: o2,
+            o3: o3,
+            o4: o4,
+            ans: ansText
+          });
         }
       });
 
-      if (examArr.length === 0) {
-        alert('من فضلك اكتب سؤالاً واحداً على الأقل!');
+      if (questionsArray.length === 0) {
+        alert('برجاء إدخال سؤال واحد على الأقل مع خياراته.');
         return;
       }
 
-      uniqueIdCounter++;
-      const uniqueId = 'exam-item-' + uniqueIdCounter;
-      const solUniqueId = 'sol-item-' + uniqueIdCounter;
-      
-      // إضافة الامتحان لقائمة الامتحانات
-      const list = document.getElementById('exams-list');
-      const newCard = document.createElement('div');
-      newCard.className = 'panel-card';
-      newCard.id = uniqueId;
-      
-      const encodedQuestions = encodeURIComponent(JSON.stringify(examArr));
-
-      newCard.innerHTML = `
+      const examCard = document.createElement('div');
+      examCard.className = 'panel-card';
+      examCard.id = newExamId;
+      examCard.innerHTML = `
         <div style="display: flex; gap: 5px;">
-          <button class="action-link-btn delete-btn" onclick="removeElement('${uniqueId}')">حذف 🗑️</button>
-          <button class="action-link-btn" onclick="openExamEncoded('${title}', '${encodedQuestions}', ${minutes})">بدء الامتحان (${minutes} د) 📝</button>
+          <button class="action-link-btn delete-btn" onclick="removeElement('${newExamId}')">حذف 🗑️</button>
+          <button class="action-link-btn" onclick='openExamModal("${examTitle}", ${JSON.stringify(questionsArray)}, ${examTime})'>بدء الامتحان (${examTime} دقيقة) 📝</button>
         </div>
         <div class="student-info">
-          <div class="student-id">${title}</div>
-          <div class="exam-name">المدة: ${minutes} دقيقة | عدد الأسئلة: (${examArr.length})</div>
-        </div>`;
-      list.prepend(newCard);
+          <div class="student-id">${examTitle}</div>
+          <div class="exam-name">المدة: ${examTime} دقيقة | متاح للطلاب</div>
+        </div>
+      `;
+      examsList.appendChild(examCard);
 
-      // إضافة نموذج الحل لقائمة الحلول
-      const solList = document.getElementById('solutions-list-container');
+      const solutionsContainer = document.getElementById('solutions-list-container');
       const solCard = document.createElement('div');
       solCard.className = 'panel-card';
-      solCard.id = solUniqueId;
+      solCard.id = 'sol-item-' + uniqueIdCounter;
       solCard.innerHTML = `
         <div style="display: flex; gap: 5px;">
-          <button class="action-link-btn delete-btn" onclick="removeElement('${solUniqueId}')">حذف 🗑️</button>
+          <button class="action-link-btn delete-btn" onclick="removeElement('sol-item-${uniqueIdCounter}')">حذف 🗑️</button>
         </div>
         <div class="student-info">
-          <div class="student-id">نموذج حل: ${title}</div>
-          <div class="exam-name">${solutionSummary}</div>
+          <div class="student-id">نموذج حل: ${examTitle}</div>
+          <div class="exam-name">الإجابة الصحيحة للسؤال الأول: ${firstCorrectAnswerText}</div>
         </div>
         <div class="score-badge">معتمد ✅</div>
       `;
-      solList.prepend(solCard);
-      
-      alert(`تم نشر امتحان "${title}" ونموذج الحل وتحديد الوقت (${minutes} دقيقة) بنجاح! 📚🚀`);
-      
-      document.getElementById('examTitleInput').value = '';
-      questionCounter = 1;
-    }
+      solutionsContainer.appendChild(solCard);
 
-    function openExamEncoded(title, encodedJson, minutes) {
-      const questions = JSON.parse(decodeURIComponent(encodedJson));
-      openExamModal(title, questions, minutes);
+      alert('تم نشر الامتحان ونموذج الحل بنجاح في المنصة! 🚀');
+      document.getElementById('examTitleInput').value = '';
     }
 
     function openExamModal(title, questions, minutes) {
-      currentExamQuestions = questions;
       document.getElementById('modal-exam-title').innerText = title;
-      const bodyContainer = document.getElementById('modal-questions-body');
-      bodyContainer.innerHTML = '';
+      currentExamQuestions = questions;
+      
+      const body = document.getElementById('modal-questions-body');
+      body.innerHTML = '';
 
       questions.forEach((item, index) => {
-        const qDiv = document.createElement('div');
-        qDiv.className = 'question-box-view';
-        qDiv.innerHTML = `
-          <div style="font-weight: bold; color: #38bdf8; margin-bottom: 8px;">س${index+1}: ${item.q}</div>
-          <label class="option-label"><input type="radio" name="q_${index}" value="${item.o1}"> ${item.o1 || 'خيار 1'}</label>
-          <label class="option-label"><input type="radio" name="q_${index}" value="${item.o2}"> ${item.o2 || 'خيار 2'}</label>
-          <label class="option-label"><input type="radio" name="q_${index}" value="${item.o3}"> ${item.o3 || 'خيار 3'}</label>
-          <label class="option-label"><input type="radio" name="q_${index}" value="${item.o4}"> ${item.o4 || 'خيار 4'}</label>
+        body.innerHTML += `
+          <div class="question-box-view">
+            <p style="font-weight: bold; margin-bottom: 8px; font-size: 14px; color: #38bdf8;">س${index+1}: ${item.q}</p>
+            <label class="option-label"><input type="radio" name="question_${index}" value="${item.o1}"> ${item.o1}</label>
+            <label class="option-label"><input type="radio" name="question_${index}" value="${item.o2}"> ${item.o2}</label>
+            ${item.o3 ? `<label class="option-label"><input type="radio" name="question_${index}" value="${item.o3}"> ${item.o3}</label>` : ''}
+            ${item.o4 ? `<label class="option-label"><input type="radio" name="question_${index}" value="${item.o4}"> ${item.o4}</label>` : ''}
+          </div>
         `;
-        bodyContainer.appendChild(qDiv);
       });
 
-      // تشغيل العداد الزمني
+      document.getElementById('exam-modal').style.display = 'flex';
+      
+      clearInterval(timerInterval);
       timeLeftSeconds = minutes * 60;
       startTimer();
-
-      document.getElementById('exam-modal').style.display = 'flex';
     }
 
     function startTimer() {
-      clearInterval(timerInterval);
-      updateTimerDisplay();
+      const timerBadge = document.getElementById('exam-timer');
       timerInterval = setInterval(() => {
-        timeLeftSeconds--;
-        updateTimerDisplay();
         if (timeLeftSeconds <= 0) {
           clearInterval(timerInterval);
-          alert('انتهى وقت الامتحان! سيتم تسليم الإجابات تلقائياً ⏰');
-          submitExamAnswers();
+          alert('انتهى وقت الامتحان!');
+          closeExamModal();
+          return;
         }
+        timeLeftSeconds--;
+        let m = Math.floor(timeLeftSeconds / 60);
+        let s = timeLeftSeconds % 60;
+        timerBadge.innerText = `⏱️ ${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
       }, 1000);
-    }
-
-    function updateTimerDisplay() {
-      const m = Math.floor(timeLeftSeconds / 60);
-      const s = timeLeftSeconds % 60;
-      document.getElementById('exam-timer').innerText = `⏱️ ${m}:${s < 10 ? '0' : ''}${s}`;
     }
 
     function closeExamModal() {
@@ -821,47 +798,80 @@
     }
 
     function submitExamAnswers() {
-      clearInterval(timerInterval);
       let score = 0;
-      let total = currentExamQuestions.length;
-
       currentExamQuestions.forEach((item, index) => {
-        const selected = document.querySelector(`input[name="q_${index}"]:checked`);
-        if (selected && selected.value === item.correct) {
+        const selected = document.querySelector(`input[name="question_${index}"]:checked`);
+        if (selected && selected.value === item.ans) {
           score++;
         }
       });
 
-      const percentage = Math.round((score / total) * 100);
-      
-      alert(`🎉 تم تسليم الامتحان بنجاح!\n\nدرجتك هي: ${score} من ${total}\nالنسبة المئوية: ${percentage}%\n\nعاش يا بطل! 🚀`);
+      clearInterval(timerInterval);
+      alert(`انتهى الامتحان! نتيجتك هي: ${score} من ${currentExamQuestions.length}`);
       closeExamModal();
+    }
+
+    function addOrUpdateStudentRank() {
+      const name = document.getElementById('rankStudentId').value.trim();
+      const exam = document.getElementById('rankExamName').value.trim();
+      const score = document.getElementById('rankScore').value.trim();
+
+      if (!name || !exam || !score) {
+        alert('برجاء استكمال بيانات الطالب والنتيجة.');
+        return;
+      }
+
+      uniqueIdCounter++;
+      const rankId = 'rank-item-' + uniqueIdCounter;
+      const container = document.getElementById('ranking-list-container');
+
+      const card = document.createElement('div');
+      card.className = 'student-card';
+      card.id = rankId;
+      card.innerHTML = `
+        <div style="display: flex; gap: 5px;">
+          <button class="action-link-btn delete-btn" onclick="removeElement('${rankId}')">حذف 🗑️</button>
+        </div>
+        <div class="student-info">
+          <div class="student-id">${name}</div>
+          <div class="exam-name">${exam}</div>
+        </div>
+        <div class="score-badge">${score}</div>
+      `;
+      container.appendChild(card);
+      alert('تم تحديث قائمة الأوائل بنجاح 🏆');
+      document.getElementById('rankStudentId').value = '';
+      document.getElementById('rankExamName').value = '';
+      document.getElementById('rankScore').value = '';
     }
 
     function uploadPdfFile() {
       const name = document.getElementById('pdfNameInput').value.trim();
       const link = document.getElementById('pdfLinkInput').value.trim();
-      if (!name || !link) {
-        alert('من فضلك أدخل اسم ملف الـ PDF ورابط التحميل!');
+      if (!name) {
+        alert('برجاء إدخال اسم الملف.');
         return;
       }
+
       uniqueIdCounter++;
-      const uniqueId = 'pdf-item-' + uniqueIdCounter;
+      const pdfId = 'pdf-item-' + uniqueIdCounter;
       const container = document.getElementById('pdf-list-container');
-      const newCard = document.createElement('div');
-      newCard.className = 'panel-card';
-      newCard.id = uniqueId;
-      newCard.innerHTML = `
+
+      const card = document.createElement('div');
+      card.className = 'panel-card';
+      card.id = pdfId;
+      card.innerHTML = `
         <div style="display: flex; gap: 5px;">
-          <button class="action-link-btn delete-btn" onclick="removeElement('${uniqueId}')">حذف 🗑️</button>
-          <a href="${link}" target="_blank" class="action-link-btn">تحميل 📥</a>
+          <button class="action-link-btn delete-btn" onclick="removeElement('${pdfId}')">حذف 🗑️</button>
+          <a href="${link || '#'}" target="_blank" class="action-link-btn">تحميل 📥</a>
         </div>
         <div class="student-info">
           <div class="student-id">${name}</div>
           <div class="exam-name">صيغة PDF - جاهز للتحميل</div>
-        </div>`;
-      container.prepend(newCard);
-      alert('تم رفع ملف الـ PDF وإضافته للمنصة بنجاح! 📁');
+        </div>
+      `;
+      container.appendChild(card);
+      alert('تم رفع ملف الـ PDF بنجاح للمنصة 📁');
       document.getElementById('pdfNameInput').value = '';
       document.getElementById('pdfLinkInput').value = '';
     }
@@ -870,35 +880,38 @@
       const title = document.getElementById('mediaTitle').value.trim();
       const link = document.getElementById('mediaLink').value.trim();
       if (!title) {
-        alert('من فضلك أدخل عنوان الفيديو!');
+        alert('برجاء إدخال عنوان الفيديو.');
         return;
       }
+
       uniqueIdCounter++;
-      const uniqueId = 'vid-item-' + uniqueIdCounter;
-      const vList = document.getElementById('videos-list');
-      const newCard = document.createElement('div');
-      newCard.className = 'panel-card';
-      newCard.id = uniqueId;
-      newCard.innerHTML = `
+      const vidId = 'vid-item-' + uniqueIdCounter;
+      const container = document.getElementById('videos-list');
+
+      const card = document.createElement('div');
+      card.className = 'panel-card';
+      card.id = vidId;
+      card.innerHTML = `
         <div style="display: flex; gap: 5px;">
-          <button class="action-link-btn delete-btn" onclick="removeElement('${uniqueId}')">حذف 🗑️</button>
+          <button class="action-link-btn delete-btn" onclick="removeElement('${vidId}')">حذف 🗑️</button>
           <button class="action-link-btn" onclick="playVideo('${link}')">تشغيل 📺</button>
         </div>
         <div class="student-info">
           <div class="student-id">${title}</div>
-          <div class="exam-name">محاضرة مرئية مسجلة</div>
-        </div>`;
-      vList.prepend(newCard);
-      alert('تم رفع الفيديو وتشغيله في المنصة بنجاح! 🎬');
+          <div class="exam-name">فيديو تعليمي متاح للمشاهدة</div>
+        </div>
+      `;
+      container.appendChild(card);
+      alert('تم إضافة وتشغيل الفيديو بنجاح 🎬');
       document.getElementById('mediaTitle').value = '';
       document.getElementById('mediaLink').value = '';
     }
 
     function playVideo(url) {
-      if (url && url !== '') {
+      if (url && url !== '#') {
         window.open(url, '_blank');
       } else {
-        alert('جاري تشغيل الفيديو التعليمي مباشرة على المنصة 🎥⚡');
+        alert('عذراً، الرابط غير متوفر حالياً.');
       }
     }
 
@@ -907,12 +920,21 @@
       const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = 'fahim_platform_farag.html';
+      a.download = 'Manasa_Fahim_Farag.html';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
+      alert('تم تجهيز ملف المنصة وتنزيله بنجاح يا يوسف! 📥');
+    }
+
+    function downloadApkApp() {
+      alert('جاري تجهيز وبدء تحميل تطبيق المنصة (APK) لجوالك يا يوسف! 📱⚡');
+      // يمكنك استبدال الرابط أدناه برابط ملف الـ APK الحقيقي الخاص بك لاحقاً
+      const dummyAppUrl = '#'; 
+      if(dummyAppUrl !== '#') {
+        window.location.href = dummyAppUrl;
+      }
     }
   </script>
-
 </body>
 </html>
