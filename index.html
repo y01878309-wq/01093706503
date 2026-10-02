@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>منصه فاهم التعليميه.farag</title>
+  <!-- استدعاء مكتبة تسجيل الدخول من جوجل الرسمية -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -17,17 +19,17 @@
       padding: 15px;
     }
     
-    /* شاشة تسجيل الدخول بالإيميل */
+    /* شاشة تسجيل الدخول بجوجل */
     .login-container {
       background: rgba(17, 24, 39, 0.95);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 24px;
-      padding: 25px 20px;
+      padding: 30px 20px;
       text-align: center;
       max-width: 400px;
       width: 100%;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-      margin-top: 30px;
+      margin-top: 40px;
     }
 
     .logo-box {
@@ -59,49 +61,15 @@
     .subtitle {
       color: #94a3b8;
       font-size: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
     }
 
-    .input-group {
+    .google-btn-wrapper {
+      display: flex;
+      justify-content: center;
       margin-bottom: 15px;
-      text-align: right;
     }
-    .input-group label {
-      display: block;
-      font-size: 12px;
-      color: #cbd5e1;
-      margin-bottom: 5px;
-    }
-    .input-group input {
-      width: 100%;
-      background: #0f172a;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      padding: 12px;
-      color: white;
-      font-size: 14px;
-      outline: none;
-      text-align: left;
-    }
-    .input-group input:focus { border-color: #38bdf8; }
 
-    .action-btn {
-      background: #0284c7;
-      color: white;
-      padding: 12px;
-      border: none;
-      border-radius: 12px;
-      font-weight: bold;
-      font-size: 15px;
-      cursor: pointer;
-      width: 100%;
-      margin-bottom: 12px;
-      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4);
-      display: block;
-      text-align: center;
-    }
-    .action-btn:hover { background: #0369a1; }
-    
     .download-apk-btn {
       background: linear-gradient(135deg, #8b5cf6, #6d28d9);
       color: white;
@@ -112,16 +80,16 @@
       font-size: 14px;
       cursor: pointer;
       width: 100%;
-      margin-bottom: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
       text-decoration: none;
       box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+      margin-top: 10px;
     }
 
-    /* لوحة المنصة العامة */
+    /* واجهة المنصة العامة */
     #dashboard-view {
       display: none;
       width: 100%;
@@ -142,14 +110,15 @@
       color: #38bdf8;
       font-size: 12px;
       font-weight: 600;
+      text-align: right;
     }
     .logout-btn {
       background: #ef4444;
       color: white;
       border: none;
-      padding: 5px 12px;
+      padding: 5px 10px;
       border-radius: 6px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: bold;
       cursor: pointer;
     }
@@ -228,25 +197,19 @@
     }
     .action-link-btn:hover { background: #0369a1; }
 
-    /* لوحة الأدمن الخاصة بك (تظهر فقط لإيميلك) */
+    /* صندوق إضافة المحتوى الخاص بالأدمن فقط */
     .admin-upload-box {
-      background: linear-gradient(135deg, #1e293b, #0f172a);
-      border: 2px dashed #38bdf8;
+      background: rgba(2, 132, 199, 0.1);
+      border: 1px dashed #38bdf8;
       border-radius: 12px;
       padding: 15px;
       margin-bottom: 15px;
-      text-align: center;
+      display: none; /* يظهر فقط ليوسف فرج */
     }
-    .admin-upload-box h4 { color: #38bdf8; font-size: 14px; margin-bottom: 8px; }
-    .admin-input {
-      width: 100%;
-      background: #0b0f19;
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 6px;
-      padding: 8px;
-      color: white;
-      font-size: 12px;
-      margin-bottom: 8px;
+    .admin-upload-box h4 { color: #38bdf8; font-size: 13px; margin-bottom: 8px; }
+    .admin-upload-box input {
+      width: 100%; background: #0f172a; border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 6px; padding: 8px; color: white; font-size: 12px; margin-bottom: 8px;
     }
 
     /* نافذة الامتحان المنبثقة للطالب */
@@ -316,7 +279,7 @@
 </head>
 <body>
 
-  <!-- شاشة تسجيل الدخول بالإيميل -->
+  <!-- شاشة تسجيل الدخول بجوجل -->
   <div class="login-container" id="login-section">
     <div class="logo-box">
       <div style="font-size: 24px;">🛡️</div>
@@ -324,15 +287,29 @@
     </div>
     
     <h1>منصة فاهم التعليمية</h1>
-    <div class="subtitle">سجل بريدك الإلكتروني لدخول المنصة</div>
+    <div class="subtitle">سجل الدخول بحساب جوجل للمتابعة</div>
     
-    <div class="input-group">
-      <label>البريد الإلكتروني:</label>
-      <input type="email" id="user-email-input" placeholder="example@gmail.com">
+    <!-- زر جوجل الرسمي -->
+    <div class="google-btn-wrapper">
+      <div id="g_id_onload"
+           data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+           data-callback="handleGoogleLogin"
+           data-auto_prompt="false">
+      </div>
+      <div class="g_id_signin"
+           data-type="standard"
+           data-shape="rectangular"
+           data-theme="filled_black"
+           data-text="signin_with"
+           data-size="large"
+           data-locale="ar">
+      </div>
     </div>
 
-    <!-- زر الدخول -->
-    <button type="button" class="action-btn" onclick="loginWithEmail()">🚀 دخول المنصة</button>
+    <!-- زر بديل لو تجربة محلية أو لو حابب تسجل فوراً للإختبار -->
+    <button type="button" class="action-btn" onclick="simulateAdminLogin()" style="background: #1e293b; border: 1px solid #38bdf8; font-size: 13px; margin-top: 5px;">
+      🔑 دخول سريع بصفتي يوسف (الأدمن)
+    </button>
 
     <!-- زر تحميل التطبيق (APK) -->
     <a href="#" id="real-apk-download" class="download-apk-btn" onclick="downloadAppFile(event)">
@@ -344,10 +321,10 @@
   <div id="dashboard-view">
     <div class="top-bar">
       <button class="logout-btn" onclick="logout()">خروج</button>
-      <div class="admin-title" id="welcome-user-text">مرحباً بك</div>
+      <div class="admin-title" id="logged-user-info">مرحباً بك</div>
     </div>
 
-    <!-- أزرار التنقل الرئيسية -->
+    <!-- أزرار التنقل -->
     <div class="nav-grid">
       <button class="nav-btn" id="btn-videos" onclick="showSection('videos', 'btn-videos')">🎥 الفيديوهات</button>
       <button class="nav-btn" id="btn-exams" onclick="showSection('exams', 'btn-exams')">📝 الامتحانات</button>
@@ -368,17 +345,15 @@
       </div>
     </div>
 
-    <!-- 2. الامتحانات (تظهر لوحة الإضافة هنا تلقائياً لو إيميلك هو الأدمن) -->
+    <!-- 2. الامتحانات -->
     <div id="exams" class="content-section">
       <div class="section-title">الامتحانات المتاحة للحل</div>
       
-      <!-- لوحة إضافة امتحان (تظهر لإيميلك يوسف فقط) -->
-      <div id="admin-exam-panel" style="display:none;" class="admin-upload-box">
-        <h4>🛠️ لوحة الأدمن: إضافة امتحان جديد</h4>
-        <input type="text" id="new-exam-title" class="admin-input" placeholder="اسم الامتحان (مثلا: امتحان الجبر)">
-        <input type="text" id="new-exam-q" class="admin-input" placeholder="السؤال الأول">
-        <input type="text" id="new-exam-ans" class="admin-input" placeholder="الإجابة الصحيحة">
-        <button class="action-link-btn" onclick="addNewExam()" style="width:100%; padding:8px;">نشر الامتحان للطلاب 🚀</button>
+      <!-- لوحة إضافة امتحان (تظهر ليوسف فرج فقط) -->
+      <div id="admin-exam-upload" class="admin-upload-box">
+        <h4>➕ لوحة الأدمن: إضافة امتحان جديد</h4>
+        <input type="text" id="new-exam-title" placeholder="عنوان الامتحان (مثلا: امتحان الجبر)">
+        <button class="action-link-btn" onclick="addNewExam()" style="width:100%;">نشر الامتحان للطلاب 🚀</button>
       </div>
 
       <div class="panel-card">
@@ -397,7 +372,7 @@
       <div class="section-title">لوحة الشرف والترتيب العام</div>
       <div class="student-card">
         <div class="student-info">
-          <div class="student-id">يوسف فرج</div>
+          <div class="student-id" id="ranking-user-name">يوسف فرج</div>
           <div class="exam-name">امتحان الفيزياء التجريبي</div>
         </div>
         <div class="score-badge">40/40 (100%)</div>
@@ -449,10 +424,11 @@
   </div>
 
   <script>
-    const ADMIN_EMAIL = "y01878309@gmail.com";
     let currentExamQuestions = [];
     let timerInterval = null;
     let timeLeftSeconds = 0;
+
+    const ADMIN_EMAIL = "y01878309@gmail.com";
 
     window.onload = function() {
       const savedEmail = localStorage.getItem('farag_user_email');
@@ -461,40 +437,61 @@
       }
     };
 
-    function loginWithEmail() {
-      const emailInput = document.getElementById('user-email-input').value.trim().toLowerCase();
-      if(!emailInput || !emailInput.includes('@')) {
-        alert('الرجاء إدخال بريد إلكتروني صحيح!');
-        return;
+    // فك تشفير توكن جوجل للحصول على البريد الإلكتروني
+    function handleGoogleLogin(response) {
+      try {
+        const base64Url = response.credential.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+')._replace ? base64Url.replace(/-/g, '+').replace(/_/g, '/') : base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        
+        const userObj = JSON.parse(jsonPayload);
+        const userEmail = userObj.email;
+        
+        localStorage.setItem('farag_user_email', userEmail);
+        setupUserSession(userEmail);
+      } catch (e) {
+        alert('حدث خطأ أثناء تسجيل الدخول بجوجل، حاول مرة أخرى.');
       }
-      localStorage.setItem('farag_user_email', emailInput);
-      setupUserSession(emailInput);
+    }
+
+    // زر الدخول السريع للاختبار بصفتك الأدمن
+    function simulateAdminLogin() {
+      localStorage.setItem('farag_user_email', ADMIN_EMAIL);
+      setupUserSession(ADMIN_EMAIL);
     }
 
     function setupUserSession(email) {
       document.getElementById('login-section').style.display = 'none';
       document.getElementById('dashboard-view').style.display = 'block';
 
-      if (email === ADMIN_EMAIL) {
-        document.getElementById('welcome-user-text').innerText = "أهلاً بك يا أستاذ يوسف (أدمن)";
-        document.getElementById('admin-exam-panel').style.display = 'block';
+      const infoDiv = document.getElementById('logged-user-info');
+      const adminUploadBox = document.getElementById('admin-exam-upload');
+
+      if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+        infoDiv.innerHTML = `👨‍🏫 يوسف فرج (الأدمن المالك)`;
+        adminUploadBox.style.display = 'block'; // يظهر صندوق الإضافة لك وحدك
       } else {
-        document.getElementById('welcome-user-text').innerText = "طالب: " + email;
-        document.getElementById('admin-exam-panel').style.display = 'none';
+        infoDiv.innerHTML = `student: ${email}`;
+        adminUploadBox.style.display = 'none'; // مخفي تماماً لأي طالب آخر
       }
     }
 
+    function logout() {
+      localStorage.removeItem('farag_user_email');
+      document.getElementById('dashboard-view').style.display = 'none';
+      document.getElementById('login-section').style.display = 'block';
+    }
+
     function addNewExam() {
-      const title = document.getElementById('new-exam-title').value;
-      const q = document.getElementById('new-exam-q').value;
-      if(!title || !q) {
-        alert('برجاء ملء بيانات الامتحان!');
+      const title = document.getElementById('new-exam-title').value.trim();
+      if(!title) {
+        alert('أدخل عنوان الامتحان أولاً!');
         return;
       }
-      alert('تم نشر الامتحان بنجاح على المنصة للطلاب!');
+      alert(`تم بنجاح نشر امتحان "${title}" للطلاب على المنصة! 🚀`);
       document.getElementById('new-exam-title').value = '';
-      document.getElementById('new-exam-q').value = '';
-      document.getElementById('new-exam-ans').value = '';
     }
 
     function downloadAppFile(event) {
@@ -507,12 +504,6 @@
       link.click();
       document.body.removeChild(link);
       alert('تم بدء تحميل تطبيق المنصة (APK) بنجاح على هاتفك! 📦');
-    }
-
-    function logout() {
-      localStorage.removeItem('farag_user_email');
-      document.getElementById('dashboard-view').style.display = 'none';
-      document.getElementById('login-section').style.display = 'block';
     }
 
     function showSection(sectionId, btnId) {
@@ -562,7 +553,7 @@
         timeLeftSeconds--;
         let m = Math.floor(timeLeftSeconds / 60);
         let s = timeLeftSeconds % 60;
-        timerBadge.innerText = `⏱️ ${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+        timerBadge.innerText = `⏱️️ ${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
       }, 1000);
     }
 
