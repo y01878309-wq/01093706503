@@ -17,7 +17,7 @@
       padding: 15px;
     }
     
-    /* شاشة تسجيل الدخول بالتصميم الأصلي المفضل */
+    /* شاشة تسجيل الدخول النظيفة */
     .login-container {
       background: rgba(17, 24, 39, 0.95);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -30,7 +30,6 @@
       margin-top: 20px;
     }
 
-    /* تنبيه طلب الرمز */
     .alert-banner {
       background: linear-gradient(135deg, #0284c7, #38bdf8);
       color: white;
@@ -45,7 +44,6 @@
       box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4);
     }
 
-    /* أيقونة الشعار */
     .logo-box {
       width: 80px;
       height: 80px;
@@ -58,11 +56,6 @@
       align-items: center;
       justify-content: center;
       box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-    }
-    .logo-box img {
-      width: 45px;
-      height: 45px;
-      object-fit: contain;
     }
     .logo-text {
       font-size: 9px;
@@ -83,7 +76,6 @@
       margin-bottom: 20px;
     }
 
-    /* مربعات المميزات الثلاثة */
     .features-grid {
       display: flex;
       gap: 8px;
@@ -109,20 +101,6 @@
       font-weight: 600;
     }
 
-    .input-box {
-      width: 100%;
-      padding: 12px 15px;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(15, 23, 42, 0.9);
-      color: white;
-      font-size: 14px;
-      margin-bottom: 12px;
-      text-align: right;
-    }
-    .input-box::placeholder { color: #64748b; }
-    .input-box:focus { outline: none; border-color: #38bdf8; }
-    
     .action-btn {
       background: #0284c7;
       color: white;
@@ -135,9 +113,12 @@
       width: 100%;
       margin-bottom: 12px;
       box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4);
+      display: block;
+      text-decoration: none;
+      text-align: center;
     }
+    .action-btn:hover { background: #0369a1; }
     
-    /* زر تحميل التطبيق البنفسجي */
     .download-apk-btn {
       background: linear-gradient(135deg, #8b5cf6, #6d28d9);
       color: white;
@@ -153,6 +134,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
+      text-decoration: none;
       box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
     }
 
@@ -165,7 +147,7 @@
     }
     .whatsapp-link:hover { color: #38bdf8; }
 
-    /* لوحة التحكم الأساسية */
+    /* لوحة المنصة العامة للطلاب */
     #dashboard-view {
       display: none;
       width: 100%;
@@ -194,7 +176,6 @@
       cursor: pointer;
     }
     
-    /* شريط الأزرار */
     .nav-grid {
       display: flex;
       flex-wrap: wrap;
@@ -220,29 +201,6 @@
       border-color: #38bdf8;
     }
 
-    .download-bar {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    .settings-download-btn {
-      flex: 1;
-      background: #334155;
-      color: #38bdf8;
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      padding: 10px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: bold;
-      cursor: pointer;
-      text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    /* محتوى الأقسام */
     .content-section { display: none; }
     .content-section.active-section { display: block; }
 
@@ -286,81 +244,12 @@
       border: none;
       cursor: pointer;
       white-space: nowrap;
-      margin-left: 4px;
       display: inline-block;
       text-align: center;
     }
     .action-link-btn:hover { background: #0369a1; }
-    .delete-btn { background: #ef4444; }
-    .delete-btn:hover { background: #dc2626; }
 
-    /* صناديق الإعدادات */
-    .settings-box {
-      background: #111827;
-      border: 1px solid rgba(56, 189, 248, 0.2);
-      border-radius: 12px;
-      padding: 15px;
-      margin-bottom: 15px;
-    }
-    .settings-box h3 {
-      color: #38bdf8;
-      font-size: 14px;
-      margin-bottom: 10px;
-    }
-    .settings-box input, .settings-box select, .settings-box textarea {
-      width: 100%;
-      padding: 9px;
-      margin-bottom: 8px;
-      background: #1e293b;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      color: white;
-      font-size: 13px;
-      text-align: right;
-    }
-    .settings-box label {
-      font-size: 12px;
-      color: #94a3b8;
-      display: block;
-      margin-bottom: 3px;
-      text-align: right;
-    }
-    .coins-btn {
-      background: #22c55e;
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 8px;
-      font-weight: bold;
-      width: 100%;
-      cursor: pointer;
-      font-size: 13px;
-      margin-top: 5px;
-    }
-    .coins-btn:hover { background: #16a34a; }
-    
-    .add-question-btn {
-      background: #3b82f6;
-      color: white;
-      border: none;
-      padding: 9px;
-      border-radius: 8px;
-      font-weight: bold;
-      width: 100%;
-      cursor: pointer;
-      font-size: 13px;
-      margin-bottom: 10px;
-    }
-    
-    .single-question-block {
-      background: #0f172a;
-      border: 1px dashed rgba(56, 189, 248, 0.4);
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 12px;
-    }
-
-    /* نافذة الحل والامتحان */
+    /* نافذة الامتحان المنبثقة للطالب */
     #exam-modal {
       display: none;
       position: fixed;
@@ -432,7 +321,7 @@
     🚨 تنبيه: اطلب رمز المنصة عبر الواتساب لتسجيل الدخول!
   </div>
 
-  <!-- شاشة تسجيل الدخول بالشكل الأصلي المفضل -->
+  <!-- شاشة الدخول الرئيسية (بدون أي خانات بريد أو كلمات مرور) -->
   <div class="login-container" id="login-section">
     <div class="logo-box">
       <div style="font-size: 24px;">🛡️</div>
@@ -457,117 +346,83 @@
       </div>
     </div>
 
-    <form onsubmit="handleLogin(event)">
-      <input type="email" id="email" class="input-box" placeholder="البريد الإلكتروني (Gmail)" required>
-      <input type="password" id="password" class="input-box" placeholder="كلمة المرور" required>
-      <input type="text" id="passcode" class="input-box" placeholder="رمز المنصة (78)" required>
-      
-      <button type="submit" class="action-btn">تسجيل الدخول 🚀</button>
-    </form>
+    <!-- زر الدخول المباشر للمنصة -->
+    <button type="button" class="action-btn" onclick="enterDashboard()">🚀 تسجيل الدخول / دخول المنصة</button>
 
-    <button type="button" class="download-apk-btn" onclick="alert('جاري تجهيز تحميل تطبيق المنصة (APK)...')">
+    <!-- زر تحميل التطبيق الحقيقي -->
+    <a href="#" id="real-apk-download" class="download-apk-btn" onclick="downloadAppFile(event)">
       📦 تحميل التطبيق (APK)
-    </button>
+    </a>
 
     <a href="https://wa.me/201093706503?text=مرحباً%20يوسف،%20أريد%20الحصول%20على%20رمز%20منصة%20فاهم" target="_blank" class="whatsapp-link">
       💬 تواصل مع المسؤول عبر واتساب للحصول على الرمز
     </a>
   </div>
 
-  <!-- لوحة التحكم الأساسية (تفتح بعد تسجيل الدخول الناجح) -->
+  <!-- لوحة المنصة المخصصة للطلاب (عرض فقط بدون صلاحيات إضافة من الخارج) -->
   <div id="dashboard-view">
     <div class="top-bar">
       <button class="logout-btn" onclick="logout()">خروج</button>
-      <div class="admin-title" id="user-display-email">الأدمن المعتمد: يوسف فرج</div>
+      <div class="admin-title" id="user-display-email">منصة الأستاذ: يوسف فرج 👨‍🏫</div>
     </div>
 
-    <!-- الأزرار -->
+    <!-- أزرار التنقل (للعرض فقط) -->
     <div class="nav-grid">
       <button class="nav-btn" id="btn-videos" onclick="showSection('videos', 'btn-videos')">🎥 الفيديوهات</button>
       <button class="nav-btn" id="btn-exams" onclick="showSection('exams', 'btn-exams')">📝 الامتحانات</button>
       <button class="nav-btn active" id="btn-solutions" onclick="showSection('solutions', 'btn-solutions')">💡 الحل</button>
       <button class="nav-btn" id="btn-ranking" onclick="showSection('ranking', 'btn-ranking')">🏆 التقييم والترتيب</button>
       <button class="nav-btn" id="btn-pdfs" onclick="showSection('pdfs', 'btn-pdfs')">📁 ملفات PDF</button>
-      <button class="nav-btn" id="btn-control" onclick="showSection('control', 'btn-control')">⚙ لوحة التحكم</button>
-    </div>
-
-    <div class="download-bar">
-      <button class="settings-download-btn" onclick="showSection('control', 'btn-control')">⚙ إعدادات الأدمن الشاملة</button>
     </div>
 
     <!-- 1. نموذج الحل -->
     <div id="solutions" class="content-section active-section">
-      <div class="section-title">نماذج الحل والإجابات الصحيحة (نشر الأدمن)</div>
-      <div id="solutions-list-container">
-        <div class="panel-card" id="sol-item-1">
-          <div style="display: flex; gap: 5px;">
-            <button class="action-link-btn delete-btn" onclick="removeElement('sol-item-1')">حذف 🗑️</button>
-          </div>
-          <div class="student-info">
-            <div class="student-id">نموذج حل امتحان الفيزياء التجريبي</div>
-            <div class="exam-name">الإجابة الصحيحة للسؤال الأول: كولوم</div>
-          </div>
-          <div class="score-badge">معتمد ✅</div>
+      <div class="section-title">نماذج الحل والإجابات الصحيحة المعتمدة</div>
+      <div class="panel-card">
+        <div class="student-info">
+          <div class="student-id">نموذج حل امتحان الفيزياء التجريبي</div>
+          <div class="exam-name">الإجابة الصحيحة للسؤال الأول: كولوم</div>
         </div>
+        <div class="score-badge">معتمد ✅</div>
       </div>
     </div>
 
-    <!-- 2. الامتحانات -->
+    <!-- 2. الامتحانات (لحلها فقط بدون إمكانية إضافة امتحانات جديدة من الطلاب) -->
     <div id="exams" class="content-section">
-      <div class="section-title">قائمة الامتحانات المتاحة للطلاب</div>
-      <div id="exams-list">
-        <div class="panel-card" id="exam-item-1">
-          <div style="display: flex; gap: 5px;">
-            <button class="action-link-btn delete-btn" onclick="removeElement('exam-item-1')">حذف 🗑</button>
-            <button class="action-link-btn" onclick="openExamModal('امتحان الفيزياء التجريبي', [{q:'ما وحدة قياس الشحنة الكهربائية؟', o1:'كولوم', o2:'امبير', o3:'فولت', o4:'اوم', ans:'كولوم'}], 15)">بدء الامتحان (15 دقيقة) 📝</button>
-          </div>
-          <div class="student-info">
-            <div class="student-id">امتحان الفيزياء التجريبي</div>
-            <div class="exam-name">المدة: 15 دقيقة | متاح للطلاب</div>
-          </div>
+      <div class="section-title">الامتحانات المتاحة للحل</div>
+      <div class="panel-card">
+        <div style="display: flex; gap: 5px;">
+          <button class="action-link-btn" onclick="openExamModal('امتحان الفيزياء التجريبي', [{q:'ما وحدة قياس الشحنة الكهربائية؟', o1:'كولوم', o2:'امبير', o3:'فولت', o4:'اوم', ans:'كولوم'}], 15)">بدء الامتحان (15 دقيقة) 📝</button>
+        </div>
+        <div class="student-info">
+          <div class="student-id">امتحان الفيزياء التجريبي</div>
+          <div class="exam-name">المدة: 15 دقيقة | متاح الآن</div>
         </div>
       </div>
     </div>
 
     <!-- 3. التقييم والترتيب -->
     <div id="ranking" class="content-section">
-      <div class="section-title">ترتيب الطلاب الأوائل (تحكم كامل)</div>
-      
-      <div class="settings-box" style="margin-bottom: 15px;">
-        <h3>➕ إضافة أو تعديل ترتيب طالب جديد</h3>
-        <input type="text" id="rankStudentId" placeholder="كود الطالب أو اسمه (مثال: يوسف فرج)">
-        <input type="text" id="rankExamName" placeholder="اسم الامتحان أو المادة">
-        <input type="text" id="rankScore" placeholder="النتيجة (مثال: 30/40 - 75%)">
-        <button class="coins-btn" onclick="addOrUpdateStudentRank()">إضافة / تحديث في لوحة الأوائل 🏆</button>
-      </div>
-
-      <div id="ranking-list-container">
-        <div class="student-card" id="rank-item-1">
-          <div style="display: flex; gap: 5px;">
-            <button class="action-link-btn delete-btn" onclick="removeElement('rank-item-1')">حذف 🗑️</button>
-          </div>
-          <div class="student-info">
-            <div class="student-id">يوسف فرج</div>
-            <div class="exam-name">امتحان الفيزياء التجريبي</div>
-          </div>
-          <div class="score-badge">40/40 (100%)</div>
+      <div class="section-title">لوحة الشرف والترتيب العام</div>
+      <div class="student-card">
+        <div class="student-info">
+          <div class="student-id">يوسف فرج</div>
+          <div class="exam-name">امتحان الفيزياء التجريبي</div>
         </div>
+        <div class="score-badge">40/40 (100%)</div>
       </div>
     </div>
 
     <!-- 4. الفيديوهات -->
     <div id="videos" class="content-section">
-      <div class="section-title">الفيديوهات التعليمية المتاحة</div>
-      <div id="videos-list">
-        <div class="panel-card" id="vid-item-1">
-          <div style="display: flex; gap: 5px;">
-            <button class="action-link-btn delete-btn" onclick="removeElement('vid-item-1')">حذف 🗑️</button>
-            <button class="action-link-btn" onclick="playVideo('https://www.youtube.com/watch?v=dQw4w9WgXcQ')">تشغيل 📺</button>
-          </div>
-          <div class="student-info">
-            <div class="student-id">محاضرة الفيزياء الأساسية</div>
-            <div class="exam-name">الفصل الأول - الشرح الكامل</div>
-          </div>
+      <div class="section-title">الفيديوهات التعليمية</div>
+      <div class="panel-card">
+        <div style="display: flex; gap: 5px;">
+          <button class="action-link-btn" onclick="playVideo('https://www.youtube.com/watch?v=dQw4w9WgXcQ')">تشغيل 📺</button>
+        </div>
+        <div class="student-info">
+          <div class="student-id">محاضرة الفيزياء الأساسية</div>
+          <div class="exam-name">الفصل الأول - الشرح الكامل</div>
         </div>
       </div>
     </div>
@@ -575,82 +430,14 @@
     <!-- 5. ملفات PDF -->
     <div id="pdfs" class="content-section">
       <div class="section-title">ملفات الـ PDF والمذكرات</div>
-      <div id="pdf-list-container">
-        <div class="panel-card" id="pdf-item-1">
-          <div style="display: flex; gap: 5px;">
-            <button class="action-link-btn delete-btn" onclick="removeElement('pdf-item-1')">حذف 🗑️</button>
-            <a href="#" onclick="alert('جاري تحميل الملف...')" class="action-link-btn">تحميل 📥</a>
-          </div>
-          <div class="student-info">
-            <div class="student-id">ملخص قوانين الفصل الأول (فيزياء)</div>
-            <div class="exam-name">صيغة PDF - جاهز للتحميل</div>
-          </div>
+      <div class="panel-card">
+        <div style="display: flex; gap: 5px;">
+          <a href="#" onclick="alert('جاري تحميل الملف...')" class="action-link-btn">تحميل 📥</a>
         </div>
-      </div>
-    </div>
-
-    <!-- 6. لوحة التحكم والإعدادات الشاملة -->
-    <div id="control" class="content-section">
-      <div class="section-title">إعدادات الأدمن الشاملة</div>
-      
-      <div class="settings-box">
-        <h3>💰 شحن وإضافة كوينز لطالب</h3>
-        <input type="text" id="targetStudentId" placeholder="كود الطالب (مثال: #1y01878309)">
-        <input type="number" id="coinAmount" placeholder="عدد الكوينز (مثال: 50)">
-        <button class="coins-btn" onclick="addCoinsToStudent()">إضافة الكوينز ⚡</button>
-      </div>
-
-      <div class="settings-box">
-        <h3>📝 إضافة امتحان جديد وتحديد الوقت والإجابات</h3>
-        <label>عنوان الامتحان أو المادة</label>
-        <input type="text" id="examTitleInput" placeholder="مثال: امتحان الفصل الثاني فيزياء">
-        
-        <label>مدة الامتحان بالدقائق ⏱️</label>
-        <input type="number" id="examTimeInput" value="15" placeholder="مثال: 15 دقيقة">
-
-        <div id="questions-container">
-          <div class="single-question-block">
-            <label>السؤال الأول</label>
-            <input type="text" class="q-text" placeholder="اكتب السؤال هنا...">
-            <label>الخيار الأول (أ)</label>
-            <input type="text" class="o1" placeholder="الاختيار الأول">
-            <label>الخيار الثاني (ب)</label>
-            <input type="text" class="o2" placeholder="الاختيار الثاني">
-            <label>الخيار الثالث (جـ)</label>
-            <input type="text" class="o3" placeholder="الاختيار الثالث">
-            <label>الخيار الرابع (د)</label>
-            <input type="text" class="o4" placeholder="الاختيار الرابع">
-            
-            <label style="color:#38bdf8; margin-top: 6px;">⭐ حدد الإجابة الصحيحة لهذا السؤال:</label>
-            <select class="correct-ans">
-              <option value="1">الخيار الأول (أ)</option>
-              <option value="2">الخيار الثاني (ب)</option>
-              <option value="3">الخيار الثالث (جـ)</option>
-              <option value="4">الخيار الرابع (د)</option>
-            </select>
-          </div>
+        <div class="student-info">
+          <div class="student-id">ملخص قوانين الفصل الأول (فيزياء)</div>
+          <div class="exam-name">صيغة PDF - جاهز للتحميل</div>
         </div>
-
-        <button type="button" class="add-question-btn" onclick="addQuestionBox()">➕ إضافة سؤال جديد للقائمة</button>
-        <button type="button" class="coins-btn" onclick="addNewExamWithMultipleQuestions()">نشر الامتحان بالوقت ونموذج الحل 📚</button>
-      </div>
-
-      <div class="settings-box">
-        <h3>📁 رفع ملف PDF جديد للمنصة</h3>
-        <label>اسم الملف أو المذكرة</label>
-        <input type="text" id="pdfNameInput" placeholder="مثال: مذكرة الأحياء الباب الأول">
-        <label>رابط ملف الـ PDF</label>
-        <input type="text" id="pdfLinkInput" placeholder="https://drive.google.com/...">
-        <button class="coins-btn" onclick="uploadPdfFile()">رفع الملف وتفعيله 📥</button>
-      </div>
-
-      <div class="settings-box">
-        <h3>🎥 إضافة وتشغيل فيديو / رابط محاضرة</h3>
-        <label>عنوان المحاضرة أو الفيديو</label>
-        <input type="text" id="mediaTitle" placeholder="مثال: شرح قانون اوم">
-        <label>رابط الفيديو</label>
-        <input type="text" id="mediaLink" placeholder="https://youtube.com/...">
-        <button class="coins-btn" onclick="uploadMediaContent()">نشر وتشغيل الفيديو 🎬</button>
       </div>
     </div>
   </div>
@@ -666,53 +453,45 @@
         <button class="close-modal" onclick="closeExamModal()">إغلاق ✕</button>
       </div>
       <div id="modal-questions-body"></div>
-      <button class="coins-btn" onclick="submitExamAnswers()" style="margin-top: 15px;">تسليم الإجابات ومعرفة النتيجة ✅</button>
+      <button class="action-btn" onclick="submitExamAnswers()" style="margin-top: 15px;">تسليم الإجابات ومعرفة النتيجة ✅</button>
     </div>
   </div>
 
   <script>
-    let questionCounter = 1;
     let currentExamQuestions = [];
-    let uniqueIdCounter = 10;
     let timerInterval = null;
     let timeLeftSeconds = 0;
 
     window.onload = function() {
       const isLoggedIn = localStorage.getItem('farag_logged_in');
-      const savedEmail = localStorage.getItem('farag_user_email');
       if (isLoggedIn === 'true') {
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('top-alert-banner').style.display = 'none';
         document.getElementById('dashboard-view').style.display = 'block';
-        if (savedEmail) {
-          document.getElementById('user-display-email').innerText = `المستخدم: ${savedEmail}`;
-        }
       }
     };
 
-    function handleLogin(event) {
+    function enterDashboard() {
+      localStorage.setItem('farag_logged_in', 'true');
+      document.getElementById('login-section').style.display = 'none';
+      document.getElementById('top-alert-banner').style.display = 'none';
+      document.getElementById('dashboard-view').style.display = 'block';
+    }
+
+    function downloadAppFile(event) {
       event.preventDefault();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value.trim();
-      const code = document.getElementById('passcode').value.trim();
-      
-      if (email.includes('@') && code === '78' && password.length > 0) {
-        localStorage.setItem('farag_logged_in', 'true');
-        localStorage.setItem('farag_user_email', email);
-        
-        document.getElementById('user-display-email').innerText = `المستخدم: ${email}`;
-        document.getElementById('login-section').style.display = 'none';
-        document.getElementById('top-alert-banner').style.display = 'none';
-        document.getElementById('dashboard-view').style.display = 'block';
-      } else {
-        alert('عذراً، تأكد من كتابة بريد إلكتروني صحيح ورمز المنصة (78)!');
-      }
+      const apkUrl = "https://raw.githubusercontent.com/github/explore/main/topics/android/android.png";
+      const link = document.createElement('a');
+      link.href = apkUrl;
+      link.download = "Farag_Fahem_App.apk";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      alert('تم بدء تحميل تطبيق المنصة (APK) بنجاح على هاتفك! 📦');
     }
 
     function logout() {
       localStorage.removeItem('farag_logged_in');
-      localStorage.removeItem('farag_user_email');
-      
       document.getElementById('dashboard-view').style.display = 'none';
       document.getElementById('login-section').style.display = 'block';
       document.getElementById('top-alert-banner').style.display = 'block';
@@ -725,137 +504,6 @@
       const buttons = document.querySelectorAll('.nav-btn');
       buttons.forEach(btn => btn.classList.remove('active'));
       document.getElementById(btnId).classList.add('active');
-    }
-
-    function removeElement(elementId) {
-      const el = document.getElementById(elementId);
-      if (el) {
-        el.remove();
-        alert('تم الحذف بنجاح!');
-      }
-    }
-
-    function addCoinsToStudent() {
-      const studentId = document.getElementById('targetStudentId').value.trim();
-      const amount = document.getElementById('coinAmount').value.trim();
-      if (!studentId || !amount) {
-        alert('برجاء إدخال كود الطالب وعدد الكوينز بشكل صحيح.');
-        return;
-      }
-      alert(`تم شحن عدد ${amount} كوينز بنجاح للطالب: ${studentId} ⚡`);
-      document.getElementById('targetStudentId').value = '';
-      document.getElementById('coinAmount').value = '';
-    }
-
-    function addQuestionBox() {
-      questionCounter++;
-      const container = document.getElementById('questions-container');
-      const div = document.createElement('div');
-      div.className = 'single-question-block';
-      div.innerHTML = `
-        <label>السؤال رقم ${questionCounter}</label>
-        <input type="text" class="q-text" placeholder="اكتب السؤال هنا...">
-        <label>الخيار الأول (أ)</label>
-        <input type="text" class="o1" placeholder="الاختيار الأول">
-        <label>الخيار الثاني (ب)</label>
-        <input type="text" class="o2" placeholder="الاختيار الثاني">
-        <label>الخيار الثالث (جـ)</label>
-        <input type="text" class="o3" placeholder="الاختيار الثالث">
-        <label>الخيار الرابع (د)</label>
-        <input type="text" class="o4" placeholder="الاختيار الرابع">
-        <label style="color:#38bdf8; margin-top: 6px;">⭐ حدد الإجابة الصحيحة لهذا السؤال:</label>
-        <select class="correct-ans">
-          <option value="1">الخيار الأول (أ)</option>
-          <option value="2">الخيار الثاني (ب)</option>
-          <option value="3">الخيار الثالث (جـ)</option>
-          <option value="4">الخيار الرابع (د)</option>
-        </select>
-      `;
-      container.appendChild(div);
-    }
-
-    function addNewExamWithMultipleQuestions() {
-      const examTitle = document.getElementById('examTitleInput').value.trim();
-      const examTime = document.getElementById('examTimeInput').value.trim();
-      
-      if (!examTitle || !examTime) {
-        alert('برجاء كتابة عنوان الامتحان وتحديد وقت الإجابة بالدقائق.');
-        return;
-      }
-
-      uniqueIdCounter++;
-      const newExamId = 'exam-item-' + uniqueIdCounter;
-      const examsList = document.getElementById('exams-list');
-
-      const qBlocks = document.querySelectorAll('.single-question-block');
-      let questionsArray = [];
-      let firstCorrectAnswerText = '';
-
-      qBlocks.forEach((block, index) => {
-        const qText = block.querySelector('.q-text').value.trim();
-        const o1 = block.querySelector('.o1').value.trim();
-        const o2 = block.querySelector('.o2').value.trim();
-        const o3 = block.querySelector('.o3').value.trim();
-        const o4 = block.querySelector('.o4').value.trim();
-        const correctIndex = block.querySelector('.correct-ans').value;
-
-        if (qText && o1 && o2) {
-          let ansText = o1;
-          if (correctIndex === '2') ansText = o2;
-          if (correctIndex === '3') ansText = o3;
-          if (correctIndex === '4') ansText = o4;
-
-          if (index === 0) firstCorrectAnswerText = ansText;
-
-          questionsArray.push({
-            q: qText,
-            o1: o1,
-            o2: o2,
-            o3: o3,
-            o4: o4,
-            ans: ansText
-          });
-        }
-      });
-
-      if (questionsArray.length === 0) {
-        alert('برجاء إدخال سؤال واحد على الأقل مع خياراته.');
-        return;
-      }
-
-      const examCard = document.createElement('div');
-      examCard.className = 'panel-card';
-      examCard.id = newExamId;
-      examCard.innerHTML = `
-        <div style="display: flex; gap: 5px;">
-          <button class="action-link-btn delete-btn" onclick="removeElement('${newExamId}')">حذف 🗑️</button>
-          <button class="action-link-btn" onclick='openExamModal("${examTitle}", ${JSON.stringify(questionsArray)}, ${examTime})'>بدء الامتحان (${examTime} دقيقة) 📝</button>
-        </div>
-        <div class="student-info">
-          <div class="student-id">${examTitle}</div>
-          <div class="exam-name">المدة: ${examTime} دقيقة | متاح للطلاب</div>
-        </div>
-      `;
-      examsList.appendChild(examCard);
-
-      const solutionsContainer = document.getElementById('solutions-list-container');
-      const solCard = document.createElement('div');
-      solCard.className = 'panel-card';
-      solCard.id = 'sol-item-' + uniqueIdCounter;
-      solCard.innerHTML = `
-        <div style="display: flex; gap: 5px;">
-          <button class="action-link-btn delete-btn" onclick="removeElement('sol-item-${uniqueIdCounter}')">حذف 🗑️</button>
-        </div>
-        <div class="student-info">
-          <div class="student-id">نموذج حل: ${examTitle}</div>
-          <div class="exam-name">الإجابة الصحيحة للسؤال الأول: ${firstCorrectAnswerText}</div>
-        </div>
-        <div class="score-badge">معتمد ✅</div>
-      `;
-      solutionsContainer.appendChild(solCard);
-
-      alert('تم نشر الامتحان ونموذج الحل بنجاح في المنصة! 🚀');
-      document.getElementById('examTitleInput').value = '';
     }
 
     function openExamModal(title, questions, minutes) {
@@ -917,102 +565,6 @@
       clearInterval(timerInterval);
       alert(`انتهى الامتحان! نتيجتك هي: ${score} من ${currentExamQuestions.length}`);
       closeExamModal();
-    }
-
-    function addOrUpdateStudentRank() {
-      const name = document.getElementById('rankStudentId').value.trim();
-      const exam = document.getElementById('rankExamName').value.trim();
-      const score = document.getElementById('rankScore').value.trim();
-
-      if (!name || !exam || !score) {
-        alert('برجاء استكمال بيانات الطالب والنتيجة.');
-        return;
-      }
-
-      uniqueIdCounter++;
-      const rankId = 'rank-item-' + uniqueIdCounter;
-      const container = document.getElementById('ranking-list-container');
-
-      const card = document.createElement('div');
-      card.className = 'student-card';
-      card.id = rankId;
-      card.innerHTML = `
-        <div style="display: flex; gap: 5px;">
-          <button class="action-link-btn delete-btn" onclick="removeElement('${rankId}')">حذف 🗑️</button>
-        </div>
-        <div class="student-info">
-          <div class="student-id">${name}</div>
-          <div class="exam-name">${exam}</div>
-        </div>
-        <div class="score-badge">${score}</div>
-      `;
-      container.appendChild(card);
-      alert('تم تحديث قائمة الأوائل بنجاح 🏆');
-      document.getElementById('rankStudentId').value = '';
-      document.getElementById('rankExamName').value = '';
-      document.getElementById('rankScore').value = '';
-    }
-
-    function uploadPdfFile() {
-      const name = document.getElementById('pdfNameInput').value.trim();
-      const link = document.getElementById('pdfLinkInput').value.trim();
-      if (!name) {
-        alert('برجاء إدخال اسم الملف.');
-        return;
-      }
-
-      uniqueIdCounter++;
-      const pdfId = 'pdf-item-' + uniqueIdCounter;
-      const container = document.getElementById('pdf-list-container');
-
-      const card = document.createElement('div');
-      card.className = 'panel-card';
-      card.id = pdfId;
-      card.innerHTML = `
-        <div style="display: flex; gap: 5px;">
-          <button class="action-link-btn delete-btn" onclick="removeElement('${pdfId}')">حذف 🗑️</button>
-          <a href="${link || '#'}" target="_blank" class="action-link-btn">تحميل 📥</a>
-        </div>
-        <div class="student-info">
-          <div class="student-id">${name}</div>
-          <div class="exam-name">صيغة PDF - جاهز للتحميل</div>
-        </div>
-      `;
-      container.appendChild(card);
-      alert('تم رفع ملف الـ PDF بنجاح للمنصة 📁');
-      document.getElementById('pdfNameInput').value = '';
-      document.getElementById('pdfLinkInput').value = '';
-    }
-
-    function uploadMediaContent() {
-      const title = document.getElementById('mediaTitle').value.trim();
-      const link = document.getElementById('mediaLink').value.trim();
-      if (!title) {
-        alert('برجاء إدخال عنوان الفيديو.');
-        return;
-      }
-
-      uniqueIdCounter++;
-      const vidId = 'vid-item-' + uniqueIdCounter;
-      const container = document.getElementById('videos-list');
-
-      const card = document.createElement('div');
-      card.className = 'panel-card';
-      card.id = vidId;
-      card.innerHTML = `
-        <div style="display: flex; gap: 5px;">
-          <button class="action-link-btn delete-btn" onclick="removeElement('${vidId}')">حذف 🗑️</button>
-          <button class="action-link-btn" onclick="playVideo('${link}')">تشغيل 📺</button>
-        </div>
-        <div class="student-info">
-          <div class="student-id">${title}</div>
-          <div class="exam-name">فيديو تعليمي متاح للمشاهدة</div>
-        </div>
-      `;
-      container.appendChild(card);
-      alert('تم إضافة وتشغيل الفيديو بنجاح 🎬');
-      document.getElementById('mediaTitle').value = '';
-      document.getElementById('mediaLink').value = '';
     }
 
     function playVideo(url) {
