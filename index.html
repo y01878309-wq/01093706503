@@ -332,7 +332,7 @@
 
         <div style="margin: 15px 0; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
           <input type="email" id="login-email" class="auth-input" placeholder="البريد الإلكتروني">
-          <input type="password" id="user-pass" class="auth-input" placeholder="كلمة المرور (الافتراضية: ٠nH2Fyg_yw8lqy@e)">
+          <input type="password" id="user-pass" class="auth-input" placeholder="كلمة المرور">
           <button class="auth-btn" onclick="customLogin()">تسجيل الدخول ✅</button>
           <div class="text-link-auth" onclick="switchAuthPane('pane-forgot')">نسيت كلمة المرور؟</div>
         </div>
@@ -531,7 +531,7 @@
     let activeQuestions = [];
     let currentExamId = null;
     const ADMIN_EMAIL = "y01878309@gmail.com";
-    const DEFAULT_PASS = "٠nH2Fyg_yw8lqy@e";
+    const DEFAULT_PASS = "goks123";
 
     let activeResetEmail = "";
     let generatedResetCode = "";
@@ -588,7 +588,7 @@
       let userStoredPass = localStorage.getItem('pass_' + emailInput) || DEFAULT_PASS;
 
       if(pass !== userStoredPass) {
-        alert('كلمة المرور غير صحيحة! (كلمة المرور الافتراضية هي: ٠nH2Fyg_yw8lqy@e)');
+        alert('كلمة المرور غير صحيحة! (كلمة المرور الافتراضية هي: goks123)');
         return;
       }
       
