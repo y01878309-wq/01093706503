@@ -591,6 +591,15 @@
     let timerInterval = null;
     let timeLeftSeconds = 0;
 
+    // التحقق التلقائي من حالة تسجيل الدخول عند فتح الصفحة
+    window.onload = function() {
+      const isLoggedIn = localStorage.getItem('farag_logged_in');
+      if (isLoggedIn === 'true') {
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('dashboard-view').style.display = 'block';
+      }
+    };
+
     function handleLogin(event) {
       event.preventDefault();
       const email = document.getElementById('email').value.trim();
@@ -598,6 +607,9 @@
       const code = document.getElementById('passcode').value.trim();
       
       if (email === 'y01878309@gmail.com' && code === '78') {
+        // حفظ حالة الدخول عشان ميسجلش تاني
+        localStorage.setItem('farag_logged_in', 'true');
+        
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('dashboard-view').style.display = 'block';
       } else {
@@ -606,6 +618,9 @@
     }
 
     function logout() {
+      // مسح حالة الحفظ عند تسجيل الخروج
+      localStorage.removeItem('farag_logged_in');
+      
       document.getElementById('dashboard-view').style.display = 'none';
       document.getElementById('login-section').style.display = 'block';
     }
@@ -929,7 +944,6 @@
 
     function downloadApkApp() {
       alert('جاري تجهيز وبدء تحميل تطبيق المنصة (APK) لجوالك يا يوسف! 📱⚡');
-      // يمكنك استبدال الرابط أدناه برابط ملف الـ APK الحقيقي الخاص بك لاحقاً
       const dummyAppUrl = '#'; 
       if(dummyAppUrl !== '#') {
         window.location.href = dummyAppUrl;
