@@ -194,6 +194,53 @@
       font-weight: bold;
       border: 1px solid rgba(56, 189, 248, 0.2);
     }
+    .action-link-btn {
+      background: #0284c7;
+      color: white;
+      text-decoration: none;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .action-link-btn:hover { background: #0369a1; }
+
+    /* تنسيق قسم الإعدادات وإضافة الكوينز */
+    .settings-box {
+      background: #111827;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+    }
+    .settings-box h3 {
+      color: #38bdf8;
+      font-size: 15px;
+      margin-bottom: 12px;
+    }
+    .coins-form input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #1e293b;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: white;
+      font-size: 13px;
+      text-align: right;
+    }
+    .coins-btn {
+      background: #22c55e;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: bold;
+      width: 100%;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .coins-btn:hover { background: #16a34a; }
   </style>
 </head>
 <body>
@@ -223,7 +270,7 @@
       <div class="admin-title">لوحة تحكم الأدمن (يوسف فرج)</div>
     </div>
 
-    <!-- الأزرار مع ربط مباشر بالدوال -->
+    <!-- الأزرار -->
     <div class="nav-grid">
       <button class="nav-btn" id="btn-videos" onclick="showSection('videos', 'btn-videos')">🎥 الفيديوهات</button>
       <button class="nav-btn" id="btn-exams" onclick="showSection('exams', 'btn-exams')">📝 الامتحانات</button>
@@ -300,27 +347,54 @@
       </div>
     </div>
 
-    <!-- 5. ملفات PDF -->
+    <!-- 5. ملفات PDF (ظاهرة ومباشرة مع أزرار التحميل والتنزيل) -->
     <div id="pdfs" class="content-section">
-      <div class="section-title">ملفات الـ PDF والمذكرات</div>
+      <div class="section-title">ملفات الـ PDF والمذكرات التعليمية</div>
+      
       <div class="panel-card">
         <div class="student-info">
-          <div class="student-id">ملخص القوانين والمسائل</div>
-          <div class="exam-name">جاهز للتحميل والمعاينة</div>
+          <div class="student-id">ملخص قوانين الفصل الأول (فيزياء)</div>
+          <div class="exam-name">الحجم: 2.4 ميجابايت - صيغة PDF</div>
         </div>
-        <div class="score-badge">تحميل</div>
+        <a href="#" onclick="alert('جاري تحميل ملف ملخص القوانين...')" class="action-link-btn">تحميل 📥</a>
+      </div>
+
+      <div class="panel-card">
+        <div class="student-info">
+          <div class="student-id">كتاب الأسئلة والتدريبات الشاملة</div>
+          <div class="exam-name">الحجم: 5.1 ميجابايت - صيغة PDF</div>
+        </div>
+        <a href="#" onclick="alert('جاري تحميل كتاب التدريبات...')" class="action-link-btn">تحميل 📥</a>
+      </div>
+
+      <div class="panel-card">
+        <div class="student-info">
+          <div class="student-id">مراجعة ليلة الامتحان (مذكرة ذهبية)</div>
+          <div class="exam-name">الحجم: 3.8 ميجابايت - صيغة PDF</div>
+        </div>
+        <a href="#" onclick="alert('جاري تحميل مذكرة المراجعة...')" class="action-link-btn">تحميل 📥</a>
       </div>
     </div>
 
-    <!-- 6. لوحة التحكم -->
+    <!-- 6. لوحة التحكم والإعدادات (مع شحن الكوينز) -->
     <div id="control" class="content-section">
-      <div class="section-title">لوحة التحكم والإضافة</div>
+      <div class="section-title">إعدادات الأدمن والتحكم بالنقاط</div>
+      
+      <div class="settings-box">
+        <h3>💰 شحن وإضافة كوينز لطالب</h3>
+        <div class="coins-form">
+          <input type="text" id="targetStudentId" placeholder="كود الطالب (مثال: #1y01878309)">
+          <input type="number" id="coinAmount" placeholder="عدد الكوينز المراد إضافتها (مثال: 50)">
+          <button class="coins-btn" onclick="addCoinsToStudent()">إضافة الكوينز الآن ⚡</button>
+        </div>
+      </div>
+
       <div class="panel-card">
         <div class="student-info">
-          <div class="student-id">إضافة محتوى جديد</div>
-          <div class="exam-name">التحكم في الأكواد والروابط</div>
+          <div class="student-id">حالة النظام والربط</div>
+          <div class="exam-name">التحكم في صلاحيات المنصة بالكامل</div>
         </div>
-        <div class="score-badge" style="color: #38bdf8;">إدارة</div>
+        <div class="score-badge" style="color: #38bdf8;">نشط</div>
       </div>
     </div>
 
@@ -346,19 +420,29 @@
     }
 
     function showSection(sectionId, btnId) {
-      // إخفاء كل الأقسام
       const sections = document.querySelectorAll('.content-section');
       sections.forEach(sec => sec.style.display = 'none');
 
-      // إظهار القسم المطلوب فوراً
       document.getElementById(sectionId).style.display = 'block';
 
-      // إزالة التحديد عن كل الأزرار
       const buttons = document.querySelectorAll('.nav-btn');
       buttons.forEach(btn => btn.classList.remove('active'));
 
-      // تفعيل الزر الحالي
       document.getElementById(btnId).classList.add('active');
+    }
+
+    function addCoinsToStudent() {
+      const studentId = document.getElementById('targetStudentId').value.trim();
+      const coins = document.getElementById('coinAmount').value.trim();
+
+      if (!studentId || !coins) {
+        alert('من فضلك أدخل كود الطالب وعدد الكوينز بشكل صحيح!');
+        return;
+      }
+
+      alert(`تم بنجاح إضافة ${coins} كوينز للطالب ذو الكود: ${studentId} 🚀`);
+      document.getElementById('targetStudentId').value = '';
+      document.getElementById('coinAmount').value = '';
     }
 
     function downloadPlatformCode() {
