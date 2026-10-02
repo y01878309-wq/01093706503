@@ -134,7 +134,6 @@
       border-color: #38bdf8;
     }
 
-    /* زرار التحميل والإعدادات */
     .download-bar {
       display: flex;
       gap: 10px;
@@ -158,12 +157,8 @@
     }
 
     /* محتوى الأقسام */
-    .content-section {
-      display: none;
-    }
-    .content-section.active-section {
-      display: block;
-    }
+    .content-section { display: none; }
+    .content-section.active-section { display: block; }
 
     .section-title {
       text-align: center;
@@ -203,25 +198,24 @@
       font-size: 12px;
       font-weight: bold;
     }
-    .action-link-btn:hover { background: #0369a1; }
 
-    /* تنسيق قسم الإعدادات وإضافة الكوينز */
+    /* صناديق الإعدادات والتحكم المتطورة للأدمن */
     .settings-box {
       background: #111827;
       border: 1px solid rgba(56, 189, 248, 0.2);
       border-radius: 12px;
-      padding: 20px;
+      padding: 15px;
       margin-bottom: 15px;
     }
     .settings-box h3 {
       color: #38bdf8;
-      font-size: 15px;
-      margin-bottom: 12px;
-    }
-    .coins-form input {
-      width: 100%;
-      padding: 10px;
+      font-size: 14px;
       margin-bottom: 10px;
+    }
+    .settings-box input, .settings-box textarea {
+      width: 100%;
+      padding: 9px;
+      margin-bottom: 8px;
       background: #1e293b;
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 8px;
@@ -229,11 +223,18 @@
       font-size: 13px;
       text-align: right;
     }
+    .settings-box label {
+      font-size: 12px;
+      color: #94a3b8;
+      display: block;
+      margin-bottom: 3px;
+      text-align: right;
+    }
     .coins-btn {
       background: #22c55e;
       color: white;
       border: none;
-      padding: 10px;
+      padding: 9px;
       border-radius: 8px;
       font-weight: bold;
       width: 100%;
@@ -263,7 +264,7 @@
     </a>
   </div>
 
-  <!-- لوحة التحكم الأصلية -->
+  <!-- لوحة التحكم الأساسية -->
   <div id="dashboard-view">
     <div class="top-bar">
       <button class="logout-btn" onclick="logout()">خروج</button>
@@ -282,10 +283,10 @@
 
     <div class="download-bar">
       <button class="settings-download-btn" onclick="downloadPlatformCode()">📥 تنزيل المنصة</button>
-      <button class="settings-download-btn" onclick="showSection('control', 'btn-control')">⚙ إعدادات الأدمن</button>
+      <button class="settings-download-btn" onclick="showSection('control', 'btn-control')">⚙ إعدادات الأدمن الشاملة</button>
     </div>
 
-    <!-- 1. قسم التقييم والترتيب -->
+    <!-- 1. التقييم والترتيب -->
     <div id="ranking" class="content-section active-section">
       <div class="section-title">ترتيب الطلاب الأوائل</div>
       <div class="student-card">
@@ -295,49 +296,39 @@
           <div class="exam-name">امتحان الفيزياء التجريبي - الفصل الأول</div>
         </div>
       </div>
-      <div class="student-card">
-        <div class="score-badge">2 / 2</div>
-        <div class="student-info">
-          <div class="student-id">#2y01878309</div>
-          <div class="exam-name">امتحان الفيزياء التجريبي - الفصل الأول</div>
-        </div>
-      </div>
-      <div class="student-card">
-        <div class="score-badge">2 / 1</div>
-        <div class="student-info">
-          <div class="student-id">#3y01878309</div>
-          <div class="exam-name">امتحان الفيزياء التجريبي - الفصل الأول</div>
-        </div>
-      </div>
     </div>
 
-    <!-- 2. قسم الفيديوهات -->
+    <!-- 2. الفيديوهات -->
     <div id="videos" class="content-section">
-      <div class="section-title">إدارة الفيديوهات التعليمية</div>
-      <div class="panel-card">
-        <div class="student-info">
-          <div class="student-id">محاضرة الفيزياء الأساسية</div>
-          <div class="exam-name">الفصل الأول - الشرح الكامل</div>
+      <div class="section-title">الفيديوهات التعليمية المتاحة</div>
+      <div id="videos-list">
+        <div class="panel-card">
+          <div class="student-info">
+            <div class="student-id">محاضرة الفيزياء الأساسية</div>
+            <div class="exam-name">الفصل الأول - الشرح الكامل</div>
+          </div>
+          <div class="score-badge" style="color: #22c55e;">مفعل</div>
         </div>
-        <div class="score-badge" style="color: #22c55e;">مفعل</div>
       </div>
     </div>
 
-    <!-- 3. قسم الامتحانات -->
+    <!-- 3. الامتحانات -->
     <div id="exams" class="content-section">
-      <div class="section-title">قائمة الامتحانات</div>
-      <div class="panel-card">
-        <div class="student-info">
-          <div class="student-id">امتحان الفيزياء التجريبي</div>
-          <div class="exam-name">متاح لجميع الطلاب</div>
+      <div class="section-title">قائمة الامتحانات المتاحة للطلاب</div>
+      <div id="exams-list">
+        <div class="panel-card">
+          <div class="student-info">
+            <div class="student-id">امتحان الفيزياء التجريبي</div>
+            <div class="exam-name">متاح لجميع الطلاب</div>
+          </div>
+          <div class="score-badge">نشط</div>
         </div>
-        <div class="score-badge">نشط</div>
       </div>
     </div>
 
-    <!-- 4. قسم الحل -->
+    <!-- 4. الحل -->
     <div id="solutions" class="content-section">
-      <div class="section-title">حلول الامتحانات</div>
+      <div class="section-title">حلول الامتحانات النماذج</div>
       <div class="panel-card">
         <div class="student-info">
           <div class="student-id">نموذج الإجابة والتصحيح</div>
@@ -347,55 +338,72 @@
       </div>
     </div>
 
-    <!-- 5. ملفات PDF (ظاهرة ومباشرة مع أزرار التحميل والتنزيل) -->
+    <!-- 5. ملفات PDF -->
     <div id="pdfs" class="content-section">
-      <div class="section-title">ملفات الـ PDF والمذكرات التعليمية</div>
-      
-      <div class="panel-card">
-        <div class="student-info">
-          <div class="student-id">ملخص قوانين الفصل الأول (فيزياء)</div>
-          <div class="exam-name">الحجم: 2.4 ميجابايت - صيغة PDF</div>
+      <div class="section-title">ملفات الـ PDF والمذكرات</div>
+      <div id="pdf-list-container">
+        <div class="panel-card">
+          <div class="student-info">
+            <div class="student-id">ملخص قوانين الفصل الأول (فيزياء)</div>
+            <div class="exam-name">صيغة PDF - جاهز</div>
+          </div>
+          <a href="#" onclick="alert('جاري تحميل الملف...')" class="action-link-btn">تحميل 📥</a>
         </div>
-        <a href="#" onclick="alert('جاري تحميل ملف ملخص القوانين...')" class="action-link-btn">تحميل 📥</a>
-      </div>
-
-      <div class="panel-card">
-        <div class="student-info">
-          <div class="student-id">كتاب الأسئلة والتدريبات الشاملة</div>
-          <div class="exam-name">الحجم: 5.1 ميجابايت - صيغة PDF</div>
-        </div>
-        <a href="#" onclick="alert('جاري تحميل كتاب التدريبات...')" class="action-link-btn">تحميل 📥</a>
-      </div>
-
-      <div class="panel-card">
-        <div class="student-info">
-          <div class="student-id">مراجعة ليلة الامتحان (مذكرة ذهبية)</div>
-          <div class="exam-name">الحجم: 3.8 ميجابايت - صيغة PDF</div>
-        </div>
-        <a href="#" onclick="alert('جاري تحميل مذكرة المراجعة...')" class="action-link-btn">تحميل 📥</a>
       </div>
     </div>
 
-    <!-- 6. لوحة التحكم والإعدادات (مع شحن الكوينز) -->
+    <!-- 6. لوحة التحكم والإعدادات الشاملة (المطلوبة) -->
     <div id="control" class="content-section">
-      <div class="section-title">إعدادات الأدمن والتحكم بالنقاط</div>
+      <div class="section-title">إعدادات الأدمن الشاملة</div>
       
+      <!-- أ. شحن الكوينز -->
       <div class="settings-box">
         <h3>💰 شحن وإضافة كوينز لطالب</h3>
-        <div class="coins-form">
-          <input type="text" id="targetStudentId" placeholder="كود الطالب (مثال: #1y01878309)">
-          <input type="number" id="coinAmount" placeholder="عدد الكوينز المراد إضافتها (مثال: 50)">
-          <button class="coins-btn" onclick="addCoinsToStudent()">إضافة الكوينز الآن ⚡</button>
-        </div>
+        <input type="text" id="targetStudentId" placeholder="كود الطالب (مثال: #1y01878309)">
+        <input type="number" id="coinAmount" placeholder="عدد الكوينز (مثال: 50)">
+        <button class="coins-btn" onclick="addCoinsToStudent()">إضافة الكوينز ⚡</button>
       </div>
 
-      <div class="panel-card">
-        <div class="student-info">
-          <div class="student-id">حالة النظام والربط</div>
-          <div class="exam-name">التحكم في صلاحيات المنصة بالكامل</div>
-        </div>
-        <div class="score-badge" style="color: #38bdf8;">نشط</div>
+      <!-- ب. إضافة امتحان وأسئلة اختياري بخياراتها الأربعة -->
+      <div class="settings-box">
+        <h3>📝 إضافة امتحان جديد (سؤال واختيارات)</h3>
+        <label>عنوان الامتحان أو المادة</label>
+        <input type="text" id="examTitleInput" placeholder="مثال: امتحان الفصل الثاني فيزياء">
+        <label>نص السؤال</label>
+        <input type="text" id="questionText" placeholder="اكتب السؤال هنا...">
+        <label>الخيار الأول</label>
+        <input type="text" id="opt1" placeholder="أو الاختيار (أ)">
+        <label>الخيار الثاني</label>
+        <input type="text" id="opt2" placeholder="أو الاختيار (ب)">
+        <label>الخيار الثالث</label>
+        <input type="text" id="opt3" placeholder="أو الاختيار (جـ)">
+        <label>الخيار الرابع</label>
+        <input type="text" id="opt4" placeholder="أو الاختيار (د)">
+        <button class="coins-btn" onclick="addNewExam()">نشر الامتحان بالأسئلة 📚</button>
       </div>
+
+      <!-- ج. رفع وفتح ملفات PDF -->
+      <div class="settings-box">
+        <h3>📁 رفع ملف PDF جديد للمنصة</h3>
+        <label>اسم الملف أو المذكرة</label>
+        <input type="text" id="pdfNameInput" placeholder="مثال: مذكرة الأحياء الباب الأول">
+        <label>اختر ملف PDF من جهازك</label>
+        <input type="file" id="pdfFileInput" accept=".pdf" style="background:transparent; border:none; padding:5px 0;">
+        <button class="coins-btn" onclick="uploadPdfFile()">رفع الملف وتفعيله 📥</button>
+      </div>
+
+      <!-- د. رفع الصور والفيديوهات والينكات -->
+      <div class="settings-box">
+        <h3>🎥 رفع فيديو / صور أو إضافة لينك فيديو</h3>
+        <label>عنوان المحاضرة أو الفيديو</label>
+        <input type="text" id="mediaTitle" placeholder="مثال: شرح قانون اوم">
+        <label>رابط الفيديو (يوتيوب أو لينك مباشر)</label>
+        <input type="text" id="mediaLink" placeholder="https://youtube.com/...">
+        <label>أو اختر صورة / فيديو من جهازك</label>
+        <input type="file" id="mediaFile" accept="image/*,video/*" style="background:transparent; border:none; padding:5px 0;">
+        <button class="coins-btn" onclick="uploadMediaContent()">نشر المحتوى للمدونة 🎬</button>
+      </div>
+
     </div>
 
   </div>
@@ -422,27 +430,79 @@
     function showSection(sectionId, btnId) {
       const sections = document.querySelectorAll('.content-section');
       sections.forEach(sec => sec.style.display = 'none');
-
       document.getElementById(sectionId).style.display = 'block';
-
       const buttons = document.querySelectorAll('.nav-btn');
       buttons.forEach(btn => btn.classList.remove('active'));
-
       document.getElementById(btnId).classList.add('active');
     }
 
     function addCoinsToStudent() {
       const studentId = document.getElementById('targetStudentId').value.trim();
       const coins = document.getElementById('coinAmount').value.trim();
-
       if (!studentId || !coins) {
-        alert('من فضلك أدخل كود الطالب وعدد الكوينز بشكل صحيح!');
+        alert('من فضلك أدخل كود الطالب وعدد الكوينز!');
         return;
       }
-
-      alert(`تم بنجاح إضافة ${coins} كوينز للطالب ذو الكود: ${studentId} 🚀`);
+      alert(`تم بنجاح إضافة ${coins} كوينز للطالب: ${studentId} 🚀`);
       document.getElementById('targetStudentId').value = '';
       document.getElementById('coinAmount').value = '';
+    }
+
+    function addNewExam() {
+      const title = document.getElementById('examTitleInput').value.trim();
+      const q = document.getElementById('questionText').value.trim();
+      if (!title || !q) {
+        alert('من فضلك أدخل عنوان الامتحان ونص السؤال على الأقل!');
+        return;
+      }
+      const list = document.getElementById('exams-list');
+      const newCard = document.createElement('div');
+      newCard.className = 'panel-card';
+      newCard.innerHTML = `<div class="student-info"><div class="student-id">${title}</div><div class="exam-name">سؤال: ${q} (مع 4 اختيارات)</div></div><div class="score-badge" style="color:#22c55e;">نشط جديد</div>`;
+      list.prepend(newCard);
+      alert('تم نشر الامتحان وإضافة السؤال بالاختيارات بنجاح! 📝');
+      document.getElementById('examTitleInput').value = '';
+      document.getElementById('questionText').value = '';
+      document.getElementById('opt1').value = '';
+      document.getElementById('opt2').value = '';
+      document.getElementById('opt3').value = '';
+      document.getElementById('opt4').value = '';
+    }
+
+    function uploadPdfFile() {
+      const name = document.getElementById('pdfNameInput').value.trim();
+      const fileInput = document.getElementById('pdfFileInput');
+      if (!name) {
+        alert('من فضلك ادخل اسم ملف الـ PDF!');
+        return;
+      }
+      const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : 'ملف مرفق.pdf';
+      const container = document.getElementById('pdf-list-container');
+      const newCard = document.createElement('div');
+      newCard.className = 'panel-card';
+      newCard.innerHTML = `<div class="student-info"><div class="student-id">${name}</div><div class="exam-name">${fileName} - صيغة PDF</div></div><a href="#" onclick="alert('جاري تحميل ${name} ...')" class="action-link-btn">تحميل 📥</a>`;
+      container.prepend(newCard);
+      alert('تم رفع ملف الـ PDF وإضافته للمنصة بنجاح! 📁');
+      document.getElementById('pdfNameInput').value = '';
+      fileInput.value = '';
+    }
+
+    function uploadMediaContent() {
+      const title = document.getElementById('mediaTitle').value.trim();
+      const link = document.getElementById('mediaLink').value.trim();
+      if (!title) {
+        alert('من فضلك أدخل عنوان الفيديو أو المحتوى!');
+        return;
+      }
+      const vList = document.getElementById('videos-list');
+      const newCard = document.createElement('div');
+      newCard.className = 'panel-card';
+      newCard.innerHTML = `<div class="student-info"><div class="student-id">${title}</div><div class="exam-name">${link ? 'رابط مباشر/يوتيوب' : 'ملف مرفق'}</div></div><div class="score-badge" style="color: #22c55e;">مفعل</div>`;
+      vList.prepend(newCard);
+      alert('تم رفع المحتوى والفيديو بنجاح وأصبح متاحاً للطلاب! 🎬');
+      document.getElementById('mediaTitle').value = '';
+      document.getElementById('mediaLink').value = '';
+      document.getElementById('mediaFile').value = '';
     }
 
     function downloadPlatformCode() {
