@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>منصة فاهم التعليمية</title>
+  <title>منصه فاهم التعليميه.farag</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: linear-gradient(135deg, #0f172a, #1e293b);
+      background-color: #0b0f19;
       color: #ffffff;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       min-height: 100vh;
@@ -15,130 +15,110 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 20px;
-    }
-    .ticker-bar {
-      background: linear-gradient(90deg, #0284c7, #38bdf8);
-      color: #0f172a;
-      padding: 10px 20px;
-      border-radius: 50px;
-      font-weight: bold;
-      font-size: 14px;
-      margin-bottom: 25px;
-      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
-      text-align: center;
-      max-width: 450px;
-      width: 100%;
+      padding: 15px;
     }
     .container {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(17, 24, 39, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 20px;
-      padding: 35px 25px;
+      padding: 30px 20px;
       text-align: center;
-      max-width: 450px;
+      max-width: 400px;
       width: 100%;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
     }
-    .logo {
-      width: 110px;
-      height: 110px;
-      border-radius: 25px;
-      object-fit: cover;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-      margin-bottom: 15px;
-      border: 3px solid rgba(255, 255, 255, 0.2);
+    h1 {
+      font-size: 22px;
+      color: #38bdf8;
+      margin-bottom: 10px;
+      font-weight: 700;
     }
-    h1 { font-size: 26px; margin-bottom: 8px; color: #ffffff; font-weight: 700; }
-    p { color: #94a3b8; font-size: 14px; margin-bottom: 25px; }
-    
+    .subtitle {
+      color: #94a3b8;
+      font-size: 13px;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
     .input-box {
       width: 100%;
       padding: 12px 15px;
       border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(15, 23, 42, 0.9);
       color: white;
-      font-size: 16px;
+      font-size: 14px;
       margin-bottom: 15px;
-      text-align: center;
+      text-align: right;
     }
-    .input-box:focus { outline: none; border-color: #38bdf8; }
-
+    .input-box::placeholder {
+      color: #64748b;
+    }
+    .input-box:focus {
+      outline: none;
+      border-color: #38bdf8;
+    }
     .action-btn {
-      background: linear-gradient(135deg, #0284c7, #0369a1);
+      background: #0284c7;
       color: white;
-      padding: 12px 25px;
+      padding: 12px;
       border: none;
-      border-radius: 50px;
+      border-radius: 10px;
       font-weight: bold;
-      font-size: 16px;
+      font-size: 15px;
       cursor: pointer;
       width: 100%;
-      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.4);
-      margin-bottom: 15px;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      display: inline-block;
+      margin-bottom: 12px;
+      transition: background 0.3s;
     }
-    .action-btn:hover { transform: translateY(-2px); }
-
-    .support-link {
-      color: #22c55e;
-      text-decoration: none;
-      font-size: 14px;
-      display: inline-block;
+    .action-btn:hover {
+      background: #0369a1;
+    }
+    .whatsapp-btn {
+      background: #22c55e;
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
       font-weight: bold;
+      font-size: 14px;
+      text-decoration: none;
+      display: block;
+      width: 100%;
+      transition: background 0.3s;
     }
-    .support-link:hover { text-decoration: underline; }
-
-    #platform-content {
-      display: none;
-      margin-top: 20px;
-      padding-top: 20px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    .whatsapp-btn:hover {
+      background: #16a34a;
     }
   </style>
 </head>
 <body>
 
-  <div class="ticker-bar">
-    🚨 تنبيه هام: أدخل كود المنصة للمتابعة!
-  </div>
-
   <div class="container">
-    <img src="https://lh3.googleusercontent.com/d/13f5hYTuiTwFpb_mXm84w32JkhpFF_czT" alt="شعار منصة فاهم" class="logo">
     <h1>منصة فاهم التعليمية</h1>
-    <p>أدخل رمز المرور الخاص للوصول إلى محتوى المنصة</p>
+    <div class="subtitle">سجل بريدك الإلكتروني، كلمة المرور، ورمز المنصة (78).</div>
     
-    <div id="auth-section">
-      <input type="password" id="passcode" class="input-box" placeholder="أدخل الكود هنا (78)">
-      <button onclick="checkCode()" class="action-btn">دخول للمنصة</button>
-      <div>
-        <a href="https://wa.me/201093706503?text=مرحباً، أريـد%20الحصول%20على%20رمز%20منصة%20فاهم" target="_blank" class="support-link">
-          💬 تواصل مع المسؤول عبر واتساب للحصول على الكود
-        </a>
-      </div>
-    </div>
+    <form onsubmit="handleLogin(event)">
+      <input type="email" id="email" class="input-box" placeholder="بريدك الإلكتروني (Gmail)" required>
+      <input type="password" id="password" class="input-box" placeholder="كلمة السر الخاصة بك" required>
+      <input type="text" id="passcode" class="input-box" placeholder="رمز المنصة (78)" required>
+      
+      <button type="submit" class="action-btn">تسجيل الدخول / إنشاء حساب 🚀</button>
+    </form>
 
-    <div id="platform-content">
-      <h2 style="color: #38bdf8; margin-bottom: 15px; font-size: 20px;">🎉 أهلاً بك يا بطل</h2>
-      <p>تم التحقق بنجاح، يمكنك الآن تحميل الملفات مباشرة.</p>
-      <a href="https://drive.google.com/file/d/1BQLReYa_kd0B29EvyBIyHX5xaeLJlLq9/view?usp=drivesdk" target="_blank" class="action-btn" style="background: linear-gradient(135deg, #16a34a, #15803d);">
-        📥 تحميل الملفات (APK)
-      </a>
-    </div>
+    <a href="https://wa.me/201093706503?text=مرحباً، أريـد%20الحصول%20على%20رمز%20منصة%20فاهم" target="_blank" class="whatsapp-btn">
+      💬 تواصل مع المسؤول عبر واتساب (01093706503)
+    </a>
   </div>
 
   <script>
-    function checkCode() {
-      const code = document.getElementById('passcode').value.trim();
-      if (code === '78') {
-        document.getElementById('auth-section').style.display = 'none';
-        document.getElementById('platform-content').style.display = 'block';
+    function handleLogin(event) {
+      event.preventDefault();
+      const passcode = document.getElementById('passcode').value.trim();
+      
+      if (passcode === '78') {
+        alert('أهلاً بك يا بطل! تم تسجيل الدخول بنجاح.');
+        // تقدر تضيف هنا توجيه أو فتح المحتوى لو حابب
       } else {
-        alert('الكود غير صحيح، تواصل عبر الواتساب للحصول على الكود الصحيح.');
+        alert('رمز المنصة غير صحيح! تأكد من إدخال الرمز (78) أو تواصل عبر الواتساب.');
       }
     }
   </script>
