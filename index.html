@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>منصه فاهم التعليميه.farag</title>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body {
@@ -17,7 +16,6 @@
       padding-bottom: 90px;
     }
 
-    /* شريط العنوان العلوي */
     .top-app-bar {
       width: 100%;
       background: #0b0f19;
@@ -43,7 +41,6 @@
       font-size: 14px;
     }
 
-    /* شاشة الدخول الأولى */
     #auth-screen-container {
       display: flex;
       flex-direction: column;
@@ -105,7 +102,6 @@
       display: inline-block;
     }
 
-    /* واجهة المنصة الكاملة */
     #dashboard-view {
       display: none;
       width: 100%;
@@ -127,7 +123,6 @@
       border-radius: 10px; font-size: 12px; font-weight: bold;
     }
 
-    /* لوحة التحكم للأدمن */
     #admin-panel-box {
       background: #eff6ff;
       border: 1px solid #38bdf8;
@@ -142,7 +137,6 @@
       margin-bottom: 8px;
     }
 
-    /* شبكة الإحصائيات */
     .stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -169,7 +163,6 @@
       text-align: right;
     }
 
-    /* إجراءات سريعة */
     .action-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -184,9 +177,7 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.03);
       border: 1px solid #f1f5f9;
       cursor: pointer;
-      transition: 0.2s;
     }
-    .action-card:hover { transform: translateY(-2px); border-color: #cbd5e1; }
     .action-card .stat-icon { font-size: 22px; }
     .action-card .stat-label { font-size: 11px; font-weight: 600; color: #334155; }
 
@@ -223,7 +214,6 @@
       border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; margin-right: 6px;
     }
 
-    /* عرض الوسائط المرفوعة داخل البطاقات */
     .media-preview-container img, .media-preview-container video {
       width: 100%;
       max-height: 200px;
@@ -232,7 +222,6 @@
       margin-top: 8px;
     }
 
-    /* صفحة الإعدادات */
     .settings-profile-box {
       background: linear-gradient(135deg, #6366f1, #4f46e5);
       border-radius: 20px; padding: 20px; color: white;
@@ -263,7 +252,6 @@
       margin-top: 20px; cursor: pointer; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.05);
     }
 
-    /* الشريط السفلي الثابت */
     .bottom-nav {
       position: fixed;
       bottom: 0; left: 0; width: 100%;
@@ -283,7 +271,6 @@
     .nav-item.active { color: #4f46e5; }
     .nav-item span { font-size: 18px; margin-bottom: 2px; }
 
-    /* نافذة الامتحان */
     #exam-modal {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; padding: 20px;
@@ -295,7 +282,6 @@
 </head>
 <body>
 
-  <!-- شريط العنوان العلوي -->
   <div class="top-app-bar">
     <div class="logo-title">
       <div class="mini-logo">🛡</div>
@@ -304,7 +290,6 @@
     <div id="top-bar-user-status" style="font-size: 11px; color: #38bdf8;">مرحباً بك</div>
   </div>
 
-  <!-- شاشة الدخول -->
   <div id="auth-screen-container">
     <div class="login-card">
       <div style="font-size: 40px; margin-bottom: 10px;">🛡</div>
@@ -316,21 +301,14 @@
       </a>
 
       <div style="margin: 15px 0; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
-        <div style="display: flex; justify-content: center; margin-bottom: 10px;">
-          <div id="g_id_onload" data-client_id="YOUR_CLIENT_ID.apps.googleusercontent.com" data-callback="handleGoogleLogin"></div>
-          <div class="g_id_signin" data-type="standard" data-theme="filled_black" data-size="large" data-locale="ar"></div>
-        </div>
         <input type="password" id="user-pass" class="auth-input" placeholder="كلمة المرور">
-        <input type="password" id="secret-code" class="auth-input" value="78" style="display:none;">
         <button class="auth-btn" onclick="customLogin()">دخول سريع بالرمز ✅</button>
         <button class="auth-btn" onclick="adminQuickLogin()" style="background: #1e293b; border: 1px solid #38bdf8; margin-top: 8px; font-size: 12px;">🔑 دخول بصفتي يوسف (الأدمن)</button>
       </div>
     </div>
   </div>
 
-  <!-- واجهة المنصة -->
   <div id="dashboard-view">
-    
     <div class="app-header">
       <div>
         <div class="greeting-text" id="welcome-user-name">👋 مرحباً، يوسف فرج</div>
@@ -339,15 +317,13 @@
       <div class="admin-badge-top" id="role-badge">أدمن (يوسف فرج)</div>
     </div>
 
-    <!-- لوحة التحكم الكاملة للأدمن -->
     <div id="admin-panel-box">
       <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 10px;">⚙ لوحة تحكم الأدمن (يوسف فرج)</div>
       
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد:</div>
       <input type="text" id="new-exam-title" class="auth-input" placeholder="عنوان الامتحان..." style="background: white; color: #1e293b; margin-bottom: 6px;">
-      <input type="number" id="new-exam-count" class="auth-input" placeholder="عدد الأسئلة (مثلاً: 1، 4، 10...)" value="1" oninput="generateQuestionFields()" style="background: white; color: #1e293b; margin-bottom: 6px;">
+      <input type="number" id="new-exam-count" class="auth-input" placeholder="عدد الأسئلة..." value="1" oninput="generateQuestionFields()" style="background: white; color: #1e293b; margin-bottom: 6px;">
       
-      <!-- منطقة توليد حقول الأسئلة والاختيارات والإجابة الصحيحة -->
       <div id="dynamic-questions-builder" style="margin-bottom: 10px;"></div>
 
       <button class="btn-main" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة الامتحان وتخزينه 📝</button>
@@ -360,12 +336,12 @@
       <input type="file" id="new-media-file" class="auth-input" accept="video/*,image/*" style="background: white; color: #1e293b; margin-bottom: 6px; padding: 8px;">
       <button class="btn-main" onclick="addVideo()" style="width: 100%; margin-bottom: 10px;">إضافة الفيديو للمنصة 🎥</button>
 
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة ملف PDF (رابط مباشر أو جوجل درايف):</div>
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة ملف PDF:</div>
       <input type="text" id="new-pdf-title" class="auth-input" placeholder="عنوان ملف الـ PDF..." style="background: white; color: #1e293b; margin-bottom: 6px;">
       <input type="text" id="new-pdf-link" class="auth-input" placeholder="رابط ملف الـ PDF (https://...)" style="background: white; color: #1e293b; margin-bottom: 6px;">
       <button class="btn-main" onclick="addPdfLink()" style="width: 100%; margin-bottom: 10px; background: #7c3aed;">إضافة ملف الـ PDF 📁</button>
 
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">التحكم في الإحصائيات (عدد الامتحانات والترتيب):</div>
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">التحكم في الإحصائيات:</div>
       <div class="admin-control-row">
         <input type="number" id="set-exams-count" class="auth-input" placeholder="عدد الامتحانات" style="background: white; color: #1e293b; margin-bottom: 0;">
         <input type="number" id="set-rank-val" class="auth-input" placeholder="الترتيب" style="background: white; color: #1e293b; margin-bottom: 0;">
@@ -373,7 +349,6 @@
       <button class="btn-main" onclick="updateStats()" style="width: 100%; margin-top: 8px; background: #059669;">تحديث الإحصائيات والترتيب 📊</button>
     </div>
 
-    <!-- 1. الرئيسية -->
     <div id="sec-home" class="content-section active-section">
       <div class="stats-grid">
         <div class="stat-card">
@@ -415,13 +390,11 @@
       </div>
     </div>
 
-    <!-- 2. الامتحانات -->
     <div id="sec-exams" class="content-section">
       <div class="section-header-title">الامتحانات المتاحة</div>
       <div id="exams-container"></div>
     </div>
 
-    <!-- 3. الواجبات -->
     <div id="sec-homework" class="content-section">
       <div class="section-header-title">الواجبات والمهام الدراسية</div>
       <div class="card-item">
@@ -435,19 +408,16 @@
       </div>
     </div>
 
-    <!-- 4. الفيديوهات وروابط يوتيوب/تليجرام -->
     <div id="sec-videos" class="content-section">
       <div class="section-header-title">فيديوهات الشرح التعليمية</div>
       <div id="videos-container"></div>
     </div>
 
-    <!-- 5. ملفات PDF -->
     <div id="sec-pdfs" class="content-section">
       <div class="section-header-title">ملفات الـ PDF والمذكرات التعليمية</div>
       <div id="pdfs-container"></div>
     </div>
 
-    <!-- 6. الإعدادات -->
     <div id="sec-settings" class="content-section">
       <div class="settings-profile-box">
         <div class="profile-avatar">YF</div>
@@ -470,42 +440,21 @@
         <div class="settings-row" onclick="alert('منصة فاهم التعليمية - إصدار الأدمن الخاص بيوسف فرج')"><span>ℹ حول التطبيق</span> <span>‹</span></div>
       </div>
 
-      <div class="settings-group-title">التفضيلات والحساب</div>
-      <div class="settings-card-box">
-        <div class="settings-row" onclick="alert('تم تفعيل الإشعارات بنجاح')"><span>🔔 الإشعارات</span> <span>‹</span></div>
-        <div class="settings-row" onclick="alert('اللغة العربية مفعلة')"><span>🌐 اللغة (العربية)</span> <span>‹</span></div>
-      </div>
-
       <div class="logout-row" onclick="logout()">
         🚪 تسجيل الخروج
       </div>
     </div>
-
   </div>
 
-  <!-- الشريط السفلي الثابت -->
   <div class="bottom-nav" id="bottom-navigation" style="display: none;">
-    <button class="nav-item" id="nav-settings" onclick="switchTab('sec-settings', 'nav-settings')">
-      <span>⚙️</span> الإعدادات
-    </button>
-    <button class="nav-item" id="nav-pdfs" onclick="switchTab('sec-pdfs', 'nav-pdfs')">
-      <span>📁</span> ملفات PDF
-    </button>
-    <button class="nav-item" id="nav-videos" onclick="switchTab('sec-videos', 'nav-videos')">
-      <span>🎥</span> الفيديوهات
-    </button>
-    <button class="nav-item" id="nav-homework" onclick="switchTab('sec-homework', 'nav-homework')">
-      <span>📄</span> الواجبات
-    </button>
-    <button class="nav-item" id="nav-exams" onclick="switchTab('sec-exams', 'nav-exams')">
-      <span>❓</span> الامتحانات
-    </button>
-    <button class="nav-item active" id="nav-home" onclick="switchTab('sec-home', 'nav-home')">
-      <span>🏠</span> الرئيسية
-    </button>
+    <button class="nav-item" id="nav-settings" onclick="switchTab('sec-settings', 'nav-settings')"><span>⚙️</span> الإعدادات</button>
+    <button class="nav-item" id="nav-pdfs" onclick="switchTab('sec-pdfs', 'nav-pdfs')"><span>📁</span> ملفات PDF</button>
+    <button class="nav-item" id="nav-videos" onclick="switchTab('sec-videos', 'nav-videos')"><span>🎥</span> الفيديوهات</button>
+    <button class="nav-item" id="nav-homework" onclick="switchTab('sec-homework', 'nav-homework')"><span>📄</span> الواجبات</button>
+    <button class="nav-item" id="nav-exams" onclick="switchTab('sec-exams', 'nav-exams')"><span>❓</span> الامتحانات</button>
+    <button class="nav-item active" id="nav-home" onclick="switchTab('sec-home', 'nav-home')"><span>🏠</span> الرئيسية</button>
   </div>
 
-  <!-- نافذة الامتحان -->
   <div id="exam-modal">
     <div class="modal-box">
       <h3 id="modal-title" style="color: #0284c7; margin-bottom: 10px; font-size: 16px;">عنوان الامتحان</h3>
@@ -551,31 +500,18 @@
     function switchTab(sectionId, navId) {
       document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-section'));
       document.getElementById(sectionId).classList.add('active-section');
-      
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
       document.getElementById(navId).classList.add('active');
     }
 
-    function handleGoogleLogin(res) {
-      try {
-        const base64 = res.credential.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-        const userObj = JSON.parse(decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
-        localStorage.setItem('fahem_email', userObj.email);
-        setupSession(userObj.email);
-      } catch(e) {
-        alert('حدث خطأ، حاول مرة أخرى.');
-      }
-    }
-
     function customLogin() {
-      const code = document.getElementById('secret-code').value.trim();
+      const code = document.getElementById('user-pass').value.trim();
       if(code !== "78") {
-        alert('الرمز السري غير صحيح!');
+        alert('الرمز السري غير صحيح! (الرمز هو 78)');
         return;
       }
-      let email = localStorage.getItem('fahem_email'] || "student@fahem.com";
-      localStorage.setItem('fahem_email', email);
-      setupSession(email);
+      localStorage.setItem('fahem_email', ADMIN_EMAIL);
+      setupSession(ADMIN_EMAIL);
     }
 
     function adminQuickLogin() {
@@ -589,18 +525,10 @@
       document.getElementById('bottom-navigation').style.display = 'flex';
 
       document.getElementById('profile-email-display').innerText = email;
-      document.getElementById('top-bar-user-status').innerText = email === ADMIN_EMAIL ? 'أدمن (يوسف فرج)' : 'طالب';
+      document.getElementById('top-bar-user-status').innerText = 'أدمن (يوسف فرج)';
       
-      const adminBox = document.getElementById('admin-panel-box');
-      const roleBadge = document.getElementById('role-badge');
-
-      if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-        adminBox.style.display = 'block';
-        roleBadge.style.display = 'block';
-      } else {
-        adminBox.style.display = 'none';
-        roleBadge.style.display = 'none';
-      }
+      document.getElementById('admin-panel-box').style.display = 'block';
+      document.getElementById('role-badge').style.display = 'block';
       renderExams();
     }
 
@@ -614,7 +542,6 @@
       alert('تم بدء تحميل تطبيق المنصة (APK) بنجاح على هاتفك! 📦');
     }
 
-    // توليد حقول الأسئلة والاختيارات والإجابة الصحيحة ديناميكياً
     function generateQuestionFields() {
       const countVal = parseInt(document.getElementById('new-exam-count').value) || 1;
       const container = document.getElementById('dynamic-questions-builder');
@@ -642,19 +569,12 @@
       
       let questionsArr = [];
       for(let i=1; i<=countVal; i++) {
-        let qText = document.getElementById(`q_text_${i}`).value.trim();
-        let o1 = document.getElementById(`q_opt1_${i}`).value.trim();
-        let o2 = document.getElementById(`q_opt2_${i}`).value.trim();
-        let o3 = document.getElementById(`q_opt3_${i}`).value.trim();
-        let o4 = document.getElementById(`q_opt4_${i}`).value.trim();
-        let ans = document.getElementById(`q_ans_${i}`).value.trim();
-
-        if(!qText) qText = `السؤال (${i})`;
-        if(!o1) o1 = 'الخيار الأول';
-        if(!o2) o2 = 'الخيار الثاني';
-        if(!o3) o3 = 'الخيار الثالث';
-        if(!o4) o4 = 'الخيار الرابع';
-        if(!ans) ans = o1;
+        let qText = document.getElementById(`q_text_${i}`).value.trim() || `السؤال (${i})`;
+        let o1 = document.getElementById(`q_opt1_${i}`).value.trim() || 'الخيار الأول';
+        let o2 = document.getElementById(`q_opt2_${i}`).value.trim() || 'الخيار الثاني';
+        let o3 = document.getElementById(`q_opt3_${i}`).value.trim() || 'الخيار الثالث';
+        let o4 = document.getElementById(`q_opt4_${i}`).value.trim() || 'الخيار الرابع';
+        let ans = document.getElementById(`q_ans_${i}`).value.trim() || o1;
 
         questionsArr.push({ q: qText, o1: o1, o2: o2, o3: o3, o4: o4, ans: ans });
       }
@@ -684,7 +604,6 @@
     function renderExams() {
       const container = document.getElementById('exams-container');
       container.innerHTML = '';
-      const isAdmin = localStorage.getItem('fahem_email') === ADMIN_EMAIL;
       const currentEmail = localStorage.getItem('fahem_email') || 'guest';
       let finishedExams = JSON.parse(localStorage.getItem('finished_exams_' + currentEmail)) || [];
 
@@ -695,7 +614,7 @@
 
       examsList.forEach(ex => {
         let isDone = finishedExams.includes(ex.id);
-        let deleteBtn = isAdmin ? `<button class="btn-delete" onclick="deleteExam(${ex.id})">حذف 🗑️</button>` : '';
+        let deleteBtn = `<button class="btn-delete" onclick="deleteExam(${ex.id})">حذف 🗑️</button>`;
         let qData = ex.questions || [];
 
         let actionBtn = isDone ? 
@@ -777,15 +696,14 @@
     function renderVideos() {
       const container = document.getElementById('videos-container');
       container.innerHTML = '';
-      const isAdmin = localStorage.getItem('fahem_email') === ADMIN_EMAIL;
 
       if(videosList.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد فيديوهات أو دروس متاحة حالياً</p>';
+        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد فيديوهات متاحة حالياً</p>';
         return;
       }
 
       videosList.forEach(vid => {
-        let deleteBtn = isAdmin ? `<button class="btn-delete" onclick="deleteVideo(${vid.id})">حذف 🗑️</button>` : '';
+        let deleteBtn = `<button class="btn-delete" onclick="deleteVideo(${vid.id})">حذف 🗑️</button>`;
         let mediaHtml = '';
 
         if (vid.type === 'video') {
@@ -803,9 +721,7 @@
                 <div class="card-title">${vid.title}</div>
                 <div class="card-subtitle">${vid.info}</div>
               </div>
-              <div>
-                ${deleteBtn}
-              </div>
+              <div>${deleteBtn}</div>
             </div>
             ${mediaHtml}
           </div>
@@ -838,7 +754,6 @@
     function renderPdfs() {
       const container = document.getElementById('pdfs-container');
       container.innerHTML = '';
-      const isAdmin = localStorage.getItem('fahem_email') === ADMIN_EMAIL;
 
       if(pdfsList.length === 0) {
         container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد ملفات PDF متاحة حالياً</p>';
@@ -846,7 +761,7 @@
       }
 
       pdfsList.forEach(pdf => {
-        let deleteBtn = isAdmin ? `<button class="btn-delete" onclick="deletePdf(${pdf.id})">حذف 🗑️</button>` : '';
+        let deleteBtn = `<button class="btn-delete" onclick="deletePdf(${pdf.id})">حذف 🗑️</button>`;
         container.innerHTML += `
           <div class="card-item">
             <div class="card-row">
@@ -927,7 +842,7 @@
         localStorage.setItem('finished_exams_' + currentEmail, JSON.stringify(finishedExams));
       }
 
-      alert(`انتهى الامتحان! نتيجتك: ${score} من ${activeQuestions.length} 🎉 (تم حفظ النتيجة ولن يمكنك إعادة الامتحان مرة أخرى)`);
+      alert(`انتهى الامتحان! نتيجتك: ${score} من ${activeQuestions.length} 🎉`);
       closeExam();
       renderExams();
     }
