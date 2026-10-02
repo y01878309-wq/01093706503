@@ -335,7 +335,6 @@
           <input type="password" id="user-pass" class="auth-input" placeholder="كلمة المرور (الافتراضية: ٠nH2Fyg_yw8lqy@e)">
           <button class="auth-btn" onclick="customLogin()">تسجيل الدخول ✅</button>
           <div class="text-link-auth" onclick="switchAuthPane('pane-forgot')">نسيت كلمة المرور؟</div>
-          <button class="auth-btn" onclick="adminQuickLogin()" style="background: #1e293b; border: 1px solid #38bdf8; margin-top: 12px; font-size: 12px;">🔑 دخول بصفتي يوسف (الأدمن)</button>
         </div>
       </div>
 
@@ -578,22 +577,23 @@
     }
 
     function customLogin() {
-      const email = document.getElementById('login-email').value.trim() || ADMIN_EMAIL;
+      const emailInput = document.getElementById('login-email').value.trim();
       const pass = document.getElementById('user-pass').value.trim();
 
-      let userStoredPass = localStorage.getItem('pass_' + email) || DEFAULT_PASS;
+      if (!emailInput) {
+        alert('الرجاء إدخال البريد الإلكتروني');
+        return;
+      }
+
+      let userStoredPass = localStorage.getItem('pass_' + emailInput) || DEFAULT_PASS;
 
       if(pass !== userStoredPass) {
         alert('كلمة المرور غير صحيحة! (كلمة المرور الافتراضية هي: ٠nH2Fyg_yw8lqy@e)');
         return;
       }
-      localStorage.setItem('fahem_email', email);
-      setupSession(email);
-    }
-
-    function adminQuickLogin() {
-      localStorage.setItem('fahem_email', ADMIN_EMAIL);
-      setupSession(ADMIN_EMAIL);
+      
+      localStorage.setItem('fahem_email', emailInput);
+      setupSession(emailInput);
     }
 
     // دوال نسيت كلمة المرور وإرسال الرمز وإعادة التعيين
