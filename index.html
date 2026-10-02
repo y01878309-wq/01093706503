@@ -3,68 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>منصه فاهم التعليميه.farag</title>
-  <!-- استدعاء مكتبة تسجيل الدخول من جوجل الرسمية -->
+  <title>منصة فاهم التعليمية - Youssef Farag</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body {
-      background-color: #0b0f19;
-      color: #ffffff;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8fafc;
+      color: #1e293b;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 15px;
+      padding-bottom: 80px; /* مساحة للشريط السفلي */
     }
-    
-    /* الشاشة الأولى: زر تحميل التطبيق والدخول */
-    .login-container {
-      background: rgba(17, 24, 39, 0.95);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+
+    /* شاشة الدخول الأولى */
+    #auth-screen-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      width: 100%;
+      padding: 20px;
+      background: #0b0f19;
+    }
+    .login-card {
+      background: #111827;
+      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 24px;
       padding: 30px 20px;
       text-align: center;
       max-width: 400px;
       width: 100%;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-      margin-top: 40px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+      color: white;
     }
-
-    .logo-box {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(145deg, #1e293b, #0f172a);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      border-radius: 20px;
-      margin: 0 auto 15px auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    .auth-input {
+      width: 100%;
+      background: #0b0f19;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      padding: 12px;
+      color: white;
+      font-size: 14px;
+      margin-bottom: 12px;
+      outline: none;
+      text-align: right;
     }
-    .logo-text {
-      font-size: 9px;
-      color: #38bdf8;
+    .auth-btn {
+      background: #0284c7;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
       font-weight: bold;
-      margin-top: 2px;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 5px;
+      box-shadow: 0 4px 15px rgba(2,132,199,0.4);
     }
-
-    .login-container h1 {
-      font-size: 22px;
-      color: #ffffff;
-      margin-bottom: 5px;
-      font-weight: 700;
-    }
-    .subtitle {
-      color: #94a3b8;
-      font-size: 12px;
-      margin-bottom: 25px;
-    }
-
-    .download-apk-btn {
+    .download-btn {
       background: linear-gradient(135deg, #8b5cf6, #6d28d9);
       color: white;
       padding: 14px;
@@ -74,590 +74,533 @@
       font-size: 15px;
       cursor: pointer;
       width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      text-decoration: none;
-      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
       margin-bottom: 15px;
+      text-decoration: none;
+      display: inline-block;
     }
 
-    .action-btn {
-      background: #0284c7;
-      color: white;
-      padding: 12px;
-      border: none;
-      border-radius: 12px;
-      font-weight: bold;
-      font-size: 14px;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 10px;
-      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4);
-    }
-    .action-btn:hover { background: #0369a1; }
-
-    /* شاشة تسجيل الدخول التفصيلية (جوجل + كلمة السر + الرمز) */
-    #auth-screen {
-      display: none;
-      background: rgba(17, 24, 39, 0.95);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 24px;
-      padding: 25px 20px;
-      text-align: center;
-      max-width: 400px;
-      width: 100%;
-      margin-top: 30px;
-    }
-    .auth-input {
-      width: 100%;
-      background: #0b0f19;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 8px;
-      padding: 10px;
-      color: white;
-      font-size: 13px;
-      margin-bottom: 12px;
-      outline: none;
-      text-align: right;
-    }
-    .auth-input:focus { border-color: #38bdf8; }
-
-    /* واجهة المنصة الشاملة */
+    /* واجهة المنصة الأساسية */
     #dashboard-view {
       display: none;
       width: 100%;
-      max-width: 450px;
+      max-width: 480px;
+      padding: 15px;
     }
-    .top-bar {
+
+    /* الهيدر العلوي */
+    .app-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 15px;
-      width: 100%;
-      background: rgba(17, 24, 39, 0.95);
-      padding: 10px 15px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 20px;
+      padding: 10px 5px;
     }
-    .admin-title {
-      color: #38bdf8;
-      font-size: 12px;
-      font-weight: 600;
-      text-align: right;
-    }
-    .logout-btn {
-      background: #ef4444;
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 6px;
-      font-size: 11px;
+    .greeting-text {
+      font-size: 18px;
       font-weight: bold;
-      cursor: pointer;
+      color: #0f172a;
     }
-    
-    .nav-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      justify-content: center;
+    .date-text {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    /* شبكة الإحصائيات (مثل الصورة) */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
       margin-bottom: 20px;
     }
-    .nav-btn {
-      background: #1e293b;
-      color: #cbd5e1;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 12px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-weight: 600;
-    }
-    .nav-btn.active {
-      background: #0284c7;
-      color: white;
-      border-color: #38bdf8;
-    }
-
-    .content-section { display: none; }
-    .content-section.active-section { display: block; }
-
-    .section-title {
+    .stat-card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 18px;
       text-align: center;
-      font-size: 16px;
-      margin-bottom: 15px;
-      color: #ffffff;
-      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      border: 1px solid #f1f5f9;
     }
-    .student-card, .panel-card {
-      background: #111827;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 10px;
-      padding: 12px 15px;
-      margin-bottom: 10px;
+    .stat-icon { font-size: 24px; margin-bottom: 8px; }
+    .stat-value { font-size: 18px; font-weight: bold; color: #0f172a; }
+    .stat-label { font-size: 12px; color: #64748b; margin-top: 4px; }
+
+    .section-header-title {
+      font-size: 15px;
+      font-weight: bold;
+      color: #0f172a;
+      margin: 20px 0 10px 0;
+      text-align: right;
+    }
+
+    /* إجراءات سريعة / أزرار المنصة */
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .action-card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 15px 10px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      border: 1px solid #f1f5f9;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .action-card:hover { transform: translateY(-2px); border-color: #cbd5e1; }
+    .action-card .stat-icon { font-size: 22px; }
+    .action-card .stat-label { font-size: 11px; font-weight: 600; color: #334155; }
+
+    /* الأقسام الداخلية */
+    .content-section { display: none; }
+    .active-section { display: block; }
+
+    .card-item {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 15px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      border: 1px solid #f1f5f9;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .student-info { text-align: right; flex: 1; margin-left: 10px; }
-    .student-id { color: #38bdf8; font-size: 14px; font-weight: bold; }
-    .exam-name { color: #94a3b8; font-size: 12px; margin-top: 3px; }
-    .score-badge {
-      background: #1e293b;
-      color: #38bdf8;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: bold;
-      border: 1px solid rgba(56, 189, 248, 0.2);
-    }
-    .action-link-btn {
+    .card-info { text-align: right; flex: 1; }
+    .card-title { font-size: 14px; font-weight: bold; color: #0f172a; }
+    .card-subtitle { font-size: 12px; color: #64748b; margin-top: 3px; }
+    .btn-main {
       background: #0284c7;
       color: white;
-      text-decoration: none;
-      padding: 6px 12px;
-      border-radius: 6px;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
       font-size: 12px;
       font-weight: bold;
-      border: none;
       cursor: pointer;
-      white-space: nowrap;
-      display: inline-block;
-      text-align: center;
     }
-    .action-link-btn:hover { background: #0369a1; }
 
-    /* لوحة إعدادات الأدمن (تظهر ليوسف فرج فقط) */
-    #admin-settings-panel {
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+    /* صفحة الإعدادات (نفس الصورة تماماً) */
+    .settings-profile-box {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      border-radius: 20px;
+      padding: 20px;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .profile-avatar {
+      width: 55px; height: 55px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: bold;
+    }
+    .settings-group-title {
+      font-size: 12px;
+      color: #64748b;
+      margin: 15px 5px 8px 5px;
+      text-align: right;
+      font-weight: bold;
+    }
+    .settings-card-box {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid #f1f5f9;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .settings-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      border-bottom: 1px solid #f8fafc;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      cursor: pointer;
+    }
+    .settings-row:last-child { border-bottom: none; }
+    .logout-row {
+      background: white;
+      border: 1px solid #fee2e2;
+      border-radius: 16px;
+      color: #ef4444;
+      text-align: center;
+      padding: 15px;
+      font-weight: bold;
+      margin-top: 20px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.05);
+    }
+
+    /* لوحة الأدمن الخاصة بيوسف */
+    #admin-panel-box {
+      background: #eff6ff;
       border: 1px solid #38bdf8;
-      border-radius: 15px;
+      border-radius: 14px;
       padding: 15px;
       margin-bottom: 20px;
       display: none;
     }
-    .admin-settings-title {
-      color: #38bdf8;
-      font-size: 14px;
-      font-weight: bold;
-      margin-bottom: 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      padding-bottom: 8px;
+
+    /* الشريط السفلي الثابت (Bottom Navigation Bar) */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; width: 100%;
+      background: #ffffff;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      z-index: 1000;
+      box-shadow: 0 -4px 15px rgba(0,0,0,0.03);
     }
-    .admin-form-group { margin-bottom: 10px; text-align: right; }
-    .admin-form-group label { display: block; font-size: 11px; color: #cbd5e1; margin-bottom: 4px; }
-    .admin-form-group input {
-      width: 100%; background: #0b0f19; border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 8px; padding: 8px; color: white; font-size: 12px; outline: none;
+    .nav-item {
+      background: none; border: none;
+      display: flex; flex-direction: column; align-items: center;
+      cursor: pointer; color: #64748b; font-size: 11px; font-weight: 600;
     }
+    .nav-item.active { color: #4f46e5; }
+    .nav-item span { font-size: 18px; margin-bottom: 2px; }
 
     /* نافذة الامتحان المنبثقة */
     #exam-modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      z-index: 999;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; padding: 20px;
     }
-    .modal-content {
-      background: #111827;
-      border: 1px solid #38bdf8;
-      border-radius: 15px;
-      width: 100%;
-      max-width: 450px;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: 20px;
+    .modal-box {
+      background: white; border-radius: 20px; width: 100%; max-width: 420px; max-height: 85vh; overflow-y: auto; padding: 20px;
     }
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      padding-bottom: 10px;
-    }
-    .timer-badge { background: #ef4444; color: white; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; }
-    .close-modal { background: #ef4444; color: white; border: none; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-    .question-box-view { background: #1e293b; padding: 12px; border-radius: 8px; margin-bottom: 12px; }
-    .option-label { display: block; background: #0f172a; padding: 8px 12px; border-radius: 6px; margin-top: 6px; cursor: pointer; font-size: 13px; border: 1px solid rgba(255,255,255,0.05); }
-    .option-label input { margin-left: 8px; }
   </style>
 </head>
 <body>
 
-  <!-- الشاشة الرئيسية الأولى: زر تحميل التطبيق (APK) ودخول المنصة -->
-  <div class="login-container" id="home-screen">
-    <div class="logo-box">
-      <div style="font-size: 24px;">🛡️</div>
-      <div class="logo-text">FARAG</div>
-    </div>
-    
-    <h1>منصة فاهم التعليمية</h1>
-    <div class="subtitle">تطبيق التعليم الإلكتروني المتطور</div>
-    
-    <!-- زر تحميل التطبيق (APK) -->
-    <a href="#" class="download-apk-btn" onclick="downloadAppFile(event)">
-      📦 تحميل تطبيق المنصة (APK)
-    </a>
+  <!-- شاشة الدخول الأولى (تحميل التطبيق وتسجيل الدخول) -->
+  <div id="auth-screen-container">
+    <div class="login-card">
+      <div style="font-size: 40px; margin-bottom: 10px;">🛡️</div>
+      <h2 style="margin-bottom: 5px; font-size: 20px;">منصة فاهم التعليمية</h2>
+      <p style="color: #94a3b8; font-size: 12px; margin-bottom: 20px;">تطبيق التعليم الذكي</p>
 
-    <button type="button" class="action-btn" onclick="goToAuthScreen()">
-      تسجيل الدخول للمنصة 🚀
-    </button>
-  </div>
+      <a href="#" class="download-btn" onclick="downloadApp(event)">
+        📦 تحميل تطبيق المنصة (APK)
+      </a>
 
-  <!-- شاشة تسجيل الدخول التفصيلية (جوجل + كلمة السر + الرمز المخفي 78) -->
-  <div id="auth-screen">
-    <div class="logo-box" style="width: 60px; height: 60px; margin-bottom: 10px;">
-      <div style="font-size: 18px;">🔑</div>
-    </div>
-    <h2 style="font-size: 18px; margin-bottom: 5px; color: #38bdf8;">تسجيل الدخول</h2>
-    <div class="subtitle" style="margin-bottom: 15px;">أدخل بيانات حسابك للمتابعة</div>
-
-    <!-- زر جوجل الرسمي -->
-    <div style="display: flex; justify-content: center; margin-bottom: 12px;">
-      <div id="g_id_onload"
-           data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
-           data-callback="handleGoogleLogin"
-           data-auto_prompt="false">
-      </div>
-      <div class="g_id_signin"
-           data-type="standard"
-           data-shape="rectangular"
-           data-theme="filled_black"
-           data-text="signin_with"
-           data-size="large"
-           data-locale="ar">
+      <div style="margin: 15px 0; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+        <!-- زر جوجل -->
+        <div style="display: flex; justify-content: center; margin-bottom: 10px;">
+          <div id="g_id_onload" data-client_id="YOUR_CLIENT_ID.apps.googleusercontent.com" data-callback="handleGoogleLogin"></div>
+          <div class="g_id_signin" data-type="standard" data-theme="filled_black" data-size="large" data-locale="ar"></div>
+        </div>
+        <input type="password" id="user-pass" class="auth-input" placeholder="كلمة المرور">
+        <input type="password" id="secret-code" class="auth-input" value="78" style="display:none;">
+        <button class="auth-btn" onclick="customLogin()">دخول سريع بالرمز ✅</button>
+        <button class="auth-btn" onclick="adminQuickLogin()" style="background: #1e293b; border: 1px solid #38bdf8; margin-top: 8px; font-size: 12px;">🔑 دخول بصفتي يوسف (الأدمن)</button>
       </div>
     </div>
-
-    <input type="password" id="user-password" class="auth-input" placeholder="كلمة السر">
-    
-    <!-- الرمز السري المخفي بقيمة 78 تلقائياً -->
-    <input type="password" id="secret-code" class="auth-input" value="78" style="display: none;">
-
-    <button type="button" class="action-btn" onclick="verifyCustomLogin()" style="margin-top: 5px;">
-      دخول بالرمز وكلمة السر ✅
-    </button>
-
-    <button type="button" class="action-btn" onclick="simulateAdminLogin()" style="background: #1e293b; border: 1px solid #38bdf8; font-size: 12px; margin-top: 8px;">
-      🔑 دخول سريع بصفتي يوسف (الأدمن)
-    </button>
-
-    <button type="button" onclick="backToHome()" style="background: none; border: none; color: #94a3b8; font-size: 12px; margin-top: 15px; cursor: pointer; text-decoration: underline;">
-      ← العودة للرئيسية
-    </button>
   </div>
 
-  <!-- لوحة المنصة الشاملة -->
+  <!-- واجهة المنصة الكاملة -->
   <div id="dashboard-view">
-    <div class="top-bar">
-      <button class="logout-btn" onclick="logout()">خروج</button>
-      <div class="admin-title" id="logged-user-info">مرحباً بك</div>
+    
+    <!-- الهيدر -->
+    <div class="app-header">
+      <div>
+        <div class="greeting-text" id="welcome-user-name">👋 مرحباً، يوسف فرج</div>
+        <div class="date-text" id="current-date-box">الجمعة، أكتوبر 2</div>
+      </div>
+      <div style="background: #e0e7ff; color: #4f46e5; padding: 6px 12px; border-radius: 10px; font-size: 12px; font-weight: bold;" id="role-badge">طالب</div>
     </div>
 
     <!-- لوحة إعدادات الأدمن (تظهر ليوسف فرج فقط) -->
-    <div id="admin-settings-panel">
-      <div class="admin-settings-title">⚙️ لوحة إعدادات وتحكم الأدمن (يوسف فرج)</div>
-      
-      <div class="admin-form-group">
-        <label>إضافة عنوان امتحان جديد:</label>
-        <input type="text" id="admin-exam-input" placeholder="مثال: امتحان الباب الثاني فيزياء">
-      </div>
-      
-      <div class="admin-form-group">
-        <label>إضافة رابط فيديو الشرح (يوتيوب):</label>
-        <input type="text" id="admin-video-input" placeholder="رابط الفيديو الجديد">
-      </div>
-
-      <button class="action-link-btn" onclick="saveAdminSettings()" style="width: 100%; margin-top: 5px;">حفظ وتحديث المنصة للطلاب 🚀</button>
+    <div id="admin-panel-box">
+      <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 8px;">⚙️ لوحة تحكم الأدمن (يوسف فرج)</div>
+      <input type="text" id="new-exam-title" class="auth-input" placeholder="عنوان الامتحان الجديد..." style="background: white; color: #1e293b; margin-bottom: 8px;">
+      <input type="text" id="new-video-url" class="auth-input" placeholder="رابط فيديو الشرح..." style="background: white; color: #1e293b; margin-bottom: 8px;">
+      <button class="btn-main" onclick="saveAdminData()" style="width: 100%;">نشر التحديثات للطلاب 🚀</button>
     </div>
 
-    <!-- أزرار التنقل -->
-    <div class="nav-grid">
-      <button class="nav-btn" id="btn-videos" onclick="showSection('videos', 'btn-videos')">🎥 الفيديوهات</button>
-      <button class="nav-btn" id="btn-exams" onclick="showSection('exams', 'btn-exams')">📝 الامتحانات</button>
-      <button class="nav-btn active" id="btn-solutions" onclick="showSection('solutions', 'btn-solutions')">💡 الحل</button>
-      <button class="nav-btn" id="btn-ranking" onclick="showSection('ranking', 'btn-ranking')">🏆 التقييم</button>
-      <button class="nav-btn" id="btn-pdfs" onclick="showSection('pdfs', 'btn-pdfs')">📁 ملفات PDF</button>
-    </div>
-
-    <!-- 1. نموذج الحل -->
-    <div id="solutions" class="content-section active-section">
-      <div class="section-title">نماذج الحل والإجابات المعتمدة</div>
-      <div class="panel-card">
-        <div class="student-info">
-          <div class="student-id">نموذج حل امتحان الفيزياء التجريبي</div>
-          <div class="exam-name">الإجابة الصحيحة للسؤال الأول: كولوم</div>
+    <!-- 1. صفحة الرئيسية (نفس الستايل في صورتك) -->
+    <div id="sec-home" class="content-section active-section">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">📄</div>
+          <div class="stat-value">0</div>
+          <div class="stat-label">الواجبات</div>
         </div>
-        <div class="score-badge">معتمد ✅</div>
-      </div>
-    </div>
-
-    <!-- 2. الامتحانات -->
-    <div id="exams" class="content-section">
-      <div class="section-title">الامتحانات المتاحة للحل</div>
-      <div class="panel-card">
-        <div style="display: flex; gap: 5px;">
-          <button class="action-link-btn" onclick="openExamModal('امتحان الفيزياء التجريبي', [{q:'ما وحدة قياس الشحنة الكهربائية؟', o1:'كولوم', o2:'امبير', o3:'فولت', o4:'اوم', ans:'كولوم'}], 15)">بدء الامتحان 📝</button>
+        <div class="stat-card">
+          <div class="stat-icon">📅</div>
+          <div class="stat-value">100%</div>
+          <div class="stat-label">الحضور</div>
         </div>
-        <div class="student-info">
-          <div class="student-id">امتحان الفيزياء التجريبي</div>
-          <div class="exam-name">المدة: 15 دقيقة | متاح الآن</div>
+        <div class="stat-card">
+          <div class="stat-icon">📊</div>
+          <div class="stat-value">1</div>
+          <div class="stat-label">الترتيب</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">❓</div>
+          <div class="stat-value">2</div>
+          <div class="stat-label">الامتحانات</div>
         </div>
       </div>
-    </div>
 
-    <!-- 3. التقييم والترتيب -->
-    <div id="ranking" class="content-section">
-      <div class="section-title">لوحة الشرف والترتيب العام</div>
-      <div class="student-card">
-        <div class="student-info">
-          <div class="student-id">يوسف فرج</div>
-          <div class="exam-name">امتحان الفيزياء التجريبي</div>
+      <div class="section-header-title">إجراءات سريعة</div>
+      <div class="action-grid">
+        <div class="action-card" onclick="switchTab('sec-exams', 'nav-exams')">
+          <div class="stat-icon">❓</div>
+          <div class="stat-label">الامتحانات</div>
         </div>
-        <div class="score-badge">40/40 (100%)</div>
-      </div>
-    </div>
-
-    <!-- 4. الفيديوهات -->
-    <div id="videos" class="content-section">
-      <div class="section-title">الفيديوهات التعليمية</div>
-      <div class="panel-card">
-        <div style="display: flex; gap: 5px;">
-          <button class="action-link-btn" onclick="playVideo('https://www.youtube.com/watch?v=dQw4w9WgXcQ')">تشغيل 📺</button>
+        <div class="action-card" onclick="switchTab('sec-homework', 'nav-homework')">
+          <div class="stat-icon">📄</div>
+          <div class="stat-label">الواجبات</div>
         </div>
-        <div class="student-info">
-          <div class="student-id">محاضرة الفيزياء الأساسية</div>
-          <div class="exam-name">الفصل الأول - الشرح الكامل</div>
+        <div class="action-card" onclick="switchTab('sec-videos', 'nav-videos')">
+          <div class="stat-icon">🎥</div>
+          <div class="stat-label">الفيديوهات</div>
+        </div>
+        <div class="action-card" onclick="switchTab('sec-pdfs', 'nav-pdfs')">
+          <div class="stat-icon">📁</div>
+          <div class="stat-label">ملفات PDF</div>
+        </div>
+        <div class="action-card" onclick="switchTab('sec-settings', 'nav-settings')">
+          <div class="stat-icon">⚙️</div>
+          <div class="stat-label">الإعدادات</div>
         </div>
       </div>
     </div>
 
-    <!-- 5. ملفات PDF -->
-    <div id="pdfs" class="content-section">
-      <div class="section-title">ملفات الـ PDF والمذكرات</div>
-      <div class="panel-card">
-        <div style="display: flex; gap: 5px;">
-          <a href="#" onclick="alert('جاري تحميل الملف...')" class="action-link-btn">تحميل 📥</a>
+    <!-- 2. صفحة الامتحانات -->
+    <div id="sec-exams" class="content-section">
+      <div class="section-header-title">الامتحانات المتاحة</div>
+      <div class="card-item">
+        <div class="card-info">
+          <div class="card-title">امتحان الفيزياء التجريبي (الباب الأول)</div>
+          <div class="card-subtitle">المدة: 15 دقيقة | متاح الآن</div>
         </div>
-        <div class="student-info">
-          <div class="student-id">ملخص قوانين الفصل الأول (فيزياء)</div>
-          <div class="exam-name">صيغة PDF - جاهز للتحميل</div>
-        </div>
+        <button class="btn-main" onclick="startExam('امتحان الفيزياء التجريبي', [{q:'ما هي وحدة قياس التيار الكهربائي؟', o1:'أمبير', o2:'فولت', o3:'أوم', o4:'كولوم', ans:'أمبير'}])">بدء 📝</button>
       </div>
     </div>
+
+    <!-- 3. صفحة الواجبات -->
+    <div id="sec-homework" class="content-section">
+      <div class="section-header-title">الواجبات والمهام الدراسية</div>
+      <div class="card-item">
+        <div class="card-info">
+          <div class="card-title">واجب الفصل الأول فيزياء</div>
+          <div class="card-subtitle">تاريخ التسليم: غداً</div>
+        </div>
+        <span style="color: #10b981; font-weight: bold; font-size: 12px;">مكتمل ✅</span>
+      </div>
+    </div>
+
+    <!-- 4. صفحة الفيديوهات -->
+    <div id="sec-videos" class="content-section">
+      <div class="section-header-title">فيديوهات الشرح التعليمية</div>
+      <div class="card-item">
+        <div class="card-info">
+          <div class="card-title">محاضرة قوانين كيرشوف</div>
+          <div class="card-subtitle">شرح تفصيلي مع المسائل</div>
+        </div>
+        <button class="btn-main" onclick="window.open('https://www.youtube.com', '_blank')">مشاهدة 📺</button>
+      </div>
+    </div>
+
+    <!-- 5. صفحة ملفات PDF -->
+    <div id="sec-pdfs" class="content-section">
+      <div class="section-header-title">ملفات الـ PDF والمذكرات</div>
+      <div class="card-item">
+        <div class="card-info">
+          <div class="card-title">ملخص قوانين الفيزياء كاملة</div>
+          <div class="card-subtitle">صيغة PDF - جاهز للتحميل</div>
+        </div>
+        <button class="btn-main" onclick="alert('جاري تحميل الملف...')">تحميل 📥</button>
+      </div>
+    </div>
+
+    <!-- 6. صفحة الإعدادات الكاملة (مثل صورتك تماماً) -->
+    <div id="sec-settings" class="content-section">
+      <div class="settings-profile-box">
+        <div class="profile-avatar">YF</div>
+        <div>
+          <div style="font-size: 16px; font-weight: bold;" id="profile-name-display">Youssef Farag</div>
+          <div style="font-size: 12px; opacity: 0.8;" id="profile-email-display">y01878309@gmail.com</div>
+        </div>
+      </div>
+
+      <div class="settings-group-title">الحساب</div>
+      <div class="settings-card-box">
+        <div class="settings-row" onclick="alert('تعديل الملف الشخصي')"><span>👤 تعديل الملف الشخصي</span> <span>‹</span></div>
+        <div class="settings-row" onclick="alert('تغيير كلمة المرور')"><span>🔒 تغيير كلمة المرور</span> <span>‹</span></div>
+      </div>
+
+      <div class="settings-group-title">التفضيلات</div>
+      <div class="settings-card-box">
+        <div class="settings-row" onclick="alert('تم تفعيل الإشعارات')"><span>🔔 الإشعارات</span> <span>‹</span></div>
+        <div class="settings-row" onclick="alert('اللغة العربية مفعلة')"><span>🌐 اللغة (العربية)</span> <span>‹</span></div>
+      </div>
+
+      <div class="logout-row" onclick="logout()">
+        🚪 تسجيل الخروج
+      </div>
+    </div>
+
+  </div>
+
+  <!-- الشريط السفلي الثابت للتنقل -->
+  <div class="bottom-nav" id="bottom-navigation" style="display: none;">
+    <button class="nav-item active" id="nav-home" onclick="switchTab('sec-home', 'nav-home')">
+      <span>🏠</span> الرئيسية
+    </button>
+    <button class="nav-item" id="nav-exams" onclick="switchTab('sec-exams', 'nav-exams')">
+      <span>❓</span> الامتحانات
+    </button>
+    <button class="nav-item" id="nav-homework" onclick="switchTab('sec-homework', 'nav-homework')">
+      <span>📄</span> الواجبات
+    </button>
+    <button class="nav-item" id="nav-videos" onclick="switchTab('sec-videos', 'nav-videos')">
+      <span>🎥</span> الفيديوهات
+    </button>
+    <button class="nav-item" id="nav-pdfs" onclick="switchTab('sec-pdfs', 'nav-pdfs')">
+      <span>📁</span> ملفات PDF
+    </button>
+    <button class="nav-item" id="nav-settings" onclick="switchTab('sec-settings', 'nav-settings')">
+      <span>⚙️</span> الإعدادات
+    </button>
   </div>
 
   <!-- نافذة الامتحان المنبثقة -->
   <div id="exam-modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div style="display:flex; align-items:center; gap:10px;">
-          <h3 id="modal-exam-title" style="color: #38bdf8; font-size: 15px;">عنوان الامتحان</h3>
-          <span id="exam-timer" class="timer-badge">⏱️ 00:00</span>
-        </div>
-        <button class="close-modal" onclick="closeExamModal()">إغلاق ✕</button>
-      </div>
-      <div id="modal-questions-body"></div>
-      <button class="action-link-btn" onclick="submitExamAnswers()" style="width: 100%; margin-top: 15px; padding: 10px;">تسليم الإجابات ومعرفة النتيجة ✅</button>
+    <div class="modal-box">
+      <h3 id="modal-title" style="color: #0284c7; margin-bottom: 10px; font-size: 16px;">عنوان الامتحان</h3>
+      <div id="modal-questions-container" style="margin-bottom: 15px;"></div>
+      <button class="btn-main" onclick="submitExam()" style="width: 100%; padding: 10px;">تسليم الإجابات ✅</button>
+      <button class="btn-main" onclick="closeExam()" style="background: #ef4444; width: 100%; margin-top: 8px;">إغلاق ✕</button>
     </div>
   </div>
 
   <script>
-    let currentExamQuestions = [];
-    let timerInterval = null;
-    let timeLeftSeconds = 0;
-
+    let activeQuestions = [];
     const ADMIN_EMAIL = "y01878309@gmail.com";
 
     window.onload = function() {
-      const savedEmail = localStorage.getItem('farag_user_email');
+      const savedEmail = localStorage.getItem('fahem_email');
       if (savedEmail) {
-        setupUserSession(savedEmail);
+        setupSession(savedEmail);
       }
     };
 
-    function goToAuthScreen() {
-      document.getElementById('home-screen').style.display = 'none';
-      document.getElementById('auth-screen').style.display = 'block';
+    function switchTab(sectionId, navId) {
+      document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-section'));
+      document.getElementById(sectionId).classList.add('active-section');
+      
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById(navId).classList.add('active');
     }
 
-    function backToHome() {
-      document.getElementById('auth-screen').style.display = 'none';
-      document.getElementById('home-screen').style.display = 'block';
-    }
-
-    function handleGoogleLogin(response) {
+    function handleGoogleLogin(res) {
       try {
-        const base64Url = response.credential.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        
-        const userObj = JSON.parse(jsonPayload);
-        const userEmail = userObj.email;
-        
-        localStorage.setItem('farag_user_email', userEmail);
-        setupUserSession(userEmail);
-      } catch (e) {
-        alert('حدث خطأ أثناء تسجيل الدخول بجوجل، حاول مرة أخرى.');
+        const base64 = res.credential.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+        const userObj = JSON.parse(decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
+        localStorage.setItem('fahem_email', userObj.email);
+        setupSession(userObj.email);
+      } catch(e) {
+        alert('حدث خطأ، حاول مرة أخرى.');
       }
     }
 
-    function verifyCustomLogin() {
-      const pass = document.getElementById('user-password').value.trim();
-      const code = document.getElementById('secret-code').value.trim(); // المخفي وقيمته 78
-
-      if (code !== "78") {
+    function customLogin() {
+      const code = document.getElementById('secret-code').value.trim();
+      if(code !== "78") {
         alert('الرمز السري غير صحيح!');
         return;
       }
-
-      // إذا أدخل كلمة سر أو دخل افتراضياً، نسجله كطالب أو كأدمن حسب الإيميل
-      let currentEmail = localStorage.getItem('farag_user_email') || "student@fahem.com";
-      localStorage.setItem('farag_user_email', currentEmail);
-      setupUserSession(currentEmail);
+      let email = localStorage.getItem('fahem_email') || "student@fahem.com";
+      localStorage.setItem('fahem_email', email);
+      setupSession(email);
     }
 
-    function simulateAdminLogin() {
-      localStorage.setItem('farag_user_email', ADMIN_EMAIL);
-      setupUserSession(ADMIN_EMAIL);
+    function adminQuickLogin() {
+      localStorage.setItem('fahem_email', ADMIN_EMAIL);
+      setupSession(ADMIN_EMAIL);
     }
 
-    function setupUserSession(email) {
-      document.getElementById('home-screen').style.display = 'none';
-      document.getElementById('auth-screen').style.display = 'none';
+    function setupSession(email) {
+      document.getElementById('auth-screen-container').style.display = 'none';
       document.getElementById('dashboard-view').style.display = 'block';
+      document.getElementById('bottom-navigation').style.display = 'flex';
 
-      const infoDiv = document.getElementById('logged-user-info');
-      const adminPanel = document.getElementById('admin-settings-panel');
+      document.getElementById('profile-email-display').innerText = email;
+      
+      const adminBox = document.getElementById('admin-panel-box');
+      const roleBadge = document.getElementById('role-badge');
 
       if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-        infoDiv.innerHTML = `أهلاً بك يا أستاذ يوسف (أدمن)`;
-        adminPanel.style.display = 'block'; // تظهر لوحة الإعدادات لك وحدك
+        adminBox.style.display = 'block';
+        roleBadge.innerText = 'أدمن (يوسف فرج)';
+        roleBadge.style.background = '#dbeafe';
+        roleBadge.style.color = '#1e40af';
       } else {
-        infoDiv.innerHTML = `مرحباً بك (${email})`;
-        adminPanel.style.display = 'none'; // مخفية تماماً لأي طالب آخر
+        adminBox.style.display = 'none';
+        roleBadge.innerText = 'طالب';
       }
     }
 
     function logout() {
-      localStorage.removeItem('farag_user_email');
-      document.getElementById('dashboard-view').style.display = 'none';
-      document.getElementById('home-screen').style.display = 'block';
+      localStorage.removeItem('fahem_email');
+      location.reload();
     }
 
-    function saveAdminSettings() {
-      const examVal = document.getElementById('admin-exam-input').value.trim();
-      const videoVal = document.getElementById('admin-video-input').value.trim();
-      
-      if(!examVal && !videoVal) {
-        alert('يرجى ادخال بيانات في حقول الإعدادات أولاً!');
-        return;
-      }
-      alert('تم حفظ وتحديث الإعدادات ونشرها للطلاب بنجاح! 🚀');
-      document.getElementById('admin-exam-input').value = '';
-      document.getElementById('admin-video-input').value = '';
-    }
-
-    function downloadAppFile(event) {
-      event.preventDefault();
-      const apkUrl = "https://raw.githubusercontent.com/github/explore/main/topics/android/android.png";
-      const link = document.createElement('a');
-      link.href = apkUrl;
-      link.download = "Farag_Fahem_App.apk";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    function downloadApp(e) {
+      e.preventDefault();
       alert('تم بدء تحميل تطبيق المنصة (APK) بنجاح على هاتفك! 📦');
     }
 
-    function showSection(sectionId, btnId) {
-      const sections = document.querySelectorAll('.content-section');
-      sections.forEach(sec => sec.style.display = 'none');
-      document.getElementById(sectionId).style.display = 'block';
-      const buttons = document.querySelectorAll('.nav-btn');
-      buttons.forEach(btn => btn.classList.remove('active'));
-      document.getElementById(btnId).classList.add('active');
+    function saveAdminData() {
+      alert('تم حفظ البيانات ونشرها للطلاب بنجاح! 🚀');
+      document.getElementById('new-exam-title').value = '';
+      document.getElementById('new-video-url').value = '';
     }
 
-    function openExamModal(title, questions, minutes) {
-      document.getElementById('modal-exam-title').innerText = title;
-      currentExamQuestions = questions;
+    function startExam(title, questions) {
+      document.getElementById('modal-title').innerText = title;
+      activeQuestions = questions;
+      let container = document.getElementById('modal-questions-container');
+      container.innerHTML = '';
       
-      const body = document.getElementById('modal-questions-body');
-      body.innerHTML = '';
-
-      questions.forEach((item, index) => {
-        body.innerHTML += `
-          <div class="question-box-view">
-            <p style="font-weight: bold; margin-bottom: 8px; font-size: 14px; color: #38bdf8;">س${index+1}: ${item.q}</p>
-            <label class="option-label"><input type="radio" name="question_${index}" value="${item.o1}"> ${item.o1}</label>
-            <label class="option-label"><input type="radio" name="question_${index}" value="${item.o2}"> ${item.o2}</label>
-            ${item.o3 ? `<label class="option-label"><input type="radio" name="question_${index}" value="${item.o3}"> ${item.o3}</label>` : ''}
-            ${item.o4 ? `<label class="option-label"><input type="radio" name="question_${index}" value="${item.o4}"> ${item.o4}</label>` : ''}
+      questions.forEach((q, i) => {
+        container.innerHTML += `
+          <div style="background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 8px;">
+            <p style="font-size: 13px; font-weight: bold; margin-bottom: 5px;">${q.q}</p>
+            <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o1}"> ${q.o1}</label>
+            <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o2}"> ${q.o2}</label>
+            <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o3}"> ${q.o3}</label>
+            <label style="display:block; font-size:12px;"><input type="radio" name="q_${i}" value="${q.o4}"> ${q.o4}</label>
           </div>
         `;
       });
-
       document.getElementById('exam-modal').style.display = 'flex';
-      
-      clearInterval(timerInterval);
-      timeLeftSeconds = minutes * 60;
-      startTimer();
     }
 
-    function startTimer() {
-      const timerBadge = document.getElementById('exam-timer');
-      timerInterval = setInterval(() => {
-        if (timeLeftSeconds <= 0) {
-          clearInterval(timerInterval);
-          alert('انتهى وقت الامتحان!');
-          closeExamModal();
-          return;
-        }
-        timeLeftSeconds--;
-        let m = Math.floor(timeLeftSeconds / 60);
-        let s = timeLeftSeconds % 60;
-        timerBadge.innerText = `⏱️ ${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
-      }, 1000);
-    }
-
-    function closeExamModal() {
-      clearInterval(timerInterval);
+    function closeExam() {
       document.getElementById('exam-modal').style.display = 'none';
     }
 
-    function submitExamAnswers() {
+    function submitExam() {
       let score = 0;
-      currentExamQuestions.forEach((item, index) => {
-        const selected = document.querySelector(`input[name="question_${index}"]:checked`);
-        if (selected && selected.value === item.ans) {
-          score++;
-        }
+      activeQuestions.forEach((q, i) => {
+        let sel = document.querySelector(`input[name="q_${i}"]:checked`);
+        if(sel && sel.value === q.ans) score++;
       });
-
-      clearInterval(timerInterval);
-      alert(`انتهى الامتحان! نتيجتك هي: ${score} من ${currentExamQuestions.length}`);
-      closeExamModal();
-    }
-
-    function playVideo(url) {
-      if (url && url !== '#') {
-        window.open(url, '_blank');
-      } else {
-        alert('عذراً، الرابط غير متوفر حالياً.');
-      }
+      alert(`انتهى الامتحان! نتيجتك: ${score} من ${activeQuestions.length} 🎉`);
+      closeExam();
     }
   </script>
 </body>
