@@ -13,7 +13,6 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
       padding: 15px;
     }
@@ -28,6 +27,7 @@
       max-width: 400px;
       width: 100%;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+      margin-top: 50px;
     }
     .login-container h1 {
       font-size: 22px;
@@ -66,10 +66,7 @@
       cursor: pointer;
       width: 100%;
       margin-bottom: 12px;
-      transition: background 0.3s;
     }
-    .action-btn:hover { background: #0369a1; }
-    
     .whatsapp-btn {
       background: #22c55e;
       color: white;
@@ -82,7 +79,7 @@
       width: 100%;
     }
 
-    /* لوحة التحكم (مخفية حتى يتم تسجيل الدخول) */
+    /* لوحة التحكم الأساسية */
     #dashboard-view {
       display: none;
       width: 100%;
@@ -111,7 +108,7 @@
       cursor: pointer;
     }
     
-    /* شريط الأزرار تماماً مثل الصورة الأصلية */
+    /* شريط الأزرار */
     .nav-grid {
       display: flex;
       flex-wrap: wrap;
@@ -137,7 +134,7 @@
       border-color: #38bdf8;
     }
 
-    /* زرار الإعدادات والتنزيل الإضافي */
+    /* زرار التحميل والإعدادات */
     .download-bar {
       display: flex;
       gap: 10px;
@@ -159,8 +156,13 @@
       justify-content: center;
       gap: 6px;
     }
-    .settings-download-btn:hover {
-      background: #475569;
+
+    /* محتوى الأقسام */
+    .content-section {
+      display: none;
+    }
+    .content-section.active-section {
+      display: block;
     }
 
     .section-title {
@@ -170,7 +172,7 @@
       color: #ffffff;
       font-weight: bold;
     }
-    .student-card {
+    .student-card, .panel-card {
       background: #111827;
       border: 1px solid rgba(255, 255, 255, 0.05);
       border-radius: 10px;
@@ -214,60 +216,120 @@
     </a>
   </div>
 
-  <!-- لوحة التحكم الأصلية (تظهر بعد تسجيل الدخول) -->
+  <!-- لوحة التحكم الأصلية -->
   <div id="dashboard-view">
     <div class="top-bar">
       <button class="logout-btn" onclick="logout()">خروج</button>
-      <div class="admin-title">لوحة تحكم الأدمن (يوسف فرج)</div>[span_0](start_span)[span_0](end_span)
+      <div class="admin-title">لوحة تحكم الأدمن (يوسف فرج)</div>
     </div>
 
+    <!-- الأزرار مع ربط مباشر بالدوال -->
     <div class="nav-grid">
-      <button class="nav-btn">🎥 الفيديوهات</button>
-      <button class="nav-btn">📝 الامتحانات</button>
-      <button class="nav-btn">💡 الحل</button>
-      <button class="nav-btn active">🏆 التقييم والترتيب</button>
-      <button class="nav-btn">📁 ملفات PDF</button>
-      <button class="nav-btn">⚙ لوحة التحكم والإضافة</button>
+      <button class="nav-btn" id="btn-videos" onclick="showSection('videos', 'btn-videos')">🎥 الفيديوهات</button>
+      <button class="nav-btn" id="btn-exams" onclick="showSection('exams', 'btn-exams')">📝 الامتحانات</button>
+      <button class="nav-btn" id="btn-solutions" onclick="showSection('solutions', 'btn-solutions')">💡 الحل</button>
+      <button class="nav-btn active" id="btn-ranking" onclick="showSection('ranking', 'btn-ranking')">🏆 التقييم والترتيب</button>
+      <button class="nav-btn" id="btn-pdfs" onclick="showSection('pdfs', 'btn-pdfs')">📁 ملفات PDF</button>
+      <button class="nav-btn" id="btn-control" onclick="showSection('control', 'btn-control')">⚙ لوحة التحكم</button>
     </div>
 
-    <!-- زرار الإعدادات والتنزيل اللي طلبته -->
     <div class="download-bar">
-      <button class="settings-download-btn" onclick="downloadPlatformCode()">📥 تنزيل ملفات المنصة</button>
-      <button class="settings-download-btn" onclick="alert('لوحة الإعدادات وجاهزة للتحكم الكامل')">⚙ إعدادات الأدمن</button>
+      <button class="settings-download-btn" onclick="downloadPlatformCode()">📥 تنزيل المنصة</button>
+      <button class="settings-download-btn" onclick="showSection('control', 'btn-control')">⚙ إعدادات الأدمن</button>
     </div>
 
-    <div class="section-title">ترتيب الطلاب الأوائل</div>[span_1](start_span)[span_1](end_span)
-
-    <div class="student-card">
-      <div class="score-badge">2 / 0</div>
-      <div class="student-info">
-        <div class="student-id">#1y01878309</div>[span_2](start_span)[span_2](end_span)
-        <div class="exam-name">امتحان الفيزياء التجريبي - الفصل الأول</div>[span_3](start_span)[span_3](end_span)
+    <!-- 1. قسم التقييم والترتيب -->
+    <div id="ranking" class="content-section active-section">
+      <div class="section-title">ترتيب الطلاب الأوائل</div>
+      <div class="student-card">
+        <div class="score-badge">2 / 0</div>
+        <div class="student-info">
+          <div class="student-id">#1y01878309</div>
+          <div class="exam-name">امتحان الفيزياء التجريبي - الفصل الأول</div>
+        </div>
+      </div>
+      <div class="student-card">
+        <div class="score-badge">2 / 2</div>
+        <div class="student-info">
+          <div class="student-id">#2y01878309</div>
+          <div class="exam-name">امتحان الفيزياء التجريبي - الفصل الأول</div>
+        </div>
+      </div>
+      <div class="student-card">
+        <div class="score-badge">2 / 1</div>
+        <div class="student-info">
+          <div class="student-id">#3y01878309</div>
+          <div class="exam-name">امتحان الفيزياء التجريبي - الفصل الأول</div>
+        </div>
       </div>
     </div>
 
-    <div class="student-card">
-      <div class="score-badge">2 / 2</div>
-      <div class="student-info">
-        <div class="student-id">#2y01878309</div>[span_4](start_span)[span_4](end_span)
-        <div class="exam-name">امتحان الفيزياء التجريبي - الفصل الأول</div>[span_5](start_span)[span_5](end_span)
+    <!-- 2. قسم الفيديوهات -->
+    <div id="videos" class="content-section">
+      <div class="section-title">إدارة الفيديوهات التعليمية</div>
+      <div class="panel-card">
+        <div class="student-info">
+          <div class="student-id">محاضرة الفيزياء الأساسية</div>
+          <div class="exam-name">الفصل الأول - الشرح الكامل</div>
+        </div>
+        <div class="score-badge" style="color: #22c55e;">مفعل</div>
       </div>
     </div>
 
-    <div class="student-card">
-      <div class="score-badge">2 / 1</div>
-      <div class="student-info">
-        <div class="student-id">#3y01878309</div>[span_6](start_span)[span_6](end_span)
-        <div class="exam-name">امتحان الفيزياء التجريبي - الفصل الأول</div>[span_7](start_span)[span_7](end_span)
+    <!-- 3. قسم الامتحانات -->
+    <div id="exams" class="content-section">
+      <div class="section-title">قائمة الامتحانات</div>
+      <div class="panel-card">
+        <div class="student-info">
+          <div class="student-id">امتحان الفيزياء التجريبي</div>
+          <div class="exam-name">متاح لجميع الطلاب</div>
+        </div>
+        <div class="score-badge">نشط</div>
       </div>
     </div>
+
+    <!-- 4. قسم الحل -->
+    <div id="solutions" class="content-section">
+      <div class="section-title">حلول الامتحانات</div>
+      <div class="panel-card">
+        <div class="student-info">
+          <div class="student-id">نموذج الإجابة والتصحيح</div>
+          <div class="exam-name">عرض الحلول التفصيلية</div>
+        </div>
+        <div class="score-badge">عرض</div>
+      </div>
+    </div>
+
+    <!-- 5. ملفات PDF -->
+    <div id="pdfs" class="content-section">
+      <div class="section-title">ملفات الـ PDF والمذكرات</div>
+      <div class="panel-card">
+        <div class="student-info">
+          <div class="student-id">ملخص القوانين والمسائل</div>
+          <div class="exam-name">جاهز للتحميل والمعاينة</div>
+        </div>
+        <div class="score-badge">تحميل</div>
+      </div>
+    </div>
+
+    <!-- 6. لوحة التحكم -->
+    <div id="control" class="content-section">
+      <div class="section-title">لوحة التحكم والإضافة</div>
+      <div class="panel-card">
+        <div class="student-info">
+          <div class="student-id">إضافة محتوى جديد</div>
+          <div class="exam-name">التحكم في الأكواد والروابط</div>
+        </div>
+        <div class="score-badge" style="color: #38bdf8;">إدارة</div>
+      </div>
+    </div>
+
   </div>
 
   <script>
     function handleLogin(event) {
       event.preventDefault();
       const code = document.getElementById('passcode').value.trim();
-      
       if (code === '78') {
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('dashboard-view').style.display = 'block';
@@ -281,6 +343,22 @@
       document.getElementById('login-section').style.display = 'block';
       document.getElementById('passcode').value = '';
       document.getElementById('password').value = '';
+    }
+
+    function showSection(sectionId, btnId) {
+      // إخفاء كل الأقسام
+      const sections = document.querySelectorAll('.content-section');
+      sections.forEach(sec => sec.style.display = 'none');
+
+      // إظهار القسم المطلوب فوراً
+      document.getElementById(sectionId).style.display = 'block';
+
+      // إزالة التحديد عن كل الأزرار
+      const buttons = document.querySelectorAll('.nav-btn');
+      buttons.forEach(btn => btn.classList.remove('active'));
+
+      // تفعيل الزر الحالي
+      document.getElementById(btnId).classList.add('active');
     }
 
     function downloadPlatformCode() {
