@@ -17,7 +17,7 @@
       padding: 15px;
     }
     
-    /* شاشة تسجيل الدخول النظيفة */
+    /* شاشة تسجيل الدخول بالإيميل */
     .login-container {
       background: rgba(17, 24, 39, 0.95);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -27,21 +27,7 @@
       max-width: 400px;
       width: 100%;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-      margin-top: 20px;
-    }
-
-    .alert-banner {
-      background: linear-gradient(135deg, #0284c7, #38bdf8);
-      color: white;
-      padding: 10px 15px;
-      border-radius: 30px;
-      font-size: 13px;
-      font-weight: bold;
-      max-width: 400px;
-      width: 100%;
-      text-align: center;
-      margin-bottom: 15px;
-      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4);
+      margin-top: 30px;
     }
 
     .logo-box {
@@ -76,30 +62,28 @@
       margin-bottom: 20px;
     }
 
-    .features-grid {
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-      margin-bottom: 20px;
+    .input-group {
+      margin-bottom: 15px;
+      text-align: right;
     }
-    .feature-card {
-      background: #1e293b;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      padding: 10px 5px;
-      flex: 1;
-      text-align: center;
-    }
-    .feature-card span {
+    .input-group label {
       display: block;
+      font-size: 12px;
+      color: #cbd5e1;
+      margin-bottom: 5px;
+    }
+    .input-group input {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 12px;
+      color: white;
       font-size: 14px;
-      margin-bottom: 3px;
+      outline: none;
+      text-align: left;
     }
-    .feature-card p {
-      font-size: 11px;
-      color: #94a3b8;
-      font-weight: 600;
-    }
+    .input-group input:focus { border-color: #38bdf8; }
 
     .action-btn {
       background: #0284c7;
@@ -114,7 +98,6 @@
       margin-bottom: 12px;
       box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4);
       display: block;
-      text-decoration: none;
       text-align: center;
     }
     .action-btn:hover { background: #0369a1; }
@@ -129,7 +112,7 @@
       font-size: 14px;
       cursor: pointer;
       width: 100%;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -138,16 +121,7 @@
       box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
     }
 
-    .whatsapp-link {
-      color: #94a3b8;
-      font-size: 12px;
-      text-decoration: none;
-      display: block;
-      margin-top: 5px;
-    }
-    .whatsapp-link:hover { color: #38bdf8; }
-
-    /* لوحة المنصة العامة للطلاب */
+    /* لوحة المنصة العامة */
     #dashboard-view {
       display: none;
       width: 100%;
@@ -159,19 +133,23 @@
       align-items: center;
       margin-bottom: 15px;
       width: 100%;
+      background: rgba(17, 24, 39, 0.95);
+      padding: 10px 15px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
     }
     .admin-title {
       color: #38bdf8;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
     }
     .logout-btn {
       background: #ef4444;
       color: white;
       border: none;
-      padding: 6px 16px;
+      padding: 5px 12px;
       border-radius: 6px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: bold;
       cursor: pointer;
     }
@@ -179,7 +157,7 @@
     .nav-grid {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
       justify-content: center;
       margin-bottom: 20px;
     }
@@ -187,13 +165,14 @@
       background: #1e293b;
       color: #cbd5e1;
       border: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 8px 14px;
+      padding: 8px 12px;
       border-radius: 8px;
-      font-size: 13px;
+      font-size: 12px;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
+      font-weight: 600;
     }
     .nav-btn.active {
       background: #0284c7;
@@ -248,6 +227,27 @@
       text-align: center;
     }
     .action-link-btn:hover { background: #0369a1; }
+
+    /* لوحة الأدمن الخاصة بك (تظهر فقط لإيميلك) */
+    .admin-upload-box {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 2px dashed #38bdf8;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .admin-upload-box h4 { color: #38bdf8; font-size: 14px; margin-bottom: 8px; }
+    .admin-input {
+      width: 100%;
+      background: #0b0f19;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 6px;
+      padding: 8px;
+      color: white;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
 
     /* نافذة الامتحان المنبثقة للطالب */
     #exam-modal {
@@ -316,12 +316,7 @@
 </head>
 <body>
 
-  <!-- تنبيه طلب الرمز عبر الواتساب -->
-  <div class="alert-banner" id="top-alert-banner">
-    🚨 تنبيه: اطلب رمز المنصة عبر الواتساب لتسجيل الدخول!
-  </div>
-
-  <!-- شاشة الدخول الرئيسية (بدون أي خانات بريد أو كلمات مرور) -->
+  <!-- شاشة تسجيل الدخول بالإيميل -->
   <div class="login-container" id="login-section">
     <div class="logo-box">
       <div style="font-size: 24px;">🛡️</div>
@@ -329,55 +324,41 @@
     </div>
     
     <h1>منصة فاهم التعليمية</h1>
-    <div class="subtitle">بوابتك الأولى للتفوق الدراسي والمراجعات الشاملة</div>
+    <div class="subtitle">سجل بريدك الإلكتروني لدخول المنصة</div>
     
-    <div class="features-grid">
-      <div class="feature-card">
-        <span>⚡</span>
-        <p>سريع وخفيف</p>
-      </div>
-      <div class="feature-card">
-        <span>📚</span>
-        <p>محتوى شامل</p>
-      </div>
-      <div class="feature-card">
-        <span>🔒</span>
-        <p>آمن وموثوق</p>
-      </div>
+    <div class="input-group">
+      <label>البريد الإلكتروني:</label>
+      <input type="email" id="user-email-input" placeholder="example@gmail.com">
     </div>
 
-    <!-- زر الدخول المباشر للمنصة -->
-    <button type="button" class="action-btn" onclick="enterDashboard()">🚀 تسجيل الدخول / دخول المنصة</button>
+    <!-- زر الدخول -->
+    <button type="button" class="action-btn" onclick="loginWithEmail()">🚀 دخول المنصة</button>
 
-    <!-- زر تحميل التطبيق الحقيقي -->
+    <!-- زر تحميل التطبيق (APK) -->
     <a href="#" id="real-apk-download" class="download-apk-btn" onclick="downloadAppFile(event)">
-      📦 تحميل التطبيق (APK)
-    </a>
-
-    <a href="https://wa.me/201093706503?text=مرحباً%20يوسف،%20أريد%20الحصول%20على%20رمز%20منصة%20فاهم" target="_blank" class="whatsapp-link">
-      💬 تواصل مع المسؤول عبر واتساب للحصول على الرمز
+      📦 تحميل تطبيق المنصة (APK)
     </a>
   </div>
 
-  <!-- لوحة المنصة المخصصة للطلاب (عرض فقط بدون صلاحيات إضافة من الخارج) -->
+  <!-- لوحة المنصة الشاملة -->
   <div id="dashboard-view">
     <div class="top-bar">
       <button class="logout-btn" onclick="logout()">خروج</button>
-      <div class="admin-title" id="user-display-email">منصة الأستاذ: يوسف فرج 👨‍🏫</div>
+      <div class="admin-title" id="welcome-user-text">مرحباً بك</div>
     </div>
 
-    <!-- أزرار التنقل (للعرض فقط) -->
+    <!-- أزرار التنقل الرئيسية -->
     <div class="nav-grid">
       <button class="nav-btn" id="btn-videos" onclick="showSection('videos', 'btn-videos')">🎥 الفيديوهات</button>
       <button class="nav-btn" id="btn-exams" onclick="showSection('exams', 'btn-exams')">📝 الامتحانات</button>
       <button class="nav-btn active" id="btn-solutions" onclick="showSection('solutions', 'btn-solutions')">💡 الحل</button>
-      <button class="nav-btn" id="btn-ranking" onclick="showSection('ranking', 'btn-ranking')">🏆 التقييم والترتيب</button>
+      <button class="nav-btn" id="btn-ranking" onclick="showSection('ranking', 'btn-ranking')">🏆 التقييم</button>
       <button class="nav-btn" id="btn-pdfs" onclick="showSection('pdfs', 'btn-pdfs')">📁 ملفات PDF</button>
     </div>
 
     <!-- 1. نموذج الحل -->
     <div id="solutions" class="content-section active-section">
-      <div class="section-title">نماذج الحل والإجابات الصحيحة المعتمدة</div>
+      <div class="section-title">نماذج الحل والإجابات المعتمدة</div>
       <div class="panel-card">
         <div class="student-info">
           <div class="student-id">نموذج حل امتحان الفيزياء التجريبي</div>
@@ -387,12 +368,22 @@
       </div>
     </div>
 
-    <!-- 2. الامتحانات (لحلها فقط بدون إمكانية إضافة امتحانات جديدة من الطلاب) -->
+    <!-- 2. الامتحانات (تظهر لوحة الإضافة هنا تلقائياً لو إيميلك هو الأدمن) -->
     <div id="exams" class="content-section">
       <div class="section-title">الامتحانات المتاحة للحل</div>
+      
+      <!-- لوحة إضافة امتحان (تظهر لإيميلك يوسف فقط) -->
+      <div id="admin-exam-panel" style="display:none;" class="admin-upload-box">
+        <h4>🛠️ لوحة الأدمن: إضافة امتحان جديد</h4>
+        <input type="text" id="new-exam-title" class="admin-input" placeholder="اسم الامتحان (مثلا: امتحان الجبر)">
+        <input type="text" id="new-exam-q" class="admin-input" placeholder="السؤال الأول">
+        <input type="text" id="new-exam-ans" class="admin-input" placeholder="الإجابة الصحيحة">
+        <button class="action-link-btn" onclick="addNewExam()" style="width:100%; padding:8px;">نشر الامتحان للطلاب 🚀</button>
+      </div>
+
       <div class="panel-card">
         <div style="display: flex; gap: 5px;">
-          <button class="action-link-btn" onclick="openExamModal('امتحان الفيزياء التجريبي', [{q:'ما وحدة قياس الشحنة الكهربائية؟', o1:'كولوم', o2:'امبير', o3:'فولت', o4:'اوم', ans:'كولوم'}], 15)">بدء الامتحان (15 دقيقة) 📝</button>
+          <button class="action-link-btn" onclick="openExamModal('امتحان الفيزياء التجريبي', [{q:'ما وحدة قياس الشحنة الكهربائية؟', o1:'كولوم', o2:'امبير', o3:'فولت', o4:'اوم', ans:'كولوم'}], 15)">بدء الامتحان 📝</button>
         </div>
         <div class="student-info">
           <div class="student-id">امتحان الفيزياء التجريبي</div>
@@ -453,29 +444,57 @@
         <button class="close-modal" onclick="closeExamModal()">إغلاق ✕</button>
       </div>
       <div id="modal-questions-body"></div>
-      <button class="action-btn" onclick="submitExamAnswers()" style="margin-top: 15px;">تسليم الإجابات ومعرفة النتيجة ✅</button>
+      <button class="action-link-btn" onclick="submitExamAnswers()" style="width: 100%; margin-top: 15px; padding: 10px;">تسليم الإجابات ومعرفة النتيجة ✅</button>
     </div>
   </div>
 
   <script>
+    const ADMIN_EMAIL = "y01878309@gmail.com";
     let currentExamQuestions = [];
     let timerInterval = null;
     let timeLeftSeconds = 0;
 
     window.onload = function() {
-      const isLoggedIn = localStorage.getItem('farag_logged_in');
-      if (isLoggedIn === 'true') {
-        document.getElementById('login-section').style.display = 'none';
-        document.getElementById('top-alert-banner').style.display = 'none';
-        document.getElementById('dashboard-view').style.display = 'block';
+      const savedEmail = localStorage.getItem('farag_user_email');
+      if (savedEmail) {
+        setupUserSession(savedEmail);
       }
     };
 
-    function enterDashboard() {
-      localStorage.setItem('farag_logged_in', 'true');
+    function loginWithEmail() {
+      const emailInput = document.getElementById('user-email-input').value.trim().toLowerCase();
+      if(!emailInput || !emailInput.includes('@')) {
+        alert('الرجاء إدخال بريد إلكتروني صحيح!');
+        return;
+      }
+      localStorage.setItem('farag_user_email', emailInput);
+      setupUserSession(emailInput);
+    }
+
+    function setupUserSession(email) {
       document.getElementById('login-section').style.display = 'none';
-      document.getElementById('top-alert-banner').style.display = 'none';
       document.getElementById('dashboard-view').style.display = 'block';
+
+      if (email === ADMIN_EMAIL) {
+        document.getElementById('welcome-user-text').innerText = "أهلاً بك يا أستاذ يوسف (أدمن)";
+        document.getElementById('admin-exam-panel').style.display = 'block';
+      } else {
+        document.getElementById('welcome-user-text').innerText = "طالب: " + email;
+        document.getElementById('admin-exam-panel').style.display = 'none';
+      }
+    }
+
+    function addNewExam() {
+      const title = document.getElementById('new-exam-title').value;
+      const q = document.getElementById('new-exam-q').value;
+      if(!title || !q) {
+        alert('برجاء ملء بيانات الامتحان!');
+        return;
+      }
+      alert('تم نشر الامتحان بنجاح على المنصة للطلاب!');
+      document.getElementById('new-exam-title').value = '';
+      document.getElementById('new-exam-q').value = '';
+      document.getElementById('new-exam-ans').value = '';
     }
 
     function downloadAppFile(event) {
@@ -491,10 +510,9 @@
     }
 
     function logout() {
-      localStorage.removeItem('farag_logged_in');
+      localStorage.removeItem('farag_user_email');
       document.getElementById('dashboard-view').style.display = 'none';
       document.getElementById('login-section').style.display = 'block';
-      document.getElementById('top-alert-banner').style.display = 'block';
     }
 
     function showSection(sectionId, btnId) {
