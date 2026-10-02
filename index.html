@@ -4,61 +4,141 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>منصة فاهم التعليمية</title>
+  <meta name="description" content="منصة فاهم التعليمية - حمل التطبيق الآن واستمتع بأفضل تجربة تعليمية.">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: #0f172a;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
       color: #ffffff;
-      font-family: Tahoma, Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       padding: 20px;
+    }
+    
+    /* شريط التنبيهات المتحرك */
+    .ticker-bar {
+      background: linear-gradient(90deg, #0284c7, #38bdf8);
+      color: #0f172a;
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
       text-align: center;
+      max-width: 450px;
+      width: 100%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 35px 25px;
+      text-align: center;
+      max-width: 450px;
+      width: 100%;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
     }
     .logo {
       width: 110px;
       height: 110px;
-      border-radius: 20px;
+      border-radius: 25px;
       object-fit: cover;
-      margin-bottom: 20px;
-      border: 2px solid rgba(255, 255, 255, 0.2);
-    }
-    h1 { font-size: 24px; margin-bottom: 10px; }
-    p { color: #94a3b8; font-size: 14px; margin-bottom: 30px; }
-    .btn {
-      background: #0284c7;
-      color: white;
-      padding: 14px 28px;
-      text-decoration: none;
-      border-radius: 30px;
-      font-weight: bold;
-      font-size: 16px;
-      display: inline-block;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
       margin-bottom: 15px;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+    }
+    h1 { font-size: 26px; margin-bottom: 8px; color: #ffffff; font-weight: 700; }
+    p { color: #94a3b8; font-size: 14px; margin-bottom: 25px; }
+    
+    .features {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 25px;
+      gap: 10px;
+    }
+    .feature-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 10px;
+      border-radius: 12px;
+      font-size: 13px;
+      color: #cbd5e1;
+      flex: 1;
+    }
+
+    .download-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: white;
+      padding: 15px 25px;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: bold;
+      font-size: 17px;
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.4);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
       width: 100%;
-      max-width: 300px;
+      transition: all 0.3s ease;
+      margin-bottom: 15px;
     }
-    .whatsapp-btn {
-      background: #22c55e;
+    .download-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(2, 132, 199, 0.6); }
+
+    .support-link {
+      color: #22c55e;
+      text-decoration: none;
+      font-size: 14px;
+      display: inline-block;
+      font-weight: bold;
+      transition: color 0.2s;
     }
+    .support-link:hover { color: #4ade80; text-decoration: underline; }
   </style>
 </head>
 <body>
 
-  <img src="https://lh3.googleusercontent.com/d/13f5hYTuiTwFpb_mXm84w32JkhpFF_czT" alt="شعار منصة فاهم" class="logo">
-  <h1>منصة فاهم التعليمية</h1>
-  <p>حمل التطبيق الآن واستمتع بالدراسة</p>
+  <div class="ticker-bar">
+    🚨 تنبيه: اطلب رمز المنصة عبر الواتساب لتسجيل الدخول!
+  </div>
 
-  <a href="https://drive.google.com/file/d/1BQLReYa_kd0B29EvyBIyHX5xaeLJlLq9/view?usp=drivesdk" target="_blank" class="btn">
-    📥 تحميل التطبيق (APK)
-  </a>
+  <div class="container">
+    <img src="https://lh3.googleusercontent.com/d/13f5hYTuiTwFpb_mXm84w32JkhpFF_czT" alt="شعار منصة فاهم" class="logo">
+    <h1>منصة فاهم التعليمية</h1>
+    <p>بوابتك الأولى للتفوق الدراسي والمراجعات الشاملة</p>
+    
+    <div class="features">
+      <div class="feature-box">⚡ سريع وخفيف</div>
+      <div class="feature-box">📚 محتوى شامل</div>
+      <div class="feature-box">🔒 آمن وموثوق</div>
+    </div>
 
-  <a href="https://wa.me/201093706503?text=مرحباً، أريـد%20الحصول%20على%20رمز%20منصة%20فاهم%20التعليمية" target="_blank" class="btn whatsapp-btn">
-    💬 اطلب رمز المنصة عبر واتساب
-  </a>
+    <div>
+      <a href="https://drive.google.com/file/d/1BQLReYa_kd0B29EvyBIyHX5xaeLJlLq9/view?usp=drivesdk" target="_blank" class="download-btn">
+        📥 تحميل التطبيق (APK)
+      </a>
+    </div>
+
+    <div>
+      <a href="https://wa.me/201093706503?text=مرحباً، أريـد%20الحصول%20على%20رمز%20منصة%20فاهم%20التعليمية" target="_blank" class="support-link">
+        💬 تواصل مع المسؤول عبر واتساب للحصول على الرمز
+      </a>
+    </div>
+  </div>
 
 </body>
 </html>
