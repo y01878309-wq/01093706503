@@ -279,6 +279,7 @@
       margin-top: 20px; cursor: pointer; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.05);
     }
 
+    /* شريط التنقل السفلي المعدل بحيث تكون الرئيسية في اليمين والإعدادات على اليسار */
     .bottom-nav {
       position: fixed;
       bottom: 0; left: 0; width: 100%;
@@ -289,6 +290,7 @@
       padding: 8px 0;
       z-index: 1000;
       box-shadow: 0 -4px 15px rgba(0,0,0,0.03);
+      flex-direction: row-reverse;
     }
     .nav-item {
       background: none; border: none;
@@ -369,7 +371,7 @@
     <div class="app-header">
       <div>
         <div class="greeting-text" id="welcome-user-name">👋 مرحباً، يوسف فرج</div>
-        <div class="date-text" id="current-date-box">الجمعة، أكتوبر 2</div>
+        <div class="date-text" id="current-date-box">الثلاثاء، أكتوبر 6</div>
       </div>
       <div class="admin-badge-top" id="role-badge">أدمن (يوسف فرج)</div>
     </div>
@@ -393,10 +395,10 @@
         <button class="btn-main" onclick="sendAdminBroadcast()" style="width: 100%; background: #0284c7;">إرسال الإشعار للجميع 🔔</button>
       </div>
 
-      <!-- تقارير الطلاب (الإيميلات والدرجات والأوراق) -->
+      <!-- تقارير الطلاب (الإيميلات والدرجات والأوراق المرفوعة) -->
       <div style="background: #f1f5f9; padding: 10px; border-radius: 8px; margin-bottom: 10px;">
-        <div style="font-size: 11px; font-weight: bold; color: #334155; margin-bottom: 6px;">📊 سجل إيميلات ونتائج الطلاب:</div>
-        <div id="admin-students-reports" style="max-height: 150px; overflow-y: auto; font-size: 11px; background: white; padding: 8px; border-radius: 6px;"></div>
+        <div style="font-size: 11px; font-weight: bold; color: #334155; margin-bottom: 6px;">📊 سجل إيميلات، درجات، وأوراق الطلاب:</div>
+        <div id="admin-students-reports" style="max-height: 180px; overflow-y: auto; font-size: 11px; background: white; padding: 8px; border-radius: 6px;"></div>
       </div>
 
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة فيديو المنصة:</div>
@@ -499,7 +501,7 @@
         </div>
       </div>
 
-      <!-- زر الإشعارات المطلوب (يتحكم فيه الطالب وللأدمن الأولوية) -->
+      <!-- زر الإشعارات المطلوب -->
       <div class="settings-group-title">إعدادات الإشعارات والتنبيهات</div>
       <div class="settings-card-box">
         <div class="settings-row">
@@ -534,12 +536,12 @@
   </div>
 
   <div class="bottom-nav" id="bottom-navigation" style="display: none;">
-    <button class="nav-item" id="nav-settings" onclick="switchTab('sec-settings', 'nav-settings')"><span>⚙️</span> الإعدادات</button>
-    <button class="nav-item" id="nav-pdfs" onclick="switchTab('sec-pdfs', 'nav-pdfs')"><span>📁</span> ملفات PDF</button>
-    <button class="nav-item" id="nav-videos" onclick="switchTab('sec-videos', 'nav-videos')"><span>🎥</span> الفيديوهات</button>
-    <button class="nav-item" id="nav-homework" onclick="switchTab('sec-homework', 'nav-homework')"><span>📄</span> الواجبات</button>
-    <button class="nav-item" id="nav-exams" onclick="switchTab('sec-exams', 'nav-exams')"><span>❓</span> الامتحانات</button>
     <button class="nav-item active" id="nav-home" onclick="switchTab('sec-home', 'nav-home')"><span>🏠</span> الرئيسية</button>
+    <button class="nav-item" id="nav-exams" onclick="switchTab('sec-exams', 'nav-exams')"><span>❓</span> الامتحانات</button>
+    <button class="nav-item" id="nav-homework" onclick="switchTab('sec-homework', 'nav-homework')"><span>📄</span> الواجبات</button>
+    <button class="nav-item" id="nav-videos" onclick="switchTab('sec-videos', 'nav-videos')"><span>🎥</span> الفيديوهات</button>
+    <button class="nav-item" id="nav-pdfs" onclick="switchTab('sec-pdfs', 'nav-pdfs')"><span>📁</span> ملفات PDF</button>
+    <button class="nav-item" id="nav-settings" onclick="switchTab('sec-settings', 'nav-settings')"><span>⚙️</span> الإعدادات</button>
   </div>
 
   <div id="exam-modal">
@@ -617,6 +619,14 @@
       }
       
       localStorage.setItem('fahem_email', emailInput);
+      
+      // تسجيل الإيميل في سجل الطلاب العام لتظهر بياناتهم للأدمن
+      let allStudents = JSON.parse(localStorage.getItem('fahem_all_students_records')) || [];
+      if(!allStudents.includes(emailInput)) {
+        allStudents.push(emailInput);
+        localStorage.setItem('fahem_all_students_records', JSON.stringify(allStudents));
+      }
+
       setupSession(emailInput);
     }
 
@@ -673,7 +683,6 @@
       document.getElementById('welcome-user-name').innerText = `👋 مرحباً، ${email === ADMIN_EMAIL ? 'يوسف فرج' : email}`;
       document.getElementById('top-bar-user-status').innerText = email === ADMIN_EMAIL ? 'أدمن (يوسف فرج)' : email;
       
-      // تحميل حالة زر الإشعارات للطالب أو الأدمن
       const notifState = localStorage.getItem('notif_' + email);
       document.getElementById('user-notification-toggle').checked = notifState === null ? true : notifState === 'true';
 
@@ -698,15 +707,10 @@
       alert('تم بدء تحميل تطبيق المنصة (APK) بنجاح على هاتفك! 📦');
     }
 
-    // دوال زر الإشعارات الجديدة
     function toggleNotifications(checkbox) {
       const currentEmail = localStorage.getItem('fahem_email');
       localStorage.setItem('notif_' + currentEmail, checkbox.checked);
-      if(currentEmail === ADMIN_EMAIL) {
-        alert(checkbox.checked ? 'تم تفعيل الإشعارات العامة للمنصة بنجاح (للأدمن الأولوية)' : 'تم إيقاف إشعارات الأدمن');
-      } else {
-        alert(checkbox.checked ? 'تم تفعيل استقبال الإشعارات' : 'تم إيقاف استقبال الإشعارات');
-      }
+      alert(checkbox.checked ? 'تم تفعيل الإشعارات بنجاح' : 'تم إيقاف الإشعارات');
     }
 
     function sendAdminBroadcast() {
@@ -714,7 +718,7 @@
       if(!text) { alert('الرجاء كتابة نص الإشعار'); return; }
       localStorage.setItem('fahem_broadcast', text);
       document.getElementById('admin-broadcast-text').value = '';
-      alert('📢 تم إرسال الإشعار لجميع الطلاب بنجاح وبصلاحيات الأدمن المطلقة!');
+      alert('📢 تم إرسال الإشعار لجميع الطلاب بنجاح وبصلاحيات الأدمن!');
     }
 
     function generateQuestionFields() {
@@ -726,12 +730,12 @@
         container.innerHTML += `
           <div style="background: #ffffff; padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #cbd5e1;">
             <div style="font-size: 11px; font-weight: bold; color: #0284c7; margin-bottom: 4px;">السؤال رقم (${i})</div>
-            <input type="text" id="q_text_${i}" class="auth-input" placeholder="اكتب اسم أو نص السؤال هنا..." style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
+            <input type="text" id="q_text_${i}" class="auth-input" placeholder="اكتب نص السؤال هنا..." style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
             <input type="text" id="q_opt1_${i}" class="auth-input" placeholder="الاختيار الأول (أ)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
             <input type="text" id="q_opt2_${i}" class="auth-input" placeholder="الاختيار الثاني (ب)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
             <input type="text" id="q_opt3_${i}" class="auth-input" placeholder="الاختيار الثالث (جـ)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
             <input type="text" id="q_opt4_${i}" class="auth-input" placeholder="الاختيار الرابع (د)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
-            <input type="text" id="q_ans_${i}" class="auth-input" placeholder="اكتب الإجابة الصحيحة هنا بالضبط..." style="background: #f0fdf4; border-color: #86efac; color: #166534; margin-bottom: 0;">
+            <input type="text" id="q_ans_${i}" class="auth-input" placeholder="الإجابة الصحيحة بالضبط..." style="background: #f0fdf4; border-color: #86efac; color: #166534; margin-bottom: 0;">
           </div>
         `;
       }
@@ -766,14 +770,14 @@
       document.getElementById('new-exam-count').value = '1';
       generateQuestionFields();
       renderExams();
-      alert('تم إضافة الامتحان بالأسئلة والاختيارات والإجابات بنجاح! ✅');
+      alert('تم إضافة الامتحان بنجاح! ✅');
     }
 
     function deleteExam(id) {
       examsList = examsList.filter(e => e.id !== id);
       localStorage.setItem('fahem_exams', JSON.stringify(examsList));
       renderExams();
-      alert('تم حذف الامتحان بنجاح 🗑️');
+      alert('تم حذف الامتحان 🗑️');
     }
 
     function renderExams() {
@@ -816,7 +820,6 @@
       });
     }
 
-    // دوال رفع الواجبات وحفظ تقارير الطلاب والترتيب التلقائي
     function submitHomeworkFile() {
       const fileInput = document.getElementById('homework-file-upload');
       const currentEmail = localStorage.getItem('fahem_email');
@@ -829,7 +832,7 @@
       submissions.push({ email: currentEmail, file: fileName, time: new Date().toLocaleDateString() });
       localStorage.setItem('fahem_submissions', JSON.stringify(submissions));
       
-      alert('تم رفع ورقة الحل بنجاح وإرسالها إلى لوحة تحكم الأدمن! 📤');
+      alert('تم رفع ورقة الحل بنجاح! 📤');
       fileInput.value = '';
       if(currentEmail === ADMIN_EMAIL) renderAdminReports();
     }
@@ -837,15 +840,24 @@
     function renderAdminReports() {
       const container = document.getElementById('admin-students-reports');
       if(!container) return;
+
+      let allStudents = JSON.parse(localStorage.getItem('fahem_all_students_records')) || [ADMIN_EMAIL];
       let submissions = JSON.parse(localStorage.getItem('fahem_submissions')) || [];
-      if(submissions.length === 0) {
-        container.innerHTML = '<p style="color:#64748b; text-align:center;">لا توجد أوراق مرفوعة من الطلاب حتى الآن</p>';
-        return;
-      }
-      container.innerHTML = '';
-      submissions.forEach((sub, idx) => {
-        container.innerHTML += `<div style="border-bottom: 1px solid #e2e8f0; padding: 4px 0;"><b>#${idx+1}</b> | البريد: <b>${sub.email}</b> | الملف: ${sub.file}</div>`;
+      
+      let html = `<div style="margin-bottom: 8px; font-weight: bold; color: #0284c7;">📌 إيميلات الطلاب المسجلين (${allStudents.length}):</div>`;
+      allStudents.forEach((st, i) => {
+        html += `<div style="font-size: 11px; padding: 2px 0; color: #334155;">${i+1}. ${st}</div>`;
       });
+
+      html += `<div style="margin: 10px 0 4px 0; font-weight: bold; color: #0284c7;">📄 الأوراق والدرجات المرفوعة:</div>`;
+      if(submissions.length === 0) {
+        html += `<div style="color:#64748b;">لا توجد أوراق مرفوعة حالياً</div>`;
+      } else {
+        submissions.forEach((sub, idx) => {
+          html += `<div style="border-bottom: 1px solid #e2e8f0; padding: 4px 0;"><b>#${idx+1}</b> | ${sub.email} | ملف: ${sub.file}</div>`;
+        });
+      }
+      container.innerHTML = html;
     }
 
     function addVideo() {
@@ -853,7 +865,7 @@
       let link = document.getElementById('new-video-link').value.trim();
       const fileInput = document.getElementById('new-media-file');
       
-      if(!title) { alert('الرجاء كتابة اسم أو عنوان الفيديو'); return; }
+      if(!title) { alert('الرجاء كتابة اسم الفيديو'); return; }
 
       if (fileInput.files && fileInput.files[0]) {
         const file = fileInput.files[0];
@@ -873,7 +885,7 @@
           document.getElementById('new-video-link').value = '';
           fileInput.value = '';
           renderVideos();
-          alert('تم إضافة الفيديو للمنصة بنجاح! 🎥');
+          alert('تم إضافة الفيديو بنجاح! 🎥');
         };
         reader.readAsDataURL(file);
       } else if (link) {
@@ -882,15 +894,15 @@
           title: title,
           type: 'link',
           content: link,
-          info: 'رابط تعليمي / شرح خارجي'
+          info: 'رابط تعليمي خارجي'
         });
         localStorage.setItem('fahem_videos', JSON.stringify(videosList));
         document.getElementById('new-video-title').value = '';
         document.getElementById('new-video-link').value = '';
         renderVideos();
-        alert('تم إضافة الفيديو للمنصة بنجاح! 🔗');
+        alert('تم إضافة رابط الفيديو بنجاح! 🔗');
       } else {
-        alert('الرجاء إدخال رابط أو اختيار ملف فيديو/صورة من جهازك.');
+        alert('الرجاء إدخال رابط أو اختيار ملف فيديو/صورة.');
       }
     }
 
@@ -898,7 +910,7 @@
       videosList = videosList.filter(v => v.id !== id);
       localStorage.setItem('fahem_videos', JSON.stringify(videosList));
       renderVideos();
-      alert('تم حذف العنصر بنجاح 🗑');
+      alert('تم حذف العنصر 🗑');
     }
 
     function renderVideos() {
@@ -958,7 +970,7 @@
       pdfsList = pdfsList.filter(p => p.id !== id);
       localStorage.setItem('fahem_pdfs', JSON.stringify(pdfsList));
       renderPdfs();
-      alert('تم حذف ملف الـ PDF بنجاح 🗑');
+      alert('تم حذف ملف الـ PDF 🗑');
     }
 
     function renderPdfs() {
@@ -973,7 +985,7 @@
       }
 
       pdfsList.forEach(pdf => {
-        let deleteBtn = isUserAdmin ? `<button class="btn-delete" onclick="deletePdf(${pdf.id})">حذف 🗑️️</button>` : '';
+        let deleteBtn = isUserAdmin ? `<button class="btn-delete" onclick="deletePdf(${pdf.id})">حذف 🗑</button>` : '';
         container.innerHTML += `
           <div class="card-item">
             <div class="card-row">
@@ -1000,7 +1012,7 @@
 
       localStorage.setItem('fahem_stats', JSON.stringify(statsData));
       renderStats();
-      alert('تم تحديث الإحصائيات والترتيب التلقائي بنجاح! 📊');
+      alert('تم تحديث الإحصائيات والترتيب بنجاح! 📊');
     }
 
     function renderStats() {
@@ -1009,7 +1021,7 @@
     }
 
     function resetAppData() {
-      if(confirm('هل أنت متأكد من تصفير وإعادة ضبط كافة بيانات المنصة؟')) {
+      if(confirm('هل أنت متأكد من تصفير وإعادة ضبط كافة البيانات؟')) {
         localStorage.clear();
         location.reload();
       }
