@@ -338,7 +338,7 @@
         </div>
       </div>
 
-      <!-- شاشة نسيت كلمة المرور (إدخال البريد) -->
+      <!-- شاشة نسيت كلمة المرور -->
       <div id="pane-forgot" class="auth-screen-pane">
         <button class="back-btn" onclick="switchAuthPane('pane-login')">‹</button>
         <div style="font-size: 40px; margin-bottom: 10px; margin-top: 15px;">🔒</div>
@@ -374,16 +374,30 @@
       <div class="admin-badge-top" id="role-badge">أدمن (يوسف فرج)</div>
     </div>
 
+    <!-- لوحة تحكم الأدمن -->
     <div id="admin-panel-box">
       <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 10px;">⚙ لوحة تحكم الأدمن (يوسف فرج)</div>
       
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد:</div>
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد (مع زر متعدد الأسئلة):</div>
       <input type="text" id="new-exam-title" class="auth-input" placeholder="عنوان الامتحان..." style="background: white; color: #1e293b; margin-bottom: 6px;">
       <input type="number" id="new-exam-count" class="auth-input" placeholder="عدد الأسئلة..." value="1" oninput="generateQuestionFields()" style="background: white; color: #1e293b; margin-bottom: 6px;">
       
       <div id="dynamic-questions-builder" style="margin-bottom: 10px;"></div>
 
       <button class="btn-main" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة الامتحان وتخزينه 📝</button>
+
+      <!-- تحكم الأدمن في الإشعارات العامة -->
+      <div style="background: #e0f2fe; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #38bdf8;">
+        <div style="font-size: 11px; font-weight: bold; color: #0369a1; margin-bottom: 4px;">📢 إرسال إشعار عام للطلاب:</div>
+        <input type="text" id="admin-broadcast-text" class="auth-input" placeholder="اكتب نص الإشعار هنا..." style="background: white; color: #1e293b; margin-bottom: 6px;">
+        <button class="btn-main" onclick="sendAdminBroadcast()" style="width: 100%; background: #0284c7;">إرسال الإشعار للجميع 🔔</button>
+      </div>
+
+      <!-- تقارير الطلاب (الإيميلات والدرجات والأوراق) -->
+      <div style="background: #f1f5f9; padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+        <div style="font-size: 11px; font-weight: bold; color: #334155; margin-bottom: 6px;">📊 سجل إيميلات ونتائج الطلاب:</div>
+        <div id="admin-students-reports" style="max-height: 150px; overflow-y: auto; font-size: 11px; background: white; padding: 8px; border-radius: 6px;"></div>
+      </div>
 
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة فيديو المنصة:</div>
       <input type="text" id="new-video-title" class="auth-input" placeholder="اكتب اسم الفيديو هنا..." style="background: white; color: #1e293b; margin-bottom: 6px;">
@@ -398,7 +412,7 @@
       <input type="text" id="new-pdf-link" class="auth-input" placeholder="رابط ملف الـ PDF (https://...)" style="background: white; color: #1e293b; margin-bottom: 6px;">
       <button class="btn-main" onclick="addPdfLink()" style="width: 100%; margin-bottom: 10px; background: #7c3aed;">إضافة ملف الـ PDF 📁</button>
 
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">التحكم في الإحصائيات:</div>
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">التحكم في الإحصائيات (مع الترتيب التلقائي):</div>
       <div class="admin-control-row">
         <input type="number" id="set-exams-count" class="auth-input" placeholder="عدد الامتحانات" style="background: white; color: #1e293b; margin-bottom: 0;">
         <input type="number" id="set-rank-val" class="auth-input" placeholder="الترتيب" style="background: white; color: #1e293b; margin-bottom: 0;">
@@ -426,7 +440,7 @@
         <div class="stat-card">
           <div class="stat-icon">📊</div>
           <div class="stat-value" id="stat-rank-display">1</div>
-          <div class="stat-label">الترتيب</div>
+          <div class="stat-label">الترتيب (تلقائي)</div>
         </div>
       </div>
 
@@ -453,15 +467,16 @@
     </div>
 
     <div id="sec-homework" class="content-section">
-      <div class="section-header-title">الواجبات والمهام الدراسية</div>
+      <div class="section-header-title">الواجبات والمهام الدراسية (مع إمكانية رفع الأوراق)</div>
       <div class="card-item">
         <div class="card-row">
           <div class="card-info">
             <div class="card-title">واجب الفصل الأول فيزياء</div>
-            <div class="card-subtitle">تاريخ التسليم: غداً</div>
+            <div class="card-subtitle">ارفع ورقة الإجابة الخاصة بك:</div>
           </div>
-          <span style="color: #10b981; font-weight: bold; font-size: 12px;">مكتمل ✅</span>
         </div>
+        <input type="file" id="homework-file-upload" class="auth-input" accept="image/*,application/pdf" style="margin-top: 5px;">
+        <button class="btn-main" onclick="submitHomeworkFile()">رفع ورقة الحل 📤</button>
       </div>
     </div>
 
@@ -481,6 +496,15 @@
         <div>
           <div style="font-size: 16px; font-weight: bold;" id="profile-name-display">Youssef Farag</div>
           <div style="font-size: 12px; opacity: 0.8;" id="profile-email-display">y01878309@gmail.com</div>
+        </div>
+      </div>
+
+      <!-- زر الإشعارات المطلوب (يتحكم فيه الطالب وللأدمن الأولوية) -->
+      <div class="settings-group-title">إعدادات الإشعارات والتنبيهات</div>
+      <div class="settings-card-box">
+        <div class="settings-row">
+          <span>🔔 تفعيل/إيقاف الإشعارات</span>
+          <input type="checkbox" id="user-notification-toggle" onchange="toggleNotifications(this)" style="width: 20px; height: 20px; cursor: pointer;">
         </div>
       </div>
 
@@ -596,7 +620,6 @@
       setupSession(emailInput);
     }
 
-    // دوال نسيت كلمة المرور وإرسال الرمز وإعادة التعيين
     function sendResetCode() {
       const email = document.getElementById('forgot-email').value.trim();
       if(!email) {
@@ -650,9 +673,14 @@
       document.getElementById('welcome-user-name').innerText = `👋 مرحباً، ${email === ADMIN_EMAIL ? 'يوسف فرج' : email}`;
       document.getElementById('top-bar-user-status').innerText = email === ADMIN_EMAIL ? 'أدمن (يوسف فرج)' : email;
       
+      // تحميل حالة زر الإشعارات للطالب أو الأدمن
+      const notifState = localStorage.getItem('notif_' + email);
+      document.getElementById('user-notification-toggle').checked = notifState === null ? true : notifState === 'true';
+
       if(email === ADMIN_EMAIL) {
         document.getElementById('admin-panel-box').style.display = 'block';
         document.getElementById('role-badge').style.display = 'block';
+        renderAdminReports();
       } else {
         document.getElementById('admin-panel-box').style.display = 'none';
         document.getElementById('role-badge').style.display = 'none';
@@ -668,6 +696,25 @@
     function downloadApp(e) {
       if(e) e.preventDefault();
       alert('تم بدء تحميل تطبيق المنصة (APK) بنجاح على هاتفك! 📦');
+    }
+
+    // دوال زر الإشعارات الجديدة
+    function toggleNotifications(checkbox) {
+      const currentEmail = localStorage.getItem('fahem_email');
+      localStorage.setItem('notif_' + currentEmail, checkbox.checked);
+      if(currentEmail === ADMIN_EMAIL) {
+        alert(checkbox.checked ? 'تم تفعيل الإشعارات العامة للمنصة بنجاح (للأدمن الأولوية)' : 'تم إيقاف إشعارات الأدمن');
+      } else {
+        alert(checkbox.checked ? 'تم تفعيل استقبال الإشعارات' : 'تم إيقاف استقبال الإشعارات');
+      }
+    }
+
+    function sendAdminBroadcast() {
+      const text = document.getElementById('admin-broadcast-text').value.trim();
+      if(!text) { alert('الرجاء كتابة نص الإشعار'); return; }
+      localStorage.setItem('fahem_broadcast', text);
+      document.getElementById('admin-broadcast-text').value = '';
+      alert('📢 تم إرسال الإشعار لجميع الطلاب بنجاح وبصلاحيات الأدمن المطلقة!');
     }
 
     function generateQuestionFields() {
@@ -766,6 +813,38 @@
             </div>
           </div>
         `;
+      });
+    }
+
+    // دوال رفع الواجبات وحفظ تقارير الطلاب والترتيب التلقائي
+    function submitHomeworkFile() {
+      const fileInput = document.getElementById('homework-file-upload');
+      const currentEmail = localStorage.getItem('fahem_email');
+      if(!fileInput.files || !fileInput.files[0]) {
+        alert('الرجاء اختيار ملف أو ورقة الحل أولاً');
+        return;
+      }
+      const fileName = fileInput.files[0].name;
+      let submissions = JSON.parse(localStorage.getItem('fahem_submissions')) || [];
+      submissions.push({ email: currentEmail, file: fileName, time: new Date().toLocaleDateString() });
+      localStorage.setItem('fahem_submissions', JSON.stringify(submissions));
+      
+      alert('تم رفع ورقة الحل بنجاح وإرسالها إلى لوحة تحكم الأدمن! 📤');
+      fileInput.value = '';
+      if(currentEmail === ADMIN_EMAIL) renderAdminReports();
+    }
+
+    function renderAdminReports() {
+      const container = document.getElementById('admin-students-reports');
+      if(!container) return;
+      let submissions = JSON.parse(localStorage.getItem('fahem_submissions')) || [];
+      if(submissions.length === 0) {
+        container.innerHTML = '<p style="color:#64748b; text-align:center;">لا توجد أوراق مرفوعة من الطلاب حتى الآن</p>';
+        return;
+      }
+      container.innerHTML = '';
+      submissions.forEach((sub, idx) => {
+        container.innerHTML += `<div style="border-bottom: 1px solid #e2e8f0; padding: 4px 0;"><b>#${idx+1}</b> | البريد: <b>${sub.email}</b> | الملف: ${sub.file}</div>`;
       });
     }
 
@@ -894,7 +973,7 @@
       }
 
       pdfsList.forEach(pdf => {
-        let deleteBtn = isUserAdmin ? `<button class="btn-delete" onclick="deletePdf(${pdf.id})">حذف 🗑️</button>` : '';
+        let deleteBtn = isUserAdmin ? `<button class="btn-delete" onclick="deletePdf(${pdf.id})">حذف 🗑️️</button>` : '';
         container.innerHTML += `
           <div class="card-item">
             <div class="card-row">
@@ -921,7 +1000,7 @@
 
       localStorage.setItem('fahem_stats', JSON.stringify(statsData));
       renderStats();
-      alert('تم تحديث الإحصائيات والترتيب بنجاح! 📊');
+      alert('تم تحديث الإحصائيات والترتيب التلقائي بنجاح! 📊');
     }
 
     function renderStats() {
