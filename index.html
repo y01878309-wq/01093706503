@@ -279,7 +279,6 @@
       margin-top: 20px; cursor: pointer; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.05);
     }
 
-    /* شريط التنقل السفلي المعدل بحيث تكون الرئيسية في اليمين والإعدادات على اليسار */
     .bottom-nav {
       position: fixed;
       bottom: 0; left: 0; width: 100%;
@@ -322,7 +321,6 @@
   <div id="auth-screen-container">
     <div class="login-card">
       
-      <!-- شاشة تسجيل الدخول الرئيسية -->
       <div id="pane-login" class="auth-screen-pane active">
         <div style="font-size: 40px; margin-bottom: 10px;">🛡</div>
         <h2 style="margin-bottom: 5px; font-size: 20px;">مرحباً بعودتك!</h2>
@@ -340,7 +338,6 @@
         </div>
       </div>
 
-      <!-- شاشة نسيت كلمة المرور -->
       <div id="pane-forgot" class="auth-screen-pane">
         <button class="back-btn" onclick="switchAuthPane('pane-login')">‹</button>
         <div style="font-size: 40px; margin-bottom: 10px; margin-top: 15px;">🔒</div>
@@ -351,7 +348,6 @@
         <button class="auth-btn" onclick="sendResetCode()">إرسال الرمز ✉️</button>
       </div>
 
-      <!-- شاشة إدخال الرمز وكلمة المرور الجديدة -->
       <div id="pane-reset" class="auth-screen-pane">
         <button class="back-btn" onclick="switchAuthPane('pane-forgot')">‹</button>
         <div style="font-size: 40px; margin-bottom: 10px; margin-top: 15px;">🔑</div>
@@ -376,7 +372,6 @@
       <div class="admin-badge-top" id="role-badge">أدمن (يوسف فرج)</div>
     </div>
 
-    <!-- لوحة تحكم الأدمن -->
     <div id="admin-panel-box">
       <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 10px;">⚙ لوحة تحكم الأدمن (يوسف فرج)</div>
       
@@ -388,14 +383,12 @@
 
       <button class="btn-main" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة الامتحان وتخزينه 📝</button>
 
-      <!-- تحكم الأدمن في الإشعارات العامة -->
       <div style="background: #e0f2fe; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #38bdf8;">
         <div style="font-size: 11px; font-weight: bold; color: #0369a1; margin-bottom: 4px;">📢 إرسال إشعار عام للطلاب:</div>
         <input type="text" id="admin-broadcast-text" class="auth-input" placeholder="اكتب نص الإشعار هنا..." style="background: white; color: #1e293b; margin-bottom: 6px;">
         <button class="btn-main" onclick="sendAdminBroadcast()" style="width: 100%; background: #0284c7;">إرسال الإشعار للجميع 🔔</button>
       </div>
 
-      <!-- تقارير الطلاب (الإيميلات والدرجات والأوراق المرفوعة) -->
       <div style="background: #f1f5f9; padding: 10px; border-radius: 8px; margin-bottom: 10px;">
         <div style="font-size: 11px; font-weight: bold; color: #334155; margin-bottom: 6px;">📊 سجل إيميلات، درجات، وأوراق الطلاب:</div>
         <div id="admin-students-reports" style="max-height: 180px; overflow-y: auto; font-size: 11px; background: white; padding: 8px; border-radius: 6px;"></div>
@@ -417,7 +410,7 @@
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">التحكم في الإحصائيات (مع الترتيب التلقائي):</div>
       <div class="admin-control-row">
         <input type="number" id="set-exams-count" class="auth-input" placeholder="عدد الامتحانات" style="background: white; color: #1e293b; margin-bottom: 0;">
-        <input type="number" id="set-rank-val" class="auth-input" placeholder="الترتيب" style="background: white; color: #1e293b; margin-bottom: 0;">
+        <input type="text" id="set-rank-val" class="auth-input" placeholder="الترتيب (تلقائي)" readonly style="background: #f1f5f9; color: #1e293b; margin-bottom: 0;">
       </div>
       <button class="btn-main" onclick="updateStats()" style="width: 100%; margin-top: 8px; background: #059669;">تحديث الإحصائيات والترتيب 📊</button>
     </div>
@@ -501,7 +494,6 @@
         </div>
       </div>
 
-      <!-- زر الإشعارات المطلوب -->
       <div class="settings-group-title">إعدادات الإشعارات والتنبيهات</div>
       <div class="settings-card-box">
         <div class="settings-row">
@@ -620,7 +612,6 @@
       
       localStorage.setItem('fahem_email', emailInput);
       
-      // تسجيل الإيميل في سجل الطلاب العام لتظهر بياناتهم للأدمن
       let allStudents = JSON.parse(localStorage.getItem('fahem_all_students_records')) || [];
       if(!allStudents.includes(emailInput)) {
         allStudents.push(emailInput);
@@ -695,6 +686,7 @@
         document.getElementById('role-badge').style.display = 'none';
       }
       renderExams();
+      renderStats();
     }
 
     function logout() {
@@ -854,10 +846,28 @@
         html += `<div style="color:#64748b;">لا توجد أوراق مرفوعة حالياً</div>`;
       } else {
         submissions.forEach((sub, idx) => {
-          html += `<div style="border-bottom: 1px solid #e2e8f0; padding: 4px 0;"><b>#${idx+1}</b> | ${sub.email} | ملف: ${sub.file}</div>`;
+          html += `
+            <div style="border-bottom: 1px solid #e2e8f0; padding: 6px 0; display: flex; justify-content: space-between; align-items: center;">
+              <div style="font-size: 11px; color: #1e293b; text-align: right; flex: 1;">
+                <b>#${idx+1}</b> | ${sub.email}<br>
+                <span style="color: #64748b;">الملف: ${sub.file}</span>
+              </div>
+              <div>
+                <button onclick="deleteSubmission(${idx})" style="background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer;">حذف 🗑</button>
+              </div>
+            </div>
+          `;
         });
       }
       container.innerHTML = html;
+    }
+
+    function deleteSubmission(index) {
+      let submissions = JSON.parse(localStorage.getItem('fahem_submissions')) || [];
+      submissions.splice(index, 1);
+      localStorage.setItem('fahem_submissions', JSON.stringify(submissions));
+      renderAdminReports();
+      alert('تم حذف ورقة الحل من السجل بنجاح! 🗑️');
     }
 
     function addVideo() {
@@ -1005,19 +1015,30 @@
 
     function updateStats() {
       const examsCount = document.getElementById('set-exams-count').value.trim();
-      const rankVal = document.getElementById('set-rank-val').value.trim();
       
+      let allStudents = JSON.parse(localStorage.getItem('fahem_all_students_records')) || [ADMIN_EMAIL];
+      let calculatedRank = "1";
+      if(allStudents.length > 1) {
+        let userIndex = allStudents.indexOf(localStorage.getItem('fahem_email'));
+        calculatedRank = userIndex !== -1 ? (userIndex + 1).toString() : "1";
+      }
+
       if(examsCount) statsData.exams = examsCount;
-      if(rankVal) statsData.rank = rankVal;
+      statsData.rank = calculatedRank;
 
       localStorage.setItem('fahem_stats', JSON.stringify(statsData));
       renderStats();
-      alert('تم تحديث الإحصائيات والترتيب بنجاح! 📊');
+      alert('تم تحديث الإحصائيات وحساب الترتيب تلقائياً بنجاح! 📊');
     }
 
     function renderStats() {
       document.getElementById('stat-exams-display').innerText = statsData.exams;
       document.getElementById('stat-rank-display').innerText = statsData.rank;
+      
+      const rankInput = document.getElementById('set-rank-val');
+      if(rankInput) {
+        rankInput.value = statsData.rank + " (تلقائي)";
+      }
     }
 
     function resetAppData() {
