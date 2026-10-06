@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-site-verification" content="STAWqcyc1mm77w44UiHu5LKJd8sQm_7rh-O00WQabhk" />
   <title>منصه فاهم التعليميه.farag</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -852,8 +853,9 @@
                 <b>#${idx+1}</b> | ${sub.email}<br>
                 <span style="color: #64748b;">الملف: ${sub.file}</span>
               </div>
-              <div>
-                <button onclick="deleteSubmission(${idx})" style="background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer;">حذف 🗑</button>
+              <div style="display: flex; gap: 4px;">
+                <button onclick="alert('اسم الملف المرفوع: ${sub.file}')" style="background: #0284c7; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer;">فتح 👁️</button>
+                <button onclick="deleteSubmission(${idx})" style="background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer;">حذف 🗑️</button>
               </div>
             </div>
           `;
