@@ -238,9 +238,22 @@
       border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; text-align: center;
     }
     .btn-main:disabled { background: #94a3b8; cursor: not-allowed; }
-    .btn-delete {
-      background: #ef4444; color: white; border: none; padding: 6px 10px;
-      border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; margin-right: 6px;
+    
+    /* تنسيق أزرار الفتح والحذف المحسنة بالظل */
+    .btn-action-group {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .btn-custom-open {
+      background: #0284c7; color: white; border: none; padding: 6px 12px;
+      border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3); text-decoration: none; display: inline-block;
+    }
+    .btn-custom-delete {
+      background: #ef4444; color: white; border: none; padding: 6px 12px;
+      border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;
+      box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
     }
 
     .media-preview-container img, .media-preview-container video {
@@ -385,10 +398,18 @@
 
       <button class="btn-main" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة الامتحان وتخزينه 📝</button>
 
+      <!-- قسم الواجبات الجديد مع خانات مستقلة لاسم الواجب وورقة الأسئلة وورقة الحل -->
       <div style="background: #e0f2fe; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #38bdf8;">
-        <div style="font-size: 11px; font-weight: bold; color: #0369a1; margin-bottom: 4px;">📢 إرسال إشعار عام للطلاب:</div>
-        <input type="text" id="admin-broadcast-text" class="auth-input" placeholder="اكتب نص الإشعار هنا..." style="background: white; color: #1e293b; margin-bottom: 6px;">
-        <button class="btn-main" onclick="sendAdminBroadcast()" style="width: 100%; background: #0284c7;">إرسال الإشعار للجميع 🔔</button>
+        <div style="font-size: 11px; font-weight: bold; color: #0369a1; margin-bottom: 6px;">📚 إضافة واجب جديد (للطلاب):</div>
+        <input type="text" id="admin-hw-title" class="auth-input" placeholder="اكتب اسم الواجب هنا (مثال: واجب الدرس الأول)..." style="background: white; color: #1e293b; margin-bottom: 6px;">
+        
+        <div style="font-size: 10px; font-weight: bold; color: #334155; margin-bottom: 2px;">ورقة الأسئلة (ملف PDF أو صورة):</div>
+        <input type="file" id="admin-hw-questions-file" class="auth-input" accept="image/*,application/pdf" style="background: white; color: #1e293b; margin-bottom: 6px; padding: 6px;">
+        
+        <div style="font-size: 10px; font-weight: bold; color: #334155; margin-bottom: 2px;">نموذج الإجابة / ورقة الحل (اختياري):</div>
+        <input type="file" id="admin-hw-solution-file" class="auth-input" accept="image/*,application/pdf" style="background: white; color: #1e293b; margin-bottom: 6px; padding: 6px;">
+        
+        <button class="btn-main" onclick="addAdminHomework()" style="width: 100%; background: #0284c7;">إضافة الواجب ونشره للطلاب 📁</button>
       </div>
 
       <div style="background: #f1f5f9; padding: 10px; border-radius: 8px; margin-bottom: 10px;">
@@ -426,7 +447,7 @@
         </div>
         <div class="stat-card">
           <div class="stat-icon">📄</div>
-          <div class="stat-value">0</div>
+          <div class="stat-value" id="stat-homeworks-count">1</div>
           <div class="stat-label">الواجبات</div>
         </div>
         <div class="stat-card">
@@ -464,17 +485,8 @@
     </div>
 
     <div id="sec-homework" class="content-section">
-      <div class="section-header-title">الواجبات والمهام الدراسية (مع إمكانية رفع الأوراق)</div>
-      <div class="card-item">
-        <div class="card-row">
-          <div class="card-info">
-            <div class="card-title">واجب الفصل الأول فيزياء</div>
-            <div class="card-subtitle">ارفع ورقة الإجابة الخاصة بك:</div>
-          </div>
-        </div>
-        <input type="file" id="homework-file-upload" class="auth-input" accept="image/*,application/pdf" style="margin-top: 5px;">
-        <button class="btn-main" onclick="submitHomeworkFile()">رفع ورقة الحل 📤</button>
-      </div>
+      <div class="section-header-title">الواجبات والمهام الدراسية المتاحة</div>
+      <div id="homeworks-container"></div>
     </div>
 
     <div id="sec-videos" class="content-section">
@@ -562,6 +574,10 @@
       ], info: 'عدد الأسئلة: 1 | متاح الآن' }
     ];
 
+    let homeworksList = JSON.parse(localStorage.getItem('fahem_homeworks')) || [
+      { id: 1, title: 'واجب الفصل الأول فيزياء', qFile: '#', sFile: '#', info: 'متاح للحل والرفع' }
+    ];
+
     let videosList = JSON.parse(localStorage.getItem('fahem_videos')) || [
       { id: 1, title: 'محاضرة قوانين كيرشوف', link: 'https://www.youtube.com/@youssef-po1xd', type: 'link', info: 'شرح تفصيلي مع المسائل' }
     ];
@@ -579,6 +595,7 @@
       }
       generateQuestionFields();
       renderExams();
+      renderHomeworks();
       renderVideos();
       renderPdfs();
       renderStats();
@@ -688,6 +705,7 @@
         document.getElementById('role-badge').style.display = 'none';
       }
       renderExams();
+      renderHomeworks();
       renderStats();
     }
 
@@ -702,8 +720,7 @@
     }
 
     function openTelegramChannel() {
-      const telegramUrl = 'https://t.me/boost/farag1farag1';
-      // فتح الرابط في نافذة جديدة مع تأمين الربط لمنع التعليق
+      const telegramUrl = 'https://t.me/farag1farag1';
       const newWindow = window.open(telegramUrl, '_blank', 'noopener,noreferrer');
       if (!newWindow) {
         window.location.href = telegramUrl;
@@ -714,14 +731,6 @@
       const currentEmail = localStorage.getItem('fahem_email');
       localStorage.setItem('notif_' + currentEmail, checkbox.checked);
       alert(checkbox.checked ? 'تم تفعيل الإشعارات بنجاح' : 'تم إيقاف الإشعارات');
-    }
-
-    function sendAdminBroadcast() {
-      const text = document.getElementById('admin-broadcast-text').value.trim();
-      if(!text) { alert('الرجاء كتابة نص الإشعار'); return; }
-      localStorage.setItem('fahem_broadcast', text);
-      document.getElementById('admin-broadcast-text').value = '';
-      alert('📢 تم إرسال الإشعار لجميع الطلاب بنجاح وبصلاحيات الأدمن!');
     }
 
     function generateQuestionFields() {
@@ -797,7 +806,7 @@
 
       examsList.forEach(ex => {
         let isDone = finishedExams.includes(ex.id);
-        let deleteBtn = isUserAdmin ? `<button class="btn-delete" onclick="deleteExam(${ex.id})">حذف 🗑️</button>` : '';
+        let deleteBtn = isUserAdmin ? `<button class="btn-custom-delete" onclick="deleteExam(${ex.id})">حذف 🗑️</button>` : '';
         let qData = ex.questions || [];
 
         let actionBtn = isDone ? 
@@ -813,7 +822,7 @@
                 <div class="card-title">${ex.title}</div>
                 <div class="card-subtitle">${subtitleText}</div>
               </div>
-              <div>
+              <div class="btn-action-group">
                 ${deleteBtn}
                 ${actionBtn}
               </div>
@@ -823,8 +832,79 @@
       });
     }
 
-    function submitHomeworkFile() {
-      const fileInput = document.getElementById('homework-file-upload');
+    function addAdminHomework() {
+      const title = document.getElementById('admin-hw-title').value.trim();
+      const qInput = document.getElementById('admin-hw-questions-file');
+      const sInput = document.getElementById('admin-hw-solution-file');
+
+      if(!title) { alert('الرجاء كتابة اسم أو عنوان الواجب'); return; }
+      if(!qInput.files || !qInput.files[0]) { alert('الرجاء رفع ورقة الأسئلة الخاصة بالواجب'); return; }
+
+      const qFileName = qInput.files[0].name;
+      const sFileName = (sInput.files && sInput.files[0]) ? sInput.files[0].name : 'لا يوجد نموذج إجابة';
+
+      homeworksList.push({
+        id: Date.now(),
+        title: title,
+        qFile: qFileName,
+        sFile: sFileName,
+        info: 'متاح للحل والرفع'
+      });
+
+      localStorage.setItem('fahem_homeworks', JSON.stringify(homeworksList));
+      document.getElementById('admin-hw-title').value = '';
+      qInput.value = '';
+      sInput.value = '';
+      renderHomeworks();
+      alert('تم إضافة ونشر الواجب بنجاح! 📚');
+    }
+
+    function deleteHomework(id) {
+      homeworksList = homeworksList.filter(h => h.id !== id);
+      localStorage.setItem('fahem_homeworks', JSON.stringify(homeworksList));
+      renderHomeworks();
+      alert('تم حذف الواجب بنجاح 🗑️');
+    }
+
+    function renderHomeworks() {
+      const container = document.getElementById('homeworks-container');
+      if(!container) return;
+      container.innerHTML = '';
+      const currentEmail = localStorage.getItem('fahem_email') || 'guest';
+      const isUserAdmin = currentEmail === ADMIN_EMAIL;
+
+      document.getElementById('stat-homeworks-count').innerText = homeworksList.length;
+
+      if(homeworksList.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد واجبات متاحة حالياً</p>';
+        return;
+      }
+
+      homeworksList.forEach(hw => {
+        let deleteBtn = isUserAdmin ? `<button class="btn-custom-delete" onclick="deleteHomework(${hw.id})">حذف 🗑️</button>` : '';
+        
+        container.innerHTML += `
+          <div class="card-item">
+            <div class="card-row">
+              <div class="card-info">
+                <div class="card-title">${hw.title}</div>
+                <div class="card-subtitle">ورقة الأسئلة: ${hw.qFile} | ورقة الحل: ${hw.sFile}</div>
+              </div>
+              <div class="btn-action-group">
+                ${deleteBtn}
+              </div>
+            </div>
+            <div style="margin-top: 5px;">
+              <input type="file" id="submit_hw_${hw.id}" class="auth-input" accept="image/*,application/pdf" style="margin-bottom: 6px; padding: 6px;">
+              <button class="btn-main" onclick="submitSpecificHomework(${hw.id}, '${hw.title}')" style="width: 100%;">رفع ورقة الحل الخاصة بك 📤</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function submitSpecificHomework(hwId, hwTitle) {
+      const fileInput = document.getElementById(`submit_hw_${hwId}`);
       const currentEmail = localStorage.getItem('fahem_email');
       if(!fileInput.files || !fileInput.files[0]) {
         alert('الرجاء اختيار ملف أو ورقة الحل أولاً');
@@ -832,10 +912,10 @@
       }
       const fileName = fileInput.files[0].name;
       let submissions = JSON.parse(localStorage.getItem('fahem_submissions')) || [];
-      submissions.push({ email: currentEmail, file: fileName, time: new Date().toLocaleDateString() });
+      submissions.push({ email: currentEmail, file: `${hwTitle} (${fileName})`, time: new Date().toLocaleDateString() });
       localStorage.setItem('fahem_submissions', JSON.stringify(submissions));
       
-      alert('تم رفع ورقة الحل بنجاح! 📤');
+      alert('تم رفع ورقة الحل للواجب بنجاح! 📤');
       fileInput.value = '';
       if(currentEmail === ADMIN_EMAIL) renderAdminReports();
     }
@@ -863,9 +943,9 @@
                 <b>#${idx+1}</b> | ${sub.email}<br>
                 <span style="color: #64748b;">الملف: ${sub.file}</span>
               </div>
-              <div style="display: flex; gap: 4px;">
-                <button onclick="alert('اسم الملف المرفوع: ${sub.file}')" style="background: #0284c7; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer;">فتح 👁️</button>
-                <button onclick="deleteSubmission(${idx})" style="background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer;">حذف 🗑️</button>
+              <div class="btn-action-group">
+                <button class="btn-custom-open" onclick="alert('اسم الملف المرفوع: ${sub.file}')">فتح 👁️</button>
+                <button class="btn-custom-delete" onclick="deleteSubmission(${idx})">حذف 🗑️</button>
               </div>
             </div>
           `;
@@ -947,7 +1027,7 @@
       }
 
       videosList.forEach(vid => {
-        let deleteBtn = isUserAdmin ? `<button class="btn-delete" onclick="deleteVideo(${vid.id})">حذف 🗑️</button>` : '';
+        let deleteBtn = isUserAdmin ? `<button class="btn-custom-delete" onclick="deleteVideo(${vid.id})">حذف 🗑️</button>` : '';
         let mediaHtml = '';
 
         if (vid.type === 'video') {
@@ -965,7 +1045,7 @@
                 <div class="card-title">${vid.title}</div>
                 <div class="card-subtitle">${vid.info}</div>
               </div>
-              <div>${deleteBtn}</div>
+              <div class="btn-action-group">${deleteBtn}</div>
             </div>
             ${mediaHtml}
           </div>
@@ -1007,7 +1087,7 @@
       }
 
       pdfsList.forEach(pdf => {
-        let deleteBtn = isUserAdmin ? `<button class="btn-delete" onclick="deletePdf(${pdf.id})">حذف 🗑</button>` : '';
+        let deleteBtn = isUserAdmin ? `<button class="btn-custom-delete" onclick="deletePdf(${pdf.id})">حذف 🗑</button>` : '';
         container.innerHTML += `
           <div class="card-item">
             <div class="card-row">
@@ -1015,9 +1095,9 @@
                 <div class="card-title">${pdf.title}</div>
                 <div class="card-subtitle">${pdf.info}</div>
               </div>
-              <div>
+              <div class="btn-action-group">
                 ${deleteBtn}
-                <a class="btn-main" href="${pdf.link}" target="_blank">فتح 📄</a>
+                <a class="btn-custom-open" href="${pdf.link}" target="_blank">فتح 📄</a>
               </div>
             </div>
           </div>
@@ -1087,6 +1167,7 @@
 
     function submitExam() {
       let score = 0;
+      activeQuestions.exports = activeQuestions || [];
       activeQuestions.forEach((q, i) => {
         let sel = document.querySelector(`input[name="q_${i}"]:checked`);
         if(sel && sel.value.trim() === q.ans.trim()) score++;
