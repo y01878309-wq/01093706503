@@ -116,6 +116,7 @@
       margin-bottom: 15px;
       text-decoration: none;
       display: inline-block;
+      box-shadow: 0 4px 15px rgba(109,40,217,0.3);
     }
     .auth-screen-pane {
       display: none;
@@ -150,15 +151,17 @@
     .admin-badge-top {
       background: #e0e7ff; color: #4f46e5; padding: 6px 12px;
       border-radius: 10px; font-size: 12px; font-weight: bold;
+      box-shadow: 0 2px 6px rgba(79,70,229,0.15);
     }
 
     #admin-panel-box {
       background: #eff6ff;
       border: 1px solid #38bdf8;
-      border-radius: 14px;
+      border-radius: 16px;
       padding: 15px;
       margin-bottom: 20px;
       display: none;
+      box-shadow: 0 6px 16px rgba(56,189,248,0.15);
     }
     .admin-control-row {
       display: flex;
@@ -177,7 +180,7 @@
       border-radius: 16px;
       padding: 18px;
       text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
       border: 1px solid #f1f5f9;
     }
     .stat-icon { font-size: 24px; margin-bottom: 8px; }
@@ -203,7 +206,7 @@
       border-radius: 16px;
       padding: 15px 10px;
       text-align: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
       border: 1px solid #f1f5f9;
       cursor: pointer;
     }
@@ -215,10 +218,10 @@
 
     .card-item {
       background: #ffffff;
-      border-radius: 14px;
-      padding: 15px;
-      margin-bottom: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
       border: 1px solid #f1f5f9;
       display: flex;
       flex-direction: column;
@@ -235,19 +238,21 @@
     .card-subtitle { font-size: 12px; color: #64748b; margin-top: 3px; }
     .btn-main {
       background: #0284c7; color: white; border: none; padding: 8px 14px;
-      border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; text-align: center;
+      border-radius: 10px; font-size: 12px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; text-align: center;
+      box-shadow: 0 4px 10px rgba(2,132,199,0.25);
     }
-    .btn-main:disabled { background: #94a3b8; cursor: not-allowed; }
+    .btn-main:disabled { background: #94a3b8; box-shadow: none; cursor: not-allowed; }
     .btn-delete {
       background: #ef4444; color: white; border: none; padding: 6px 10px;
-      border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; margin-right: 6px;
+      border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; margin-right: 6px;
+      box-shadow: 0 4px 10px rgba(239,68,68,0.25);
     }
 
     .media-preview-container img, .media-preview-container video {
       width: 100%;
       max-height: 200px;
       object-fit: cover;
-      border-radius: 8px;
+      border-radius: 10px;
       margin-top: 8px;
     }
 
@@ -255,6 +260,7 @@
       background: linear-gradient(135deg, #6366f1, #4f46e5);
       border-radius: 20px; padding: 20px; color: white;
       display: flex; align-items: center; gap: 15px; margin-bottom: 20px;
+      box-shadow: 0 8px 20px rgba(99,102,241,0.3);
     }
     .profile-avatar {
       width: 55px; height: 55px; background: rgba(255,255,255,0.2);
@@ -267,7 +273,7 @@
     }
     .settings-card-box {
       background: white; border-radius: 16px; overflow: hidden;
-      border: 1px solid #f1f5f9; box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+      border: 1px solid #f1f5f9; box-shadow: 0 4px 15px rgba(0,0,0,0.04);
     }
     .settings-row {
       display: flex; justify-content: space-between; align-items: center;
@@ -278,7 +284,7 @@
     .logout-row {
       background: white; border: 1px solid #fee2e2; border-radius: 16px;
       color: #ef4444; text-align: center; padding: 15px; font-weight: bold;
-      margin-top: 20px; cursor: pointer; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.05);
+      margin-top: 20px; cursor: pointer; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.08);
     }
 
     .bottom-nav {
@@ -290,7 +296,7 @@
       justify-content: space-around;
       padding: 8px 0;
       z-index: 1000;
-      box-shadow: 0 -4px 15px rgba(0,0,0,0.03);
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
       flex-direction: row-reverse;
     }
     .nav-item {
@@ -307,6 +313,7 @@
     }
     .modal-box {
       background: white; border-radius: 20px; width: 100%; max-width: 420px; max-height: 85vh; overflow-y: auto; padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
   </style>
 </head>
@@ -377,6 +384,13 @@
     <div id="admin-panel-box">
       <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 10px;">⚙ لوحة تحكم الأدمن (يوسف فرج)</div>
       
+      <!-- إضافة واجب جديد من لوحة الأدمن -->
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة واجب جديد:</div>
+      <input type="text" id="admin-new-hw-title" class="auth-input" placeholder="اكتب اسم الواجب هنا (مثل: واجب الباب الأول)..." style="background: white; color: #1e293b; margin-bottom: 6px;">
+      <div style="font-size: 11px; color: #334155; margin-bottom: 2px;">ملف الأسئلة (اختياري):</div>
+      <input type="file" id="admin-new-hw-question-file" class="auth-input" style="background: white; color: #1e293b; margin-bottom: 6px; padding: 6px;">
+      <button class="btn-main" onclick="addHomework()" style="width: 100%; margin-bottom: 12px; background: #0284c7;">إضافة الواجب للمنصة 📁</button>
+
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد (مع زر متعدد الأسئلة):</div>
       <input type="text" id="new-exam-title" class="auth-input" placeholder="عنوان الامتحان..." style="background: white; color: #1e293b; margin-bottom: 6px;">
       <input type="number" id="new-exam-count" class="auth-input" placeholder="عدد الأسئلة..." value="1" oninput="generateQuestionFields()" style="background: white; color: #1e293b; margin-bottom: 6px;">
@@ -385,15 +399,15 @@
 
       <button class="btn-main" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة الامتحان وتخزينه 📝</button>
 
-      <div style="background: #e0f2fe; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #38bdf8;">
+      <div style="background: #e0f2fe; padding: 10px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #38bdf8;">
         <div style="font-size: 11px; font-weight: bold; color: #0369a1; margin-bottom: 4px;">📢 إرسال إشعار عام للطلاب:</div>
         <input type="text" id="admin-broadcast-text" class="auth-input" placeholder="اكتب نص الإشعار هنا..." style="background: white; color: #1e293b; margin-bottom: 6px;">
         <button class="btn-main" onclick="sendAdminBroadcast()" style="width: 100%; background: #0284c7;">إرسال الإشعار للجميع 🔔</button>
       </div>
 
-      <div style="background: #f1f5f9; padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+      <div style="background: #f1f5f9; padding: 10px; border-radius: 12px; margin-bottom: 10px;">
         <div style="font-size: 11px; font-weight: bold; color: #334155; margin-bottom: 6px;">📊 سجل إيميلات، درجات، وأوراق الطلاب:</div>
-        <div id="admin-students-reports" style="max-height: 180px; overflow-y: auto; font-size: 11px; background: white; padding: 8px; border-radius: 6px;"></div>
+        <div id="admin-students-reports" style="max-height: 180px; overflow-y: auto; font-size: 11px; background: white; padding: 8px; border-radius: 8px;"></div>
       </div>
 
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة فيديو المنصة:</div>
@@ -426,7 +440,7 @@
         </div>
         <div class="stat-card">
           <div class="stat-icon">📄</div>
-          <div class="stat-value">0</div>
+          <div class="stat-value" id="stat-homework-count">1</div>
           <div class="stat-label">الواجبات</div>
         </div>
         <div class="stat-card">
@@ -465,16 +479,7 @@
 
     <div id="sec-homework" class="content-section">
       <div class="section-header-title">الواجبات والمهام الدراسية (مع إمكانية رفع الأوراق)</div>
-      <div class="card-item">
-        <div class="card-row">
-          <div class="card-info">
-            <div class="card-title">واجب الفصل الأول فيزياء</div>
-            <div class="card-subtitle">ارفع ورقة الإجابة الخاصة بك:</div>
-          </div>
-        </div>
-        <input type="file" id="homework-file-upload" class="auth-input" accept="image/*,application/pdf" style="margin-top: 5px;">
-        <button class="btn-main" onclick="submitHomeworkFile()">رفع ورقة الحل 📤</button>
-      </div>
+      <div id="homeworks-container"></div>
     </div>
 
     <div id="sec-videos" class="content-section">
@@ -562,6 +567,10 @@
       ], info: 'عدد الأسئلة: 1 | متاح الآن' }
     ];
 
+    let homeworksList = JSON.parse(localStorage.getItem('fahem_homeworks')) || [
+      { id: 1, title: 'واجب الفصل الأول', questionFile: 'ملف أسئلة الواجب' }
+    ];
+
     let videosList = JSON.parse(localStorage.getItem('fahem_videos')) || [
       { id: 1, title: 'محاضرة قوانين كيرشوف', link: 'https://www.youtube.com/@youssef-po1xd', type: 'link', info: 'شرح تفصيلي مع المسائل' }
     ];
@@ -579,6 +588,7 @@
       }
       generateQuestionFields();
       renderExams();
+      renderHomeworks();
       renderVideos();
       renderPdfs();
       renderStats();
@@ -688,6 +698,7 @@
         document.getElementById('role-badge').style.display = 'none';
       }
       renderExams();
+      renderHomeworks();
       renderStats();
     }
 
@@ -733,6 +744,72 @@
           </div>
         `;
       }
+    }
+
+    function addHomework() {
+      const title = document.getElementById('admin-new-hw-title').value.trim();
+      const fileInput = document.getElementById('admin-new-hw-question-file');
+      if(!title) { alert('الرجاء كتابة اسم الواجب'); return; }
+
+      let qFileName = "بدون ملف أسئلة";
+      if(fileInput.files && fileInput.files[0]) {
+        qFileName = fileInput.files[0].name;
+      }
+
+      homeworksList.push({
+        id: Date.now(),
+        title: title,
+        questionFile: qFileName
+      });
+
+      localStorage.setItem('fahem_homeworks', JSON.stringify(homeworksList));
+      document.getElementById('admin-new-hw-title').value = '';
+      fileInput.value = '';
+      renderHomeworks();
+      alert('تم إضافة الواجب بنجاح! ✅');
+    }
+
+    function deleteHomework(id) {
+      homeworksList = homeworksList.filter(h => h.id !== id);
+      localStorage.setItem('fahem_homeworks', JSON.stringify(homeworksList));
+      renderHomeworks();
+      alert('تم حذف الواجب 🗑️');
+    }
+
+    function renderHomeworks() {
+      const container = document.getElementById('homeworks-container');
+      container.innerHTML = '';
+      const currentEmail = localStorage.getItem('fahem_email') || 'guest';
+      const isUserAdmin = currentEmail === ADMIN_EMAIL;
+
+      document.getElementById('stat-homework-count').innerText = homeworksList.length;
+
+      if(homeworksList.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد واجبات متاحة حالياً</p>';
+        return;
+      }
+
+      homeworksList.forEach(hw => {
+        let deleteBtn = isUserAdmin ? `<button class="btn-delete" onclick="deleteHomework(${hw.id})" style="margin-bottom:8px;">حذف الواجب 🗑️</button>` : '';
+        
+        container.innerHTML += `
+          <div class="card-item" style="box-shadow: 0 6px 18px rgba(0,0,0,0.06); background: #ffffff; padding: 18px; border-radius: 16px; margin-bottom: 14px; border: 1px solid #f1f5f9;">
+            <div class="card-row" style="margin-bottom: 8px;">
+              <div class="card-info">
+                <div class="card-title" style="font-size: 15px; color: #0f172a; font-weight: bold;">${hw.title}</div>
+                <div class="card-subtitle" style="color: #64748b; font-size: 12px; margin-top: 2px;">ملف الأسئلة: ${hw.questionFile}</div>
+              </div>
+              <div>${deleteBtn}</div>
+            </div>
+            
+            <div style="border-top: 1px solid #f1f5f9; padding-top: 10px; margin-top: 5px;">
+              <div style="font-size: 12px; font-weight: 600; color: #334155; margin-bottom: 6px;">ارفع ورقة الإجابة / الحل الخاصة بك:</div>
+              <input type="file" id="homework-file-upload-${hw.id}" class="auth-input" accept="image/*,application/pdf" style="margin-bottom: 8px; background: #f8fafc; color: #1e293b; padding: 8px;">
+              <button class="btn-main" onclick="submitHomeworkFile(${hw.id}, '${hw.title}')" style="width: 100%;">رفع ورقة الحل 📤</button>
+            </div>
+          </div>
+        `;
+      });
     }
 
     function addExam() {
@@ -805,8 +882,7 @@
                 <div class="card-subtitle">${subtitleText}</div>
               </div>
               <div>
-                ${deleteBtn}
-                ${actionBtn}
+                ${deleteBtn}${actionBtn}
               </div>
             </div>
           </div>
@@ -814,8 +890,8 @@
       });
     }
 
-    function submitHomeworkFile() {
-      const fileInput = document.getElementById('homework-file-upload');
+    function submitHomeworkFile(hwId, hwTitle) {
+      const fileInput = document.getElementById(`homework-file-upload-${hwId}`);
       const currentEmail = localStorage.getItem('fahem_email');
       if(!fileInput.files || !fileInput.files[0]) {
         alert('الرجاء اختيار ملف أو ورقة الحل أولاً');
@@ -823,7 +899,7 @@
       }
       const fileName = fileInput.files[0].name;
       let submissions = JSON.parse(localStorage.getItem('fahem_submissions')) || [];
-      submissions.push({ email: currentEmail, file: fileName, time: new Date().toLocaleDateString() });
+      submissions.push({ email: currentEmail, homeworkTitle: hwTitle, file: fileName, time: new Date().toLocaleDateString() });
       localStorage.setItem('fahem_submissions', JSON.stringify(submissions));
       
       alert('تم رفع ورقة الحل بنجاح! 📤');
@@ -840,7 +916,7 @@
       
       let html = `<div style="margin-bottom: 8px; font-weight: bold; color: #0284c7;">📌 إيميلات الطلاب المسجلين (${allStudents.length}):</div>`;
       allStudents.forEach((st, i) => {
-        html += `<div style="font-size: 11px; padding: 2px 0; color: #334155;">${i+1}. ${st}</div>`;
+        html += `<div style="font-size: 11px; padding: 2px 0; color: #334155;">${i+1}.${st}</div>`;
       });
 
       html += `<div style="margin: 10px 0 4px 0; font-weight: bold; color: #0284c7;">📄 الأوراق والدرجات المرفوعة:</div>`;
@@ -851,12 +927,13 @@
           html += `
             <div style="border-bottom: 1px solid #e2e8f0; padding: 6px 0; display: flex; justify-content: space-between; align-items: center;">
               <div style="font-size: 11px; color: #1e293b; text-align: right; flex: 1;">
-                <b>#${idx+1}</b> | ${sub.email}<br>
+                <b>#${idx+1}</b> \vert{}${sub.email}<br>
+                <span style="color: #475569;">الواجب: ${sub.homeworkTitle || 'عام'}</span><br>
                 <span style="color: #64748b;">الملف: ${sub.file}</span>
               </div>
               <div style="display: flex; gap: 4px;">
-                <button onclick="alert('اسم الملف المرفوع: ${sub.file}')" style="background: #0284c7; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer;">فتح 👁️</button>
-                <button onclick="deleteSubmission(${idx})" style="background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer;">حذف 🗑️</button>
+                <button onclick="alert('اسم الملف المرفوع: ${sub.file}')" style="background: #0284c7; color: white; border: none; padding: 4px 8px; border-radius: 6px; font-size: 10px; cursor: pointer; box-shadow: 0 2px 6px rgba(2,132,199,0.2);">فتح 👁️</button>
+                <button onclick="deleteSubmission(${idx})" style="background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 6px; font-size: 10px; cursor: pointer; box-shadow: 0 2px 6px rgba(239,68,68,0.2);">حذف 🗑️</button>
               </div>
             </div>
           `;
@@ -870,7 +947,7 @@
       submissions.splice(index, 1);
       localStorage.setItem('fahem_submissions', JSON.stringify(submissions));
       renderAdminReports();
-      alert('تم حذف ورقة الحل من السجل بنجاح! 🗑️️');
+      alert('تم حذف ورقة الحل من السجل بنجاح! 🗑');
     }
 
     function addVideo() {
@@ -998,102 +1075,4 @@
       }
 
       pdfsList.forEach(pdf => {
-        let deleteBtn = isUserAdmin ? `<button class="btn-delete" onclick="deletePdf(${pdf.id})">حذف 🗑</button>` : '';
-        container.innerHTML += `
-          <div class="card-item">
-            <div class="card-row">
-              <div class="card-info">
-                <div class="card-title">${pdf.title}</div>
-                <div class="card-subtitle">${pdf.info}</div>
-              </div>
-              <div>
-                ${deleteBtn}
-                <a class="btn-main" href="${pdf.link}" target="_blank">فتح 📄</a>
-              </div>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    function updateStats() {
-      const examsCount = document.getElementById('set-exams-count').value.trim();
-      
-      let allStudents = JSON.parse(localStorage.getItem('fahem_all_students_records')) || [ADMIN_EMAIL];
-      let calculatedRank = "1";
-      if(allStudents.length > 1) {
-        let userIndex = allStudents.indexOf(localStorage.getItem('fahem_email'));
-        calculatedRank = userIndex !== -1 ? (userIndex + 1).toString() : "1";
-      }
-
-      if(examsCount) statsData.exams = examsCount;
-      statsData.rank = calculatedRank;
-
-      localStorage.setItem('fahem_stats', JSON.stringify(statsData));
-      renderStats();
-      alert('تم تحديث الإحصائيات وحساب الترتيب تلقائياً بنجاح! 📊');
-    }
-
-    function renderStats() {
-      document.getElementById('stat-exams-display').innerText = statsData.exams;
-      document.getElementById('stat-rank-display').innerText = statsData.rank;
-      
-      const rankInput = document.getElementById('set-rank-val');
-      if(rankInput) {
-        rankInput.value = statsData.rank + " (تلقائي)";
-      }
-    }
-
-    function resetAppData() {
-      if(confirm('هل أنت متأكد من تصفير وإعادة ضبط كافة البيانات؟')) {
-        localStorage.clear();
-        location.reload();
-      }
-    }
-
-    function startExam(id, title, questions) {
-      currentExamId = id;
-      document.getElementById('modal-title').innerText = title;
-      activeQuestions = questions;
-      let container = document.getElementById('modal-questions-container');
-      container.innerHTML = '';
-      
-      questions.forEach((q, i) => {
-        container.innerHTML += `
-          <div style="background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 8px;">
-            <p style="font-size: 13px; font-weight: bold; margin-bottom: 5px;">${q.q}</p>
-            <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o1}"> ${q.o1}</label>
-            <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o2}"> ${q.o2}</label>
-            <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o3}"> ${q.o3}</label>
-            <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o4}"> ${q.o4}</label>
-          </div>
-        `;
-      });
-      document.getElementById('exam-modal').style.display = 'flex';
-    }
-
-    function closeExam() {
-      document.getElementById('exam-modal').style.display = 'none';
-    }
-
-    function submitExam() {
-      let score = 0;
-      activeQuestions.forEach((q, i) => {
-        let sel = document.querySelector(`input[name="q_${i}"]:checked`);
-        if(sel && sel.value.trim() === q.ans.trim()) score++;
-      });
-
-      const currentEmail = localStorage.getItem('fahem_email') || 'guest';
-      let finishedExams = JSON.parse(localStorage.getItem('finished_exams_' + currentEmail)) || [];
-      if(!finishedExams.includes(currentExamId)) {
-        finishedExams.push(currentExamId);
-        localStorage.setItem('finished_exams_' + currentEmail, JSON.stringify(finishedExams));
-      }
-
-      alert(`انتهى الامتحان! نتيجتك: ${score} من ${activeQuestions.length} 🎉`);
-      closeExam();
-      renderExams();
-    }
-  </script>
-</body>
-</html>
+        let deleteBtn = isUserAdmin ? `<button class
