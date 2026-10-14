@@ -75,21 +75,40 @@
       color: white;
       cursor: pointer;
     }
+    
+    .input-wrapper {
+      position: relative;
+      width: 100%;
+      margin-bottom: 12px;
+    }
     .auth-input {
       width: 100%;
       background: #0b0f19;
       border: 1px solid rgba(255,255,255,0.15);
       border-radius: 10px;
       padding: 12px;
+      padding-left: 40px;
       color: white;
       font-size: 14px;
-      margin-bottom: 12px;
       outline: none;
       text-align: right;
     }
     .auth-input:focus {
       border-color: #38bdf8;
     }
+    .voice-btn {
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      color: #38bdf8;
+      padding: 4px;
+    }
+
     .auth-btn {
       background: #0284c7;
       color: white;
@@ -117,12 +136,8 @@
       text-decoration: none;
       display: inline-block;
     }
-    .auth-screen-pane {
-      display: none;
-    }
-    .auth-screen-pane.active {
-      display: block;
-    }
+    .auth-screen-pane { display: none; }
+    .auth-screen-pane.active { display: block; }
     .text-link-auth {
       margin-top: 15px;
       font-size: 13px;
@@ -239,7 +254,6 @@
     }
     .btn-main:disabled { background: #94a3b8; cursor: not-allowed; }
     
-    /* تنسيق أزرار الفتح والحذف المحسنة بالظل */
     .btn-action-group {
       display: flex;
       gap: 6px;
@@ -346,8 +360,11 @@
         </a>
 
         <div style="margin: 15px 0; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
-          <input type="email" id="login-email" class="auth-input" placeholder="البريد الإلكتروني">
-          <input type="password" id="user-pass" class="auth-input" placeholder="كلمة المرور">
+          <div class="input-wrapper">
+            <input type="email" id="login-email" class="auth-input" placeholder="البريد الإلكتروني">
+            <button type="button" class="voice-btn" onclick="startVoiceInput('login-email')">🎤</button>
+          </div>
+          <input type="password" id="user-pass" class="auth-input" placeholder="كلمة المرور" style="padding-left: 12px;">
           <button class="auth-btn" onclick="customLogin()">تسجيل الدخول ✅</button>
           <div class="text-link-auth" onclick="switchAuthPane('pane-forgot')">نسيت كلمة المرور؟</div>
         </div>
@@ -359,7 +376,10 @@
         <h2 style="margin-bottom: 5px; font-size: 18px;">نسيت كلمة المرور؟</h2>
         <p style="color: #94a3b8; font-size: 11px; margin-bottom: 20px;">أدخل بريدك الإلكتروني وسنرسل لك رمزاً لإعادة تعيين كلمة المرور.</p>
         
-        <input type="email" id="forgot-email" class="auth-input" placeholder="البريد الإلكتروني">
+        <div class="input-wrapper">
+          <input type="email" id="forgot-email" class="auth-input" placeholder="البريد الإلكتروني">
+          <button type="button" class="voice-btn" onclick="startVoiceInput('forgot-email')">🎤</button>
+        </div>
         <button class="auth-btn" onclick="sendResetCode()">إرسال الرمز ✉️</button>
       </div>
 
@@ -369,9 +389,9 @@
         <h2 style="margin-bottom: 5px; font-size: 18px;">إعادة تعيين كلمة المرور</h2>
         <p style="color: #94a3b8; font-size: 11px; margin-bottom: 15px;">أدخل رمز التحقق المرسل لبريدك وكلمة المرور الجديدة.</p>
         
-        <input type="text" id="verification-code-input" class="auth-input" placeholder="أدخل رمز التحقق (4 أرقام)" style="text-align: center; letter-spacing: 3px;">
-        <input type="password" id="new-password-input" class="auth-input" placeholder="كلمة المرور الجديدة">
-        <input type="password" id="confirm-password-input" class="auth-input" placeholder="تأكيد كلمة المرور الجديدة">
+        <input type="text" id="verification-code-input" class="auth-input" placeholder="أدخل رمز التحقق (4 أرقام)" style="text-align: center; letter-spacing: 3px; padding-left: 12px;">
+        <input type="password" id="new-password-input" class="auth-input" placeholder="كلمة المرور الجديدة" style="padding-left: 12px;">
+        <input type="password" id="confirm-password-input" class="auth-input" placeholder="تأكيد كلمة المرور الجديدة" style="padding-left: 12px;">
         <button class="auth-btn" onclick="verifyAndResetPassword()">تحقق وإعادة التعيين ✅</button>
       </div>
 
@@ -390,24 +410,29 @@
     <div id="admin-panel-box">
       <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 10px;">⚙ لوحة تحكم الأدمن (يوسف فرج)</div>
       
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد (مع زر متعدد الأسئلة):</div>
-      <input type="text" id="new-exam-title" class="auth-input" placeholder="عنوان الامتحان..." style="background: white; color: #1e293b; margin-bottom: 6px;">
-      <input type="number" id="new-exam-count" class="auth-input" placeholder="عدد الأسئلة..." value="1" oninput="generateQuestionFields()" style="background: white; color: #1e293b; margin-bottom: 6px;">
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد (متعدد الخيارات أو مقالي):</div>
+      <div class="input-wrapper">
+        <input type="text" id="new-exam-title" class="auth-input" placeholder="عنوان الامتحان..." style="background: white; color: #1e293b; margin-bottom: 0;">
+        <button type="button" class="voice-btn" onclick="startVoiceInput('new-exam-title')">🎤</button>
+      </div>
+      <input type="number" id="new-exam-count" class="auth-input" placeholder="عدد الأسئلة..." value="1" oninput="generateQuestionFields()" style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px;">
       
       <div id="dynamic-questions-builder" style="margin-bottom: 10px;"></div>
 
       <button class="btn-main" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة الامتحان وتخزينه 📝</button>
 
-      <!-- قسم الواجبات الجديد مع خانات مستقلة لاسم الواجب وورقة الأسئلة وورقة الحل -->
       <div style="background: #e0f2fe; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #38bdf8;">
         <div style="font-size: 11px; font-weight: bold; color: #0369a1; margin-bottom: 6px;">📚 إضافة واجب جديد (للطلاب):</div>
-        <input type="text" id="admin-hw-title" class="auth-input" placeholder="اكتب اسم الواجب هنا (مثال: واجب الدرس الأول)..." style="background: white; color: #1e293b; margin-bottom: 6px;">
+        <div class="input-wrapper">
+          <input type="text" id="admin-hw-title" class="auth-input" placeholder="اكتب اسم الواجب هنا (مثال: واجب الدرس الأول)..." style="background: white; color: #1e293b; margin-bottom: 0;">
+          <button type="button" class="voice-btn" onclick="startVoiceInput('admin-hw-title')">🎤</button>
+        </div>
         
         <div style="font-size: 10px; font-weight: bold; color: #334155; margin-bottom: 2px;">ورقة الأسئلة (ملف PDF أو صورة):</div>
-        <input type="file" id="admin-hw-questions-file" class="auth-input" accept="image/*,application/pdf" style="background: white; color: #1e293b; margin-bottom: 6px; padding: 6px;">
+        <input type="file" id="admin-hw-questions-file" class="auth-input" accept="image/*,application/pdf" style="background: white; color: #1e293b; margin-bottom: 6px; padding: 6px; padding-left: 12px;">
         
         <div style="font-size: 10px; font-weight: bold; color: #334155; margin-bottom: 2px;">نموذج الإجابة / ورقة الحل (اختياري):</div>
-        <input type="file" id="admin-hw-solution-file" class="auth-input" accept="image/*,application/pdf" style="background: white; color: #1e293b; margin-bottom: 6px; padding: 6px;">
+        <input type="file" id="admin-hw-solution-file" class="auth-input" accept="image/*,application/pdf" style="background: white; color: #1e293b; margin-bottom: 6px; padding: 6px; padding-left: 12px;">
         
         <button class="btn-main" onclick="addAdminHomework()" style="width: 100%; background: #0284c7;">إضافة الواجب ونشره للطلاب 📁</button>
       </div>
@@ -418,22 +443,28 @@
       </div>
 
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة فيديو المنصة:</div>
-      <input type="text" id="new-video-title" class="auth-input" placeholder="اكتب اسم الفيديو هنا..." style="background: white; color: #1e293b; margin-bottom: 6px;">
-      <input type="text" id="new-video-link" class="auth-input" placeholder="رابط يوتيوب أو تليجرام (اختياري)..." style="background: white; color: #1e293b; margin-bottom: 6px;">
+      <div class="input-wrapper">
+        <input type="text" id="new-video-title" class="auth-input" placeholder="اكتب اسم الفيديو هنا..." style="background: white; color: #1e293b; margin-bottom: 0;">
+        <button type="button" class="voice-btn" onclick="startVoiceInput('new-video-title')">🎤</button>
+      </div>
+      <input type="text" id="new-video-link" class="auth-input" placeholder="رابط يوتيوب أو تليجرام (اختياري)..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px;">
       
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">أو ارفع فيديو / صورة من جهازك:</div>
-      <input type="file" id="new-media-file" class="auth-input" accept="video/*,image/*" style="background: white; color: #1e293b; margin-bottom: 6px; padding: 8px;">
+      <input type="file" id="new-media-file" class="auth-input" accept="video/*,image/*" style="background: white; color: #1e293b; margin-bottom: 6px; padding: 8px; padding-left: 12px;">
       <button class="btn-main" onclick="addVideo()" style="width: 100%; margin-bottom: 10px;">إضافة الفيديو للمنصة 🎥</button>
 
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة ملف PDF:</div>
-      <input type="text" id="new-pdf-title" class="auth-input" placeholder="عنوان ملف الـ PDF..." style="background: white; color: #1e293b; margin-bottom: 6px;">
-      <input type="text" id="new-pdf-link" class="auth-input" placeholder="رابط ملف الـ PDF (https://...)" style="background: white; color: #1e293b; margin-bottom: 6px;">
+      <div class="input-wrapper">
+        <input type="text" id="new-pdf-title" class="auth-input" placeholder="عنوان ملف الـ PDF..." style="background: white; color: #1e293b; margin-bottom: 0;">
+        <button type="button" class="voice-btn" onclick="startVoiceInput('new-pdf-title')">🎤</button>
+      </div>
+      <input type="text" id="new-pdf-link" class="auth-input" placeholder="رابط ملف الـ PDF (https://...)" style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px;">
       <button class="btn-main" onclick="addPdfLink()" style="width: 100%; margin-bottom: 10px; background: #7c3aed;">إضافة ملف الـ PDF 📁</button>
 
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">التحكم في الإحصائيات (مع الترتيب التلقائي):</div>
       <div class="admin-control-row">
-        <input type="number" id="set-exams-count" class="auth-input" placeholder="عدد الامتحانات" style="background: white; color: #1e293b; margin-bottom: 0;">
-        <input type="text" id="set-rank-val" class="auth-input" placeholder="الترتيب (تلقائي)" readonly style="background: #f1f5f9; color: #1e293b; margin-bottom: 0;">
+        <input type="number" id="set-exams-count" class="auth-input" placeholder="عدد الامتحانات" style="background: white; color: #1e293b; margin-bottom: 0; padding-left: 12px;">
+        <input type="text" id="set-rank-val" class="auth-input" placeholder="الترتيب (تلقائي)" readonly style="background: #f1f5f9; color: #1e293b; margin-bottom: 0; padding-left: 12px;">
       </div>
       <button class="btn-main" onclick="updateStats()" style="width: 100%; margin-top: 8px; background: #059669;">تحديث الإحصائيات والترتيب 📊</button>
     </div>
@@ -518,7 +549,7 @@
 
       <div class="settings-group-title">تغيير كلمة المرور الخاصة بك</div>
       <div class="settings-card-box" style="padding: 15px;">
-        <input type="password" id="change-pass-input" class="auth-input" placeholder="كلمة المرور الجديدة" style="background: #f8fafc; color: #1e293b; margin-bottom: 8px;">
+        <input type="password" id="change-pass-input" class="auth-input" placeholder="كلمة المرور الجديدة" style="background: #f8fafc; color: #1e293b; margin-bottom: 8px; padding-left: 12px;">
         <button class="btn-main" onclick="updateUserPassword()" style="width: 100%;">حفظ كلمة المرور الجديدة 🔐</button>
       </div>
 
@@ -568,10 +599,39 @@
     let activeResetEmail = "";
     let generatedResetCode = "";
 
+    // خاصية الكتابة بالصوت باستخدام ميزة المتصفح (Speech Recognition)
+    function startVoiceInput(targetId) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert('متصفحك لا يدعم خاصية الكتابة بالصوت، يرجى استخدام متصفح حديث مثل كروم.');
+        return;
+      }
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'ar-EG';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      alert('🎤 تفضل بالتحدث الآن...');
+      recognition.start();
+
+      recognition.onresult = function(event) {
+        const speechResult = event.results[0][0].transcript;
+        const inputField = document.getElementById(targetId);
+        if (inputField) {
+          inputField.value = speechResult;
+        }
+      };
+
+      recognition.onerror = function(event) {
+        alert('حدث خطأ أثناء التقاط الصوت، حاول مرة أخرى.');
+      };
+    }
+
     let examsList = JSON.parse(localStorage.getItem('fahem_exams')) || [
       { id: 1, title: 'امتحان الفيزياء التجريبي (الباب الأول)', questions: [
-        { q: 'ما وحدة قياس شدة التيار الكهربي؟', o1: 'الأمبير', o2: 'الفولت', o3: 'الأوم', o4: 'الوات', ans: 'الأمبير' }
-      ], info: 'عدد الأسئلة: 1 | متاح الآن' }
+        { type: 'mcq', q: 'ما وحدة قياس شدة التيار الكهربي؟', o1: 'الأمبير', o2: 'الفولت', o3: 'الأوم', o4: 'الوات', ans: 'الأمبير' },
+        { type: 'essay', q: 'اشرح باختصار قانون أوم للدائرة الكهربية.', ans: '' }
+      ], info: 'عدد الأسئلة: 2 | متاح الآن' }
     ];
 
     let homeworksList = JSON.parse(localStorage.getItem('fahem_homeworks')) || [
@@ -733,6 +793,7 @@
       alert(checkbox.checked ? 'تم تفعيل الإشعارات بنجاح' : 'تم إيقاف الإشعارات');
     }
 
+    // توليد حقول الأسئلة للأدمن (مع دعم نوع السؤال: اختيار من متعدد أو مقالي)
     function generateQuestionFields() {
       const countVal = parseInt(document.getElementById('new-exam-count').value) || 1;
       const container = document.getElementById('dynamic-questions-builder');
@@ -741,15 +802,38 @@
       for(let i=1; i<=countVal; i++) {
         container.innerHTML += `
           <div style="background: #ffffff; padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #cbd5e1;">
-            <div style="font-size: 11px; font-weight: bold; color: #0284c7; margin-bottom: 4px;">السؤال رقم (${i})</div>
-            <input type="text" id="q_text_${i}" class="auth-input" placeholder="اكتب نص السؤال هنا..." style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
-            <input type="text" id="q_opt1_${i}" class="auth-input" placeholder="الاختيار الأول (أ)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
-            <input type="text" id="q_opt2_${i}" class="auth-input" placeholder="الاختيار الثاني (ب)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
-            <input type="text" id="q_opt3_${i}" class="auth-input" placeholder="الاختيار الثالث (جـ)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
-            <input type="text" id="q_opt4_${i}" class="auth-input" placeholder="الاختيار الرابع (د)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
-            <input type="text" id="q_ans_${i}" class="auth-input" placeholder="الإجابة الصحيحة بالضبط..." style="background: #f0fdf4; border-color: #86efac; color: #166534; margin-bottom: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-size: 11px; font-weight: bold; color: #0284c7;">السؤال رقم (${i})</span>
+              <select id="q_type_${i}" class="auth-input" style="width: 130px; padding: 4px; background: #f8fafc; color: #1e293b; margin-bottom: 0;" onchange="toggleQuestionTypeFields(${i})">
+                <option value="mcq">اختر من متعدد</option>
+                <option value="essay">مقالي</option>
+              </select>
+            </div>
+            
+            <div class="input-wrapper">
+              <input type="text" id="q_text_${i}" class="auth-input" placeholder="اكتب نص السؤال هنا..." style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
+              <button type="button" class="voice-btn" onclick="startVoiceInput('q_text_${i}')">🎤</button>
+            </div>
+
+            <div id="mcq_box_${i}">
+              <div class="input-wrapper"><input type="text" id="q_opt1_${i}" class="auth-input" placeholder="الاختيار الأول (أ)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;"><button type="button" class="voice-btn" onclick="startVoiceInput('q_opt1_${i}')">🎤</button></div>
+              <div class="input-wrapper"><input type="text" id="q_opt2_${i}" class="auth-input" placeholder="الاختيار الثاني (ب)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;"><button type="button" class="voice-btn" onclick="startVoiceInput('q_opt2_${i}')">🎤</button></div>
+              <div class="input-wrapper"><input type="text" id="q_opt3_${i}" class="auth-input" placeholder="الاختيار الثالث (جـ)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;"><button type="button" class="voice-btn" onclick="startVoiceInput('q_opt3_${i}')">🎤</button></div>
+              <div class="input-wrapper"><input type="text" id="q_opt4_${i}" class="auth-input" placeholder="الاختيار الرابع (د)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;"><button type="button" class="voice-btn" onclick="startVoiceInput('q_opt4_${i}')">🎤</button></div>
+              <div class="input-wrapper"><input type="text" id="q_ans_${i}" class="auth-input" placeholder="الإجابة الصحيحة بالضبط..." style="background: #f0fdf4; border-color: #86efac; color: #166534; margin-bottom: 0;"><button type="button" class="voice-btn" onclick="startVoiceInput('q_ans_${i}')">🎤</button></div>
+            </div>
           </div>
         `;
+      }
+    }
+
+    function toggleQuestionTypeFields(i) {
+      const typeVal = document.getElementById(`q_type_${i}`).value;
+      const mcqBox = document.getElementById(`mcq_box_${i}`);
+      if(typeVal === 'essay') {
+        mcqBox.style.display = 'none';
+      } else {
+        mcqBox.style.display = 'block';
       }
     }
 
@@ -760,14 +844,19 @@
       
       let questionsArr = [];
       for(let i=1; i<=countVal; i++) {
+        let qType = document.getElementById(`q_type_${i}`).value;
         let qText = document.getElementById(`q_text_${i}`).value.trim() || `السؤال (${i})`;
-        let o1 = document.getElementById(`q_opt1_${i}`).value.trim() || 'الخيار الأول';
-        let o2 = document.getElementById(`q_opt2_${i}`).value.trim() || 'الخيار الثاني';
-        let o3 = document.getElementById(`q_opt3_${i}`).value.trim() || 'الخيار الثالث';
-        let o4 = document.getElementById(`q_opt4_${i}`).value.trim() || 'الخيار الرابع';
-        let ans = document.getElementById(`q_ans_${i}`).value.trim() || o1;
-
-        questionsArr.push({ q: qText, o1: o1, o2: o2, o3: o3, o4: o4, ans: ans });
+        
+        if(qType === 'essay') {
+          questionsArr.push({ type: 'essay', q: qText, ans: '' });
+        } else {
+          let o1 = document.getElementById(`q_opt1_${i}`).value.trim() || 'الخيار الأول';
+          let o2 = document.getElementById(`q_opt2_${i}`).value.trim() || 'الخيار الثاني';
+          let o3 = document.getElementById(`q_opt3_${i}`).value.trim() || 'الخيار الثالث';
+          let o4 = document.getElementById(`q_opt4_${i}`).value.trim() || 'الخيار الرابع';
+          let ans = document.getElementById(`q_ans_${i}`).value.trim() || o1;
+          questionsArr.push({ type: 'mcq', q: qText, o1: o1, o2: o2, o3: o3, o4: o4, ans: ans });
+        }
       }
 
       examsList.push({ 
@@ -895,7 +984,7 @@
               </div>
             </div>
             <div style="margin-top: 5px;">
-              <input type="file" id="submit_hw_${hw.id}" class="auth-input" accept="image/*,application/pdf" style="margin-bottom: 6px; padding: 6px;">
+              <input type="file" id="submit_hw_${hw.id}" class="auth-input" accept="image/*,application/pdf" style="margin-bottom: 6px; padding: 6px; padding-left: 12px;">
               <button class="btn-main" onclick="submitSpecificHomework(${hw.id}, '${hw.title}')" style="width: 100%;">رفع ورقة الحل الخاصة بك 📤</button>
             </div>
           </div>
@@ -1140,6 +1229,7 @@
       }
     }
 
+    // عرض الامتحان للطالب (دعم أسئلة الاختيار من متعدد والأسئلة المقالية)
     function startExam(id, title, questions) {
       currentExamId = id;
       document.getElementById('modal-title').innerText = title;
@@ -1148,15 +1238,24 @@
       container.innerHTML = '';
       
       questions.forEach((q, i) => {
-        container.innerHTML += `
-          <div style="background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 8px;">
-            <p style="font-size: 13px; font-weight: bold; margin-bottom: 5px;">${q.q}</p>
-            <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o1}"> ${q.o1}</label>
-            <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o2}"> ${q.o2}</label>
-            <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o3}"> ${q.o3}</label>
-            <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o4}"> ${q.o4}</label>
-          </div>
-        `;
+        if (q.type === 'essay') {
+          container.innerHTML += `
+            <div style="background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 8px;">
+              <p style="font-size: 13px; font-weight: bold; margin-bottom: 5px;">سؤال مقالي (${i+1}): ${q.q}</p>
+              <textarea name="essay_q_${i}" class="auth-input" placeholder="اكتب إجابتك المقالية هنا..." style="background: white; color: #1e293b; height: 80px; text-align: right; padding-left: 12px;"></textarea>
+            </div>
+          `;
+        } else {
+          container.innerHTML += `
+            <div style="background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 8px;">
+              <p style="font-size: 13px; font-weight: bold; margin-bottom: 5px;">سؤال اختيار (${i+1}): ${q.q}</p>
+              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o1}"> ${q.o1}</label>
+              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o2}"> ${q.o2}</label>
+              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o3}"> ${q.o3}</label>
+              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o4}"> ${q.o4}</label>
+            </div>
+          `;
+        }
       });
       document.getElementById('exam-modal').style.display = 'flex';
     }
@@ -1167,10 +1266,16 @@
 
     function submitExam() {
       let score = 0;
-      activeQuestions.exports = activeQuestions || [];
+      let mcqTotal = 0;
+
       activeQuestions.forEach((q, i) => {
-        let sel = document.querySelector(`input[name="q_${i}"]:checked`);
-        if(sel && sel.value.trim() === q.ans.trim()) score++;
+        if(q.type !== 'essay') {
+          mcqTotal++;
+          let sel = document.querySelector(`input[name="q_${i}"]:checked`);
+          if(sel && sel.value.trim() === q.ans.trim()) {
+            score++;
+          }
+        }
       });
 
       const currentEmail = localStorage.getItem('fahem_email') || 'guest';
@@ -1180,7 +1285,12 @@
         localStorage.setItem('finished_exams_' + currentEmail, JSON.stringify(finishedExams));
       }
 
-      alert(`انتهى الامتحان! نتيجتك: ${score} من ${activeQuestions.length} 🎉`);
+      if(mcqTotal > 0) {
+        alert(`تم تسليم الامتحان بنجاح! نتيجتك في الأسئلة الموضوعية: ${score} من ${mcqTotal} 🎉\n(تم حفظ إجاباتك المقالية بنجاح).`);
+      } else {
+        alert(`تم تسليم الإجابات المقالية بنجاح! ✅`);
+      }
+
       closeExam();
       renderExams();
     }
