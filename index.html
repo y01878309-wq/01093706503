@@ -87,7 +87,7 @@
       border: 1px solid rgba(255,255,255,0.15);
       border-radius: 10px;
       padding: 12px;
-      padding-left: 40px;
+      padding-left: 48px;
       color: white;
       font-size: 14px;
       outline: none;
@@ -98,15 +98,21 @@
     }
     .voice-btn {
       position: absolute;
-      left: 8px;
+      left: 6px;
       top: 50%;
       transform: translateY(-50%);
-      background: none;
+      background: #0284c7;
       border: none;
-      font-size: 16px;
+      border-radius: 8px;
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
-      color: #38bdf8;
-      padding: 4px;
+      color: white;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+      transition: all 0.2s ease;
     }
 
     .auth-btn {
@@ -163,7 +169,7 @@
     .greeting-text { font-size: 18px; font-weight: bold; color: #0f172a; }
     .date-text { font-size: 12px; color: #64748b; margin-top: 2px; }
     .admin-badge-top {
-      background: #e0e7ff; color: #4f46e5; padding: 6px 12px;
+      background: #e0f2ff; color: #4f46e5; padding: 6px 12px;
       border-radius: 10px; font-size: 12px; font-weight: bold;
     }
 
@@ -252,4 +258,1226 @@
       background: #0284c7; color: white; border: none; padding: 8px 14px;
       border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; text-align: center;
     }
-    .btn-main:disabled { background:
+    .btn-main:disabled { background: #94a3b8; cursor: not-allowed; }
+    
+    .btn-action-group {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .btn-custom-open {
+      background: #0284c7; color: white; border: none; padding: 6px 12px;
+      border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3); text-decoration: none; display: inline-block;
+    }
+    .btn-custom-delete {
+      background: #ef4444; color: white; border: none; padding: 6px 12px;
+      border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;
+      box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+    }
+
+    .media-preview-container img, .media-preview-container video {
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-top: 8px;
+    }
+
+    .settings-profile-box {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      border-radius: 20px; padding: 20px; color: white;
+      display: flex; align-items: center; gap: 15px; margin-bottom: 20px;
+    }
+    .profile-avatar {
+      width: 55px; height: 55px; background: rgba(255,255,255,0.2);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: bold;
+    }
+    .settings-group-title {
+      font-size: 12px; color: #64748b; margin: 15px 5px 8px 5px;
+      text-align: right; font-weight: bold;
+    }
+    .settings-card-box {
+      background: white; border-radius: 16px; overflow: hidden;
+      border: 1px solid #f1f5f9; box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .settings-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 15px; border-bottom: 1px solid #f8fafc; font-size: 13px;
+      font-weight: 600; color: #334155; cursor: pointer;
+    }
+    .settings-row:last-child { border-bottom: none; }
+    .logout-row {
+      background: white; border: 1px solid #fee2e2; border-radius: 16px;
+      color: #ef4444; text-align: center; padding: 15px; font-weight: bold;
+      margin-top: 20px; cursor: pointer; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.05);
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; width: 100%;
+      background: #ffffff;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0;
+      z-index: 1000;
+      box-shadow: 0 -4px 15px rgba(0,0,0,0.03);
+      flex-direction: row-reverse;
+    }
+    .nav-item {
+      background: none; border: none;
+      display: flex; flex-direction: column; align-items: center;
+      cursor: pointer; color: #64748b; font-size: 11px; font-weight: 600;
+    }
+    .nav-item.active { color: #4f46e5; }
+    .nav-item span { font-size: 18px; margin-bottom: 2px; }
+
+    #exam-modal {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; padding: 20px;
+    }
+    .modal-box {
+      background: white; border-radius: 20px; width: 100%; max-width: 420px; max-height: 85vh; overflow-y: auto; padding: 20px;
+    }
+    .result-summary-card {
+      background: white; border-radius: 20px; padding: 20px; text-align: center; margin-bottom: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #f1f5f9;
+    }
+    .review-question-card {
+      background: white; border-radius: 14px; padding: 15px; margin-bottom: 12px;
+      border: 1px solid #e2e8f0; text-align: right; box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-app-bar">
+    <div class="logo-title">
+      <div class="mini-logo">🛡</div>
+      <span>منصة فاهم التعليمية - يوسف فرج</span>
+    </div>
+    <div id="top-bar-user-status" style="font-size: 11px; color: #38bdf8;">مرحباً بك</div>
+  </div>
+
+  <div id="auth-screen-container">
+    <div class="login-card">
+      
+      <div id="pane-login" class="auth-screen-pane active">
+        <div style="font-size: 40px; margin-bottom: 10px;">🛡</div>
+        <h2 style="margin-bottom: 5px; font-size: 20px;">مرحباً بعودتك!</h2>
+        <p style="color: #94a3b8; font-size: 12px; margin-bottom: 20px;">سجل الدخول للمتابعة</p>
+
+        <a href="#" class="download-btn" onclick="downloadApp(event)">
+          📦 تحميل تطبيق المنصة (APK)
+        </a>
+
+        <div style="margin: 15px 0; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+          <div class="input-wrapper">
+            <input type="email" id="login-email" class="auth-input" placeholder="البريد الإلكتروني">
+            <button type="button" class="voice-btn" onclick="startVoiceInput('login-email')">🎤</button>
+          </div>
+          <input type="password" id="user-pass" class="auth-input" placeholder="كلمة المرور" style="padding-left: 12px;">
+          <button class="auth-btn" onclick="customLogin()">تسجيل الدخول ✅</button>
+          <div class="text-link-auth" onclick="switchAuthPane('pane-forgot')">نسيت كلمة المرور؟</div>
+        </div>
+      </div>
+
+      <div id="pane-forgot" class="auth-screen-pane">
+        <button class="back-btn" onclick="switchAuthPane('pane-login')">‹</button>
+        <div style="font-size: 40px; margin-bottom: 10px; margin-top: 15px;">🔒</div>
+        <h2 style="margin-bottom: 5px; font-size: 18px;">نسيت كلمة المرور؟</h2>
+        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 20px;">أدخل بريدك الإلكتروني وسنرسل لك رمزاً لإعادة تعيين كلمة المرور.</p>
+        
+        <div class="input-wrapper">
+          <input type="email" id="forgot-email" class="auth-input" placeholder="البريد الإلكتروني">
+          <button type="button" class="voice-btn" onclick="startVoiceInput('forgot-email')">🎤</button>
+        </div>
+        <button class="auth-btn" onclick="sendResetCode()">إرسال الرمز ✉️</button>
+      </div>
+
+      <div id="pane-reset" class="auth-screen-pane">
+        <button class="back-btn" onclick="switchAuthPane('pane-forgot')">‹</button>
+        <div style="font-size: 40px; margin-bottom: 10px; margin-top: 15px;">🔑</div>
+        <h2 style="margin-bottom: 5px; font-size: 18px;">إعادة تعيين كلمة المرور</h2>
+        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 15px;">أدخل رمز التحقق المرسل لبريدك وكلمة المرور الجديدة.</p>
+        
+        <input type="text" id="verification-code-input" class="auth-input" placeholder="أدخل رمز التحقق (4 أرقام)" style="text-align: center; letter-spacing: 3px; padding-left: 12px;">
+        <input type="password" id="new-password-input" class="auth-input" placeholder="كلمة المرور الجديدة" style="padding-left: 12px;">
+        <input type="password" id="confirm-password-input" class="auth-input" placeholder="تأكيد كلمة المرور الجديدة" style="padding-left: 12px;">
+        <button class="auth-btn" onclick="verifyAndResetPassword()">تحقق وإعادة التعيين ✅</button>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="dashboard-view">
+    <div class="app-header">
+      <div>
+        <div class="greeting-text" id="welcome-user-name">👋 مرحباً، يوسف فرج</div>
+        <div class="date-text" id="current-date-box">الثلاثاء، أكتوبر 14</div>
+      </div>
+      <div class="admin-badge-top" id="role-badge">أدمن (يوسف فرج)</div>
+    </div>
+
+    <div id="admin-panel-box">
+      <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 10px;">⚙ لوحة تحكم الأدمن (يوسف فرج)</div>
+      
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد (مع الوقت الكلي ووقت لكل سؤال):</div>
+      <div class="input-wrapper">
+        <input type="text" id="new-exam-title" class="auth-input" placeholder="عنوان الامتحان..." style="background: white; color: #1e293b; margin-bottom: 0;">
+        <button type="button" class="voice-btn" onclick="startVoiceInput('new-exam-title')">🎤</button>
+      </div>
+      
+      <div style="display: flex; gap: 8px; margin-top: 6px; margin-bottom: 6px;">
+        <input type="number" id="new-exam-total-time" class="auth-input" placeholder="الوقت الكلي (بالدقائق)..." style="background: white; color: #1e293b; margin-bottom: 0; padding-left: 12px; font-size: 11px;">
+        <input type="number" id="new-exam-count" class="auth-input" placeholder="عدد الأسئلة..." value="1" oninput="generateQuestionFields()" style="background: white; color: #1e293b; margin-bottom: 0; padding-left: 12px; width: 130px; font-size: 11px;">
+      </div>
+      
+      <div id="dynamic-questions-builder" style="margin-bottom: 10px;"></div>
+
+      <button class="btn-main" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة الامتحان وتخزينه 📝</button>
+
+      <div style="background: #e0f2fe; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #38bdf8;">
+        <div style="font-size: 11px; font-weight: bold; color: #0369a1; margin-bottom: 6px;">📚 إضافة واجب جديد (للطلاب):</div>
+        <div class="input-wrapper">
+          <input type="text" id="admin-hw-title" class="auth-input" placeholder="اكتب اسم الواجب هنا..." style="background: white; color: #1e293b; margin-bottom: 0;">
+          <button type="button" class="voice-btn" onclick="startVoiceInput('admin-hw-title')">🎤</button>
+        </div>
+        
+        <div style="font-size: 10px; font-weight: bold; color: #334155; margin-bottom: 2px;">ورقة الأسئلة (ملف PDF أو صورة):</div>
+        <input type="file" id="admin-hw-questions-file" class="auth-input" accept="image/*,application/pdf" style="background: white; color: #1e293b; margin-bottom: 6px; padding: 6px; padding-left: 12px;">
+        
+        <div style="font-size: 10px; font-weight: bold; color: #334155; margin-bottom: 2px;">نموذج الإجابة / ورقة الحل (اختياري):</div>
+        <input type="file" id="admin-hw-solution-file" class="auth-input" accept="image/*,application/pdf" style="background: white; color: #1e293b; margin-bottom: 6px; padding: 6px; padding-left: 12px;">
+        
+        <button class="btn-main" onclick="addAdminHomework()" style="width: 100%; background: #0284c7;">إضافة الواجب ونشره للطلاب 📁</button>
+      </div>
+
+      <div style="background: #f1f5f9; padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+        <div style="font-size: 11px; font-weight: bold; color: #334155; margin-bottom: 6px;">📊 سجل إيميلات، درجات، وأوراق الطلاب:</div>
+        <div id="admin-students-reports" style="max-height: 180px; overflow-y: auto; font-size: 11px; background: white; padding: 8px; border-radius: 6px;"></div>
+      </div>
+
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة فيديو المنصة:</div>
+      <div class="input-wrapper">
+        <input type="text" id="new-video-title" class="auth-input" placeholder="اكتب اسم الفيديو هنا..." style="background: white; color: #1e293b; margin-bottom: 0;">
+        <button type="button" class="voice-btn" onclick="startVoiceInput('new-video-title')">🎤</button>
+      </div>
+      <input type="text" id="new-video-link" class="auth-input" placeholder="رابط يوتيوب أو تليجرام (اختياري)..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px;">
+      
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">أو ارفع فيديو / صورة من جهازك:</div>
+      <input type="file" id="new-media-file" class="auth-input" accept="video/*,image/*" style="background: white; color: #1e293b; margin-bottom: 6px; padding: 8px; padding-left: 12px;">
+      <button class="btn-main" onclick="addVideo()" style="width: 100%; margin-bottom: 10px;">إضافة الفيديو للمنصة 🎥</button>
+
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة ملف PDF:</div>
+      <div class="input-wrapper">
+        <input type="text" id="new-pdf-title" class="auth-input" placeholder="عنوان ملف الـ PDF..." style="background: white; color: #1e293b; margin-bottom: 0;">
+        <button type="button" class="voice-btn" onclick="startVoiceInput('new-pdf-title')">🎤</button>
+      </div>
+      <input type="text" id="new-pdf-link" class="auth-input" placeholder="رابط ملف الـ PDF (https://...)" style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px;">
+      <button class="btn-main" onclick="addPdfLink()" style="width: 100%; margin-bottom: 10px; background: #7c3aed;">إضافة ملف الـ PDF 📁</button>
+
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">التحكم في الإحصائيات (مع الترتيب التلقائي):</div>
+      <div class="admin-control-row">
+        <input type="number" id="set-exams-count" class="auth-input" placeholder="عدد الامتحانات" style="background: white; color: #1e293b; margin-bottom: 0; padding-left: 12px;">
+        <input type="text" id="set-rank-val" class="auth-input" placeholder="الترتيب (تلقائي)" readonly style="background: #f1f5f9; color: #1e293b; margin-bottom: 0; padding-left: 12px;">
+      </div>
+      <button class="btn-main" onclick="updateStats()" style="width: 100%; margin-top: 8px; background: #059669;">تحديث الإحصائيات والترتيب 📊</button>
+    </div>
+
+    <div id="sec-home" class="content-section active-section">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">📅</div>
+          <div class="stat-value">100%</div>
+          <div class="stat-label">الحضور</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📄</div>
+          <div class="stat-value" id="stat-homeworks-count">1</div>
+          <div class="stat-label">الواجبات</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">❓</div>
+          <div class="stat-value" id="stat-exams-display">2</div>
+          <div class="stat-label">الامتحانات</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📊</div>
+          <div class="stat-value" id="stat-rank-display">1</div>
+          <div class="stat-label">الترتيب (تلقائي)</div>
+        </div>
+      </div>
+
+      <div class="section-header-title">إجراءات سريعة</div>
+      <div class="action-grid">
+        <div class="action-card" onclick="switchTab('sec-exams', 'nav-exams')">
+          <div class="stat-icon">❓</div>
+          <div class="stat-label">الامتحانات</div>
+        </div>
+        <div class="action-card" onclick="switchTab('sec-homework', 'nav-homework')">
+          <div class="stat-icon">📄</div>
+          <div class="stat-label">الواجبات</div>
+        </div>
+        <div class="action-card" onclick="switchTab('sec-videos', 'nav-videos')">
+          <div class="stat-icon">🎥</div>
+          <div class="stat-label">الفيديوهات</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="sec-exams" class="content-section">
+      <div class="section-header-title">الامتحانات المتاحة</div>
+      <div id="exams-container"></div>
+    </div>
+
+    <div id="sec-homework" class="content-section">
+      <div class="section-header-title">الواجبات والمهام الدراسية المتاحة</div>
+      <div id="homeworks-container"></div>
+    </div>
+
+    <div id="sec-videos" class="content-section">
+      <div class="section-header-title">فيديوهات الشرح التعليمية</div>
+      <div id="videos-container"></div>
+    </div>
+
+    <div id="sec-pdfs" class="content-section">
+      <div class="section-header-title">ملفات الـ PDF والمذكرات التعليمية</div>
+      <div id="pdfs-container"></div>
+    </div>
+
+    <div id="sec-settings" class="content-section">
+      <div class="settings-profile-box">
+        <div class="profile-avatar">YF</div>
+        <div>
+          <div style="font-size: 16px; font-weight: bold;" id="profile-name-display">يوسف فرج</div>
+          <div style="font-size: 12px; opacity: 0.8;" id="profile-email-display">y01878309@gmail.com</div>
+        </div>
+      </div>
+
+      <div class="settings-group-title">إعدادات الإشعارات والتنبيهات</div>
+      <div class="settings-card-box">
+        <div class="settings-row">
+          <span>🔔 تفعيل/إيقاف الإشعارات</span>
+          <input type="checkbox" id="user-notification-toggle" onchange="toggleNotifications(this)" style="width: 20px; height: 20px; cursor: pointer;">
+        </div>
+      </div>
+
+      <div class="settings-group-title">تغيير كلمة المرور الخاصة بك</div>
+      <div class="settings-card-box" style="padding: 15px;">
+        <input type="password" id="change-pass-input" class="auth-input" placeholder="كلمة المرور الجديدة" style="background: #f8fafc; color: #1e293b; margin-bottom: 8px; padding-left: 12px;">
+        <button class="btn-main" onclick="updateUserPassword()" style="width: 100%;">حفظ كلمة المرور الجديدة 🔐</button>
+      </div>
+
+      <div class="settings-group-title">تحميل التطبيق والروابط</div>
+      <div class="settings-card-box">
+        <div class="settings-row" onclick="downloadApp(event)"><span>📦 تحميل تطبيق المنصة (APK)</span> <span>⬇️</span></div>
+        <div class="settings-row" onclick="openTelegramChannel()"><span>✈️ قناة التليجرام الرسمية</span> <span>‹</span></div>
+        <div class="settings-row" onclick="window.open('https://www.youtube.com/@youssef-po1xd', '_blank')"><span>📺 قناة اليوتيوب التعليمية</span> <span>‹</span></div>
+      </div>
+
+      <div class="settings-group-title">الإدارة والتحكم</div>
+      <div class="settings-card-box">
+        <div class="settings-row" onclick="resetAppData()"><span>🔄 إعادة ضبط وتصفير البيانات</span> <span>‹</span></div>
+        <div class="settings-row" onclick="alert('منصة فاهم التعليمية - إصدار الأدمن الخاص بيوسف فرج')"><span>ℹ حول التطبيق</span> <span>‹</span></div>
+      </div>
+
+      <div class="logout-row" onclick="logout()">
+        🚪 تسجيل الخروج
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav" id="bottom-navigation" style="display: none;">
+    <button class="nav-item active" id="nav-home" onclick="switchTab('sec-home', 'nav-home')"><span>🏠</span> الرئيسية</button>
+    <button class="nav-item" id="nav-exams" onclick="switchTab('sec-exams', 'nav-exams')"><span>❓</span> الامتحانات</button>
+    <button class="nav-item" id="nav-homework" onclick="switchTab('sec-homework', 'nav-homework')"><span>📄</span> الواجبات</button>
+    <button class="nav-item" id="nav-videos" onclick="switchTab('sec-videos', 'nav-videos')"><span>🎥</span> الفيديوهات</button>
+    <button class="nav-item" id="nav-pdfs" onclick="switchTab('sec-pdfs', 'nav-pdfs')"><span>📁</span> ملفات PDF</button>
+    <button class="nav-item" id="nav-settings" onclick="switchTab('sec-settings', 'nav-settings')"><span>⚙️</span> الإعدادات</button>
+  </div>
+
+  <div id="exam-modal">
+    <div class="modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h3 id="modal-title" style="color: #0284c7; font-size: 16px;">عنوان الامتحان</h3>
+        <div id="exam-global-timer" style="background: #fee2e2; color: #ef4444; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; display: none;"></div>
+      </div>
+      <div id="modal-questions-container" style="margin-bottom: 15px;"></div>
+      <button class="btn-main" id="submit-exam-btn" onclick="submitExam()" style="width: 100%; padding: 10px;">تسليم الإجابات ✅</button>
+      <button class="btn-main" onclick="closeExam()" style="background: #ef4444; width: 100%; margin-top: 8px;">إغلاق ✕</button>
+    </div>
+  </div>
+
+  <script>
+    let activeQuestions = [];
+    let currentExamId = null;
+    let globalExamTimerInterval = null;
+    let questionTimersIntervals = [];
+
+    const ADMIN_EMAIL = "y01878309@gmail.com";
+    const DEFAULT_PASS = "goks123";
+
+    let activeResetEmail = "";
+    let generatedResetCode = "";
+
+    function startVoiceInput(targetId) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert('متصفحك لا يدعم خاصية الكتابة بالصوت، يرجى استخدام متصفح حديث مثل كروم.');
+        return;
+      }
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'ar-EG';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      alert('🎤 تفضل بالتحدث الآن...');
+      recognition.start();
+
+      recognition.onresult = function(event) {
+        const speechResult = event.results[0][0].transcript;
+        const inputField = document.getElementById(targetId);
+        if (inputField) {
+          inputField.value = speechResult;
+        }
+      };
+
+      recognition.onerror = function(event) {
+        alert('حدث خطأ أثناء التقاط الصوت، حاول مرة أخرى.');
+      };
+    }
+
+    let examsList = JSON.parse(localStorage.getItem('fahem_exams')) || [
+      { id: 1, title: 'امتحان الفيزياء التجريبي (الباب الأول)', totalTime: 0, questions: [
+        { type: 'mcq', q: 'ما وحدة قياس شدة التيار الكهربي؟', o1: 'الأمبير', o2: 'الفولت', o3: 'الأوم', o4: 'الوات', ans: 'الأمبير', timeLimit: 0 },
+        { type: 'essay', q: 'اشرح باختصار قانون أوم للدائرة الكهربية.', modelAns: 'قانون أوم يربط بين الجهد والتيار والمقاومة.', timeLimit: 0 }
+      ], info: 'عدد الأسئلة: 2 | متاح الآن' }
+    ];
+
+    let homeworksList = JSON.parse(localStorage.getItem('fahem_homeworks')) || [
+      { id: 1, title: 'واجب الفصل الأول فيزياء', qFile: '#', sFile: '#', info: 'متاح للحل والرفع' }
+    ];
+
+    let videosList = JSON.parse(localStorage.getItem('fahem_videos')) || [
+      { id: 1, title: 'محاضرة قوانين كيرشوف', link: 'https://www.youtube.com/@youssef-po1xd', type: 'link', info: 'شرح تفصيلي مع المسائل' }
+    ];
+
+    let pdfsList = JSON.parse(localStorage.getItem('fahem_pdfs')) || [
+      { id: 1, title: 'ملخص قوانين الفيزياء كاملة', link: 'https://www.google.com', info: 'صيغة PDF - جاهز للفتح والتحميل' }
+    ];
+
+    let statsData = JSON.parse(localStorage.getItem('fahem_stats')) || { exams: '2', rank: '1' };
+
+    window.onload = function() {
+      const savedEmail = localStorage.getItem('fahem_email');
+      if (savedEmail) {
+        setupSession(savedEmail);
+      }
+      generateQuestionFields();
+      renderExams();
+      renderHomeworks();
+      renderVideos();
+      renderPdfs();
+      renderStats();
+    };
+
+    function switchAuthPane(paneId) {
+      document.querySelectorAll('.auth-screen-pane').forEach(p => p.classList.remove('active'));
+      document.getElementById(paneId).classList.add('active');
+    }
+
+    function switchTab(sectionId, navId) {
+      document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-section'));
+      document.getElementById(sectionId).classList.add('active-section');
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById(navId).classList.add('active');
+    }
+
+    function customLogin() {
+      const emailInput = document.getElementById('login-email').value.trim();
+      const pass = document.getElementById('user-pass').value.trim();
+
+      if (!emailInput) {
+        alert('الرجاء إدخال البريد الإلكتروني');
+        return;
+      }
+
+      let userStoredPass = localStorage.getItem('pass_' + emailInput) || DEFAULT_PASS;
+
+      if(pass !== userStoredPass) {
+        alert('كلمة المرور غير صحيحة! (كلمة المرور الافتراضية هي: goks123)');
+        return;
+      }
+      
+      localStorage.setItem('fahem_email', emailInput);
+      
+      let allStudents = JSON.parse(localStorage.getItem('fahem_all_students_records')) || [];
+      if(!allStudents.includes(emailInput)) {
+        allStudents.push(emailInput);
+        localStorage.setItem('fahem_all_students_records', JSON.stringify(allStudents));
+      }
+
+      setupSession(emailInput);
+    }
+
+    function sendResetCode() {
+      const email = document.getElementById('forgot-email').value.trim();
+      if(!email) {
+        alert('الرجاء إدخال البريد الإلكتروني');
+        return;
+      }
+      activeResetEmail = email;
+      generatedResetCode = Math.floor(1000 + Math.random() * 9000).toString();
+      
+      alert(`تم إرسال رمز التحقق إلى بريدك الإلكتروني (${email}).\nكود التحقق الخاص بك هو: [ ${generatedResetCode} ]`);
+      switchAuthPane('pane-reset');
+    }
+
+    function verifyAndResetPassword() {
+      const code = document.getElementById('verification-code-input').value.trim();
+      const newPass = document.getElementById('new-password-input').value;
+      const confirmPass = document.getElementById('confirm-password-input').value;
+
+      if(code !== generatedResetCode) {
+        alert('رمز التحقق غير صحيح!');
+        return;
+      }
+      if(!newPass || newPass !== confirmPass) {
+        alert('كلمتا المرور غير متطابقتين أو فارغتين!');
+        return;
+      }
+
+      localStorage.setItem('pass_' + activeResetEmail, newPass);
+      alert('تم تغيير كلمة المرور بنجاح! يمكنك تسجيل الدخول الآن بكلمة المرور الجديدة.');
+      switchAuthPane('pane-login');
+    }
+
+    function updateUserPassword() {
+      const newPass = document.getElementById('change-pass-input').value.trim();
+      const currentEmail = localStorage.getItem('fahem_email');
+      if(!newPass) {
+        alert('الرجاء إدخال كلمة المرور الجديدة');
+        return;
+      }
+      localStorage.setItem('pass_' + currentEmail, newPass);
+      alert('تم تحديث كلمة المرور بنجاح!');
+      document.getElementById('change-pass-input').value = '';
+    }
+
+    function setupSession(email) {
+      document.getElementById('auth-screen-container').style.display = 'none';
+      document.getElementById('dashboard-view').style.display = 'block';
+      document.getElementById('bottom-navigation').style.display = 'flex';
+
+      document.getElementById('profile-email-display').innerText = email;
+      document.getElementById('welcome-user-name').innerText = `👋 مرحباً، ${email === ADMIN_EMAIL ? 'يوسف فرج' : email}`;
+      document.getElementById('top-bar-user-status').innerText = email === ADMIN_EMAIL ? 'أدمن (يوسف فرج)' : email;
+      
+      const notifState = localStorage.getItem('notif_' + email);
+      document.getElementById('user-notification-toggle').checked = notifState === null ? true : notifState === 'true';
+
+      if(email === ADMIN_EMAIL) {
+        document.getElementById('admin-panel-box').style.display = 'block';
+        document.getElementById('role-badge').style.display = 'block';
+        renderAdminReports();
+      } else {
+        document.getElementById('admin-panel-box').style.display = 'none';
+        document.getElementById('role-badge').style.display = 'none';
+      }
+      renderExams();
+      renderHomeworks();
+      renderStats();
+    }
+
+    function logout() {
+      localStorage.removeItem('fahem_email');
+      location.reload();
+    }
+
+    function downloadApp(e) {
+      if(e) e.preventDefault();
+      alert('تم بدء تحميل تطبيق المنصة (APK) بنجاح على هاتفك! 📦');
+    }
+
+    function openTelegramChannel() {
+      const telegramUrl = 'https://t.me/farag1farag1';
+      const newWindow = window.open(telegramUrl, '_blank', 'noopener,noreferrer');
+      if (!newWindow) {
+        window.location.href = telegramUrl;
+      }
+    }
+
+    function toggleNotifications(checkbox) {
+      const currentEmail = localStorage.getItem('fahem_email');
+      localStorage.setItem('notif_' + currentEmail, checkbox.checked);
+      alert(checkbox.checked ? 'تم تفعيل الإشعارات بنجاح' : 'تم إيقاف الإشعارات');
+    }
+
+    function generateQuestionFields() {
+      const countVal = parseInt(document.getElementById('new-exam-count').value) || 1;
+      const container = document.getElementById('dynamic-questions-builder');
+      container.innerHTML = '';
+
+      for(let i=1; i<=countVal; i++) {
+        container.innerHTML += `
+          <div style="background: #ffffff; padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #cbd5e1;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-size: 11px; font-weight: bold; color: #0284c7;">السؤال رقم (${i})</span>
+              <div style="display: flex; gap: 4px;">
+                <input type="number" id="q_time_${i}" class="auth-input" placeholder="وقت السؤال بالثواني (فارغ = مفتوح)" style="width: 140px; padding: 4px; background: #f8fafc; color: #1e293b; font-size: 10px; margin-bottom: 0;">
+                <select id="q_type_${i}" class="auth-input" style="width: 110px; padding: 4px; background: #f8fafc; color: #1e293b; font-size: 11px; margin-bottom: 0;" onchange="toggleQuestionTypeFields(${i})">
+                  <option value="mcq">اختر من متعدد</option>
+                  <option value="essay">مقالي</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="input-wrapper" style="margin-top: 4px;">
+              <input type="text" id="q_text_${i}" class="auth-input" placeholder="اكتب نص السؤال هنا..." style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
+              <button type="button" class="voice-btn" onclick="startVoiceInput('q_text_${i}')">🎤</button>
+            </div>
+
+            <div id="mcq_box_${i}">
+              <div class="input-wrapper"><input type="text" id="q_opt1_${i}" class="auth-input" placeholder="الاختيار الأول (أ)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;"><button type="button" class="voice-btn" onclick="startVoiceInput('q_opt1_${i}')">🎤</button></div>
+              <div class="input-wrapper"><input type="text" id="q_opt2_${i}" class="auth-input" placeholder="الاختيار الثاني (ب)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;"><button type="button" class="voice-btn" onclick="startVoiceInput('q_opt2_${i}')">🎤</button></div>
+              <div class="input-wrapper"><input type="text" id="q_opt3_${i}" class="auth-input" placeholder="الاختيار الثالث (جـ)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;"><button type="button" class="voice-btn" onclick="startVoiceInput('q_opt3_${i}')">🎤</button></div>
+              <div class="input-wrapper"><input type="text" id="q_opt4_${i}" class="auth-input" placeholder="الاختيار الرابع (د)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;"><button type="button" class="voice-btn" onclick="startVoiceInput('q_opt4_${i}')">🎤</button></div>
+              <div class="input-wrapper"><input type="text" id="q_ans_${i}" class="auth-input" placeholder="الإجابة الصحيحة بالضبط..." style="background: #f0fdf4; border-color: #86efac; color: #166534; margin-bottom: 0;"><button type="button" class="voice-btn" onclick="startVoiceInput('q_ans_${i}')">🎤</button></div>
+            </div>
+            <div id="essay_box_${i}" style="display: none; margin-top: 4px;">
+              <textarea id="q_model_ans_${i}" class="auth-input" placeholder="الإجابة النموذجية للسؤال المقالي..." style="background: #f0fdf4; color: #166534; height: 50px; margin-bottom: 0;"></textarea>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function toggleQuestionTypeFields(i) {
+      const typeVal = document.getElementById(`q_type_${i}`).value;
+      const mcqBox = document.getElementById(`mcq_box_${i}`);
+      const essayBox = document.getElementById(`essay_box_${i}`);
+      if(typeVal === 'essay') {
+        mcqBox.style.display = 'none';
+        essayBox.style.display = 'block';
+      } else {
+        mcqBox.style.display = 'block';
+        essayBox.style.display = 'none';
+      }
+    }
+
+    function addExam() {
+      const title = document.getElementById('new-exam-title').value.trim();
+      const totalTimeMin = parseInt(document.getElementById('new-exam-total-time').value.trim()) || 0;
+      const countVal = parseInt(document.getElementById('new-exam-count').value.trim()) || 1;
+      if(!title) { alert('الرجاء كتابة عنوان الامتحان'); return; }
+      
+      let questionsArr = [];
+      for(let i=1; i<=countVal; i++) {
+        let qType = document.getElementById(`q_type_${i}`).value;
+        let qText = document.getElementById(`q_text_${i}`).value.trim() || `السؤال (${i})`;
+        let qTimeSec = parseInt(document.getElementById(`q_time_${i}`).value) || 0;
+        
+        if(qType === 'essay') {
+          questionsArr.push({ type: 'essay', q: qText, modelAns: document.getElementById(`q_model_ans_${i}`).value.trim() || 'نموذج غير متوفر', timeLimit: qTimeSec });
+        } else {
+          let o1 = document.getElementById(`q_opt1_${i}`).value.trim() || 'أ';
+          let o2 = document.getElementById(`q_opt2_${i}`).value.trim() || 'ب';
+          let o3 = document.getElementById(`q_opt3_${i}`).value.trim() || 'ج';
+          let o4 = document.getElementById(`q_opt4_${i}`).value.trim() || 'د';
+          let ans = document.getElementById(`q_ans_${i}`).value.trim() || o1;
+          questionsArr.push({ type: 'mcq', q: qText, o1: o1, o2: o2, o3: o3, o4: o4, ans: ans, timeLimit: qTimeSec });
+        }
+      }
+
+      examsList.push({ 
+        id: Date.now(), 
+        title: title, 
+        totalTime: totalTimeMin * 60,
+        questions: questionsArr, 
+        info: `عدد الأسئلة: ${countVal} | متاح الآن` 
+      });
+
+      localStorage.setItem('fahem_exams', JSON.stringify(examsList));
+      document.getElementById('new-exam-title').value = '';
+      document.getElementById('new-exam-total-time').value = '';
+      document.getElementById('new-exam-count').value = '1';
+      generateQuestionFields();
+      renderExams();
+      alert('تم إضافة الامتحان بنجاح! ✅');
+    }
+
+    function deleteExam(id) {
+      examsList = examsList.filter(e => e.id !== id);
+      localStorage.setItem('fahem_exams', JSON.stringify(examsList));
+      renderExams();
+      alert('تم حذف الامتحان 🗑️');
+    }
+
+    function renderExams() {
+      const container = document.getElementById('exams-container');
+      container.innerHTML = '';
+      const currentEmail = localStorage.getItem('fahem_email') || 'guest';
+      let finishedExams = JSON.parse(localStorage.getItem('finished_exams_' + currentEmail)) || [];
+      const isUserAdmin = currentEmail === ADMIN_EMAIL;
+
+      if(examsList.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد امتحانات متاحة حالياً</p>';
+        return;
+      }
+
+      examsList.forEach(ex => {
+        let isDone = finishedExams.includes(ex.id);
+        let deleteBtn = isUserAdmin ? `<button class="btn-custom-delete" onclick="deleteExam(${ex.id})">حذف 🗑️</button>` : '';
+        let qData = ex.questions || [];
+
+        let actionBtn = isDone ? 
+          `<button class="btn-main" onclick='viewExamResult(${ex.id}, "${ex.title}", ${JSON.stringify(qData)})' style="background:#059669;">عرض النتيجة 📋</button>` : 
+          `<button class="btn-main" onclick='startExam(${ex.id}, "${ex.title}", ${JSON.stringify(qData)}, ${ex.totalTime || 0})'>بدء 📝</button>`;
+        
+        let subtitleText = isDone ? `${ex.info} - (تم اجتازه)` : ex.info;
+
+        container.innerHTML += `
+          <div class="card-item">
+            <div class="card-row">
+              <div class="card-info">
+                <div class="card-title">${ex.title}</div>
+                <div class="card-subtitle">${subtitleText}</div>
+              </div>
+              <div class="btn-action-group">
+                ${deleteBtn}
+                ${actionBtn}
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function startExam(id, title, questions, totalTimeSeconds) {
+      currentExamId = id;
+      activeQuestions = questions;
+      document.getElementById('modal-title').innerText = title;
+      document.getElementById('submit-exam-btn').style.display = 'block';
+      let container = document.getElementById('modal-questions-container');
+      container.innerHTML = '';
+
+      if(globalExamTimerInterval) clearInterval(globalExamTimerInterval);
+      questionTimersIntervals.forEach(t => clearInterval(t));
+      questionTimersIntervals = [];
+
+      let timerBox = document.getElementById('exam-global-timer');
+      if(totalTimeSeconds > 0) {
+        timerBox.style.display = 'block';
+        let timeLeft = totalTimeSeconds;
+        globalExamTimerInterval = setInterval(() => {
+          let mins = Math.floor(timeLeft / 60);
+          let secs = timeLeft % 60;
+          timerBox.innerText = `الوقت الكلي: ${mins}:${secs < 10 ? '0' : ''}${secs}`;
+          timeLeft--;
+          if(timeLeft < 0) {
+            clearInterval(globalExamTimerInterval);
+            alert('انتهى الوقت الكلي للامتحان!');
+            submitExam();
+          }
+        }, 1000);
+      } else {
+        timerBox.style.display = 'none';
+      }
+
+      questions.forEach((q, i) => {
+        let qTimerHtml = q.timeLimit > 0 ? `<span id="q_timer_disp_${i}" style="color: #ef4444; font-weight: bold; font-size: 11px; float: left;">الوقت: ${q.timeLimit} ث</span>` : '';
+        
+        if (q.type === 'essay') {
+          container.innerHTML += `
+            <div id="q_card_box_${i}" style="background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 8px;">
+              <div style="font-size: 13px; font-weight: bold; margin-bottom: 5px;">(${i+1}) ${q.q} ${qTimerHtml}</div>
+              <textarea id="exam_q_input_${i}" name="essay_q_${i}" class="auth-input" placeholder="اكتب إجابتك المقالية هنا..." style="background: white; color: #1e293b; height: 70px; text-align: right; padding-left: 12px;"></textarea>
+            </div>
+          `;
+        } else {
+          container.innerHTML += `
+            <div id="q_card_box_${i}" style="background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 8px;">
+              <div style="font-size: 13px; font-weight: bold; margin-bottom: 5px;">(${i+1}) ${q.q} ${qTimerHtml}</div>
+              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o1}"> ${q.o1}</label>
+              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o2}"> ${q.o2}</label>
+              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o3}"> ${q.o3}</label>
+              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o4}"> ${q.o4}</label>
+            </div>
+          `;
+        }
+
+        if(q.timeLimit > 0) {
+          let qTimeLeft = q.timeLimit;
+          let qInterval = setInterval(() => {
+            qTimeLeft--;
+            let disp = document.getElementById(`q_timer_disp_${i}`);
+            if(disp) disp.innerText = `الوقت: ${qTimeLeft} ث`;
+            if(qTimeLeft <= 0) {
+              clearInterval(qInterval);
+              let cardBox = document.getElementById(`q_card_box_${i}`);
+              if(cardBox) {
+                cardBox.style.opacity = '0.5';
+                cardBox.style.pointerEvents = 'none';
+                if(!cardBox.querySelector('.time-expired-msg')) {
+                  cardBox.innerHTML += `<div class="time-expired-msg" style="color:red; font-size:11px; font-weight:bold; margin-top:4px;">انتهى وقت هذا السؤال وتم قفله! 🔒</div>`;
+                }
+              }
+            }
+          }, 1000);
+          questionTimersIntervals.push(qInterval);
+        }
+      });
+      document.getElementById('exam-modal').style.display = 'flex';
+    }
+
+    function closeExam() {
+      if(globalExamTimerInterval) clearInterval(globalExamTimerInterval);
+      questionTimersIntervals.forEach(t => clearInterval(t));
+      document.getElementById('exam-modal').style.display = 'none';
+    }
+
+    function submitExam() {
+      if(globalExamTimerInterval) clearInterval(globalExamTimerInterval);
+      questionTimersIntervals.forEach(t => clearInterval(t));
+
+      let score = 0;
+      let mcqTotal = 0;
+      let studentAnswers = {};
+
+      activeQuestions.forEach((q, i) => {
+        if(q.type !== 'essay') {
+          mcqTotal++;
+          let sel = document.querySelector(`input[name="q_${i}"]:checked`);
+          let userAns = sel ? sel.value.trim() : "لم يجب";
+          studentAnswers[i] = userAns;
+          if(sel && userAns === q.ans.trim()) {
+            score++;
+          }
+        } else {
+          let essayTextEl = document.getElementById(`exam_q_input_${i}`);
+          let essayText = essayTextEl ? essayTextEl.value.trim() : "لم يجب";
+          studentAnswers[i] = essayText;
+        }
+      });
+
+      const currentEmail = localStorage.getItem('fahem_email') || 'guest';
+      let finishedExams = JSON.parse(localStorage.getItem('finished_exams_' + currentEmail)) || [];
+      if(!finishedExams.includes(currentExamId)) {
+        finishedExams.push(currentExamId);
+        localStorage.setItem('finished_exams_' + currentEmail, JSON.stringify(finishedExams));
+      }
+
+      let examResultData = {
+        examId: currentExamId,
+        score: score,
+        total: mcqTotal > 0 ? mcqTotal : activeQuestions.length,
+        answers: studentAnswers,
+        percentage: mcqTotal > 0 ? ((score / mcqTotal) * 100).toFixed(1) : '100'
+      };
+
+      let userResultsMap = JSON.parse(localStorage.getItem('exam_results_detail_' + currentEmail)) || {};
+      userResultsMap[currentExamId] = examResultData;
+      localStorage.setItem('exam_results_detail_' + currentEmail, JSON.stringify(userResultsMap));
+
+      renderExams();
+      viewExamResult(currentExamId, document.getElementById('modal-title').innerText, activeQuestions);
+    }
+
+    function viewExamResult(examId, title, questions) {
+      const currentEmail = localStorage.getItem('fahem_email') || 'guest';
+      let userResultsMap = JSON.parse(localStorage.getItem('exam_results_detail_' + currentEmail)) || {};
+      let res = userResultsMap[examId] || { score: 0, total: questions.length, answers: {}, percentage: '0' };
+      let leaderboard = calculateLeaderboard();
+      let userRank = leaderboard.findIndex(s => s.email === currentEmail) + 1;
+      if(userRank === 0) userRank = 1;
+
+      let container = document.getElementById('modal-questions-container');
+      document.getElementById('modal-title').innerText = `نتيجة امتحان: ${title}`;
+      document.getElementById('exam-global-timer').style.display = 'none';
+      document.getElementById('submit-exam-btn').style.display = 'none';
+      
+      let reviewHtml = `
+        <div class="result-summary-card">
+          <div style="font-size: 40px; margin-bottom: 5px;">🎉</div>
+          <h3 style="color: #059669; font-size: 18px; margin-bottom: 10px;">تم التصحيح التلقائي بنجاح!</h3>
+          <div style="display: flex; justify-content: space-around; margin: 15px 0;">
+            <div>
+              <div style="font-size: 18px; font-weight: bold; color: #0284c7;">${res.percentage}%</div>
+              <div style="font-size: 11px; color: #64748b;">النسبة المئوية</div>
+            </div>
+            <div>
+              <div style="font-size: 18px; font-weight: bold; color: #0f172a;">${res.total}</div>
+              <div style="font-size: 11px; color: #64748b;">الإجمالي</div>
+            </div>
+            <div>
+              <div style="font-size: 18px; font-weight: bold; color: #4f46e5;">${res.score}</div>
+              <div style="font-size: 11px; color: #64748b;">المحصل عليه</div>
+            </div>
+          </div>
+          <div style="background: #f1f5f9; padding: 10px; border-radius: 10px; font-size: 12px; font-weight: bold; color: #334155;">
+            🏆 مركز الترتيب الحالي: المركز ${userRank} بين الطلاب
+          </div>
+        </div>
+        <div style="font-size: 14px; font-weight: bold; margin: 15px 0 10px 0; text-align: right;">مراجعة الأسئلة وتصحيحها:</div>
+      `;
+
+      questions.forEach((q, i) => {
+        if(q.type === 'essay') {
+          reviewHtml += `
+            <div class="review-question-card">
+              <div style="font-size: 12px; font-weight: bold; color: #0284c7; margin-bottom: 4px;">السؤال المقالي (${i+1})</div>
+              <div style="font-size: 13px; font-weight: bold; margin-bottom: 6px;">${q.q}</div>
+              <div style="font-size: 12px; color: #64748b;">إجابتك: ${res.answers[i] || 'لم يجب'}</div>
+              <div style="font-size: 12px; color: #059669; margin-top: 4px;">الإجابة النموذجية: ${q.modelAns}</div>
+            </div>
+          `;
+        } else {
+          let studentAns = res.answers[i];
+          let isCorrect = studentAns === q.ans;
+          let statusColor = isCorrect ? '#059669' : '#ef4444';
+          let statusText = isCorrect ? 'إجابة صحيحة ✓' : 'إجابة خاطئة ✕';
+
+          reviewHtml += `
+            <div class="review-question-card" style="border-right: 4px solid ${statusColor};">
+              <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; color: ${statusColor}; margin-bottom: 4px;">
+                <span>السؤال (${i+1})</span>
+                <span>${statusText}</span>
+              </div>
+              <div style="font-size: 13px; font-weight: bold; margin-bottom: 6px;">${q.q}</div>
+              <div style="font-size: 12px; color: #64748b; margin-bottom: 2px;">إجابتك: ${studentAns}</div>
+              <div style="font-size: 12px; color: #059669; font-weight: bold;">الإجابة الصحيحة: ${q.ans}</div>
+            </div>
+          `;
+        }
+      });
+
+      container.innerHTML = reviewHtml;
+      document.getElementById('exam-modal').style.display = 'flex';
+    }
+
+    function calculateLeaderboard() {
+      let allStudents = JSON.parse(localStorage.getItem('fahem_all_students_records')) || [ADMIN_EMAIL];
+      let studentScores = [];
+      allStudents.forEach(stEmail => {
+        let userResultsMap = JSON.parse(localStorage.getItem('exam_results_detail_' + stEmail)) || {};
+        let totalScore = 0;
+        Object.values(userResultsMap).forEach(res => { if(typeof res.score === 'number') totalScore += res.score; });
+        studentScores.push({ email: stEmail, score: totalScore });
+      });
+      studentScores.sort((a, b) => b.score - a.score);
+      return studentScores;
+    }
+
+    function addAdminHomework() {
+      const title = document.getElementById('admin-hw-title').value.trim();
+      const qInput = document.getElementById('admin-hw-questions-file');
+      const sInput = document.getElementById('admin-hw-solution-file');
+
+      if(!title) { alert('الرجاء كتابة اسم أو عنوان الواجب'); return; }
+      if(!qInput.files || !qInput.files[0]) { alert('الرجاء رفع ورقة الأسئلة الخاصة بالواجب'); return; }
+
+      const qFileName = qInput.files[0].name;
+      const sFileName = (sInput.files && sInput.files[0]) ? sInput.files[0].name : 'لا يوجد نموذج إجابة';
+
+      homeworksList.push({
+        id: Date.now(),
+        title: title,
+        qFile: qFileName,
+        sFile: sFileName,
+        info: 'متاح للحل والرفع'
+      });
+
+      localStorage.setItem('fahem_homeworks', JSON.stringify(homeworksList));
+      document.getElementById('admin-hw-title').value = '';
+      qInput.value = '';
+      sInput.value = '';
+      renderHomeworks();
+      alert('تم إضافة ونشر الواجب بنجاح! 📚');
+    }
+
+    function deleteHomework(id) {
+      homeworksList = homeworksList.filter(h => h.id !== id);
+      localStorage.setItem('fahem_homeworks', JSON.stringify(homeworksList));
+      renderHomeworks();
+      alert('تم حذف الواجب بنجاح 🗑️');
+    }
+
+    function renderHomeworks() {
+      const container = document.getElementById('homeworks-container');
+      if(!container) return;
+      container.innerHTML = '';
+      const currentEmail = localStorage.getItem('fahem_email') || 'guest';
+      const isUserAdmin = currentEmail === ADMIN_EMAIL;
+
+      document.getElementById('stat-homeworks-count').innerText = homeworksList.length;
+
+      if(homeworksList.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد واجبات متاحة حالياً</p>';
+        return;
+      }
+
+      homeworksList.forEach(hw => {
+        let deleteBtn = isUserAdmin ? `<button class="btn-custom-delete" onclick="deleteHomework(${hw.id})">حذف 🗑️</button>` : '';
+        
+        container.innerHTML += `
+          <div class="card-item">
+            <div class="card-row">
+              <div class="card-info">
+                <div class="card-title">${hw.title}</div>
+                <div class="card-subtitle">ورقة الأسئلة: ${hw.qFile} | ورقة الحل: ${hw.sFile}</div>
+              </div>
+              <div class="btn-action-group">
+                ${deleteBtn}
+              </div>
+            </div>
+            <div style="margin-top: 5px;">
+              <input type="file" id="submit_hw_${hw.id}" class="auth-input" accept="image/*,application/pdf" style="margin-bottom: 6px; padding: 6px; padding-left: 12px;">
+              <button class="btn-main" onclick="submitSpecificHomework(${hw.id}, '${hw.title}')" style="width: 100%;">رفع ورقة الحل الخاصة بك 📤</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function submitSpecificHomework(hwId, hwTitle) {
+      const fileInput = document.getElementById(`submit_hw_${hwId}`);
+      const currentEmail = localStorage.getItem('fahem_email');
+      if(!fileInput.files || !fileInput.files[0]) {
+        alert('الرجاء اختيار ملف أو ورقة الحل أولاً');
+        return;
+      }
+      const fileName = fileInput.files[0].name;
+      let submissions = JSON.parse(localStorage.getItem('fahem_submissions')) || [];
+      submissions.push({ email: currentEmail, file: `${hwTitle} (${fileName})`, time: new Date().toLocaleDateString() });
+      localStorage.setItem('fahem_submissions', JSON.stringify(submissions));
+      
+      alert('تم رفع ورقة الحل للواجب بنجاح! 📤');
+      fileInput.value = '';
+      if(currentEmail === ADMIN_EMAIL) renderAdminReports();
+    }
+
+    function renderAdminReports() {
+      const container = document.getElementById('admin-students-reports');
+      if(!container) return;
+
+      let allStudents = JSON.parse(localStorage.getItem('fahem_all_students_records')) || [ADMIN_EMAIL];
+      let submissions = JSON.parse(localStorage.getItem('fahem_submissions')) || [];
+      
+      let html = `<div style="margin-bottom: 8px; font-weight: bold; color: #0284c7;">📌 إيميلات الطلاب المسجلين (${allStudents.length}):</div>`;
+      allStudents.forEach((st, i) => {
+        html += `<div style="font-size: 11px; padding: 2px 0; color: #334155;">${i+1}. ${st}</div>`;
+      });
+
+      html += `<div style="margin: 10px 0 4px 0; font-weight: bold; color: #0284c7;">📄 الأوراق والدرجات المرفوعة:</div>`;
+      if(submissions.length === 0) {
+        html += `<div style="color:#64748b;">لا توجد أوراق مرفوعة حالياً</div>`;
+      } else {
+        submissions.forEach((sub, idx) => {
+          html += `
+            <div style="border-bottom: 1px solid #e2e8f0; padding: 6px 0; display: flex; justify-content: space-between; align-items: center;">
+              <div style="font-size: 11px; color: #1e293b; text-align: right; flex: 1;">
+                <b>#${idx+1}</b> | ${sub.email}<br>
+                <span style="color: #64748b;">الملف: ${sub.file}</span>
+              </div>
+              <div class="btn-action-group">
+                <button class="btn-custom-open" onclick="alert('اسم الملف المرفوع: ${sub.file}')">فتح 👁️</button>
+                <button class="btn-custom-delete" onclick="deleteSubmission(${idx})">حذف 🗑️</button>
+              </div>
+            </div>
+          `;
+        });
+      }
+      container.innerHTML = html;
+    }
+
+    function deleteSubmission(index) {
+      let submissions = JSON.parse(localStorage.getItem('fahem_submissions')) || [];
+      submissions.splice(index, 1);
+      localStorage.setItem('fahem_submissions', JSON.stringify(submissions));
+      renderAdminReports();
+      alert('تم حذف ورقة الحل من السجل بنجاح! 🗑');
+    }
+
+    function addVideo() {
+      const title = document.getElementById('new-video-title').value.trim();
+      let link = document.getElementById('new-video-link').value.trim();
+      const fileInput = document.getElementById('new-media-file');
+      
+      if(!title) { alert('الرجاء كتابة اسم الفيديو'); return; }
+
+      if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const fileData = e.target.result;
+          const isVideo = file.type.startsWith('video');
+          videosList.push({
+            id: Date.now(),
+            title: title,
+            type: isVideo ? 'video' : 'image',
+            content: fileData,
+            info: isVideo ? 'فيديو مرفوع محلياً' : 'صورة توضيحية مرفوعة'
+          });
+          localStorage.setItem('fahem_videos', JSON.stringify(videosList));
+          document.getElementById('new-video-title').value = '';
+          document.getElementById('new-video-link').value = '';
+          fileInput.value = '';
+          renderVideos();
+          alert('تم إضافة الفيديو بنجاح! 🎥');
+        };
+        reader.readAsDataURL(file);
+      } else if (link) {
+        videosList.push({
+          id: Date.now(),
+          title: title,
+          type: 'link',
+          content: link,
+          info: 'رابط تعليمي خارجي'
+        });
+        localStorage.setItem('fahem_videos', JSON.stringify(videosList));
+        document.getElementById('new-video-title').value = '';
+        document.getElementById('new-video-link').value = '';
+        renderVideos();
+        alert('تم إضافة رابط الفيديو بنجاح! 🔗');
+      } else {
+        alert('الرجاء إدخال رابط أو اختيار ملف فيديو/صورة.');
+      }
+    }
+
+    function deleteVideo(id) {
+      videosList = videosList.filter(v => v.id !== id);
+      localStorage.setItem('fahem_videos', JSON.stringify(videosList));
+      renderVideos();
+      alert('تم حذف العنصر 🗑');
+    }
+
+    function renderVideos() {
+      const container = document.getElementById('videos-container');
+      container.innerHTML = '';
+      const currentEmail = localStorage.getItem('fahem_email') || 'guest';
+      const isUserAdmin = currentEmail === ADMIN_EMAIL;
+
+      if(videosList.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد فيديوهات متاحة حالياً</p>';
+        return;
+      }
+
+      videosList.forEach(vid => {
+        let deleteBtn = isUserAdmin ? `<button class="btn-custom-delete" onclick="deleteVideo(${vid.id})">حذف 🗑️</button>` : '';
+        let mediaHtml = '';
+
+        if (vid.type === 'video') {
+          mediaHtml = `<div class="media-preview-container"><video src="${vid.content}" controls></video></div>`;
+        } else if (vid.type === 'image') {
+          mediaHtml = `<div class="media-preview-container"><img src="${vid.content}" alt="مرفق"></div>`;
+        } else {
+          mediaHtml = `<div style="margin-top: 8px;"><a class="btn-main" href="${vid.content}" target="_blank">مشاهدة الفيديو 📺</a></div>`;
+        }
+
+        container.innerHTML += `
+          <div class="card-item">
+            <div class="card-row">
+              <div class="card-info">
+                <div class="card-title">${vid.title}</div>
+                <div class="card-subtitle">${vid.info}</div>
+              </div>
+              <div class="btn-action-group">${deleteBtn}</div>
+            </div>
+            ${mediaHtml}
+          </div>
+        `;
+      });
+    }
+
+    function addPdfLink() {
+      const title = document.getElementById('new-pdf-title').value.trim();
+      let link = document.getElementById('new-pdf-link').value.trim();
+      
+      if(!title) { alert('الرجاء كتابة عنوان ملف الـ PDF'); return; }
+      if(!link) link = 'https://www.google.com';
+      
+      pdfsList.push({ id: Date.now(), title: title, link: link, info: 'مذكرة تعليمية PDF' });
+      localStorage.setItem('fahem_pdfs', JSON.stringify(pdfsList));
+      document.getElementById('new-pdf-title').value = '';
+      document.getElementById('new-pdf-link').value = '';
+      renderPdfs();
+      alert('تم إضافة ملف الـ PDF بنجاح! 📁');
+    }
+
+    function deletePdf(id) {
+      pdfsList = pdfsList.filter(p => p.id !== id);
+      localStorage.setItem('fahem_pdfs', JSON.stringify(pdfsList));
+      renderPdfs();
+      alert('تم حذف ملف الـ PDF 🗑');
+    }
+
+    function renderPdfs() {
+      const container = document.getElementById('pdfs-container');
+      container.innerHTML = '';
+      const currentEmail = localStorage.getItem('fahem_email') || 'guest';
+      const isUserAdmin = currentEmail === ADMIN_EMAIL;
+
+      if(pdfsList.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد ملفات PDF متاحة حالياً</p>';
+        return;
+      }
+
+      pdfsList.forEach(pdf => {
+        let deleteBtn = isUserAdmin ? `<button class="btn-custom-delete" onclick="deletePdf(${pdf.id})">حذف 🗑</button>` : '';
+        container.innerHTML += `
+          <div class="card-item">
+            <div class="card-row">
+              <div class="card-info">
+                <div class="card-title">${pdf.title}</div>
+                <div class="card-subtitle">${pdf.info}</div>
+              </div>
+              <div class="btn-action-group">
+                ${deleteBtn}
+                <a class="btn-custom-open" href="${pdf.link}" target="_blank">فتح 📄</a>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function updateStats() {
+      const examsCount = document.getElementById('set-exams-count').value.trim();
+      
+      let allStudents = JSON.parse(localStorage.getItem('fahem_all_students_records')) || [ADMIN_EMAIL];
+      let calculatedRank = "1";
+      if(allStudents.length > 1) {
+        let userIndex = allStudents.indexOf(localStorage.getItem('fahem_email'));
+        calculatedRank = userIndex !== -1 ? (userIndex + 1).toString() : "1";
+      }
+
+      if(examsCount) statsData.exams = examsCount;
+      statsData.rank = calculatedRank;
+
+      localStorage.setItem('fahem_stats', JSON.stringify(statsData));
+      renderStats();
+      alert('تم تحديث الإحصائيات وحساب الترتيب تلقائياً بنجاح! 📊');
+    }
+
+    function renderStats() {
+      document.getElementById('stat-exams-display').innerText = statsData.exams;
+      document.getElementById('stat-rank-display').innerText = statsData.rank;
+      
+      const rankInput = document.getElementById('set-rank-val');
+      if(rankInput) {
+        rankInput.value = statsData.rank + " (تلقائي)";
+      }
+    }
+
+    function resetAppData() {
+      if(confirm('هل أنت متأكد من تصفير وإعادة ضبط كافة البيانات؟')) {
+        localStorage.clear();
+        location.reload();
+      }
+    }
+  </script>
+</body>
+</html>
