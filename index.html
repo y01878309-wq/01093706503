@@ -402,7 +402,7 @@
     <div class="app-header">
       <div>
         <div class="greeting-text" id="welcome-user-name">👋 مرحباً، يوسف فرج</div>
-        <div class="date-text" id="current-date-box">الثلاثاء، أكتوبر 7</div>
+        <div class="date-text" id="current-date-box">الثلاثاء، أكتوبر 14</div>
       </div>
       <div class="admin-badge-top" id="role-badge">أدمن (يوسف فرج)</div>
     </div>
@@ -599,7 +599,6 @@
     let activeResetEmail = "";
     let generatedResetCode = "";
 
-    // خاصية الكتابة بالصوت باستخدام ميزة المتصفح (Speech Recognition)
     function startVoiceInput(targetId) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognition) {
@@ -793,7 +792,6 @@
       alert(checkbox.checked ? 'تم تفعيل الإشعارات بنجاح' : 'تم إيقاف الإشعارات');
     }
 
-    // توليد حقول الأسئلة للأدمن (مع دعم نوع السؤال: اختيار من متعدد أو مقالي)
     function generateQuestionFields() {
       const countVal = parseInt(document.getElementById('new-exam-count').value) || 1;
       const container = document.getElementById('dynamic-questions-builder');
@@ -1229,7 +1227,6 @@
       }
     }
 
-    // عرض الامتحان للطالب (دعم أسئلة الاختيار من متعدد والأسئلة المقالية)
     function startExam(id, title, questions) {
       currentExamId = id;
       document.getElementById('modal-title').innerText = title;
@@ -1281,7 +1278,7 @@
       const currentEmail = localStorage.getItem('fahem_email') || 'guest';
       let finishedExams = JSON.parse(localStorage.getItem('finished_exams_' + currentEmail)) || [];
       if(!finishedExams.includes(currentExamId)) {
-        finishedExams.push(currentExamId);
+        finishedExams.includes(currentExamId) || finishedExams.push(currentExamId);
         localStorage.setItem('finished_exams_' + currentEmail, JSON.stringify(finishedExams));
       }
 
