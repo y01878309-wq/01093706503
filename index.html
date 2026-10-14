@@ -276,7 +276,6 @@
       box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
     }
 
-    /* تعديل عرض الفيديو ليصبح أفقي بشكل واسع ومناسب للتلفون */
     .media-preview-container {
       width: 100%;
       aspect-ratio: 16 / 9;
@@ -359,7 +358,6 @@
       border: 1px solid #e2e8f0; text-align: right; box-shadow: 0 2px 6px rgba(0,0,0,0.02);
     }
 
-    /* تصميم جدول الترتيب واللوحة الشرفية */
     .leaderboard-item {
       display: flex;
       justify-content: space-between;
@@ -537,7 +535,6 @@
         </div>
       </div>
 
-      <!-- قسم لوحة الترتيب في الصفحة الرئيسية أيضاً -->
       <div class="section-header-title">🏆 لوحة شرف المتصدرين (تلقائي حسب الامتحانات)</div>
       <div class="card-item" id="home-leaderboard-box"></div>
     </div>
@@ -1100,7 +1097,6 @@
       userResultsMap[currentExamId] = examResultData;
       localStorage.setItem('exam_results_detail_' + currentEmail, JSON.stringify(userResultsMap));
 
-      // حساب مجموع درجات الطالب في كل الامتحانات لتحديث الترتيب العام
       updateStudentOverallScore(currentEmail);
 
       renderExams();
@@ -1138,7 +1134,6 @@
         });
       });
 
-      // الترتيب التلقائي من الأعلى للأقل (مثلا 100% الأول، 90% الثاني وهكذا)
       leaderboardArray.sort((a, b) => b.percentage - a.percentage || b.score - a.score);
       return leaderboardArray;
     }
@@ -1146,7 +1141,6 @@
     function renderLeaderboards() {
       let lbData = calculateLeaderboardData();
       
-      // تحديث رقم الترتيب الخاص بالطالب الحالي في الإحصائيات العلوية
       const currentEmail = localStorage.getItem('fahem_email') || ADMIN_EMAIL;
       let myRankIdx = lbData.findIndex(item => item.email === currentEmail);
       let myActualRank = myRankIdx !== -1 ? (myRankIdx + 1) : 1;
@@ -1288,7 +1282,6 @@
         };
         reader.readAsDataURL(file);
       } else if (link) {
-        // تحويل روابط يوتيوب العادية إلى روابط مضمنة (Embed) لتظهر بالعرض المناسب
         let embedLink = link;
         if(link.includes('watch?v=')) {
           embedLink = link.replace('watch?v=', 'embed/');
