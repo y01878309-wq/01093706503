@@ -200,10 +200,7 @@
       text-align: center;
       box-shadow: 0 4px 12px rgba(0,0,0,0.03);
       border: 1px solid #f1f5f9;
-      cursor: pointer;
-      transition: transform 0.2s;
     }
-    .stat-card:active { transform: scale(0.98); }
     .stat-icon { font-size: 24px; margin-bottom: 8px; }
     .stat-value { font-size: 18px; font-weight: bold; color: #0f172a; }
     .stat-label { font-size: 12px; color: #64748b; margin-top: 4px; }
@@ -257,7 +254,6 @@
     .card-info { text-align: right; flex: 1; }
     .card-title { font-size: 14px; font-weight: bold; color: #0f172a; }
     .card-subtitle { font-size: 12px; color: #64748b; margin-top: 3px; }
-    
     .btn-main {
       background: #0284c7; color: white; border: none; padding: 8px 14px;
       border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; text-align: center;
@@ -280,9 +276,8 @@
       box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
     }
 
-    /* تعديلات وتجاوب مشغل الفيديو والعرض العرضي Landscape */
-    .video-responsive-wrapper {
-      position: relative;
+    /* تعديل عرض الفيديو ليصبح أفقي بشكل واسع ومناسب للتلفون */
+    .media-preview-container {
       width: 100%;
       aspect-ratio: 16 / 9;
       background: #000;
@@ -290,68 +285,12 @@
       overflow: hidden;
       margin-top: 8px;
     }
-    .video-responsive-wrapper iframe,
-    .video-responsive-wrapper video {
+    .media-preview-container img, .media-preview-container video, .media-preview-container iframe {
       width: 100%;
       height: 100%;
       object-fit: contain;
+      border-radius: 10px;
       border: none;
-    }
-
-    .media-preview-container img, .media-preview-container video {
-      width: 100%;
-      max-height: 220px;
-      object-fit: contain;
-      background: #000;
-      border-radius: 8px;
-      margin-top: 8px;
-    }
-
-    /* تنسيق لوحة المتصدرين */
-    .leaderboard-item {
-      background: #ffffff;
-      border-radius: 14px;
-      padding: 12px 15px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border: 1px solid #f1f5f9;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-    }
-    .leaderboard-rank {
-      font-weight: bold;
-      font-size: 14px;
-      min-width: 32px;
-      text-align: center;
-      color: #4f46e5;
-    }
-    .leaderboard-user-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex: 1;
-      text-align: right;
-    }
-    .leaderboard-avatar {
-      width: 38px;
-      height: 38px;
-      background: #e0f2fe;
-      color: #0284c7;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 15px;
-    }
-    .leaderboard-score {
-      font-weight: bold;
-      font-size: 13px;
-      color: #059669;
-      background: #ecfdf5;
-      padding: 4px 10px;
-      border-radius: 20px;
     }
 
     .settings-profile-box {
@@ -419,6 +358,28 @@
       background: white; border-radius: 14px; padding: 15px; margin-bottom: 12px;
       border: 1px solid #e2e8f0; text-align: right; box-shadow: 0 2px 6px rgba(0,0,0,0.02);
     }
+
+    /* تصميم جدول الترتيب واللوحة الشرفية */
+    .leaderboard-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      background: #f8fafc;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      border: 1px solid #e2e8f0;
+    }
+    .leaderboard-rank {
+      width: 28px; height: 28px;
+      background: #38bdf8; color: white;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: bold; font-size: 12px;
+    }
+    .rank-1 { background: #f59e0b !important; }
+    .rank-2 { background: #94a3b8 !important; }
+    .rank-3 { background: #b45309 !important; }
   </style>
 </head>
 <body>
@@ -494,7 +455,7 @@
     <div id="admin-panel-box">
       <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 10px;">⚙ لوحة تحكم الأدمن (يوسف فرج)</div>
       
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد:</div>
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد (مع الوقت الكلي ووقت لكل سؤال):</div>
       <div class="input-wrapper">
         <input type="text" id="new-exam-title" class="auth-input" placeholder="عنوان الامتحان..." style="background: white; color: #1e293b; margin-bottom: 0;">
         <button type="button" class="voice-btn" onclick="startVoiceInput('new-exam-title')">🎤</button>
@@ -506,14 +467,10 @@
       </div>
       
       <div id="dynamic-questions-builder" style="margin-bottom: 10px;"></div>
+
       <button class="btn-main" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة الامتحان وتخزينه 📝</button>
 
-      <div style="background: #f1f5f9; padding: 10px; border-radius: 8px; margin-bottom: 10px;">
-        <div style="font-size: 11px; font-weight: bold; color: #334155; margin-bottom: 6px;">📊 سجل إيميلات، درجات، وأوراق الطلاب:</div>
-        <div id="admin-students-reports" style="max-height: 180px; overflow-y: auto; font-size: 11px; background: white; padding: 8px; border-radius: 6px;"></div>
-      </div>
-
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة فيديو المنصة:</div>
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة فيديو الشرح للمنصة (بالعرض):</div>
       <div class="input-wrapper">
         <input type="text" id="new-video-title" class="auth-input" placeholder="اكتب اسم الفيديو هنا..." style="background: white; color: #1e293b; margin-bottom: 0;">
         <button type="button" class="voice-btn" onclick="startVoiceInput('new-video-title')">🎤</button>
@@ -532,640 +489,956 @@
       <input type="text" id="new-pdf-link" class="auth-input" placeholder="رابط ملف الـ PDF (https://...)" style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px;">
       <button class="btn-main" onclick="addPdfLink()" style="width: 100%; margin-bottom: 10px; background: #7c3aed;">إضافة ملف الـ PDF 📁</button>
 
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">التحكم في الإحصائيات:</div>
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">التحكم في الإحصائيات (مع الترتيب التلقائي):</div>
       <div class="admin-control-row">
         <input type="number" id="set-exams-count" class="auth-input" placeholder="عدد الامتحانات" style="background: white; color: #1e293b; margin-bottom: 0; padding-left: 12px;">
         <input type="text" id="set-rank-val" class="auth-input" placeholder="الترتيب (تلقائي)" readonly style="background: #f1f5f9; color: #1e293b; margin-bottom: 0; padding-left: 12px;">
       </div>
-      <button class="btn-main" onclick="updateStats()" style="width: 100%; margin-top: 8px; background: #059669;">تحديث الإحصائيات 📊</button>
+      <button class="btn-main" onclick="updateStats()" style="width: 100%; margin-top: 8px; background: #059669;">تحديث الإحصائيات والترتيب 📊</button>
     </div>
 
-    <!-- القسم الرئيسي -->
     <div id="sec-home" class="content-section active-section">
       <div class="stats-grid">
-        <div class="stat-card" onclick="switchSection('videos')">
-          <div class="stat-icon">🎥</div>
-          <div class="stat-value" id="stat-videos-count">0</div>
-          <div class="stat-label">الفيديوهات</div>
-        </div>
-        <div class="stat-card" onclick="switchSection('settings')">
+        <div class="stat-card">
           <div class="stat-icon">📅</div>
           <div class="stat-value">100%</div>
           <div class="stat-label">الحضور</div>
         </div>
-        <div class="stat-card" onclick="switchSection('leaderboard')">
-          <div class="stat-icon">📊</div>
-          <div class="stat-value" id="stat-rank-disp">الأول</div>
-          <div class="stat-label">الترتيب (تلقائي)</div>
+        <div class="stat-card">
+          <div class="stat-icon">🎥</div>
+          <div class="stat-value" id="stat-videos-count">1</div>
+          <div class="stat-label">الفيديوهات</div>
         </div>
-        <div class="stat-card" onclick="switchSection('exams')">
+        <div class="stat-card">
           <div class="stat-icon">❓</div>
-          <div class="stat-value" id="stat-exams-count-disp">2</div>
+          <div class="stat-value" id="stat-exams-display">2</div>
           <div class="stat-label">الامتحانات</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📊</div>
+          <div class="stat-value" id="stat-rank-display">1</div>
+          <div class="stat-label">الترتيب (تلقائي)</div>
         </div>
       </div>
 
       <div class="section-header-title">إجراءات سريعة</div>
       <div class="action-grid">
-        <div class="action-card" onclick="switchSection('videos')">
-          <div class="stat-icon">🎥</div>
-          <div class="stat-label">الفيديوهات</div>
-        </div>
-        <div class="action-card" onclick="switchSection('leaderboard')">
-          <div class="stat-icon">🏆</div>
-          <div class="stat-label">المتصدرين</div>
-        </div>
-        <div class="action-card" onclick="switchSection('exams')">
+        <div class="action-card" onclick="switchTab('sec-exams', 'nav-exams')">
           <div class="stat-icon">❓</div>
           <div class="stat-label">الامتحانات</div>
         </div>
+        <div class="action-card" onclick="switchTab('sec-videos', 'nav-videos')">
+          <div class="stat-icon">🎥</div>
+          <div class="stat-label">الفيديوهات</div>
+        </div>
+        <div class="action-card" onclick="switchTab('sec-leaderboard', 'nav-leaderboard')">
+          <div class="stat-icon">🏆</div>
+          <div class="stat-label">لوحة الترتيب</div>
+        </div>
       </div>
-      
-      <div class="section-header-title">أحدث الفيديوهات التعليمية</div>
-      <div id="home-latest-videos"></div>
+
+      <!-- قسم لوحة الترتيب في الصفحة الرئيسية أيضاً -->
+      <div class="section-header-title">🏆 لوحة شرف المتصدرين (تلقائي حسب الامتحانات)</div>
+      <div class="card-item" id="home-leaderboard-box"></div>
     </div>
 
-    <!-- قسم الامتحانات -->
     <div id="sec-exams" class="content-section">
-      <div class="section-header-title">امتحانات المنصة</div>
-      <div id="exams-list-container"></div>
+      <div class="section-header-title">الامتحانات المتاحة</div>
+      <div id="exams-container"></div>
     </div>
 
-    <!-- قسم الفيديوهات (بدل الواجبات) -->
     <div id="sec-videos" class="content-section">
-      <div class="section-header-title">فيديوهات الشرح (وضع العرض Landscape)</div>
-      <div id="videos-list-container"></div>
+      <div class="section-header-title">فيديوهات الشرح التعليمية (بالعرض)</div>
+      <div id="videos-container"></div>
     </div>
 
-    <!-- قسم لوحة المتصدرين (Leaderboard) -->
     <div id="sec-leaderboard" class="content-section">
-      <div class="section-header-title">🏆 لوحة المتصدرين (ترتيب تلقائي حسب الامتحانات)</div>
-      <div id="leaderboard-container"></div>
+      <div class="section-header-title">🏆 ترتيب الطلاب الأوائل على المنصة</div>
+      <div class="card-item" id="full-leaderboard-box"></div>
     </div>
 
-    <!-- قسم ملفات PDF -->
-    <div id="sec-pdf" class="content-section">
-      <div class="section-header-title">ملفات الـ PDF والملخصات</div>
-      <div id="pdf-list-container"></div>
+    <div id="sec-pdfs" class="content-section">
+      <div class="section-header-title">ملفات الـ PDF والمذكرات التعليمية</div>
+      <div id="pdfs-container"></div>
     </div>
 
-    <!-- قسم الإعدادات -->
     <div id="sec-settings" class="content-section">
       <div class="settings-profile-box">
-        <div class="profile-avatar" id="settings-avatar-letter">ي</div>
+        <div class="profile-avatar">YF</div>
         <div>
-          <div style="font-size: 16px; font-weight: bold;" id="settings-user-name">يوسف فرج</div>
-          <div style="font-size: 12px; opacity: 0.8;" id="settings-user-email">farag@fahim.edu</div>
+          <div style="font-size: 16px; font-weight: bold;" id="profile-name-display">يوسف فرج</div>
+          <div style="font-size: 12px; opacity: 0.8;" id="profile-email-display">y01878309@gmail.com</div>
         </div>
       </div>
 
-      <div class="settings-group-title">حسابي وتفضيلاتي</div>
+      <div class="settings-group-title">إعدادات الإشعارات والتنبيهات</div>
       <div class="settings-card-box">
-        <div class="settings-row" onclick="alert('منصة فاهم التعليمية - إعدادات الحساب')">
-          <span>تعديل الملف الشخصي</span>
-          <span>👤</span>
-        </div>
-        <div class="settings-row" onclick="alert('الإشعارات مفعلة')">
-          <span>إشعارات المنصة</span>
-          <span>🔔</span>
+        <div class="settings-row">
+          <span>🔔 تفعيل/إيقاف الإشعارات</span>
+          <input type="checkbox" id="user-notification-toggle" onchange="toggleNotifications(this)" style="width: 20px; height: 20px; cursor: pointer;">
         </div>
       </div>
 
-      <div class="logout-row" onclick="customLogout()">
-        تسجيل الخروج 🚪
+      <div class="settings-group-title">تغيير كلمة المرور الخاصة بك</div>
+      <div class="settings-card-box" style="padding: 15px;">
+        <input type="password" id="change-pass-input" class="auth-input" placeholder="كلمة المرور الجديدة" style="background: #f8fafc; color: #1e293b; margin-bottom: 8px; padding-left: 12px;">
+        <button class="btn-main" onclick="updateUserPassword()" style="width: 100%;">حفظ كلمة المرور الجديدة 🔐</button>
+      </div>
+
+      <div class="settings-group-title">تحميل التطبيق والروابط</div>
+      <div class="settings-card-box">
+        <div class="settings-row" onclick="downloadApp(event)"><span>📦 تحميل تطبيق المنصة (APK)</span> <span>⬇️</span></div>
+        <div class="settings-row" onclick="openTelegramChannel()"><span>✈️ قناة التليجرام الرسمية</span> <span>‹</span></div>
+        <div class="settings-row" onclick="window.open('https://www.youtube.com/@youssef-po1xd', '_blank')"><span>📺 قناة اليوتيوب التعليمية</span> <span>‹</span></div>
+      </div>
+
+      <div class="settings-group-title">الإدارة والتحكم</div>
+      <div class="settings-card-box">
+        <div class="settings-row" onclick="resetAppData()"><span>🔄 إعادة ضبط وتصفير البيانات</span> <span>‹</span></div>
+        <div class="settings-row" onclick="alert('منصة فاهم التعليمية - إصدار الأدمن الخاص بيوسف فرج')"><span>ℹ حول التطبيق</span> <span>‹</span></div>
+      </div>
+
+      <div class="logout-row" onclick="logout()">
+        🚪 تسجيل الخروج
       </div>
     </div>
-
   </div>
 
-  <!-- شريط التنقل السفلي (مع استبدال الواجبات بالفيديوهات) -->
-  <div class="bottom-nav" id="bottom-navigation-bar" style="display: none;">
-    <button class="nav-item active" onclick="switchSection('home')" id="nav-home">
-      <span>🏠</span> الرئيسية
-    </button>
-    <button class="nav-item" onclick="switchSection('exams')" id="nav-exams">
-      <span>❓</span> الامتحانات
-    </button>
-    <button class="nav-item" onclick="switchSection('videos')" id="nav-videos">
-      <span>🎥</span> الفيديوهات
-    </button>
-    <button class="nav-item" onclick="switchSection('leaderboard')" id="nav-leaderboard">
-      <span>🏆</span> المتصدرين
-    </button>
-    <button class="nav-item" onclick="switchSection('pdf')" id="nav-pdf">
-      <span>📁</span> ملفات PDF
-    </button>
-    <button class="nav-item" onclick="switchSection('settings')" id="nav-settings">
-      <span>⚙️</span> الإعدادات
-    </button>
+  <div class="bottom-nav" id="bottom-navigation" style="display: none;">
+    <button class="nav-item active" id="nav-home" onclick="switchTab('sec-home', 'nav-home')"><span>🏠</span> الرئيسية</button>
+    <button class="nav-item" id="nav-exams" onclick="switchTab('sec-exams', 'nav-exams')"><span>❓</span> الامتحانات</button>
+    <button class="nav-item" id="nav-videos" onclick="switchTab('sec-videos', 'nav-videos')"><span>🎥</span> الفيديوهات</button>
+    <button class="nav-item" id="nav-leaderboard" onclick="switchTab('sec-leaderboard', 'nav-leaderboard')"><span>🏆</span> الترتيب</button>
+    <button class="nav-item" id="nav-pdfs" onclick="switchTab('sec-pdfs', 'nav-pdfs')"><span>📁</span> ملفات PDF</button>
+    <button class="nav-item" id="nav-settings" onclick="switchTab('sec-settings', 'nav-settings')"><span>⚙️</span> الإعدادات</button>
   </div>
 
-  <!-- نافذة الامتحان المنبثقة -->
   <div id="exam-modal">
-    <div class="modal-box" id="exam-modal-content"></div>
+    <div class="modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h3 id="modal-title" style="color: #0284c7; font-size: 16px;">عنوان الامتحان</h3>
+        <div id="exam-global-timer" style="background: #fee2e2; color: #ef4444; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; display: none;"></div>
+      </div>
+      <div id="modal-questions-container" style="margin-bottom: 15px;"></div>
+      <button class="btn-main" id="submit-exam-btn" onclick="submitExam()" style="width: 100%; padding: 10px;">تسليم الإجابات ✅</button>
+      <button class="btn-main" onclick="closeExam()" style="background: #ef4444; width: 100%; margin-top: 8px;">إغلاق ✕</button>
+    </div>
   </div>
 
   <script>
-    let currentUser = null;
-    let currentExamIndex = null;
-    let examTimerInterval = null;
-    let timeLeftSeconds = 0;
-    let userAnswersTracker = {};
+    let activeQuestions = [];
+    let currentExamId = null;
+    let globalExamTimerInterval = null;
+    let questionTimersIntervals = [];
 
-    let appData = {
-      exams: [
-        { title: "امتحان الفيزياء التجريبي", totalTime: 10, questions: [{q: "ما هو وحد قياس القوة؟", options: ["نيوتن", "جول", "واط"], correct: 0}] }
-      ],
-      videos: [
-        { title: "شرح درس الباب الأول فيزياء", link: "https://www.youtube.com/embed/dQw4w9WgXcQ", mediaData: null }
-      ],
-      pdf: [
-        { title: "ملخص قوانين المنهج كامل", link: "#" }
-      ],
-      students: [
-        { email: "farag17657@gmail.com", score: 100, percentage: 100 },
-        { email: "y01878309@gmail.com", score: 90, percentage: 90 },
-        { email: "Yousefboooda98@gmail.com", score: 85, percentage: 85 }
-      ]
-    };
+    const ADMIN_EMAIL = "y01878309@gmail.com";
+    const DEFAULT_PASS = "goks123";
+
+    let activeResetEmail = "";
+    let generatedResetCode = "";
+
+    function startVoiceInput(targetId) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert('متصفحك لا يدعم خاصية الكتابة بالصوت، يرجى استخدام متصفح حديث مثل كروم.');
+        return;
+      }
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'ar-EG';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      alert('🎤 تفضل بالتحدث الآن...');
+      recognition.start();
+
+      recognition.onresult = function(event) {
+        const speechResult = event.results[0][0].transcript;
+        const inputField = document.getElementById(targetId);
+        if (inputField) {
+          inputField.value = speechResult;
+        }
+      };
+
+      recognition.onerror = function(event) {
+        alert('حدث خطأ أثناء التقاط الصوت، حاول مرة أخرى.');
+      };
+    }
+
+    let examsList = JSON.parse(localStorage.getItem('fahem_exams')) || [
+      { id: 1, title: 'امتحان الفيزياء التجريبي (الباب الأول)', totalTime: 0, questions: [
+        { type: 'mcq', q: 'ما وحدة قياس شدة التيار الكهربي؟', o1: 'الأمبير', o2: 'الفولت', o3: 'الأوم', o4: 'الوات', ans: 'الأمبير', timeLimit: 0 },
+        { type: 'essay', q: 'اشرح باختصار قانون أوم للدائرة الكهربية.', modelAns: 'قانون أوم يربط بين الجهد التيار والمقاومة.', timeLimit: 0 }
+      ], info: 'عدد الأسئلة: 2 | متاح الآن' }
+    ];
+
+    let videosList = JSON.parse(localStorage.getItem('fahem_videos')) || [
+      { id: 1, title: 'محاضرة قوانين كيرشوف', link: 'https://www.youtube.com/embed/dQw4w9WgXcQ', type: 'link', info: 'شرح تفصيلي بالعرض' }
+    ];
+
+    let pdfsList = JSON.parse(localStorage.getItem('fahem_pdfs')) || [
+      { id: 1, title: 'ملخص قوانين الفيزياء كاملة', link: 'https://www.google.com', info: 'صيغة PDF - جاهز للفتح والتحميل' }
+    ];
+
+    let statsData = JSON.parse(localStorage.getItem('fahem_stats')) || { exams: '2', rank: '1' };
 
     window.onload = function() {
-      let saved = localStorage.getItem('fahim_app_data_farag');
-      if(saved) {
-        try { appData = JSON.parse(saved); } catch(e){}
+      const savedEmail = localStorage.getItem('fahem_email');
+      if (savedEmail) {
+        setupSession(savedEmail);
       }
       generateQuestionFields();
-      renderEverything();
+      renderExams();
+      renderVideos();
+      renderPdfs();
+      renderStats();
+      renderLeaderboards();
     };
-
-    function saveDataToStorage() {
-      localStorage.setItem('fahim_app_data_farag', JSON.stringify(appData));
-    }
 
     function switchAuthPane(paneId) {
       document.querySelectorAll('.auth-screen-pane').forEach(p => p.classList.remove('active'));
       document.getElementById(paneId).classList.add('active');
     }
 
-    function downloadApp(e) {
-      e.preventDefault();
-      alert("جاري تجهيز وبدء تحميل تطبيق المنصة (APK) لجهازك الأندرويد...");
-    }
-
-    function startVoiceInput(inputId) {
-      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-        alert("متصفحك لا يدعم الإدخال الصوتي.");
-        return;
+    function switchTab(sectionId, navId) {
+      document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-section'));
+      document.getElementById(sectionId).classList.add('active-section');
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById(navId).classList.add('active');
+      if(sectionId === 'sec-leaderboard') {
+        renderLeaderboards();
       }
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      const recognition = new SpeechRecognition();
-      recognition.lang = 'ar-EG';
-      recognition.onresult = function(event) {
-        document.getElementById(inputId).value = event.results[0][0].transcript;
-      };
-      recognition.start();
     }
 
     function customLogin() {
-      let email = document.getElementById('login-email').value.trim();
-      let pass = document.getElementById('user-pass').value.trim();
-      if(!email) { alert("من فضلك أدخل البريد الإلكتروني"); return; }
-      
-      currentUser = { email: email, name: email.split('@')[0] };
-      if(email === "farag17657@gmail.com" || email.includes("farag")) {
-        currentUser.isAdmin = true;
-      } else {
-        currentUser.isAdmin = false;
-      }
-      
-      document.getElementById('auth-screen-container').style.display = 'none';
-      document.getElementById('dashboard-view').style.display = 'block';
-      document.getElementById('bottom-navigation-bar').style.display = 'flex';
-      
-      document.getElementById('welcome-user-name').innerText = "👋 مرحباً، " + currentUser.name;
-      document.getElementById('settings-user-name').innerText = currentUser.name;
-      document.getElementById('settings-user-email').innerText = currentUser.email;
-      document.getElementById('settings-avatar-letter').innerText = currentUser.name.charAt(0).toUpperCase();
+      const emailInput = document.getElementById('login-email').value.trim();
+      const pass = document.getElementById('user-pass').value.trim();
 
-      if(currentUser.isAdmin) {
-        document.getElementById('role-badge').innerText = "أدمن (يوسف فرج)";
-        document.getElementById('admin-panel-box').style.display = 'block';
-      } else {
-        document.getElementById('role-badge').innerText = "طالب";
-        document.getElementById('admin-panel-box').style.display = 'none';
+      if (!emailInput) {
+        alert('الرجاء إدخال البريد الإلكتروني');
+        return;
       }
 
-      // إضافة الطالب لسجل الطلاب إذا لم يكن موجوداً
-      if(!appData.students.some(s => s.email === currentUser.email)) {
-        appData.students.push({ email: currentUser.email, score: 70, percentage: 70 });
-        saveDataToStorage();
+      let userStoredPass = localStorage.getItem('pass_' + emailInput) || DEFAULT_PASS;
+
+      if(pass !== userStoredPass) {
+        alert('كلمة المرور غير صحيحة! (كلمة المرور الافتراضية هي: goks123)');
+        return;
+      }
+      
+      localStorage.setItem('fahem_email', emailInput);
+      
+      let allStudents = JSON.parse(localStorage.getItem('fahem_all_students_records')) || [];
+      if(!allStudents.includes(emailInput)) {
+        allStudents.push(emailInput);
+        localStorage.setItem('fahem_all_students_records', JSON.stringify(allStudents));
       }
 
-      renderEverything();
-    }
-
-    function customLogout() {
-      currentUser = null;
-      document.getElementById('auth-screen-container').style.display = 'flex';
-      document.getElementById('dashboard-view').style.display = 'none';
-      document.getElementById('bottom-navigation-bar').style.display = 'none';
-      switchAuthPane('pane-login');
+      setupSession(emailInput);
     }
 
     function sendResetCode() {
-      let email = document.getElementById('forgot-email').value.trim();
-      if(!email) { alert("أدخل البريد الإلكتروني أولاً"); return; }
-      alert("تم إرسال رمز التحقق (4 أرقام) إلى بريدك الإلكتروني.");
+      const email = document.getElementById('forgot-email').value.trim();
+      if(!email) {
+        alert('الرجاء إدخال البريد الإلكتروني');
+        return;
+      }
+      activeResetEmail = email;
+      generatedResetCode = Math.floor(1000 + Math.random() * 9000).toString();
+      
+      alert(`تم إرسال رمز التحقق إلى بريدك الإلكتروني (${email}).\nكود التحقق الخاص بك هو: [ ${generatedResetCode} ]`);
       switchAuthPane('pane-reset');
     }
 
     function verifyAndResetPassword() {
-      let code = document.getElementById('verification-code-input').value.trim();
-      let p1 = document.getElementById('new-password-input').value.trim();
-      let p2 = document.getElementById('confirm-password-input').value.trim();
-      if(code.length < 4) { alert("أدخل رمز تحقق صحيح"); return; }
-      if(!p1 || p1 !== p2) { alert("كلمتا المرور غير متطابقتين"); return; }
-      alert("تم تغيير كلمة المرور بنجاح! سجل دخولك الآن.");
+      const code = document.getElementById('verification-code-input').value.trim();
+      const newPass = document.getElementById('new-password-input').value;
+      const confirmPass = document.getElementById('confirm-password-input').value;
+
+      if(code !== generatedResetCode) {
+        alert('رمز التحقق غير صحيح!');
+        return;
+      }
+      if(!newPass || newPass !== confirmPass) {
+        alert('كلمتا المرور غير متطابقتين أو فارغتين!');
+        return;
+      }
+
+      localStorage.setItem('pass_' + activeResetEmail, newPass);
+      alert('تم تغيير كلمة المرور بنجاح! يمكنك تسجيل الدخول الآن بكلمة المرور الجديدة.');
       switchAuthPane('pane-login');
     }
 
-    function switchSection(sectionId) {
-      document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-section'));
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    function updateUserPassword() {
+      const newPass = document.getElementById('change-pass-input').value.trim();
+      const currentEmail = localStorage.getItem('fahem_email');
+      if(!newPass) {
+        alert('الرجاء إدخال كلمة المرور الجديدة');
+        return;
+      }
+      localStorage.setItem('pass_' + currentEmail, newPass);
+      alert('تم تحديث كلمة المرور بنجاح!');
+      document.getElementById('change-pass-input').value = '';
+    }
 
-      let target = document.getElementById('sec-' + sectionId);
-      if(target) target.classList.add('active-section');
+    function setupSession(email) {
+      document.getElementById('auth-screen-container').style.display = 'none';
+      document.getElementById('dashboard-view').style.display = 'block';
+      document.getElementById('bottom-navigation').style.display = 'flex';
+
+      document.getElementById('profile-email-display').innerText = email;
+      document.getElementById('welcome-user-name').innerText = `👋 مرحباً، ${email === ADMIN_EMAIL ? 'يوسف فرج' : email}`;
+      document.getElementById('top-bar-user-status').innerText = email === ADMIN_EMAIL ? 'أدمن (يوسف فرج)' : email;
       
-      let navBtn = document.getElementById('nav-' + sectionId);
-      if(navBtn) navBtn.classList.add('active');
+      const notifState = localStorage.getItem('notif_' + email);
+      document.getElementById('user-notification-toggle').checked = notifState === null ? true : notifState === 'true';
 
-      window.scrollTo(0, 0);
+      if(email === ADMIN_EMAIL) {
+        document.getElementById('admin-panel-box').style.display = 'block';
+        document.getElementById('role-badge').style.display = 'block';
+      } else {
+        document.getElementById('admin-panel-box').style.display = 'none';
+        document.getElementById('role-badge').style.display = 'none';
+      }
+      renderExams();
+      renderVideos();
+      renderStats();
+      renderLeaderboards();
+    }
+
+    function logout() {
+      localStorage.removeItem('fahem_email');
+      location.reload();
+    }
+
+    function downloadApp(e) {
+      if(e) e.preventDefault();
+      alert('تم بدء تحميل تطبيق المنصة (APK) بنجاح على هاتفك! 📦');
+    }
+
+    function openTelegramChannel() {
+      const telegramUrl = 'https://t.me/farag1farag1';
+      const newWindow = window.open(telegramUrl, '_blank', 'noopener,noreferrer');
+      if (!newWindow) {
+        window.location.href = telegramUrl;
+      }
+    }
+
+    function toggleNotifications(checkbox) {
+      const currentEmail = localStorage.getItem('fahem_email');
+      localStorage.setItem('notif_' + currentEmail, checkbox.checked);
+      alert(checkbox.checked ? 'تم تفعيل الإشعارات بنجاح' : 'تم إيقاف الإشعارات');
     }
 
     function generateQuestionFields() {
-      let count = parseInt(document.getElementById('new-exam-count').value) || 1;
-      let container = document.getElementById('dynamic-questions-builder');
-      container.innerHTML = "";
-      for(let i=0; i<count; i++) {
+      const countVal = parseInt(document.getElementById('new-exam-count').value) || 1;
+      const container = document.getElementById('dynamic-questions-builder');
+      container.innerHTML = '';
+
+      for(let i=1; i<=countVal; i++) {
         container.innerHTML += `
-          <div style="background: white; padding: 8px; border-radius: 6px; margin-bottom: 6px; border: 1px solid #cbd5e1;">
-            <div style="font-size: 10px; font-weight: bold; color: #0284c7; margin-bottom: 2px;">السؤال ${i+1}:</div>
-            <input type="text" id="q-text-${i}" class="auth-input" placeholder="نص السؤال..." style="background: #f8fafc; color: #1e293b; margin-bottom: 4px; padding: 6px; font-size: 11px;">
-            <input type="text" id="q-opt0-${i}" class="auth-input" placeholder="الخيار الأول (الصحيح)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px; padding: 6px; font-size: 11px;">
-            <input type="text" id="q-opt1-${i}" class="auth-input" placeholder="الخيار الثاني" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px; padding: 6px; font-size: 11px;">
-            <input type="text" id="q-opt2-${i}" class="auth-input" placeholder="الخيار الثالث (اختياري)" style="background: #f8fafc; color: #1e293b; margin-bottom: 0; padding: 6px; font-size: 11px;">
+          <div style="background: #ffffff; padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #cbd5e1;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-size: 11px; font-weight: bold; color: #0284c7;">السؤال رقم (${i})</span>
+              <div style="display: flex; gap: 4px;">
+                <input type="number" id="q_time_${i}" class="auth-input" placeholder="وقت السؤال بالثواني (فارغ = مفتوح)" style="width: 140px; padding: 4px; background: #f8fafc; color: #1e293b; font-size: 10px; margin-bottom: 0;">
+                <select id="q_type_${i}" class="auth-input" style="width: 110px; padding: 4px; background: #f8fafc; color: #1e293b; font-size: 11px; margin-bottom: 0;" onchange="toggleQuestionTypeFields(${i})">
+                  <option value="mcq">اختر من متعدد</option>
+                  <option value="essay">مقالي</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="input-wrapper" style="margin-top: 4px;">
+              <input type="text" id="q_text_${i}" class="auth-input" placeholder="اكتب نص السؤال هنا..." style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
+              <button type="button" class="voice-btn" onclick="startVoiceInput('q_text_${i}')">🎤</button>
+            </div>
+
+            <div id="mcq_box_${i}">
+              <div class="input-wrapper"><input type="text" id="q_opt1_${i}" class="auth-input" placeholder="الاختيار الأول (أ)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;"><button type="button" class="voice-btn" onclick="startVoiceInput('q_opt1_${i}')">🎤</button></div>
+              <div class="input-wrapper"><input type="text" id="q_opt2_${i}" class="auth-input" placeholder="الاختيار الثاني (ب)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;"><button type="button" class="voice-btn" onclick="startVoiceInput('q_opt2_${i}')">🎤</button></div>
+              <div class="input-wrapper"><input type="text" id="q_opt3_${i}" class="auth-input" placeholder="الاختيار الثالث (جـ)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;"><button type="button" class="voice-btn" onclick="startVoiceInput('q_opt3_${i}')">🎤</button></div>
+              <div class="input-wrapper"><input type="text" id="q_opt4_${i}" class="auth-input" placeholder="الاختيار الرابع (د)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;"><button type="button" class="voice-btn" onclick="startVoiceInput('q_opt4_${i}')">🎤</button></div>
+              <div class="input-wrapper"><input type="text" id="q_ans_${i}" class="auth-input" placeholder="الإجابة الصحيحة بالضبط..." style="background: #f0fdf4; border-color: #86efac; color: #166534; margin-bottom: 0;"><button type="button" class="voice-btn" onclick="startVoiceInput('q_ans_${i}')">🎤</button></div>
+            </div>
+            <div id="essay_box_${i}" style="display: none; margin-top: 4px;">
+              <textarea id="q_model_ans_${i}" class="auth-input" placeholder="الإجابة النموذجية للسؤال المقالي..." style="background: #f0fdf4; color: #166534; height: 50px; margin-bottom: 0;"></textarea>
+            </div>
           </div>
         `;
+      }
+    }
+
+    function toggleQuestionTypeFields(i) {
+      const typeVal = document.getElementById(`q_type_${i}`).value;
+      const mcqBox = document.getElementById(`mcq_box_${i}`);
+      const essayBox = document.getElementById(`essay_box_${i}`);
+      if(typeVal === 'essay') {
+        mcqBox.style.display = 'none';
+        essayBox.style.display = 'block';
+      } else {
+        mcqBox.style.display = 'block';
+        essayBox.style.display = 'none';
       }
     }
 
     function addExam() {
-      let title = document.getElementById('new-exam-title').value.trim();
-      let totalTime = parseInt(document.getElementById('new-exam-total-time').value) || 10;
-      let count = parseInt(document.getElementById('new-exam-count').value) || 1;
-      if(!title) { alert("أدخل عنوان الامتحان"); return; }
-
-      let questions = [];
-      for(let i=0; i<count; i++) {
-        let qText = document.getElementById(`q-text-${i}`).value.trim();
-        let opt0 = document.getElementById(`q-opt0-${i}`).value.trim();
-        let opt1 = document.getElementById(`q-opt1-${i}`).value.trim();
-        let opt2 = document.getElementById(`q-opt2-${i}`).value.trim();
-        if(!qText || !opt0) { alert(`يرجى إكمال بيانات السؤال ${i+1}`); return; }
-        let opts = [opt0, opt1];
-        if(opt2) opts.push(opt2);
-        questions.push({ q: qText, options: opts, correct: 0 });
-      }
-
-      appData.exams.push({ title: title, totalTime: totalTime, questions: questions });
-      saveDataToStorage();
-      renderEverything();
-      document.getElementById('new-exam-title').value = "";
-      alert("تم إضافة الامتحان بنجاح!");
-    }
-
-    function deleteExam(index) {
-      if(confirm("هل أنت متأكد من حذف هذا الامتحان؟")) {
-        appData.exams.splice(index, 1);
-        saveDataToStorage();
-        renderEverything();
-      }
-    }
-
-    function addVideo() {
-      let title = document.getElementById('new-video-title').value.trim();
-      let link = document.getElementById('new-video-link').value.trim();
-      let fileInput = document.getElementById('new-media-file');
-      if(!title) { alert("أدخل اسم الفيديو"); return; }
-
-      let formattedLink = link;
-      if(link.includes("youtube.com/watch?v=")) {
-        formattedLink = link.replace("watch?v=", "embed/");
-      } else if(link.includes("youtu.be/")) {
-        let videoId = link.split("youtu.be/")[1];
-        formattedLink = `https://www.youtube.com/embed/${videoId}`;
-      }
-
-      if(fileInput.files && fileInput.files[0]) {
-        let reader = new FileReader();
-        reader.onload = function(e) {
-          appData.videos.push({ title: title, link: formattedLink, mediaData: e.target.result });
-          saveDataToStorage();
-          renderEverything();
-          document.getElementById('new-video-title').value = "";
-          document.getElementById('new-video-link').value = "";
-          fileInput.value = "";
-          alert("تم إضافة الفيديو بنجاح!");
-        };
-        reader.readAsDataURL(fileInput.files[0]);
-      } else {
-        appData.videos.push({ title: title, link: formattedLink, mediaData: null });
-        saveDataToStorage();
-        renderEverything();
-        document.getElementById('new-video-title').value = "";
-        document.getElementById('new-video-link').value = "";
-        alert("تم إضافة الفيديو بنجاح!");
-      }
-    }
-
-    function deleteVideo(index) {
-      if(confirm("هل تريد حذف هذا الفيديو؟")) {
-        appData.videos.splice(index, 1);
-        saveDataToStorage();
-        renderEverything();
-      }
-    }
-
-    function addPdfLink() {
-      let title = document.getElementById('new-pdf-title').value.trim();
-      let link = document.getElementById('new-pdf-link').value.trim();
-      if(!title || !link) { alert("أدخل عنوان الرابط والملف"); return; }
-      appData.pdf.push({ title: title, link: link });
-      saveDataToStorage();
-      renderEverything();
-      document.getElementById('new-pdf-title').value = "";
-      document.getElementById('new-pdf-link').value = "";
-      alert("تم إضافة ملف الـ PDF بنجاح!");
-    }
-
-    function deletePdf(index) {
-      if(confirm("هل تريد حذف ملف الـ PDF؟")) {
-        appData.pdf.splice(index, 1);
-        saveDataToStorage();
-        renderEverything();
-      }
-    }
-
-    function updateStats() {
-      let c = document.getElementById('set-exams-count').value;
-      if(c) {
-        appData.examsCountSetting = c;
-        saveDataToStorage();
-        renderEverything();
-        alert("تم تحديث الإحصائيات بنجاح!");
-      }
-    }
-
-    // حساب الترتيب التلقائي وترتيب الطلاب تلقائياً حسب الدرجات
-    function calculateLeaderboardAndRanks() {
-      // ترتيب الطلاب تنازلياً حسب النسبة أو الدرجة
-      appData.students.sort((a, b) => b.score - a.score);
-
-      if(currentUser && !currentUser.isAdmin) {
-        let userIndex = appData.students.findIndex(s => s.email === currentUser.email);
-        if(userIndex !== -1) {
-          let rankNames = ["الأول", "الثاني", "الثالث", "الرابع", "الخامس", "السادس", "السابع", "الثامن", "التاسع", "العاشر"];
-          let myRankStr = rankNames[userIndex] || `#${userIndex + 1}`;
-          document.getElementById('stat-rank-disp').innerText = myRankStr;
-          document.getElementById('set-rank-val').value = myRankStr;
+      const title = document.getElementById('new-exam-title').value.trim();
+      const totalTimeMin = parseInt(document.getElementById('new-exam-total-time').value.trim()) || 0;
+      const countVal = parseInt(document.getElementById('new-exam-count').value.trim()) || 1;
+      if(!title) { alert('الرجاء كتابة عنوان الامتحان'); return; }
+      
+      let questionsArr = [];
+      for(let i=1; i<=countVal; i++) {
+        let qType = document.getElementById(`q_type_${i}`).value;
+        let qText = document.getElementById(`q_text_${i}`).value.trim() || `السؤال (${i})`;
+        let qTimeSec = parseInt(document.getElementById(`q_time_${i}`).value) || 0;
+        
+        if(qType === 'essay') {
+          questionsArr.push({ type: 'essay', q: qText, modelAns: document.getElementById(`q_model_ans_${i}`).value.trim() || 'نموذج غير متوفر', timeLimit: qTimeSec });
+        } else {
+          let o1 = document.getElementById(`q_opt1_${i}`).value.trim() || 'أ';
+          let o2 = document.getElementById(`q_opt2_${i}`).value.trim() || 'ب';
+          let o3 = document.getElementById(`q_opt3_${i}`).value.trim() || 'ج';
+          let o4 = document.getElementById(`q_opt4_${i}`).value.trim() || 'د';
+          let ans = document.getElementById(`q_ans_${i}`).value.trim() || o1;
+          questionsArr.push({ type: 'mcq', q: qText, o1: o1, o2: o2, o3: o3, o4: o4, ans: ans, timeLimit: qTimeSec });
         }
-      } else {
-        document.getElementById('stat-rank-disp').innerText = "الأول";
-        document.getElementById('set-rank-val').value = "الأول";
-      }
-    }
-
-    function renderEverything() {
-      calculateLeaderboardAndRanks();
-
-      // العدادات والإحصائيات
-      document.getElementById('stat-videos-count').innerText = appData.videos.length;
-      document.getElementById('stat-exams-count-disp').innerText = appData.examsCountSetting || appData.exams.length;
-
-      // رندر الامتحانات
-      let examsContainer = document.getElementById('exams-list-container');
-      examsContainer.innerHTML = "";
-      if(appData.exams.length === 0) {
-        examsContainer.innerHTML = `<div style="text-align: center; color: #64748b; padding: 20px; font-size: 13px;">لا توجد امتحانات مضافة حالياً.</div>`;
-      } else {
-        appData.exams.forEach((ex, idx) => {
-          examsContainer.innerHTML += `
-            <div class="card-item">
-              <div class="card-row">
-                <div class="card-info">
-                  <div class="card-title">📝 ${ex.title}</div>
-                  <div class="card-subtitle">عدد الأسئلة: ${ex.questions.length} | الوقت: ${ex.totalTime} دقائق</div>
-                </div>
-                <div class="btn-action-group">
-                  <button class="btn-custom-open" onclick="startExamModal(${idx})">بدء الامتحان</button>
-                  ${currentUser && currentUser.isAdmin ? `<button class="btn-custom-delete" onclick="deleteExam(${idx})">حذف</button>` : ''}
-                </div>
-              </div>
-            </div>
-          `;
-        });
       }
 
-      // رندر الفيديوهات (مع التنسيق المتجاوب للعرض Landscape)
-      let videosContainer = document.getElementById('videos-list-container');
-      let homeVideosContainer = document.getElementById('home-latest-videos');
-      videosContainer.innerHTML = "";
-      homeVideosContainer.innerHTML = "";
-
-      if(appData.videos.length === 0) {
-        videosContainer.innerHTML = `<div style="text-align: center; color: #64748b; padding: 20px; font-size: 13px;">لا توجد فيديوهات مضافة حالياً.</div>`;
-        homeVideosContainer.innerHTML = `<div style="text-align: center; color: #64748b; padding: 15px; font-size: 12px;">لا توجد فيديوهات متاحة.</div>`;
-      } else {
-        appData.videos.forEach((vid, idx) => {
-          let videoHtml = `
-            <div class="card-item">
-              <div class="card-row">
-                <div class="card-info">
-                  <div class="card-title">🎥 ${vid.title}</div>
-                </div>
-                ${currentUser && currentUser.isAdmin ? `<button class="btn-custom-delete" onclick="deleteVideo(${idx})">حذف</button>` : ''}
-              </div>
-              <div class="video-responsive-wrapper">
-                ${vid.link ? `<iframe src="${vid.link}" allowfullscreen></iframe>` : `<video src="${vid.mediaData}" controls playsinline></video>`}
-              </div>
-            </div>
-          `;
-          videosContainer.innerHTML += videoHtml;
-          if(idx < 2) homeVideosContainer.innerHTML += videoHtml;
-        });
-      }
-
-      // رندر لوحة المتصدرين (Leaderboard) بدقة حسب التصميم المطلوب وترتيب تلقائي
-      let lbContainer = document.getElementById('leaderboard-container');
-      lbContainer.innerHTML = "";
-      appData.students.forEach((st, idx) => {
-        let rankBadge = `${idx + 1}`;
-        if(idx === 0) rankBadge = "🏆";
-        else if(idx === 1) rankBadge = "🥈";
-        else if(idx === 2) rankBadge = "🥉";
-        else rankBadge = `#${idx + 1}`;
-
-        let nameDisplay = st.email.split('@')[0];
-        let initialLetter = nameDisplay.charAt(0).toUpperCase();
-
-        lbContainer.innerHTML += `
-          <div class="leaderboard-item">
-            <div class="leaderboard-rank">${rankBadge}</div>
-            <div class="leaderboard-user-info">
-              <div class="leaderboard-avatar">${initialLetter}</div>
-              <div>
-                <div style="font-size: 13px; font-weight: bold; color: #0f172a;">${nameDisplay}</div>
-                <div style="font-size: 10px; color: #64748b;">طالب مسجل بالمنصة</div>
-              </div>
-            </div>
-            <div class="leaderboard-score">${st.score} نقطة (${st.percentage}%)</div>
-          </div>
-        `;
+      examsList.push({ 
+        id: Date.now(), 
+        title: title, 
+        totalTime: totalTimeMin * 60,
+        questions: questionsArr, 
+        info: `عدد الأسئلة: ${countVal} | متاح الآن` 
       });
 
-      // رندر ملفات PDF
-      let pdfContainer = document.getElementById('pdf-list-container');
-      pdfContainer.innerHTML = "";
-      if(appData.pdf.length === 0) {
-        pdfContainer.innerHTML = `<div style="text-align: center; color: #64748b; padding: 20px; font-size: 13px;">لا توجد ملفات PDF مضافة.</div>`;
-      } else {
-        appData.pdf.forEach((p, idx) => {
-          pdfContainer.innerHTML += `
-            <div class="card-item">
-              <div class="card-row">
-                <div class="card-info">
-                  <div class="card-title">📁 ${p.title}</div>
-                </div>
-                <div class="btn-action-group">
-                  <a href="${p.link}" target="_blank" class="btn-custom-open">فتح الملف</a>
-                  ${currentUser && currentUser.isAdmin ? `<button class="btn-custom-delete" onclick="deletePdf(${idx})">حذف</button>` : ''}
-                </div>
-              </div>
-            </div>
-          `;
-        });
-      }
-
-      // رندر سجل الطلاب للأدمن
-      let adminRep = document.getElementById('admin-students-reports');
-      if(adminRep) {
-        adminRep.innerHTML = "";
-        appData.students.forEach(s => {
-          adminRep.innerHTML += `<div style="padding: 4px 0; border-bottom: 1px solid #f1f5f9;">📧 ${s.email} - الدرجة: ${s.score}%</div>`;
-        });
-      }
+      localStorage.setItem('fahem_exams', JSON.stringify(examsList));
+      document.getElementById('new-exam-title').value = '';
+      document.getElementById('new-exam-total-time').value = '';
+      document.getElementById('new-exam-count').value = '1';
+      generateQuestionFields();
+      renderExams();
+      renderLeaderboards();
+      alert('تم إضافة الامتحان بنجاح! ✅');
     }
 
-    // تفاعلات واختبارات الامتحانات
-    function startExamModal(index) {
-      currentExamIndex = index;
-      let exam = appData.exams[index];
-      timeLeftSeconds = exam.totalTime * 60;
-      userAnswersTracker = {};
-
-      document.getElementById('exam-modal').style.display = 'flex';
-      renderExamQuestionStep(0);
-
-      if(examTimerInterval) clearInterval(examTimerInterval);
-      examTimerInterval = setInterval(() => {
-        timeLeftSeconds--;
-        let m = Math.floor(timeLeftSeconds / 60);
-        let s = timeLeftSeconds % 60;
-        let timerBox = document.getElementById('exam-timer-display');
-        if(timerBox) timerBox.innerText = `⏳ متبقي: ${m}:${s < 10 ? '0':''}${s}`;
-        if(timeLeftSeconds <= 0) {
-          clearInterval(examTimerInterval);
-          submitExamAnswers();
-        }
-      }, 1000);
+    function deleteExam(id) {
+      examsList = examsList.filter(e => e.id !== id);
+      localStorage.setItem('fahem_exams', JSON.stringify(examsList));
+      renderExams();
+      renderLeaderboards();
+      alert('تم حذف الامتحان 🗑️');
     }
 
-    function renderExamQuestionStep(qIdx) {
-      let exam = appData.exams[currentExamIndex];
-      let modalContent = document.getElementById('exam-modal-content');
-      
-      if(qIdx >= exam.questions.length) {
-        submitExamAnswers();
+    function renderExams() {
+      const container = document.getElementById('exams-container');
+      container.innerHTML = '';
+      const currentEmail = localStorage.getItem('fahem_email') || 'guest';
+      let finishedExams = JSON.parse(localStorage.getItem('finished_exams_' + currentEmail)) || [];
+      const isUserAdmin = currentEmail === ADMIN_EMAIL;
+
+      if(examsList.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد امتحانات متاحة حالياً</p>';
         return;
       }
 
-      let q = exam.questions[qIdx];
-      let optionsHtml = '';
-      q.options.forEach((opt, optIdx) => {
-        let isChecked = userAnswersTracker[qIdx] === optIdx ? 'checked' : '';
-        optionsHtml += `
-          <label style="display: flex; align-items: center; gap: 8px; background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 6px; cursor: pointer; border: 1px solid #e2e8f0; font-size: 13px;">
-            <input type="radio" name="exam-q-opt" value="${optIdx}" ${isChecked} onclick="userAnswersTracker[${qIdx}] = ${optIdx}">
-            <span>${opt}</span>
-          </label>
+      examsList.forEach(ex => {
+        let isDone = finishedExams.includes(ex.id);
+        let deleteBtn = isUserAdmin ? `<button class="btn-custom-delete" onclick="deleteExam(${ex.id})">حذف 🗑️</button>` : '';
+        let qData = ex.questions || [];
+
+        let actionBtn = isDone ? 
+          `<button class="btn-main" onclick='viewExamResult(${ex.id}, "${ex.title}", ${JSON.stringify(qData)})' style="background:#059669;">عرض النتيجة 📋</button>` : 
+          `<button class="btn-main" onclick='startExam(${ex.id}, "${ex.title}", ${JSON.stringify(qData)}, ${ex.totalTime || 0})'>بدء 📝</button>`;
+        
+        let subtitleText = isDone ? `${ex.info} - (تم اجتازه)` : ex.info;
+
+        container.innerHTML += `
+          <div class="card-item">
+            <div class="card-row">
+              <div class="card-info">
+                <div class="card-title">${ex.title}</div>
+                <div class="card-subtitle">${subtitleText}</div>
+              </div>
+              <div class="btn-action-group">
+                ${deleteBtn}
+                ${actionBtn}
+              </div>
+            </div>
+          </div>
         `;
       });
-
-      modalContent.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-          <div style="font-weight: bold; font-size: 14px; color: #0284c7;">📝 ${exam.title}</div>
-          <div id="exam-timer-display" style="font-size: 12px; font-weight: bold; color: #ef4444;">⏳ متبقي: ...</div>
-        </div>
-        <div style="font-size: 13px; font-weight: bold; color: #1e293b; margin-bottom: 12px;">السؤال ${qIdx + 1} من ${exam.questions.length}: ${q.q}</div>
-        <div style="margin-bottom: 15px;">${optionsHtml}</div>
-        <div style="display: flex; gap: 8px;">
-          ${qIdx > 0 ? `<button class="btn-main" style="background: #64748b; flex: 1;" onclick="renderExamQuestionStep(${qIdx - 1})">السابق</button>` : ''}
-          <button class="btn-main" style="flex: 2;" onclick="renderExamQuestionStep(${qIdx + 1})">${qIdx === exam.questions.length - 1 ? 'إنهاء وتسليم' : 'السؤال التالي'}</button>
-        </div>
-      `;
     }
 
-    function submitExamAnswers() {
-      if(examTimerInterval) clearInterval(examTimerInterval);
-      let exam = appData.exams[currentExamIndex];
-      let score = 0;
-      let totalQ = exam.questions.length;
+    function startExam(id, title, questions, totalTimeSeconds) {
+      currentExamId = id;
+      activeQuestions = questions;
+      document.getElementById('modal-title').innerText = title;
+      document.getElementById('submit-exam-btn').style.display = 'block';
+      let container = document.getElementById('modal-questions-container');
+      container.innerHTML = '';
 
-      exam.questions.forEach((q, idx) => {
-        if(userAnswersTracker[idx] === q.correct) {
-          score++;
+      if(globalExamTimerInterval) clearInterval(globalExamTimerInterval);
+      questionTimersIntervals.forEach(t => clearInterval(t));
+      questionTimersIntervals = [];
+
+      let timerBox = document.getElementById('exam-global-timer');
+      if(totalTimeSeconds > 0) {
+        timerBox.style.display = 'block';
+        let timeLeft = totalTimeSeconds;
+        globalExamTimerInterval = setInterval(() => {
+          let mins = Math.floor(timeLeft / 60);
+          let secs = timeLeft % 60;
+          timerBox.innerText = `الوقت الكلي: ${mins}:${secs < 10 ? '0' : ''}${secs}`;
+          timeLeft--;
+          if(timeLeft < 0) {
+            clearInterval(globalExamTimerInterval);
+            alert('انتهى الوقت الكلي للامتحان!');
+            submitExam();
+          }
+        }, 1000);
+      } else {
+        timerBox.style.display = 'none';
+      }
+
+      questions.forEach((q, i) => {
+        let qTimerHtml = q.timeLimit > 0 ? `<span id="q_timer_disp_${i}" style="color: #ef4444; font-weight: bold; font-size: 11px; float: left;">الوقت: ${q.timeLimit} ث</span>` : '';
+        
+        if (q.type === 'essay') {
+          container.innerHTML += `
+            <div id="q_card_box_${i}" style="background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 8px;">
+              <div style="font-size: 13px; font-weight: bold; margin-bottom: 5px;">(${i+1}) ${q.q} ${qTimerHtml}</div>
+              <textarea id="exam_q_input_${i}" name="essay_q_${i}" class="auth-input" placeholder="اكتب إجابتك المقالية هنا..." style="background: white; color: #1e293b; height: 70px; text-align: right; padding-left: 12px;"></textarea>
+            </div>
+          `;
+        } else {
+          container.innerHTML += `
+            <div id="q_card_box_${i}" style="background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 8px;">
+              <div style="font-size: 13px; font-weight: bold; margin-bottom: 5px;">(${i+1}) ${q.q} ${qTimerHtml}</div>
+              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o1}"> ${q.o1}</label>
+              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o2}"> ${q.o2}</label>
+              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o3}"> ${q.o3}</label>
+              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o4}"> ${q.o4}</label>
+            </div>
+          `;
+        }
+
+        if(q.timeLimit > 0) {
+          let qTimeLeft = q.timeLimit;
+          let qInterval = setInterval(() => {
+            qTimeLeft--;
+            let disp = document.getElementById(`q_timer_disp_${i}`);
+            if(disp) disp.innerText = `الوقت: ${qTimeLeft} ث`;
+            if(qTimeLeft <= 0) {
+              clearInterval(qInterval);
+              let cardBox = document.getElementById(`q_card_box_${i}`);
+              if(cardBox) {
+                cardBox.style.opacity = '0.5';
+                cardBox.style.pointerEvents = 'none';
+                if(!cardBox.querySelector('.time-expired-msg')) {
+                  cardBox.innerHTML += `<div class="time-expired-msg" style="color:red; font-size:11px; font-weight:bold; margin-top:4px;">انتهى وقت هذا السؤال وتم قفله! 🔒</div>`;
+                }
+              }
+            }
+          }, 1000);
+          questionTimersIntervals.push(qInterval);
+        }
+      });
+      document.getElementById('exam-modal').style.display = 'flex';
+    }
+
+    function closeExam() {
+      if(globalExamTimerInterval) clearInterval(globalExamTimerInterval);
+      questionTimersIntervals.forEach(t => clearInterval(t));
+      document.getElementById('exam-modal').style.display = 'none';
+    }
+
+    function submitExam() {
+      if(globalExamTimerInterval) clearInterval(globalExamTimerInterval);
+      questionTimersIntervals.forEach(t => clearInterval(t));
+
+      let score = 0;
+      let mcqTotal = 0;
+      let studentAnswers = {};
+
+      activeQuestions.forEach((q, i) => {
+        if(q.type !== 'essay') {
+          mcqTotal++;
+          let sel = document.querySelector(`input[name="q_${i}"]:checked`);
+          let userAns = sel ? sel.value.trim() : "لم يجب";
+          studentAnswers[i] = userAns;
+          if(sel && userAns === q.ans.trim()) {
+            score++;
+          }
+        } else {
+          let essayTextEl = document.getElementById(`exam_q_input_${i}`);
+          let essayText = essayTextEl ? essayTextEl.value.trim() : "لم يجب";
+          studentAnswers[i] = essayText;
         }
       });
 
-      let percentage = Math.round((score / totalQ) * 100);
-
-      // تحديث درجة الطالب الحالي
-      if(currentUser) {
-        let studentObj = appData.students.find(s => s.email === currentUser.email);
-        if(studentObj) {
-          studentObj.score = percentage;
-          studentObj.percentage = percentage;
-        } else {
-          appData.students.push({ email: currentUser.email, score: percentage, percentage: percentage });
-        }
-        saveDataToStorage();
+      const currentEmail = localStorage.getItem('fahem_email') || 'guest';
+      let finishedExams = JSON.parse(localStorage.getItem('finished_exams_' + currentEmail)) || [];
+      if(!finishedExams.includes(currentExamId)) {
+        finishedExams.push(currentExamId);
+        localStorage.setItem('finished_exams_' + currentEmail, JSON.stringify(finishedExams));
       }
 
-      let modalContent = document.getElementById('exam-modal-content');
-      modalContent.innerHTML = `
-        <div class="result-summary-card">
-          <div style="font-size: 36px; margin-bottom: 8px;">🎉</div>
-          <h3 style="font-size: 16px; margin-bottom: 4px;">نتيجة الامتحان</h3>
-          <p style="font-size: 14px; font-weight: bold; color: #059669; margin-bottom: 10px;">الدرجة: ${percentage}% (${score} من ${totalQ})</p>
-          <button class="btn-main" onclick="closeExamModal()">إغلاق ومراجعة الترتيب</button>
-        </div>
-      `;
-      renderEverything();
+      let totalMax = mcqTotal > 0 ? mcqTotal : activeQuestions.length;
+      let percentVal = totalMax > 0 ? ((score / totalMax) * 100).toFixed(1) : '100';
+
+      let examResultData = {
+        examId: currentExamId,
+        score: score,
+        total: totalMax,
+        answers: studentAnswers,
+        percentage: percentVal
+      };
+
+      let userResultsMap = JSON.parse(localStorage.getItem('exam_results_detail_' + currentEmail)) || {};
+      userResultsMap[currentExamId] = examResultData;
+      localStorage.setItem('exam_results_detail_' + currentEmail, JSON.stringify(userResultsMap));
+
+      // حساب مجموع درجات الطالب في كل الامتحانات لتحديث الترتيب العام
+      updateStudentOverallScore(currentEmail);
+
+      renderExams();
+      renderLeaderboards();
+      viewExamResult(currentExamId, document.getElementById('modal-title').innerText, activeQuestions);
     }
 
-    function closeExamModal() {
-      document.getElementById('exam-modal').style.display = 'none';
-      switchSection('leaderboard');
+    function updateStudentOverallScore(email) {
+      let userResultsMap = JSON.parse(localStorage.getItem('exam_results_detail_' + email)) || {};
+      let totalSumScore = 0;
+      let totalMaxScore = 0;
+      Object.values(userResultsMap).forEach(res => {
+        totalSumScore += (res.score || 0);
+        totalMaxScore += (res.total || 0);
+      });
+      let overallPercentage = totalMaxScore > 0 ? ((totalSumScore / totalMaxScore) * 100).toFixed(1) : 0;
+      
+      let allScoresObj = JSON.parse(localStorage.getItem('fahem_leaderboard_scores')) || {};
+      allScoresObj[email] = { score: totalSumScore, percentage: parseFloat(overallPercentage) };
+      localStorage.setItem('fahem_leaderboard_scores', JSON.stringify(allScoresObj));
+    }
+
+    function calculateLeaderboardData() {
+      let allStudents = JSON.parse(localStorage.getItem('fahem_all_students_records')) || [ADMIN_EMAIL];
+      let allScoresObj = JSON.parse(localStorage.getItem('fahem_leaderboard_scores')) || {};
+
+      let leaderboardArray = [];
+      allStudents.forEach(stEmail => {
+        let stData = allScoresObj[stEmail] || { score: 0, percentage: 0 };
+        leaderboardArray.push({
+          email: stEmail,
+          name: stEmail === ADMIN_EMAIL ? 'يوسف فرج (الأدمن)' : stEmail.split('@')[0],
+          score: stData.score,
+          percentage: stData.percentage
+        });
+      });
+
+      // الترتيب التلقائي من الأعلى للأقل (مثلا 100% الأول، 90% الثاني وهكذا)
+      leaderboardArray.sort((a, b) => b.percentage - a.percentage || b.score - a.score);
+      return leaderboardArray;
+    }
+
+    function renderLeaderboards() {
+      let lbData = calculateLeaderboardData();
+      
+      // تحديث رقم الترتيب الخاص بالطالب الحالي في الإحصائيات العلوية
+      const currentEmail = localStorage.getItem('fahem_email') || ADMIN_EMAIL;
+      let myRankIdx = lbData.findIndex(item => item.email === currentEmail);
+      let myActualRank = myRankIdx !== -1 ? (myRankIdx + 1) : 1;
+      
+      statsData.rank = myActualRank.toString();
+      localStorage.setItem('fahem_stats', JSON.stringify(statsData));
+      renderStats();
+
+      let htmlContent = '';
+      if(lbData.length === 0) {
+        htmlContent = '<div style="text-align:center; color:#64748b; font-size:12px; padding:10px;">لا توجد نتائج مسجلة حتى الآن</div>';
+      } else {
+        lbData.forEach((student, idx) => {
+          let rankClass = idx === 0 ? 'rank-1' : (idx === 1 ? 'rank-2' : (idx === 2 ? 'rank-3' : ''));
+          let medalEmoji = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `#${idx+1}`));
+          
+          htmlContent += `
+            <div class="leaderboard-item">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div class="leaderboard-rank ${rankClass}">${medalEmoji}</div>
+                <div>
+                  <div style="font-size: 13px; font-weight: bold; color: #0f172a;">${student.name}</div>
+                  <div style="font-size: 11px; color: #64748b;">الدرجة الكلية: ${student.score}</div>
+                </div>
+              </div>
+              <div style="font-size: 14px; font-weight: bold; color: #0284c7;">
+                ${student.percentage}%
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      const homeBox = document.getElementById('home-leaderboard-box');
+      const fullBox = document.getElementById('full-leaderboard-box');
+      if(homeBox) homeBox.innerHTML = htmlContent;
+      if(fullBox) fullBox.innerHTML = htmlContent;
+    }
+
+    function viewExamResult(examId, title, questions) {
+      const currentEmail = localStorage.getItem('fahem_email') || 'guest';
+      let userResultsMap = JSON.parse(localStorage.getItem('exam_results_detail_' + currentEmail)) || {};
+      let res = userResultsMap[examId] || { score: 0, total: questions.length, answers: {}, percentage: '0' };
+      
+      let lbData = calculateLeaderboardData();
+      let userRank = lbData.findIndex(s => s.email === currentEmail) + 1;
+      if(userRank === 0) userRank = 1;
+
+      let container = document.getElementById('modal-questions-container');
+      document.getElementById('modal-title').innerText = `نتيجة امتحان: ${title}`;
+      document.getElementById('exam-global-timer').style.display = 'none';
+      document.getElementById('submit-exam-btn').style.display = 'none';
+      
+      let reviewHtml = `
+        <div class="result-summary-card">
+          <div style="font-size: 40px; margin-bottom: 5px;">🎉</div>
+          <h3 style="color: #059669; font-size: 18px; margin-bottom: 10px;">تم التصحيح التلقائي بنجاح!</h3>
+          <div style="display: flex; justify-content: space-around; margin: 15px 0;">
+            <div>
+              <div style="font-size: 18px; font-weight: bold; color: #0284c7;">${res.percentage}%</div>
+              <div style="font-size: 11px; color: #64748b;">النسبة المئوية</div>
+            </div>
+            <div>
+              <div style="font-size: 18px; font-weight: bold; color: #0f172a;">${res.total}</div>
+              <div style="font-size: 11px; color: #64748b;">الإجمالي</div>
+            </div>
+            <div>
+              <div style="font-size: 18px; font-weight: bold; color: #4f46e5;">${res.score}</div>
+              <div style="font-size: 11px; color: #64748b;">المحصل عليه</div>
+            </div>
+          </div>
+          <div style="background: #f1f5f9; padding: 10px; border-radius: 10px; font-size: 12px; font-weight: bold; color: #334155;">
+            🏆 مركز الترتيب الحالي: المركز ${userRank} بين الطلاب
+          </div>
+        </div>
+        <div style="font-size: 14px; font-weight: bold; margin: 15px 0 10px 0; text-align: right;">مراجعة الأسئلة وتصحيحها:</div>
+      `;
+
+      questions.forEach((q, i) => {
+        if(q.type === 'essay') {
+          reviewHtml += `
+            <div class="review-question-card">
+              <div style="font-size: 12px; font-weight: bold; color: #0284c7; margin-bottom: 4px;">السؤال المقالي (${i+1})</div>
+              <div style="font-size: 13px; font-weight: bold; margin-bottom: 6px;">${q.q}</div>
+              <div style="font-size: 12px; color: #64748b;">إجابتك: ${res.answers[i] || 'لم يجب'}</div>
+              <div style="font-size: 12px; color: #059669; margin-top: 4px;">الإجابة النموذجية: ${q.modelAns}</div>
+            </div>
+          `;
+        } else {
+          let studentAns = res.answers[i];
+          let isCorrect = studentAns === q.ans;
+          let statusColor = isCorrect ? '#059669' : '#ef4444';
+          let statusText = isCorrect ? 'إجابة صحيحة ✓' : 'إجابة خاطئة ✕';
+
+          reviewHtml += `
+            <div class="review-question-card" style="border-right: 4px solid ${statusColor};">
+              <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; color: ${statusColor}; margin-bottom: 4px;">
+                <span>السؤال (${i+1})</span>
+                <span>${statusText}</span>
+              </div>
+              <div style="font-size: 13px; font-weight: bold; margin-bottom: 6px;">${q.q}</div>
+              <div style="font-size: 12px; color: #64748b; margin-bottom: 2px;">إجابتك: ${studentAns}</div>
+              <div style="font-size: 12px; color: #059669; font-weight: bold;">الإجابة الصحيحة: ${q.ans}</div>
+            </div>
+          `;
+        }
+      });
+
+      container.innerHTML = reviewHtml;
+      document.getElementById('exam-modal').style.display = 'flex';
+    }
+
+    function addVideo() {
+      const title = document.getElementById('new-video-title').value.trim();
+      let link = document.getElementById('new-video-link').value.trim();
+      const fileInput = document.getElementById('new-media-file');
+      
+      if(!title) { alert('الرجاء كتابة اسم الفيديو'); return; }
+
+      if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const fileData = e.target.result;
+          const isVideo = file.type.startsWith('video');
+          videosList.push({
+            id: Date.now(),
+            title: title,
+            type: isVideo ? 'video' : 'image',
+            content: fileData,
+            info: isVideo ? 'فيديو مرفوع محلياً' : 'صورة توضيحية مرفوعة'
+          });
+          localStorage.setItem('fahem_videos', JSON.stringify(videosList));
+          document.getElementById('new-video-title').value = '';
+          document.getElementById('new-video-link').value = '';
+          fileInput.value = '';
+          renderVideos();
+          alert('تم إضافة الفيديو بنجاح! 🎥');
+        };
+        reader.readAsDataURL(file);
+      } else if (link) {
+        // تحويل روابط يوتيوب العادية إلى روابط مضمنة (Embed) لتظهر بالعرض المناسب
+        let embedLink = link;
+        if(link.includes('watch?v=')) {
+          embedLink = link.replace('watch?v=', 'embed/');
+        } else if(link.includes('youtu.be/')) {
+          let videoId = link.split('youtu.be/')[1].split('?')[0];
+          embedLink = `https://www.youtube.com/embed/${videoId}`;
+        }
+
+        videosList.push({
+          id: Date.now(),
+          title: title,
+          type: 'iframe',
+          content: embedLink,
+          info: 'رابط فيديو تعليمي أفقي'
+        });
+        localStorage.setItem('fahem_videos', JSON.stringify(videosList));
+        document.getElementById('new-video-title').value = '';
+        document.getElementById('new-video-link').value = '';
+        renderVideos();
+        alert('تم إضافة رابط الفيديو بنجاح! 🔗');
+      } else {
+        alert('الرجاء إدخال رابط أو اختيار ملف فيديو/صورة.');
+      }
+    }
+
+    function deleteVideo(id) {
+      videosList = videosList.filter(v => v.id !== id);
+      localStorage.setItem('fahem_videos', JSON.stringify(videosList));
+      renderVideos();
+      alert('تم حذف الفيديو 🗑');
+    }
+
+    function renderVideos() {
+      const container = document.getElementById('videos-container');
+      if(!container) return;
+      container.innerHTML = '';
+      const currentEmail = localStorage.getItem('fahem_email') || 'guest';
+      const isUserAdmin = currentEmail === ADMIN_EMAIL;
+
+      document.getElementById('stat-videos-count').innerText = videosList.length;
+
+      if(videosList.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد فيديوهات متاحة حالياً</p>';
+        return;
+      }
+
+      videosList.forEach(vid => {
+        let deleteBtn = isUserAdmin ? `<button class="btn-custom-delete" onclick="deleteVideo(${vid.id})">حذف 🗑️</button>` : '';
+        let mediaHtml = '';
+
+        if (vid.type === 'video') {
+          mediaHtml = `<div class="media-preview-container"><video src="${vid.content}" controls controlsList="nodownload"></video></div>`;
+        } else if (vid.type === 'image') {
+          mediaHtml = `<div class="media-preview-container"><img src="${vid.content}" alt="مرفق"></div>`;
+        } else {
+          mediaHtml = `<div class="media-preview-container"><iframe src="${vid.content}" allowfullscreen></iframe></div>`;
+        }
+
+        container.innerHTML += `
+          <div class="card-item">
+            <div class="card-row">
+              <div class="card-info">
+                <div class="card-title">${vid.title}</div>
+                <div class="card-subtitle">${vid.info}</div>
+              </div>
+              <div class="btn-action-group">${deleteBtn}</div>
+            </div>
+            ${mediaHtml}
+          </div>
+        `;
+      });
+    }
+
+    function addPdfLink() {
+      const title = document.getElementById('new-pdf-title').value.trim();
+      let link = document.getElementById('new-pdf-link').value.trim();
+      
+      if(!title) { alert('الرجاء كتابة عنوان ملف الـ PDF'); return; }
+      if(!link) link = 'https://www.google.com';
+      
+      pdfsList.push({ id: Date.now(), title: title, link: link, info: 'مذكرة تعليمية PDF' });
+      localStorage.setItem('fahem_pdfs', JSON.stringify(pdfsList));
+      document.getElementById('new-pdf-title').value = '';
+      document.getElementById('new-pdf-link').value = '';
+      renderPdfs();
+      alert('تم إضافة ملف الـ PDF بنجاح! 📁');
+    }
+
+    function deletePdf(id) {
+      pdfsList = pdfsList.filter(p => p.id !== id);
+      localStorage.setItem('fahem_pdfs', JSON.stringify(pdfsList));
+      renderPdfs();
+      alert('تم حذف ملف الـ PDF 🗑');
+    }
+
+    function renderPdfs() {
+      const container = document.getElementById('pdfs-container');
+      if(!container) return;
+      container.innerHTML = '';
+      const currentEmail = localStorage.getItem('fahem_email') || 'guest';
+      const isUserAdmin = currentEmail === ADMIN_EMAIL;
+
+      if(pdfsList.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد ملفات PDF متاحة حالياً</p>';
+        return;
+      }
+
+      pdfsList.forEach(pdf => {
+        let deleteBtn = isUserAdmin ? `<button class="btn-custom-delete" onclick="deletePdf(${pdf.id})">حذف 🗑</button>` : '';
+        container.innerHTML += `
+          <div class="card-item">
+            <div class="card-row">
+              <div class="card-info">
+                <div class="card-title">${pdf.title}</div>
+                <div class="card-subtitle">${pdf.info}</div>
+              </div>
+              <div class="btn-action-group">
+                ${deleteBtn}
+                <a class="btn-custom-open" href="${pdf.link}" target="_blank">فتح 📄</a>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function updateStats() {
+      const examsCount = document.getElementById('set-exams-count').value.trim();
+      if(examsCount) statsData.exams = examsCount;
+
+      localStorage.setItem('fahem_stats', JSON.stringify(statsData));
+      renderStats();
+      alert('تم تحديث الإحصائيات بنجاح! 📊');
+    }
+
+    function renderStats() {
+      document.getElementById('stat-exams-display').innerText = statsData.exams;
+      document.getElementById('stat-rank-display').innerText = statsData.rank;
+      
+      const rankInput = document.getElementById('set-rank-val');
+      if(rankInput) {
+        rankInput.value = statsData.rank + " (تلقائي)";
+      }
+    }
+
+    function resetAppData() {
+      if(confirm('هل أنت متأكد من تصفير وإعادة ضبط كافة البيانات؟')) {
+        localStorage.clear();
+        location.reload();
+      }
     }
   </script>
 </body>
