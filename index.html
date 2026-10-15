@@ -471,7 +471,7 @@
       
       <div id="dynamic-questions-builder" style="margin-bottom: 10px;"></div>
 
-      <button class="btn-main" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة الامتحان وتخزينه على السيرفر 📝</button>
+      <button class="btn-main" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة الامتحان وتخزينه للسيرفر السحابي 📝</button>
 
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة فيديو الشرح للمنصة (بالعرض):</div>
       <div class="input-wrapper">
@@ -482,7 +482,7 @@
       
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">أو ارفع فيديو من جهازك:</div>
       <input type="file" id="new-media-file" class="auth-input" accept="video/*,image/*" style="background: white; color: #1e293b; margin-bottom: 6px; padding: 8px; padding-left: 12px;">
-      <button class="btn-main" onclick="addVideo()" style="width: 100%; margin-bottom: 10px;">إضافة الفيديو للسيرفر 🎥</button>
+      <button class="btn-main" onclick="addVideo()" style="width: 100%; margin-bottom: 10px;">إضافة الفيديو للمنصة السحابية 🎥</button>
 
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة ملف PDF:</div>
       <div class="input-wrapper">
@@ -545,7 +545,7 @@
     </div>
 
     <div id="sec-exams" class="content-section">
-      <div class="section-header-title">الامتحانات السحابية المتاحة</div>
+      <div class="section-header-title">الامتحانات المتاحة</div>
       <div id="exams-container"></div>
     </div>
 
@@ -692,7 +692,7 @@
       }
       generateQuestionFields();
       
-      // جلب البيانات مباشرة من السيرفر السحابي لجميع الطلاب
+      // مزامنة البيانات السحابية الحية من فايربيز
       syncDataFromCloud();
     };
 
@@ -708,7 +708,7 @@
         renderStats();
       }, (err) => { console.log("جاري جلب الامتحانات..."); });
 
-      // 2. مزامنة الفيديوهات من السيرفر
+      // 2. مزامنة الفيديوهات من السيرفر السحابي
       db.collection("fahem_videos").onSnapshot((snapshot) => {
         videosList = [];
         snapshot.forEach((doc) => {
@@ -717,7 +717,7 @@
         renderVideos();
       }, (err) => { console.log("جاري جلب الفيديوهات..."); });
 
-      // 3. مزامنة ملفات الـ PDF من السيرفر
+      // 3. مزامنة ملفات PDF من السيرفر
       db.collection("fahem_pdfs").onSnapshot((snapshot) => {
         pdfsList = [];
         snapshot.forEach((doc) => {
@@ -726,10 +726,10 @@
         renderPdfs();
       }, (err) => { console.log("جاري جلب ملفات PDF..."); });
 
-      // 4. مزامنة لوحة الترتيب والمتصدرين من السيرفر
+      // 4. مزامنة لوحة الترتيب والمتصدرين سحابياً
       db.collection("fahem_leaderboard").onSnapshot((snapshot) => {
         renderLeaderboards(snapshot);
-      }, (err) => { console.log("جاري جلب لوحة الترتيب..."); });
+      }, (err) => { console.log("جاري جلب الترتيب..."); });
     }
 
     function switchAuthPane(paneId) {
@@ -869,7 +869,6 @@
       document.getElementById(`essay_box_${i}`).style.display = typeVal === 'essay' ? 'block' : 'none';
     }
 
-    // رفع وإضافة الامتحان للسيرفر السحابي ليراه كل الطلاب
     function addExam() {
       const title = document.getElementById('new-exam-title').value.trim();
       const totalTimeMin = parseInt(document.getElementById('new-exam-total-time').value.trim()) || 0;
@@ -1076,7 +1075,6 @@
       viewExamResult(currentExamId, document.getElementById('modal-title').innerText, activeQuestions);
     }
 
-    // تحديث النتيجة على السيرفر السحابي فورياً لتظهر في لوحة الترتيب العامة
     function updateCloudScore(email) {
       let userResultsMap = JSON.parse(localStorage.getItem('exam_results_detail_' + email)) || {};
       let totalSumScore = 0;
@@ -1101,6 +1099,13 @@
       if(snapshot) {
         snapshot.forEach(doc => { lbData.push(doc.data()); });
         lbData.sort((a, b) => b.percentage - a.percentage || b.score - a.score);
+      }
+
+      const currentEmail = localStorage.getItem('fahem_email') || ADMIN_EMAIL;
+      let myRankIdx = lbData.findIndex(item => item.email === currentEmail);
+      if(myRankIdx !== -1) {
+        statsData.rank = (myRankIdx + 1).toString();
+        renderStats();
       }
 
       let htmlContent = '';
@@ -1167,50 +1172,56 @@
       document.getElementById('exam-modal').style.display = 'flex';
     }
 
-    // رفع الفيديو للسيرفر السحابي
+    // دالة إضافة الفيديو المعالجة خصيصاً لروابط يوتيوب والتليجرام لحل مشكلة العرض
     function addVideo() {
       const title = document.getElementById('new-video-title').value.trim();
       let link = document.getElementById('new-video-link').value.trim();
-      const fileInput = document.getElementById('new-media-file');
       
       if(!title) { alert('الرجاء كتابة اسم الفيديو'); return; }
+      if(!link) { alert('الرجاء إدخال رابط يوتيوب أو تليجرام'); return; }
 
-      if (fileInput.files && fileInput.files[0]) {
-        const file = fileInput.files[0];
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          uploadVideoToFirestore(title, e.target.result, file.type.startsWith('video') ? 'video' : 'image', file.type.startsWith('video') ? 'فيديو مرفوع سحابياً' : 'صورة مرفوعة');
-        };
-        reader.readAsDataURL(file);
-      } else if (link) {
-        let embedLink = link;
-        if(link.includes('watch?v=')) embedLink = link.replace('watch?v=', 'embed/');
-        else if(link.includes('youtu.be/')) {
-          let videoId = link.split('youtu.be/')[1].split('?')[0];
-          embedLink = `https://www.youtube.com/embed/${videoId}`;
-        }
-        uploadVideoToFirestore(title, embedLink, 'iframe', 'رابط يوتيوب تعليمي');
-      } else {
-        alert('الرجاء إدخال رابط أو اختيار ملف.');
+      let embedLink = link;
+      let videoType = 'iframe';
+
+      // معالجة روابط يوتيوب العادية لتحويلها لروابط عرض سليمة
+      if(link.includes('watch?v=')) {
+        embedLink = link.replace('watch?v=', 'embed/');
+      } else if(link.includes('youtu.be/')) {
+        let videoId = link.split('youtu.be/')[1].split('?')[0];
+        embedLink = `https://www.youtube.com/embed/${videoId}`;
+      } else if(link.includes('t.me/')) {
+        // معالجة روابط تليجرام لعرضها بشكل سليم
+        embedLink = link.replace('/s/', '/').trim() + '?embed=1';
       }
-    }
 
-    function uploadVideoToFirestore(title, content, type, info) {
-      db.collection("fahem_videos").add({ title, content, type, info, createdAt: firebase.firestore.FieldValue.serverTimestamp() }).then(() => {
+      db.collection("fahem_videos").add({
+        title: title,
+        content: embedLink,
+        type: videoType,
+        info: 'فيديو تعليمي سحابي',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
         document.getElementById('new-video-title').value = '';
         document.getElementById('new-video-link').value = '';
-        document.getElementById('new-media-file').value = '';
-        alert('تم رفع الفيديو للسيرفر بنجاح! 🎥');
+        alert('تم رفع الفيديو بنجاح للسيرفر! 🎥');
+      }).catch(err => {
+        alert('خطأ أثناء الرفع: ' + err.message);
       });
     }
 
-    function deleteVideo(id) { db.collection("fahem_videos").doc(id).delete().then(() => alert('تم حذف الفيديو 🗑')); }
+    function deleteVideo(id) {
+      db.collection("fahem_videos").doc(id).delete().then(() => {
+        alert('تم حذف الفيديو 🗑️');
+      });
+    }
 
     function renderVideos() {
       const container = document.getElementById('videos-container');
       if(!container) return;
       container.innerHTML = '';
       const currentEmail = localStorage.getItem('fahem_email') || 'guest';
+      const isUserAdmin = currentEmail === ADMIN_EMAIL;
+
       document.getElementById('stat-videos-count').innerText = videosList.length;
 
       if(videosList.length === 0) {
@@ -1219,42 +1230,75 @@
       }
 
       videosList.forEach(vid => {
-        let deleteBtn = currentEmail === ADMIN_EMAIL ? `<button class="btn-custom-delete" onclick="deleteVideo('${vid.id}')">حذف 🗑️</button>` : '';
-        let mediaHtml = vid.type === 'video' ? `<div class="media-preview-container"><video src="${vid.content}" controls></video></div>` : (vid.type === 'image' ? `<div class="media-preview-container"><img src="${vid.content}"></div>` : `<div class="media-preview-container"><iframe src="${vid.content}" allowfullscreen></iframe></div>`);
+        let deleteBtn = isUserAdmin ? `<button class="btn-custom-delete" onclick="deleteVideo('${vid.id}')">حذف 🗑️</button>` : '';
+        let mediaHtml = `<div class="media-preview-container"><iframe src="${vid.content}" allowfullscreen></iframe></div>`;
 
-        container.innerHTML += `<div class="card-item"><div class="card-row"><div class="card-info"><div class="card-title">${vid.title}</div><div class="card-subtitle">${vid.info}</div></div><div class="btn-action-group">${deleteBtn}</div></div>${mediaHtml}</div>`;
+        container.innerHTML += `
+          <div class="card-item">
+            <div class="card-row">
+              <div class="card-info">
+                <div class="card-title">${vid.title}</div>
+                <div class="card-subtitle">${vid.info}</div>
+              </div>
+              <div class="btn-action-group">${deleteBtn}</div>
+            </div>
+            ${mediaHtml}
+          </div>
+        `;
       });
     }
 
-    // رفع ملفات الـ PDF للسيرفر السحابي
     function addPdfLink() {
       const title = document.getElementById('new-pdf-title').value.trim();
       let link = document.getElementById('new-pdf-link').value.trim() || 'https://www.google.com';
       if(!title) { alert('الرجاء كتابة عنوان ملف الـ PDF'); return; }
 
-      db.collection("fahem_pdfs").add({ title, link, info: 'مذكرة تعليمية سحابية', createdAt: firebase.firestore.FieldValue.serverTimestamp() }).then(() => {
+      db.collection("fahem_pdfs").add({
+        title: title,
+        link: link,
+        info: 'مذكرة تعليمية سحابية',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
         document.getElementById('new-pdf-title').value = '';
         document.getElementById('new-pdf-link').value = '';
         alert('تم رفع ملف الـ PDF بنجاح! 📁');
       });
     }
 
-    function deletePdf(id) { db.collection("fahem_pdfs").doc(id).delete().then(() => alert('تم الحذف 🗑')); }
+    function deletePdf(id) {
+      db.collection("fahem_pdfs").doc(id).delete().then(() => {
+        alert('تم حذف ملف الـ PDF 🗑️');
+      });
+    }
 
     function renderPdfs() {
       const container = document.getElementById('pdfs-container');
       if(!container) return;
       container.innerHTML = '';
       const currentEmail = localStorage.getItem('fahem_email') || 'guest';
+      const isUserAdmin = currentEmail === ADMIN_EMAIL;
 
       if(pdfsList.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد ملفات PDF</p>';
+        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد ملفات PDF متاحة حالياً</p>';
         return;
       }
 
       pdfsList.forEach(pdf => {
-        let deleteBtn = currentEmail === ADMIN_EMAIL ? `<button class="btn-custom-delete" onclick="deletePdf('${pdf.id}')">حذف 🗑</button>` : '';
-        container.innerHTML += `<div class="card-item"><div class="card-row"><div class="card-info"><div class="card-title">${pdf.title}</div><div class="card-subtitle">${pdf.info}</div></div><div class="btn-action-group">${deleteBtn}<a class="btn-custom-open" href="${pdf.link}" target="_blank">فتح 📄</a></div></div></div>`;
+        let deleteBtn = isUserAdmin ? `<button class="btn-custom-delete" onclick="deletePdf('${pdf.id}')">حذف 🗑️</button>` : '';
+        container.innerHTML += `
+          <div class="card-item">
+            <div class="card-row">
+              <div class="card-info">
+                <div class="card-title">${pdf.title}</div>
+                <div class="card-subtitle">${pdf.info}</div>
+              </div>
+              <div class="btn-action-group">
+                ${deleteBtn}
+                <a class="btn-custom-open" href="${pdf.link}" target="_blank">فتح 📄</a>
+              </div>
+            </div>
+          </div>
+        `;
       });
     }
 
@@ -1273,7 +1317,10 @@
     }
 
     function resetAppData() {
-      if(confirm('هل أنت متأكد من تصفير البيانات؟')) { localStorage.clear(); location.reload(); }
+      if(confirm('هل أنت متأكد من تصفير وإعادة ضبط البيانات؟')) {
+        localStorage.clear();
+        location.reload();
+      }
     }
   </script>
 </body>
