@@ -401,7 +401,7 @@
       <div id="pane-login" class="auth-screen-pane active">
         <div style="font-size: 40px; margin-bottom: 10px;">🛡</div>
         <h2 style="margin-bottom: 5px; font-size: 20px;">مرحباً بعودتك!</h2>
-        <p style="color: #94a3b8; font-size: 12px; margin-bottom: 20px;">سجل الدخول للمتابعة</p>
+        <p style="color: #94a3b8; font-size: 12px; margin-bottom: 20px;">سجل الدخول بأي بريد إلكتروني للمتابعة</p>
 
         <a href="#" class="download-btn" onclick="downloadApp(event)">
           📦 تحميل تطبيق المنصة (APK)
@@ -409,10 +409,10 @@
 
         <div style="margin: 15px 0; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
           <div class="input-wrapper">
-            <input type="email" id="login-email" class="auth-input" placeholder="البريد الإلكتروني">
+            <input type="email" id="login-email" class="auth-input" placeholder="البريد الإلكتروني (أي جيميل)">
             <button type="button" class="voice-btn" onclick="startVoiceInput('login-email')">🎤</button>
           </div>
-          <input type="password" id="user-pass" class="auth-input" placeholder="كلمة المرور" style="padding-left: 12px;">
+          <input type="password" id="user-pass" class="auth-input" placeholder="كلمة المرور (الافتراضية: goks123)" style="padding-left: 12px;">
           <button class="auth-btn" onclick="customLogin()">تسجيل الدخول ✅</button>
           <div class="text-link-auth" onclick="switchAuthPane('pane-forgot')">نسيت كلمة المرور؟</div>
         </div>
@@ -449,55 +449,36 @@
   <div id="dashboard-view">
     <div class="app-header">
       <div>
-        <div class="greeting-text" id="welcome-user-name">👋 مرحباً، يوسف فرج</div>
-        <div class="date-text" id="current-date-box">الثلاثاء، أكتوبر 14</div>
+        <div class="greeting-text" id="welcome-user-name">👋 مرحباً</div>
+        <div class="date-text" id="current-date-box">الخميس، أكتوبر 15</div>
       </div>
-      <div class="admin-badge-top" id="role-badge">أدمن (يوسف فرج)</div>
+      <div class="admin-badge-top" id="role-badge" style="display:none;">أدمن</div>
     </div>
 
-    <div id="admin-panel-box">
+    <div id="admin-panel-box" style="display:none;">
       <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 10px;">⚙ لوحة تحكم الأدمن (يوسف فرج)</div>
       
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد (مع الوقت الكلي ووقت لكل سؤال):</div>
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد:</div>
       <div class="input-wrapper">
         <input type="text" id="new-exam-title" class="auth-input" placeholder="عنوان الامتحان..." style="background: white; color: #1e293b; margin-bottom: 0;">
-        <button type="button" class="voice-btn" onclick="startVoiceInput('new-exam-title')">🎤</button>
       </div>
-      
-      <div style="display: flex; gap: 8px; margin-top: 6px; margin-bottom: 6px;">
-        <input type="number" id="new-exam-total-time" class="auth-input" placeholder="الوقت الكلي (بالدقائق)..." style="background: white; color: #1e293b; margin-bottom: 0; padding-left: 12px; font-size: 11px;">
-        <input type="number" id="new-exam-count" class="auth-input" placeholder="عدد الأسئلة..." value="1" oninput="generateQuestionFields()" style="background: white; color: #1e293b; margin-bottom: 0; padding-left: 12px; width: 130px; font-size: 11px;">
-      </div>
-      
+      <input type="number" id="new-exam-count" class="auth-input" placeholder="عدد الأسئلة..." value="1" oninput="generateQuestionFields()" style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px;">
       <div id="dynamic-questions-builder" style="margin-bottom: 10px;"></div>
+      <button class="btn-main" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">رفع الامتحان للسيرفر السحابي 📝</button>
 
-      <button class="btn-main" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة الامتحان وتخزينه للسيرفر السحابي 📝</button>
-
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة فيديو الشرح (من الجهاز مباشرة أو رابط):</div>
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة فيديو الشرح (رابط يوتيوب أو تليجرام):</div>
       <div class="input-wrapper">
-        <input type="text" id="new-video-title" class="auth-input" placeholder="اكتب اسم الفيديو هنا..." style="background: white; color: #1e293b; margin-bottom: 0;">
-        <button type="button" class="voice-btn" onclick="startVoiceInput('new-video-title')">🎤</button>
+        <input type="text" id="new-video-title" class="auth-input" placeholder="اسم الفيديو..." style="background: white; color: #1e293b; margin-bottom: 0;">
       </div>
-      <input type="text" id="new-video-link" class="auth-input" placeholder="أو رابط يوتيوب / تليجرام..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px;">
-      
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">اختر ملف الفيديو من هاتفك:</div>
-      <input type="file" id="new-media-file" class="auth-input" accept="video/*,image/*" style="background: white; color: #1e293b; margin-bottom: 6px; padding: 8px; padding-left: 12px;">
-      <button class="btn-main" onclick="addVideo()" style="width: 100%; margin-bottom: 10px;">إضافة الفيديو وتشغيله فوراً 🎥</button>
+      <input type="text" id="new-video-link" class="auth-input" placeholder="رابط يوتيوب أو تليجرام..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px;">
+      <button class="btn-main" onclick="addVideo()" style="width: 100%; margin-bottom: 10px;">رفع الفيديو للسيرفر ليراه كل الطلاب 🎥</button>
 
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة ملف PDF:</div>
       <div class="input-wrapper">
         <input type="text" id="new-pdf-title" class="auth-input" placeholder="عنوان ملف الـ PDF..." style="background: white; color: #1e293b; margin-bottom: 0;">
-        <button type="button" class="voice-btn" onclick="startVoiceInput('new-pdf-title')">🎤</button>
       </div>
-      <input type="text" id="new-pdf-link" class="auth-input" placeholder="رابط ملف الـ PDF (https://...)" style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px;">
-      <button class="btn-main" onclick="addPdfLink()" style="width: 100%; margin-bottom: 10px; background: #7c3aed;">إضافة ملف الـ PDF 📁</button>
-
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">التحكم في الإحصائيات (مع الترتيب التلقائي):</div>
-      <div class="admin-control-row">
-        <input type="number" id="set-exams-count" class="auth-input" placeholder="عدد الامتحانات" style="background: white; color: #1e293b; margin-bottom: 0; padding-left: 12px;">
-        <input type="text" id="set-rank-val" class="auth-input" placeholder="الترتيب (تلقائي)" readonly style="background: #f1f5f9; color: #1e293b; margin-bottom: 0; padding-left: 12px;">
-      </div>
-      <button class="btn-main" onclick="updateStats()" style="width: 100%; margin-top: 8px; background: #059669;">تحديث الإحصائيات والترتيب 📊</button>
+      <input type="text" id="new-pdf-link" class="auth-input" placeholder="رابط ملف الـ PDF..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px;">
+      <button class="btn-main" onclick="addPdfLink()" style="width: 100%; margin-bottom: 10px; background: #7c3aed;">رفع ملف الـ PDF 📁</button>
     </div>
 
     <div id="sec-home" class="content-section active-section">
@@ -509,95 +490,52 @@
         </div>
         <div class="stat-card">
           <div class="stat-icon">🎥</div>
-          <div class="stat-value" id="stat-videos-count">1</div>
+          <div class="stat-value" id="stat-videos-count">0</div>
           <div class="stat-label">الفيديوهات</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon">❓</div>
-          <div class="stat-value" id="stat-exams-display">2</div>
+          <div class="stat-value" id="stat-exams-display">0</div>
           <div class="stat-label">الامتحانات</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon">📊</div>
           <div class="stat-value" id="stat-rank-display">1</div>
-          <div class="stat-label">الترتيب (تلقائي)</div>
+          <div class="stat-label">ترتيبك</div>
         </div>
       </div>
 
-      <div class="section-header-title">إجراءات سريعة</div>
-      <div class="action-grid">
-        <div class="action-card" onclick="switchTab('sec-exams', 'nav-exams')">
-          <div class="stat-icon">❓</div>
-          <div class="stat-label">الامتحانات</div>
-        </div>
-        <div class="action-card" onclick="switchTab('sec-videos', 'nav-videos')">
-          <div class="stat-icon">🎥</div>
-          <div class="stat-label">الفيديوهات</div>
-        </div>
-        <div class="action-card" onclick="switchTab('sec-leaderboard', 'nav-leaderboard')">
-          <div class="stat-icon">🏆</div>
-          <div class="stat-label">لوحة الترتيب</div>
-        </div>
-      </div>
-
-      <div class="section-header-title">🏆 لوحة شرف المتصدرين (سحابي مباشر)</div>
-      <div class="card-item" id="home-leaderboard-box"></div>
+      <div class="section-header-title">🏆 لوحة شرف المتصدرين (سحابي حي)</div>
+      <div class="card-item" id="home-leaderboard-box">جاري تحميل المتصدرين...</div>
     </div>
 
     <div id="sec-exams" class="content-section">
-      <div class="section-header-title">الامتحانات المتاحة</div>
-      <div id="exams-container"></div>
+      <div class="section-header-title">الامتحانات السحابية المتاحة</div>
+      <div id="exams-container">جاري التحميل...</div>
     </div>
 
     <div id="sec-videos" class="content-section">
-      <div class="section-header-title">فيديوهات الشرح التعليمية (بالعرض)</div>
-      <div id="videos-container"></div>
+      <div class="section-header-title">فيديوهات الشرح التعليمية (للجميع)</div>
+      <div id="videos-container">جاري جلب الفيديوهات من السيرفر...</div>
     </div>
 
     <div id="sec-leaderboard" class="content-section">
-      <div class="section-header-title">🏆 ترتيب الطلاب الأوائل على المنصة السحابية</div>
-      <div class="card-item" id="full-leaderboard-box"></div>
+      <div class="section-header-title">🏆 ترتيب الطلاب الأوائل</div>
+      <div class="card-item" id="full-leaderboard-box">جاري التحميل...</div>
     </div>
 
     <div id="sec-pdfs" class="content-section">
-      <div class="section-header-title">ملفات الـ PDF والمذكرات التعليمية</div>
-      <div id="pdfs-container"></div>
+      <div class="section-header-title">ملفات الـ PDF والمذكرات</div>
+      <div id="pdfs-container">جاري التحميل...</div>
     </div>
 
     <div id="sec-settings" class="content-section">
       <div class="settings-profile-box">
         <div class="profile-avatar">YF</div>
         <div>
-          <div style="font-size: 16px; font-weight: bold;" id="profile-name-display">يوسف فرج</div>
-          <div style="font-size: 12px; opacity: 0.8;" id="profile-email-display">y01878309@gmail.com</div>
+          <div style="font-size: 16px; font-weight: bold;" id="profile-name-display">المستخدم</div>
+          <div style="font-size: 12px; opacity: 0.8;" id="profile-email-display">-</div>
         </div>
-      </div>
-
-      <div class="settings-group-title">إعدادات الإشعارات والتنبيهات</div>
-      <div class="settings-card-box">
-        <div class="settings-row">
-          <span>🔔 تفعيل/إيقاف الإشعارات</span>
-          <input type="checkbox" id="user-notification-toggle" onchange="toggleNotifications(this)" style="width: 20px; height: 20px; cursor: pointer;">
-        </div>
-      </div>
-
-      <div class="settings-group-title">تغيير كلمة المرور الخاصة بك</div>
-      <div class="settings-card-box" style="padding: 15px;">
-        <input type="password" id="change-pass-input" class="auth-input" placeholder="كلمة المرور الجديدة" style="background: #f8fafc; color: #1e293b; margin-bottom: 8px; padding-left: 12px;">
-        <button class="btn-main" onclick="updateUserPassword()" style="width: 100%;">حفظ كلمة المرور الجديدة 🔐</button>
-      </div>
-
-      <div class="settings-group-title">تحميل التطبيق والروابط</div>
-      <div class="settings-card-box">
-        <div class="settings-row" onclick="downloadApp(event)"><span>📦 تحميل تطبيق المنصة (APK)</span> <span>⬇️</span></div>
-        <div class="settings-row" onclick="openTelegramChannel()"><span>✈️ قناة التليجرام الرسمية</span> <span>‹</span></div>
-        <div class="settings-row" onclick="window.open('https://www.youtube.com/@youssef-po1xd', '_blank')"><span>📺 قناة اليوتيوب التعليمية</span> <span>‹</span></div>
-      </div>
-
-      <div class="settings-group-title">الإدارة والتحكم</div>
-      <div class="settings-card-box">
-        <div class="settings-row" onclick="resetAppData()"><span>🔄 إعادة ضبط وتصفير البيانات</span> <span>‹</span></div>
-        <div class="settings-row" onclick="alert('منصة فاهم التعليمية - إصدار الأدمن الخاص بيوسف فرج')"><span>ℹ حول التطبيق</span> <span>‹</span></div>
       </div>
 
       <div class="logout-row" onclick="logout()">
@@ -619,7 +557,6 @@
     <div class="modal-box">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
         <h3 id="modal-title" style="color: #0284c7; font-size: 16px;">عنوان الامتحان</h3>
-        <div id="exam-global-timer" style="background: #fee2e2; color: #ef4444; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; display: none;"></div>
       </div>
       <div id="modal-questions-container" style="margin-bottom: 15px;"></div>
       <button class="btn-main" id="submit-exam-btn" onclick="submitExam()" style="width: 100%; padding: 10px;">تسليم الإجابات ✅</button>
@@ -643,20 +580,16 @@
 
     let activeQuestions = [];
     let currentExamId = null;
-    let globalExamTimerInterval = null;
-    let questionTimersIntervals = [];
-
     const ADMIN_EMAIL = "y01878309@gmail.com";
     const DEFAULT_PASS = "goks123";
 
     let examsList = [];
-    let videosList = JSON.parse(localStorage.getItem('fahem_local_videos')) || [];
+    let videosList = [];
     let pdfsList = [];
-    let statsData = { exams: '0', rank: '1' };
 
     function startVoiceInput(targetId) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) { alert('متصفحك لا يدعم خاصية الكتابة بالصوت.'); return; }
+      if (!SpeechRecognition) { alert('المتصفح لا يدعم الصوت'); return; }
       const recognition = new SpeechRecognition();
       recognition.lang = 'ar-EG';
       recognition.start();
@@ -670,26 +603,35 @@
       if (savedEmail) { setupSession(savedEmail); }
       generateQuestionFields();
       syncDataFromCloud();
-      renderVideos();
     };
 
     function syncDataFromCloud() {
+      // 1. مزامنة الفيديوهات سحابياً لكل الطلاب
+      db.collection("fahem_videos").onSnapshot((snapshot) => {
+        videosList = [];
+        snapshot.forEach((doc) => { videosList.push({ id: doc.id, ...doc.data() }); });
+        document.getElementById('stat-videos-count').innerText = videosList.length;
+        renderVideos();
+      });
+
+      // 2. مزامنة الامتحانات سحابياً
       db.collection("fahem_exams").onSnapshot((snapshot) => {
         examsList = [];
         snapshot.forEach((doc) => { examsList.push({ id: doc.id, ...doc.data() }); });
-        statsData.exams = examsList.length.toString();
+        document.getElementById('stat-exams-display').innerText = examsList.length;
         renderExams();
-        renderStats();
       });
 
+      // 3. مزامنة ملفات PDF سحابياً
       db.collection("fahem_pdfs").onSnapshot((snapshot) => {
         pdfsList = [];
         snapshot.forEach((doc) => { pdfsList.push({ id: doc.id, ...doc.data() }); });
         renderPdfs();
       });
 
+      // 4. مزامنة لوحة المتصدرين والطلاب المسجلين سحابياً
       db.collection("fahem_leaderboard").onSnapshot((snapshot) => {
-        renderLeaderboards(snapshot);
+        renderLeaderboard(snapshot);
       });
     }
 
@@ -707,40 +649,37 @@
 
     function customLogin() {
       const emailInput = document.getElementById('login-email').value.trim();
-      const pass = document.getElementById('user-pass').value.trim();
+      const pass = document.getElementById('user-pass').value.trim() || DEFAULT_PASS;
       if (!emailInput) { alert('الرجاء إدخال البريد الإلكتروني'); return; }
-      let userStoredPass = localStorage.getItem('pass_' + emailInput) || DEFAULT_PASS;
-      if(pass !== userStoredPass) { alert('كلمة المرور غير صحيحة!'); return; }
+
       localStorage.setItem('fahem_email', emailInput);
-      setupSession(emailInput);
+      localStorage.setItem('pass_' + emailInput, pass);
+
+      // تسجيل أي جيميل يدخل مباشرة في قاعدة البيانات السحابية للطلاب المتصدرين
+      db.collection("fahem_leaderboard").doc(emailInput).set({
+        email: emailInput,
+        name: emailInput === ADMIN_EMAIL ? 'يوسف فرج (الأدمن)' : emailInput.split('@')[0],
+        score: 0,
+        percentage: 0,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true }).then(() => {
+        setupSession(emailInput);
+      });
     }
 
-    function sendResetCode() {
-      const email = document.getElementById('forgot-email').value.trim();
-      if(!email) { alert('أدخل البريد'); return; }
-      alert(`كود التحقق: 1234`);
-      switchAuthPane('pane-reset');
-    }
-
-    function verifyAndResetPassword() {
-      alert('تم التغيير بنجاح!');
-      switchAuthPane('pane-login');
-    }
-
-    function updateUserPassword() {
-      const newPass = document.getElementById('change-pass-input').value.trim();
-      if(!newPass) { alert('أدخل كلمة المرور'); return; }
-      localStorage.setItem('pass_' + localStorage.getItem('fahem_email'), newPass);
-      alert('تم الحفظ بنجاح!');
-    }
+    function sendResetCode() { alert('تم إرسال كود التحقق الوهمي: 1234'); switchAuthPane('pane-reset'); }
+    function verifyAndResetPassword() { alert('تم التغيير بنجاح!'); switchAuthPane('pane-login'); }
+    function updateUserPassword() { alert('تم الحفظ!'); }
 
     function setupSession(email) {
       document.getElementById('auth-screen-container').style.display = 'none';
       document.getElementById('dashboard-view').style.display = 'block';
       document.getElementById('bottom-navigation').style.display = 'flex';
       document.getElementById('profile-email-display').innerText = email;
-      document.getElementById('welcome-user-name').innerText = `👋 مرحباً، ${email === ADMIN_EMAIL ? 'يوسف فرج' : email}`;
+      document.getElementById('profile-name-display').innerText = email === ADMIN_EMAIL ? 'يوسف فرج' : email.split('@')[0];
+      document.getElementById('welcome-user-name').innerText = `👋 مرحباً، ${email === ADMIN_EMAIL ? 'يوسف فرج' : email.split('@')[0]}`;
       document.getElementById('top-bar-user-status').innerText = email === ADMIN_EMAIL ? 'أدمن (يوسف فرج)' : email;
+      
       if(email === ADMIN_EMAIL) {
         document.getElementById('admin-panel-box').style.display = 'block';
         document.getElementById('role-badge').style.display = 'block';
@@ -749,8 +688,6 @@
 
     function logout() { localStorage.removeItem('fahem_email'); location.reload(); }
     function downloadApp(e) { if(e) e.preventDefault(); alert('جارٍ التحميل...'); }
-    function openTelegramChannel() { window.open('https://t.me/farag1farag1', '_blank'); }
-    function toggleNotifications(cb) { localStorage.setItem('notif', cb.checked); }
 
     function generateQuestionFields() {
       const countVal = parseInt(document.getElementById('new-exam-count').value) || 1;
@@ -763,7 +700,7 @@
             <input type="text" id="q_text_${i}" class="auth-input" placeholder="نص السؤال..." style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
             <input type="text" id="q_opt1_${i}" class="auth-input" placeholder="اختيار أ" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
             <input type="text" id="q_opt2_${i}" class="auth-input" placeholder="اختيار ب" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
-            <input type="text" id="q_ans_${i}" class="auth-input" placeholder="الإجابة الصحيحة" style="background: #f0fdf4; color: #166534; margin-bottom: 0;">
+            <input type="text" id="q_ans_${i}" class="auth-input" placeholder="الإجابة الصحيحة بالضبط" style="background: #f0fdf4; color: #166534; margin-bottom: 0;">
           </div>
         `;
       }
@@ -779,13 +716,12 @@
           q: document.getElementById(`q_text_${i}`).value.trim() || `سؤال ${i}`,
           o1: document.getElementById(`q_opt1_${i}`).value.trim() || 'أ',
           o2: document.getElementById(`q_opt2_${i}`).value.trim() || 'ب',
-          o3: '', o4: '',
           ans: document.getElementById(`q_ans_${i}`).value.trim() || 'أ',
           type: 'mcq'
         });
       }
       db.collection("fahem_exams").add({ title, questions: questionsArr, info: `عدد الأسئلة: ${countVal}` }).then(() => {
-        alert('تم رفع الامتحان بنجاح! ✅');
+        alert('تم رفع الامتحان سحابياً بنجاح للجميع! ✅');
       });
     }
 
@@ -797,10 +733,13 @@
       container.innerHTML = '';
       const currentEmail = localStorage.getItem('fahem_email') || 'guest';
       let finishedExams = JSON.parse(localStorage.getItem('finished_exams_' + currentEmail)) || [];
+      
+      if(examsList.length === 0) { container.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لا توجد امتحانات حالياً</p>'; return; }
+
       examsList.forEach(ex => {
         let isDone = finishedExams.includes(ex.id);
         let delBtn = currentEmail === ADMIN_EMAIL ? `<button class="btn-custom-delete" onclick="deleteExam('${ex.id}')">حذف</button>` : '';
-        container.innerHTML += `<div class="card-item"><div class="card-row"><div class="card-info"><div class="card-title">${ex.title}</div></div><div class="btn-action-group">${delBtn}<button class="btn-main" onclick='startExam("${ex.id}", "${ex.title}", ${JSON.stringify(ex.questions)}, 0)'>بدء</button></div></div></div>`;
+        container.innerHTML += `<div class="card-item"><div class="card-row"><div class="card-info"><div class="card-title">${ex.title}</div><div class="card-subtitle">${ex.info}</div></div><div class="btn-action-group">${delBtn}<button class="btn-main" onclick='startExam("${ex.id}", "${ex.title}", ${JSON.stringify(ex.questions)})'>بدء</button></div></div></div>`;
       });
     }
 
@@ -823,68 +762,66 @@
         let sel = document.querySelector(`input[name="q_${i}"]:checked`);
         if(sel && sel.value.trim() === q.ans.trim()) score++;
       });
-      alert(`درجتك: ${score} من ${activeQuestions.length}`);
+      let percent = ((score / activeQuestions.length) * 100).toFixed(1);
+      alert(`درجتك: ${score} من ${activeQuestions.length} (${percent}%)`);
+      
+      const currentEmail = localStorage.getItem('fahem_email');
+      let finishedExams = JSON.parse(localStorage.getItem('finished_exams_' + currentEmail)) || [];
+      if(!finishedExams.includes(currentExamId)) { finishedExams.push(currentExamId); localStorage.setItem('finished_exams_' + currentEmail, JSON.stringify(finishedExams)); }
+
+      // تحديث السيرفر السحابي بنتيجة الطالب لكي يظهر في الترتيب
+      db.collection("fahem_leaderboard").doc(currentEmail).set({
+        email: currentEmail,
+        name: currentEmail === ADMIN_EMAIL ? 'يوسف فرج (الأدمن)' : currentEmail.split('@')[0],
+        score: score,
+        percentage: parseFloat(percent),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+
       closeExam();
     }
 
-    function renderLeaderboards(snapshot) {
+    function renderLeaderboard(snapshot) {
       let lbData = [];
-      if(snapshot) { snapshot.forEach(doc => lbData.push(doc.data())); }
+      snapshot.forEach(doc => lbData.push(doc.data()));
+      lbData.sort((a, b) => b.percentage - a.percentage);
+
       let html = '';
+      const currentEmail = localStorage.getItem('fahem_email');
       lbData.forEach((st, idx) => {
-        html += `<div class="leaderboard-item"><div>${st.name}</div><div>${st.percentage}%</div></div>`;
+        if(st.email === currentEmail) {
+          document.getElementById('stat-rank-display').innerText = `#${idx+1}`;
+        }
+        html += `<div class="leaderboard-item"><div style="font-weight:bold;">#${idx+1} ${st.name}</div><div style="color:#0284c7; font-weight:bold;">${st.percentage}%</div></div>`;
       });
+
       if(document.getElementById('home-leaderboard-box')) document.getElementById('home-leaderboard-box').innerHTML = html || 'لا توجد نتائج';
+      if(document.getElementById('full-leaderboard-box')) document.getElementById('full-leaderboard-box').innerHTML = html || 'لا توجد نتائج';
     }
 
-    // دالة رفع الفيديو المحلي من الجهاز مباشرة وبدون مسح
+    // رفع الفيديو سحابياً ليظهر لكل الطلاب
     function addVideo() {
       const title = document.getElementById('new-video-title').value.trim();
-      const link = document.getElementById('new-video-link').value.trim();
-      const fileInput = document.getElementById('new-media-file');
-      
-      if(!title) { alert('أدخل اسم الفيديو'); return; }
+      let link = document.getElementById('new-video-link').value.trim();
+      if(!title || !link) { alert('أدخل العنوان والرابط'); return; }
 
-      if (fileInput.files && fileInput.files[0]) {
-        const file = fileInput.files[0];
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          videosList.push({
-            id: Date.now(),
-            title: title,
-            content: e.target.result,
-            type: file.type.startsWith('video') ? 'video' : 'image',
-            info: 'فيديو مرفوع من الهاتف'
-          });
-          localStorage.setItem('fahem_local_videos', JSON.stringify(videosList));
-          document.getElementById('new-video-title').value = '';
-          fileInput.value = '';
-          renderVideos();
-          alert('تم رفع وتشغيل الفيديو بنجاح! 🎥');
-        };
-        reader.readAsDataURL(file);
-      } else if (link) {
-        let embed = link;
-        if(link.includes('watch?v=')) embed = link.replace('watch?v=', 'embed/');
-        else if(link.includes('youtu.be/')) embed = `https://www.youtube.com/embed/${link.split('youtu.be/')[1].split('?')[0]}`;
-        
-        videosList.push({ id: Date.now(), title: title, content: embed, type: 'iframe', info: 'رابط يوتيوب' });
-        localStorage.setItem('fahem_local_videos', JSON.stringify(videosList));
+      if(link.includes('watch?v=')) link = link.replace('watch?v=', 'embed/');
+      else if(link.includes('youtu.be/')) link = `https://www.youtube.com/embed/${link.split('youtu.be/')[1].split('?')[0]}`;
+
+      db.collection("fahem_videos").add({
+        title: title,
+        content: link,
+        type: 'iframe',
+        info: 'رابط يوتيوب تعليمي',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
         document.getElementById('new-video-title').value = '';
         document.getElementById('new-video-link').value = '';
-        renderVideos();
-        alert('تم إضافة الرابط بنجاح! 🔗');
-      } else {
-        alert('اختر فيديو من هاتفك أو أدخل رابطاً.');
-      }
+        alert('تم رفع الفيديو سحابياً بنجاح ليراه كل الطلاب! 🎥');
+      });
     }
 
-    function deleteVideo(id) {
-      videosList = videosList.filter(v => v.id !== id);
-      localStorage.setItem('fahem_local_videos', JSON.stringify(videosList));
-      renderVideos();
-      alert('تم الحذف');
-    }
+    function deleteVideo(id) { db.collection("fahem_videos").doc(id).delete().then(() => alert('تم الحذف')); }
 
     function renderVideos() {
       const container = document.getElementById('videos-container');
@@ -892,29 +829,20 @@
       container.innerHTML = '';
       const currentEmail = localStorage.getItem('fahem_email') || 'guest';
       const isUserAdmin = currentEmail === ADMIN_EMAIL;
-      document.getElementById('stat-videos-count').innerText = videosList.length;
 
-      if(videosList.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لا توجد فيديوهات</p>';
-        return;
-      }
+      if(videosList.length === 0) { container.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لا توجد فيديوهات متاحة سحابياً حالياً</p>'; return; }
 
       videosList.forEach(vid => {
-        let del = isUserAdmin ? `<button class="btn-custom-delete" onclick="deleteVideo(${vid.id})">حذف</button>` : '';
-        let media = '';
-        if(vid.type === 'video') media = `<div class="media-preview-container"><video src="${vid.content}" controls controlsList="nodownload"></video></div>`;
-        else if(vid.type === 'image') media = `<div class="media-preview-container"><img src="${vid.content}"></div>`;
-        else media = `<div class="media-preview-container"><iframe src="${vid.content}" allowfullscreen></iframe></div>`;
-
-        container.innerHTML += `<div class="card-item"><div class="card-row"><div class="card-info"><div class="card-title">${vid.title}</div><div class="card-subtitle">${vid.info}</div></div><div class="btn-action-group">${del}</div></div>${media}</div>`;
+        let del = isUserAdmin ? `<button class="btn-custom-delete" onclick="deleteVideo('${vid.id}')">حذف</button>` : '';
+        container.innerHTML += `<div class="card-item"><div class="card-row"><div class="card-info"><div class="card-title">${vid.title}</div><div class="card-subtitle">${vid.info}</div></div><div class="btn-action-group">${del}</div></div><div class="media-preview-container"><iframe src="${vid.content}" allowfullscreen></iframe></div></div>`;
       });
     }
 
     function addPdfLink() {
       const title = document.getElementById('new-pdf-title').value.trim();
-      const link = document.getElementById('new-pdf-link').value.trim() || 'https://google.com';
-      if(!title) { alert('أدخل عنوان PDF'); return; }
-      db.collection("fahem_pdfs").add({ title, link, info: 'ملف PDF' }).then(() => alert('تم الرفع'));
+      let link = document.getElementById('new-pdf-link').value.trim() || 'https://google.com';
+      if(!title) { alert('أدخل العنوان'); return; }
+      db.collection("fahem_pdfs").add({ title, link, info: 'ملف PDF تعليمي' }).then(() => alert('تم الرفع سحابياً'));
     }
 
     function deletePdf(id) { db.collection("fahem_pdfs").doc(id).delete().then(() => alert('تم الحذف')); }
@@ -924,15 +852,15 @@
       if(!container) return;
       container.innerHTML = '';
       const currentEmail = localStorage.getItem('fahem_email') || 'guest';
+      const isUserAdmin = currentEmail === ADMIN_EMAIL;
+
+      if(pdfsList.length === 0) { container.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لا توجد ملفات PDF</p>'; return; }
+
       pdfsList.forEach(p => {
-        let del = currentEmail === ADMIN_EMAIL ? `<button class="btn-custom-delete" onclick="deletePdf('${p.id}')">حذف</button>` : '';
+        let del = isUserAdmin ? `<button class="btn-custom-delete" onclick="deletePdf('${p.id}')">حذف</button>` : '';
         container.innerHTML += `<div class="card-item"><div class="card-row"><div class="card-info"><div class="card-title">${p.title}</div></div><div class="btn-action-group">${del}<a class="btn-custom-open" href="${p.link}" target="_blank">فتح</a></div></div></div>`;
       });
     }
-
-    function updateStats() { alert('تم التحديث'); }
-    function renderStats() { document.getElementById('stat-exams-display').innerText = statsData.exams; }
-    function resetAppData() { localStorage.clear(); location.reload(); }
   </script>
 </body>
 </html>
