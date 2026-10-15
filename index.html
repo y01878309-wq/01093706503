@@ -6,6 +6,11 @@
   <meta name="google-site-verification" content="STAWqcyc1mm77w44UiHu5LKJd8sQm_7rh-O00WQabhk" />
   <meta name="description" content="منصة فاهم التعليمية - منصة يوسف فرج التعليمية للمناهج والامتحانات والفيديوهات والشروحات الدراسية.">
   <title>منصة فاهم التعليمية - يوسف فرج</title>
+  
+  <!-- استدعاء مكتبات Firebase السحابية -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body {
@@ -466,7 +471,7 @@
       
       <div id="dynamic-questions-builder" style="margin-bottom: 10px;"></div>
 
-      <button class="btn-main" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة الامتحان وتخزينه 📝</button>
+      <button class="btn-main" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة الامتحان وتخزينه سحابياً 📝</button>
 
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة فيديو الشرح للمنصة (بالعرض):</div>
       <div class="input-wrapper">
@@ -477,7 +482,7 @@
       
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">أو ارفع فيديو من جهازك:</div>
       <input type="file" id="new-media-file" class="auth-input" accept="video/*,image/*" style="background: white; color: #1e293b; margin-bottom: 6px; padding: 8px; padding-left: 12px;">
-      <button class="btn-main" onclick="addVideo()" style="width: 100%; margin-bottom: 10px;">إضافة الفيديو للمنصة 🎥</button>
+      <button class="btn-main" onclick="addVideo()" style="width: 100%; margin-bottom: 10px;">إضافة الفيديو للمنصة سحابياً 🎥</button>
 
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة ملف PDF:</div>
       <div class="input-wrapper">
@@ -485,7 +490,7 @@
         <button type="button" class="voice-btn" onclick="startVoiceInput('new-pdf-title')">🎤</button>
       </div>
       <input type="text" id="new-pdf-link" class="auth-input" placeholder="رابط ملف الـ PDF (https://...)" style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px;">
-      <button class="btn-main" onclick="addPdfLink()" style="width: 100%; margin-bottom: 10px; background: #7c3aed;">إضافة ملف الـ PDF 📁</button>
+      <button class="btn-main" onclick="addPdfLink()" style="width: 100%; margin-bottom: 10px; background: #7c3aed;">إضافة ملف الـ PDF سحابياً 📁</button>
 
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">التحكم في الإحصائيات (مع الترتيب التلقائي):</div>
       <div class="admin-control-row">
@@ -504,12 +509,12 @@
         </div>
         <div class="stat-card">
           <div class="stat-icon">🎥</div>
-          <div class="stat-value" id="stat-videos-count">1</div>
+          <div class="stat-value" id="stat-videos-count">0</div>
           <div class="stat-label">الفيديوهات</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon">❓</div>
-          <div class="stat-value" id="stat-exams-display">2</div>
+          <div class="stat-value" id="stat-exams-display">0</div>
           <div class="stat-label">الامتحانات</div>
         </div>
         <div class="stat-card">
@@ -535,7 +540,7 @@
         </div>
       </div>
 
-      <div class="section-header-title">🏆 لوحة شرف المتصدرين (تلقائي حسب الامتحانات)</div>
+      <div class="section-header-title">🏆 لوحة شرف المتصدرين (سحابي مباشر)</div>
       <div class="card-item" id="home-leaderboard-box"></div>
     </div>
 
@@ -623,6 +628,20 @@
   </div>
 
   <script>
+    // 🌐 إعدادات السيرفر السحابي الخاصة بك (Firebase)
+    const firebaseConfig = {
+      apiKey: "AIzaSyAh0S9vAGN-d1A55LOZ_rvZDWcx4Iwdoz0",
+      authDomain: "fahem-platform-farag.firebaseapp.com",
+      projectId: "fahem-platform-farag",
+      storageBucket: "fahem-platform-farag.firebasestorage.app",
+      messagingSenderId: "482785312141",
+      appId: "1:482785312141:web:14c9509fd6ffdd9921d1c4",
+      measurementId: "G-XXK6TJMH7P"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
     let activeQuestions = [];
     let currentExamId = null;
     let globalExamTimerInterval = null;
@@ -633,6 +652,11 @@
 
     let activeResetEmail = "";
     let generatedResetCode = "";
+
+    let examsList = [];
+    let videosList = [];
+    let pdfsList = [];
+    let statsData = { exams: '0', rank: '1' };
 
     function startVoiceInput(targetId) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -661,35 +685,47 @@
       };
     }
 
-    let examsList = JSON.parse(localStorage.getItem('fahem_exams')) || [
-      { id: 1, title: 'امتحان الفيزياء التجريبي (الباب الأول)', totalTime: 0, questions: [
-        { type: 'mcq', q: 'ما وحدة قياس شدة التيار الكهربي؟', o1: 'الأمبير', o2: 'الفولت', o3: 'الأوم', o4: 'الوات', ans: 'الأمبير', timeLimit: 0 },
-        { type: 'essay', q: 'اشرح باختصار قانون أوم للدائرة الكهربية.', modelAns: 'قانون أوم يربط بين الجهد التيار والمقاومة.', timeLimit: 0 }
-      ], info: 'عدد الأسئلة: 2 | متاح الآن' }
-    ];
-
-    let videosList = JSON.parse(localStorage.getItem('fahem_videos')) || [
-      { id: 1, title: 'محاضرة قوانين كيرشوف', link: 'https://www.youtube.com/embed/dQw4w9WgXcQ', type: 'link', info: 'شرح تفصيلي بالعرض' }
-    ];
-
-    let pdfsList = JSON.parse(localStorage.getItem('fahem_pdfs')) || [
-      { id: 1, title: 'ملخص قوانين الفيزياء كاملة', link: 'https://www.google.com', info: 'صيغة PDF - جاهز للفتح والتحميل' }
-    ];
-
-    let statsData = JSON.parse(localStorage.getItem('fahem_stats')) || { exams: '2', rank: '1' };
-
     window.onload = function() {
       const savedEmail = localStorage.getItem('fahem_email');
       if (savedEmail) {
         setupSession(savedEmail);
       }
       generateQuestionFields();
-      renderExams();
-      renderVideos();
-      renderPdfs();
-      renderStats();
-      renderLeaderboards();
+      syncDataFromCloud();
     };
+
+    // 🔄 المزامنة الحية سحابياً من Firebase Firestore
+    function syncDataFromCloud() {
+      // 1. مزامنة الفيديوهات
+      db.collection("fahem_videos").onSnapshot((snapshot) => {
+        videosList = [];
+        snapshot.forEach((doc) => { videosList.push({ id: doc.id, ...doc.data() }); });
+        document.getElementById('stat-videos-count').innerText = videosList.length;
+        renderVideos();
+      });
+
+      // 2. مزامنة الامتحانات
+      db.collection("fahem_exams").onSnapshot((snapshot) => {
+        examsList = [];
+        snapshot.forEach((doc) => { examsList.push({ id: doc.id, ...doc.data() }); });
+        document.getElementById('stat-exams-display').innerText = examsList.length;
+        statsData.exams = examsList.length.toString();
+        renderExams();
+        renderStats();
+      });
+
+      // 3. مزامنة ملفات PDF
+      db.collection("fahem_pdfs").onSnapshot((snapshot) => {
+        pdfsList = [];
+        snapshot.forEach((doc) => { pdfsList.push({ id: doc.id, ...doc.data() }); });
+        renderPdfs();
+      });
+
+      // 4. مزامنة لوحة الترتيب
+      db.collection("fahem_leaderboard").onSnapshot((snapshot) => {
+        renderLeaderboardsFromCloud(snapshot);
+      });
+    }
 
     function switchAuthPane(paneId) {
       document.querySelectorAll('.auth-screen-pane').forEach(p => p.classList.remove('active'));
@@ -701,9 +737,6 @@
       document.getElementById(sectionId).classList.add('active-section');
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
       document.getElementById(navId).classList.add('active');
-      if(sectionId === 'sec-leaderboard') {
-        renderLeaderboards();
-      }
     }
 
     function customLogin() {
@@ -724,13 +757,16 @@
       
       localStorage.setItem('fahem_email', emailInput);
       
-      let allStudents = JSON.parse(localStorage.getItem('fahem_all_students_records')) || [];
-      if(!allStudents.includes(emailInput)) {
-        allStudents.push(emailInput);
-        localStorage.setItem('fahem_all_students_records', JSON.stringify(allStudents));
-      }
-
-      setupSession(emailInput);
+      // تسجيل الطالب سحابياً
+      db.collection("fahem_leaderboard").doc(emailInput).set({
+        email: emailInput,
+        name: emailInput === ADMIN_EMAIL ? 'يوسف فرج (الأدمن)' : emailInput,
+        score: 0,
+        percentage: 0,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true }).then(() => {
+        setupSession(emailInput);
+      });
     }
 
     function sendResetCode() {
@@ -796,10 +832,7 @@
         document.getElementById('admin-panel-box').style.display = 'none';
         document.getElementById('role-badge').style.display = 'none';
       }
-      renderExams();
-      renderVideos();
       renderStats();
-      renderLeaderboards();
     }
 
     function logout() {
@@ -902,52 +935,52 @@
         }
       }
 
-      examsList.push({ 
-        id: Date.now(), 
-        title: title, 
+      // رفع الامتحان للسيرفر السحابي
+      db.collection("fahem_exams").add({
+        title: title,
         totalTime: totalTimeMin * 60,
-        questions: questionsArr, 
-        info: `عدد الأسئلة: ${countVal} | متاح الآن` 
+        questions: questionsArr,
+        info: `عدد الأسئلة: ${countVal} | متاح الآن`,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        document.getElementById('new-exam-title').value = '';
+        document.getElementById('new-exam-total-time').value = '';
+        document.getElementById('new-exam-count').value = '1';
+        generateQuestionFields();
+        alert('تم إضافة الامتحان ورفعه للسيرفر بنجاح! ✅');
       });
-
-      localStorage.setItem('fahem_exams', JSON.stringify(examsList));
-      document.getElementById('new-exam-title').value = '';
-      document.getElementById('new-exam-total-time').value = '';
-      document.getElementById('new-exam-count').value = '1';
-      generateQuestionFields();
-      renderExams();
-      renderLeaderboards();
-      alert('تم إضافة الامتحان بنجاح! ✅');
     }
 
     function deleteExam(id) {
-      examsList = examsList.filter(e => e.id !== id);
-      localStorage.setItem('fahem_exams', JSON.stringify(examsList));
-      renderExams();
-      renderLeaderboards();
-      alert('تم حذف الامتحان 🗑️');
+      db.collection("fahem_exams").doc(id.toString()).delete().then(() => {
+        alert('تم حذف الامتحان 🗑️');
+      }).catch(err => {
+        // Fallback لو الـ id نصي أو رقمي
+        db.collection("fahem_exams").doc(id).delete().then(() => alert('تم حذف الامتحان 🗑️'));
+      });
     }
 
     function renderExams() {
       const container = document.getElementById('exams-container');
+      if(!container) return;
       container.innerHTML = '';
       const currentEmail = localStorage.getItem('fahem_email') || 'guest';
       let finishedExams = JSON.parse(localStorage.getItem('finished_exams_' + currentEmail)) || [];
       const isUserAdmin = currentEmail === ADMIN_EMAIL;
 
       if(examsList.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد امتحانات متاحة حالياً</p>';
+        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد امتحانات متاحة سحابياً حالياً</p>';
         return;
       }
 
       examsList.forEach(ex => {
         let isDone = finishedExams.includes(ex.id);
-        let deleteBtn = isUserAdmin ? `<button class="btn-custom-delete" onclick="deleteExam(${ex.id})">حذف 🗑️</button>` : '';
+        let deleteBtn = isUserAdmin ? `<button class="btn-custom-delete" onclick="deleteExam('${ex.id}')">حذف 🗑️</button>` : '';
         let qData = ex.questions || [];
 
         let actionBtn = isDone ? 
-          `<button class="btn-main" onclick='viewExamResult(${ex.id}, "${ex.title}", ${JSON.stringify(qData)})' style="background:#059669;">عرض النتيجة 📋</button>` : 
-          `<button class="btn-main" onclick='startExam(${ex.id}, "${ex.title}", ${JSON.stringify(qData)}, ${ex.totalTime || 0})'>بدء 📝</button>`;
+          `<button class="btn-main" onclick='viewExamResult("${ex.id}", "${ex.title}", ${JSON.stringify(qData)})' style="background:#059669;">عرض النتيجة 📋</button>` : 
+          `<button class="btn-main" onclick='startExam("${ex.id}", "${ex.title}", ${JSON.stringify(qData)}, ${ex.totalTime || 0})'>بدء 📝</button>`;
         
         let subtitleText = isDone ? `${ex.info} - (تم اجتازه)` : ex.info;
 
@@ -1097,14 +1130,13 @@
       userResultsMap[currentExamId] = examResultData;
       localStorage.setItem('exam_results_detail_' + currentEmail, JSON.stringify(userResultsMap));
 
-      updateStudentOverallScore(currentEmail);
+      updateStudentOverallScoreCloud(currentEmail);
 
       renderExams();
-      renderLeaderboards();
       viewExamResult(currentExamId, document.getElementById('modal-title').innerText, activeQuestions);
     }
 
-    function updateStudentOverallScore(email) {
+    function updateStudentOverallScoreCloud(email) {
       let userResultsMap = JSON.parse(localStorage.getItem('exam_results_detail_' + email)) || {};
       let totalSumScore = 0;
       let totalMaxScore = 0;
@@ -1114,42 +1146,29 @@
       });
       let overallPercentage = totalMaxScore > 0 ? ((totalSumScore / totalMaxScore) * 100).toFixed(1) : 0;
       
-      let allScoresObj = JSON.parse(localStorage.getItem('fahem_leaderboard_scores')) || {};
-      allScoresObj[email] = { score: totalSumScore, percentage: parseFloat(overallPercentage) };
-      localStorage.setItem('fahem_leaderboard_scores', JSON.stringify(allScoresObj));
+      // حفظ النتيجة سحابياً في لوحة الترتيب
+      db.collection("fahem_leaderboard").doc(email).set({
+        email: email,
+        name: email === ADMIN_EMAIL ? 'يوسف فرج (الأدمن)' : email,
+        score: totalSumScore,
+        percentage: parseFloat(overallPercentage),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
     }
 
-    function calculateLeaderboardData() {
-      let allStudents = JSON.parse(localStorage.getItem('fahem_all_students_records')) || [ADMIN_EMAIL];
-      let allScoresObj = JSON.parse(localStorage.getItem('fahem_leaderboard_scores')) || {};
+    function renderLeaderboardsFromCloud(snapshot) {
+      let lbData = [];
+      snapshot.forEach(doc => lbData.push(doc.data()));
+      lbData.sort((a, b) => b.percentage - a.percentage || b.score - a.score);
 
-      let leaderboardArray = [];
-      allStudents.forEach(stEmail => {
-        let stData = allScoresObj[stEmail] || { score: 0, percentage: 0 };
-        leaderboardArray.push({
-          email: stEmail,
-          name: stEmail === ADMIN_EMAIL ? 'يوسف فرج (الأدمن)' : stEmail.split('@')[0],
-          score: stData.score,
-          percentage: stData.percentage
-        });
-      });
-
-      leaderboardArray.sort((a, b) => b.percentage - a.percentage || b.score - a.score);
-      return leaderboardArray;
-    }
-
-    function renderLeaderboards() {
-      let lbData = calculateLeaderboardData();
-      
+      let htmlContent = '';
       const currentEmail = localStorage.getItem('fahem_email') || ADMIN_EMAIL;
       let myRankIdx = lbData.findIndex(item => item.email === currentEmail);
       let myActualRank = myRankIdx !== -1 ? (myRankIdx + 1) : 1;
       
       statsData.rank = myActualRank.toString();
-      localStorage.setItem('fahem_stats', JSON.stringify(statsData));
       renderStats();
 
-      let htmlContent = '';
       if(lbData.length === 0) {
         htmlContent = '<div style="text-align:center; color:#64748b; font-size:12px; padding:10px;">لا توجد نتائج مسجلة حتى الآن</div>';
       } else {
@@ -1163,11 +1182,11 @@
                 <div class="leaderboard-rank ${rankClass}">${medalEmoji}</div>
                 <div>
                   <div style="font-size: 13px; font-weight: bold; color: #0f172a;">${student.name}</div>
-                  <div style="font-size: 11px; color: #64748b;">الدرجة الكلية: ${student.score}</div>
+                  <div style="font-size: 11px; color: #64748b;">الدرجة الكلية: ${student.score || 0}</div>
                 </div>
               </div>
               <div style="font-size: 14px; font-weight: bold; color: #0284c7;">
-                ${student.percentage}%
+                ${student.percentage || 0}%
               </div>
             </div>
           `;
@@ -1185,10 +1204,6 @@
       let userResultsMap = JSON.parse(localStorage.getItem('exam_results_detail_' + currentEmail)) || {};
       let res = userResultsMap[examId] || { score: 0, total: questions.length, answers: {}, percentage: '0' };
       
-      let lbData = calculateLeaderboardData();
-      let userRank = lbData.findIndex(s => s.email === currentEmail) + 1;
-      if(userRank === 0) userRank = 1;
-
       let container = document.getElementById('modal-questions-container');
       document.getElementById('modal-title').innerText = `نتيجة امتحان: ${title}`;
       document.getElementById('exam-global-timer').style.display = 'none';
@@ -1211,9 +1226,6 @@
               <div style="font-size: 18px; font-weight: bold; color: #4f46e5;">${res.score}</div>
               <div style="font-size: 11px; color: #64748b;">المحصل عليه</div>
             </div>
-          </div>
-          <div style="background: #f1f5f9; padding: 10px; border-radius: 10px; font-size: 12px; font-weight: bold; color: #334155;">
-            🏆 مركز الترتيب الحالي: المركز ${userRank} بين الطلاب
           </div>
         </div>
         <div style="font-size: 14px; font-weight: bold; margin: 15px 0 10px 0; text-align: right;">مراجعة الأسئلة وتصحيحها:</div>
@@ -1266,19 +1278,19 @@
         reader.onload = function(e) {
           const fileData = e.target.result;
           const isVideo = file.type.startsWith('video');
-          videosList.push({
-            id: Date.now(),
+          
+          db.collection("fahem_videos").add({
             title: title,
             type: isVideo ? 'video' : 'image',
             content: fileData,
-            info: isVideo ? 'فيديو مرفوع محلياً' : 'صورة توضيحية مرفوعة'
+            info: isVideo ? 'فيديو مرفوع سحابياً' : 'صورة توضيحية مرفوعة',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          }).then(() => {
+            document.getElementById('new-video-title').value = '';
+            document.getElementById('new-video-link').value = '';
+            fileInput.value = '';
+            alert('تم رفع الفيديو سحابياً بنجاح! 🎥');
           });
-          localStorage.setItem('fahem_videos', JSON.stringify(videosList));
-          document.getElementById('new-video-title').value = '';
-          document.getElementById('new-video-link').value = '';
-          fileInput.value = '';
-          renderVideos();
-          alert('تم إضافة الفيديو بنجاح! 🎥');
         };
         reader.readAsDataURL(file);
       } else if (link) {
@@ -1290,28 +1302,28 @@
           embedLink = `https://www.youtube.com/embed/${videoId}`;
         }
 
-        videosList.push({
-          id: Date.now(),
+        db.collection("fahem_videos").add({
           title: title,
           type: 'iframe',
           content: embedLink,
-          info: 'رابط فيديو تعليمي أفقي'
+          info: 'رابط فيديو تعليمي سحابي',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+          document.getElementById('new-video-title').value = '';
+          document.getElementById('new-video-link').value = '';
+          alert('تم رفع رابط الفيديو سحابياً بنجاح! 🔗');
         });
-        localStorage.setItem('fahem_videos', JSON.stringify(videosList));
-        document.getElementById('new-video-title').value = '';
-        document.getElementById('new-video-link').value = '';
-        renderVideos();
-        alert('تم إضافة رابط الفيديو بنجاح! 🔗');
       } else {
         alert('الرجاء إدخال رابط أو اختيار ملف فيديو/صورة.');
       }
     }
 
     function deleteVideo(id) {
-      videosList = videosList.filter(v => v.id !== id);
-      localStorage.setItem('fahem_videos', JSON.stringify(videosList));
-      renderVideos();
-      alert('تم حذف الفيديو 🗑');
+      db.collection("fahem_videos").doc(id.toString()).delete().then(() => {
+        alert('تم حذف الفيديو 🗑');
+      }).catch(err => {
+        db.collection("fahem_videos").doc(id).delete().then(() => alert('تم حذف الفيديو 🗑'));
+      });
     }
 
     function renderVideos() {
@@ -1324,12 +1336,12 @@
       document.getElementById('stat-videos-count').innerText = videosList.length;
 
       if(videosList.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد فيديوهات متاحة حالياً</p>';
+        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد فيديوهات متاحة سحابياً حالياً</p>';
         return;
       }
 
       videosList.forEach(vid => {
-        let deleteBtn = isUserAdmin ? `<button class="btn-custom-delete" onclick="deleteVideo(${vid.id})">حذف 🗑️</button>` : '';
+        let deleteBtn = isUserAdmin ? `<button class="btn-custom-delete" onclick="deleteVideo('${vid.id}')">حذف 🗑️</button>` : '';
         let mediaHtml = '';
 
         if (vid.type === 'video') {
@@ -1362,19 +1374,24 @@
       if(!title) { alert('الرجاء كتابة عنوان ملف الـ PDF'); return; }
       if(!link) link = 'https://www.google.com';
       
-      pdfsList.push({ id: Date.now(), title: title, link: link, info: 'مذكرة تعليمية PDF' });
-      localStorage.setItem('fahem_pdfs', JSON.stringify(pdfsList));
-      document.getElementById('new-pdf-title').value = '';
-      document.getElementById('new-pdf-link').value = '';
-      renderPdfs();
-      alert('تم إضافة ملف الـ PDF بنجاح! 📁');
+      db.collection("fahem_pdfs").add({
+        title: title,
+        link: link,
+        info: 'مذكرة تعليمية PDF سحابية',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        document.getElementById('new-pdf-title').value = '';
+        document.getElementById('new-pdf-link').value = '';
+        alert('تم إضافة ملف الـ PDF سحابياً بنجاح! 📁');
+      });
     }
 
     function deletePdf(id) {
-      pdfsList = pdfsList.filter(p => p.id !== id);
-      localStorage.setItem('fahem_pdfs', JSON.stringify(pdfsList));
-      renderPdfs();
-      alert('تم حذف ملف الـ PDF 🗑');
+      db.collection("fahem_pdfs").doc(id.toString()).delete().then(() => {
+        alert('تم حذف ملف الـ PDF 🗑');
+      }).catch(err => {
+        db.collection("fahem_pdfs").doc(id).delete().then(() => alert('تم حذف ملف الـ PDF 🗑'));
+      });
     }
 
     function renderPdfs() {
@@ -1390,7 +1407,7 @@
       }
 
       pdfsList.forEach(pdf => {
-        let deleteBtn = isUserAdmin ? `<button class="btn-custom-delete" onclick="deletePdf(${pdf.id})">حذف 🗑</button>` : '';
+        let deleteBtn = isUserAdmin ? `<button class="btn-custom-delete" onclick="deletePdf('${pdf.id}')">حذف 🗑</button>` : '';
         container.innerHTML += `
           <div class="card-item">
             <div class="card-row">
@@ -1411,8 +1428,6 @@
     function updateStats() {
       const examsCount = document.getElementById('set-exams-count').value.trim();
       if(examsCount) statsData.exams = examsCount;
-
-      localStorage.setItem('fahem_stats', JSON.stringify(statsData));
       renderStats();
       alert('تم تحديث الإحصائيات بنجاح! 📊');
     }
