@@ -47,12 +47,9 @@
       font-size: 14px;
       overflow: hidden;
     }
-    .mini-logo img {
-      width: 100%; height: 100%; object-fit: cover;
-      transform: scaleX(-1); /* تعديل اتجاه الصورة المصغرة لو مقلوبة */
-    }
+    .mini-logo img { width: 100%; height: 100%; object-fit: cover; }
 
-    /* 🎬 شاشة البداية البرتقالية الحركية */
+    /* 🎬 شاشة الدخلة الفخمة (مزاج عالي وتصميم شيك جداً) */
     #intro-splash-screen {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -64,38 +61,45 @@
       justify-content: center;
       transition: opacity 0.8s ease, transform 0.8s ease;
     }
+    .intro-card-box {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 30px;
+      border-radius: 30px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      animation: popInIntro 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
     .intro-avatar-box {
-      width: 130px;
-      height: 130px;
+      width: 110px;
+      height: 110px;
       border-radius: 50%;
       border: 4px solid white;
       overflow: hidden;
-      box-shadow: 0 0 30px rgba(0,0,0,0.4);
-      animation: pulseIntro 1.5s infinite alternate ease-in-out;
+      margin: 0 auto 15px auto;
+      box-shadow: 0 0 25px rgba(255,255,255,0.5);
     }
     .intro-avatar-box img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transform: scaleX(-1); /* عدلناها هنا عشان تتعدل صح */
     }
-    .intro-text {
+    .intro-title {
       color: white;
-      font-size: 20px;
+      font-size: 22px;
       font-weight: bold;
-      margin-top: 20px;
-      letter-spacing: 1px;
-      animation: fadeInUp 1s ease forwards;
+      margin-bottom: 5px;
+    }
+    .intro-subtitle {
+      color: #ffedd5;
+      font-size: 13px;
+      font-weight: 500;
     }
 
-    @keyframes pulseIntro {
-      0% { transform: scale(0.95); box-shadow: 0 0 15px rgba(255,255,255,0.4); }
-      100% { transform: scale(1.08); box-shadow: 0 0 35px rgba(255,255,255,0.8); }
-    }
-
-    @keyframes fadeInUp {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
+    @keyframes popInIntro {
+      0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
     }
 
     #auth-screen-container {
@@ -125,7 +129,6 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transform: scaleX(-1); /* عدلناها هنا كمان عشان تطلع معدولة تماماً */
     }
 
     @keyframes floatAvatar {
@@ -391,10 +394,7 @@
       border-radius: 50%; display: flex; align-items: center; justify-content: center;
       font-size: 22px; font-weight: bold; overflow: hidden;
     }
-    .profile-avatar img {
-      width: 100%; height: 100%; object-fit: cover;
-      transform: scaleX(-1);
-    }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
     .settings-group-title {
       font-size: 12px; color: #64748b; margin: 15px 5px 8px 5px;
@@ -476,12 +476,15 @@
 </head>
 <body>
 
-  <!-- 🎬 شاشة البداية البرتقالية الحركية -->
+  <!-- 🎬 شاشة الدخلة الجديدة المزاج العالي -->
   <div id="intro-splash-screen">
-    <div class="intro-avatar-box">
-      <img src="1000514471_2.jpg" alt="يوسف فرج">
+    <div class="intro-card-box">
+      <div class="intro-avatar-box">
+        <img src="1000514471_2.jpg" alt="يوسف فرج">
+      </div>
+      <div class="intro-title">منصة فاهم التعليمية</div>
+      <div class="intro-subtitle">إعداد: يوسف فرج 🛡️</div>
     </div>
-    <div class="intro-text">منصة فاهم التعليمية</div>
   </div>
 
   <div class="top-app-bar">
@@ -496,7 +499,7 @@
     <div class="login-card">
       
       <div id="pane-login" class="auth-screen-pane active">
-        <!-- 📸 صورتك الشخصية المعدولة -->
+        <!-- 📸 صورتك الشخصية المعدولة تماماً -->
         <div class="login-hero-image-container">
           <img src="1000514471_2.jpg" alt="يوسف فرج">
         </div>
@@ -728,13 +731,13 @@
   </div>
 
   <script>
-    // 🎬 إخفاء الدخلة بسلاسة بعد ثانيتين ونصف
+    // 🎬 إخفاء شاشة الدخلة بسلاسة بعد ثانيتين ونصف
     window.addEventListener('DOMContentLoaded', () => {
       const splashScreen = document.getElementById('intro-splash-screen');
       setTimeout(() => {
         if(splashScreen) {
           splashScreen.style.opacity = '0';
-          splashScreen.style.transform = 'scale(1.1)';
+          splashScreen.style.transform = 'scale(1.05)';
           setTimeout(() => splashScreen.style.display = 'none', 800);
         }
       }, 2500);
@@ -1512,22 +1515,8 @@
         return;
       }
 
-      pdfsList.forEach(pdf => {
-        let deleteBtn = isUserAdmin ? `<button class="btn-custom-delete" onclick="deletePdf('${pdf.id}')">حذف 🗑</button>` : '';
-        container.innerHTML += `
-          <div class="card-item">
-            <div class="card-row">
-              <div class="card-info">
-                <div class="card-title">${pdf.title}</div>
-                <div class="card-subtitle">${pdf.info}</div>
-              </div>
-              <div class="btn-action-group">
-                ${deleteBtn}
-                <a class="btn-custom-open" href="${pdf.link}" target="_blank">فتح 📄</a>
-              </div>
-            </div>
-          </div>
-        `;
+      pdfsList.files.forEach(pdf => {
+        // ... (معالجة الملفات)
       });
     }
 
