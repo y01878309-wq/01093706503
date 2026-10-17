@@ -48,30 +48,26 @@
       overflow: hidden;
     }
 
-    /* 🎬 شاشة الدخلة (Intro Video) مطابقة للفيديو تماماً */
+    /* 🎬 شاشة البداية (الدخلة البرتقالية متحركة تلقائياً) */
     #intro-splash-screen {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: #f97316; /* لون خلفية الفيديو البرتقالية */
+      background: #f97316;
       z-index: 9999;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       transition: opacity 0.8s ease;
     }
     .intro-animation-box {
       width: 100%;
-      max-width: 500px;
-      aspect-ratio: 16/9;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      height: 100%;
+      position: relative;
     }
-    .intro-animation-box video, .intro-animation-box img {
+    .intro-animation-box video {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
     }
 
     #auth-screen-container {
@@ -448,13 +444,11 @@
 </head>
 <body>
 
-  <!-- 🎬 شاشة البداية (الدخلة البرتقالية متحركة زي الفيديو) -->
+  <!-- 🎬 شاشة البداية (الدخلة البرتقالية تعمل تلقائياً وبدون أي أزرار) -->
   <div id="intro-splash-screen">
     <div class="intro-animation-box">
-      <!-- هنا يمكنك وضع فيديو الدخلة المأخوذ من الفيديو بصيغة mp4 أو سيظهر تلقائياً كشعار متحرك -->
-      <video id="intro-video-el" autoplay muted playsinline style="width: 100%; height: 100%; object-fit: contain;">
+      <video id="intro-video-el" autoplay muted playsinline style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; pointer-events: none;">
         <source src="1000514421.mp4" type="video/mp4">
-        Your browser does not support the video tag.
       </video>
     </div>
   </div>
@@ -703,26 +697,30 @@
   </div>
 
   <script>
-    // 🎬 سكريبت لإخفاء شاشة الدخلة بعد ثوانٍ وعرض كارت تسجيل الدخول بصورتك
+    // 🎬 سكريبت التشغيل التلقائي للدخلة وإخفائها بسلاسة
     window.addEventListener('DOMContentLoaded', () => {
       const splashScreen = document.getElementById('intro-splash-screen');
       const introVideo = document.getElementById('intro-video-el');
 
-      // تحديد وقت الدخلة (مثلاً 4 ثوانٍ أو عند انتهاء عرض الفيديو)
-      const hideSplash = () => {
-        if(splashScreen) {
-          splashScreen.style.opacity = '0';
-          setTimeout(() => {
-            splashScreen.style.display = 'none';
-          }, 800);
-        }
-      };
-
       if(introVideo) {
-        introVideo.onended = hideSplash;
+        introVideo.play().catch(e => {
+          console.log("Auto-play prevented:", e);
+        });
+        introVideo.onended = () => {
+          if(splashScreen) {
+            splashScreen.style.opacity = '0';
+            setTimeout(() => splashScreen.style.display = 'none', 800);
+          }
+        };
       }
-      // وقت احتياطي 4 ثوانٍ في حال لم يعمل الفيديو
-      setTimeout(hideSplash, 4000);
+
+      // وقت احتياطي 4 ثوانٍ في حال انتهى الفيديو أو حدثت أي مشكلة
+      setTimeout(() => {
+        if(splashScreen && splashScreen.style.display !== 'none') {
+          splashScreen.style.opacity = '0';
+          setTimeout(() => splashScreen.style.display = 'none', 800);
+        }
+      }, 4000);
     });
 
     const SUPABASE_URL = "https://lqllphlnairxuahpiaor.supabase.co";
