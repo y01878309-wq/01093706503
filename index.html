@@ -47,6 +47,7 @@
       font-size: 14px;
     }
 
+    /* 🎬 تصميم شاشة الدخول الاحترافية بالأنيميشن وصورتك الشخصية */
     #auth-screen-container {
       display: flex;
       flex-direction: column;
@@ -55,20 +56,52 @@
       min-height: calc(100vh - 50px);
       width: 100%;
       padding: 20px;
-      background: #0b0f19;
+      background: linear-gradient(135deg, #0b0f19, #1e1b4b);
+      position: relative;
+      overflow: hidden;
     }
+
+    .login-hero-image-container {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 3px solid #38bdf8;
+      overflow: hidden;
+      margin: 0 auto 15px auto;
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.5);
+      animation: floatAvatar 3s ease-in-out infinite;
+    }
+    .login-hero-image-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    @keyframes floatAvatar {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
     .login-card {
-      background: #111827;
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(17, 24, 39, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(56, 189, 248, 0.2);
       border-radius: 24px;
       padding: 30px 20px;
       text-align: center;
       max-width: 400px;
       width: 100%;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.7);
       color: white;
       position: relative;
+      animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
+
+    @keyframes slideUpFade {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
     .back-btn {
       position: absolute;
       top: 20px;
@@ -96,9 +129,11 @@
       font-size: 14px;
       outline: none;
       text-align: right;
+      transition: all 0.3s;
     }
     .auth-input:focus {
       border-color: #38bdf8;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
     }
     .voice-btn {
       position: absolute;
@@ -120,7 +155,7 @@
     }
 
     .auth-btn {
-      background: #0284c7;
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
       color: white;
       padding: 12px;
       border: none;
@@ -131,7 +166,10 @@
       width: 100%;
       margin-top: 5px;
       box-shadow: 0 4px 15px rgba(2,132,199,0.4);
+      transition: transform 0.2s;
     }
+    .auth-btn:active { transform: scale(0.98); }
+
     .download-btn {
       background: linear-gradient(135deg, #8b5cf6, #6d28d9);
       color: white;
@@ -145,6 +183,7 @@
       margin-bottom: 15px;
       text-decoration: none;
       display: inline-block;
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
     }
     .auth-screen-pane { display: none; }
     .auth-screen-pane.active { display: block; }
@@ -304,8 +343,10 @@
     .profile-avatar {
       width: 55px; height: 55px; background: rgba(255,255,255,0.2);
       border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      font-size: 22px; font-weight: bold;
+      font-size: 22px; font-weight: bold; overflow: hidden;
     }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
     .settings-group-title {
       font-size: 12px; color: #64748b; margin: 15px 5px 8px 5px;
       text-align: right; font-weight: bold;
@@ -388,7 +429,7 @@
 
   <div class="top-app-bar">
     <div class="logo-title">
-      <div class="mini-logo">🛡</div>
+      <div class="mini-logo"><img src="1000514471.jpg" style="width:100%; height:100%; border-radius:6px; object-fit:cover;" alt="يوسف فرج"></div>
       <span>منصة فاهم التعليمية - يوسف فرج</span>
     </div>
     <div id="top-bar-user-status" style="font-size: 11px; color: #38bdf8;">مرحباً بك</div>
@@ -398,9 +439,12 @@
     <div class="login-card">
       
       <div id="pane-login" class="auth-screen-pane active">
-        <div style="font-size: 40px; margin-bottom: 10px;">🛡</div>
-        <h2 style="margin-bottom: 5px; font-size: 20px;">مرحباً بعودتك!</h2>
-        <p style="color: #94a3b8; font-size: 12px; margin-bottom: 20px;">سجل الدخول للمتابعة</p>
+        <!-- 📸 صورتك الشخصية داخل واجهة الأنيميشن -->
+        <div class="login-hero-image-container">
+          <img src="1000514471.jpg" alt="يوسف فرج">
+        </div>
+        <h2 style="margin-bottom: 5px; font-size: 20px;">مرحباً بك في منصة فاهم</h2>
+        <p style="color: #94a3b8; font-size: 12px; margin-bottom: 20px;">إعداد: يوسف فرج 🛡️</p>
 
         <a href="#" class="download-btn" onclick="downloadApp(event)">
           📦 تحميل تطبيق المنصة (APK)
@@ -565,7 +609,7 @@
 
     <div id="sec-settings" class="content-section">
       <div class="settings-profile-box">
-        <div class="profile-avatar">YF</div>
+        <div class="profile-avatar"><img src="1000514471.jpg" alt="يوسف فرج"></div>
         <div>
           <div style="font-size: 16px; font-weight: bold;" id="profile-name-display">يوسف فرج</div>
           <div style="font-size: 12px; opacity: 0.8;" id="profile-email-display">y01878309@gmail.com</div>
@@ -629,7 +673,7 @@
   <script>
     // 🌐 إعدادات سيرفر Supabase السحابي المربوط بنجاح
     const SUPABASE_URL = "https://lqllphlnairxuahpiaor.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxbGxwaGxuYWlyeHVhaHBpYW9yIiwicm9sZSI5Yw.H9zM_EXAMPLE_KEY_CONNECTED"; // المفتاح السري العام
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxbGxwaGxuYWlyeHVhaHBpYW9yIiwicm9sZSI5Yw.H9zM_EXAMPLE_KEY_CONNECTED";
 
     const { createClient } = supabase;
     const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -686,10 +730,8 @@
       syncDataFromCloud();
     };
 
-    // 🔄 المزامنة الحية سحابياً من Supabase بقاعدة البيانات
     async function syncDataFromCloud() {
       try {
-        // 1. مزامنة الفيديوهات
         let { data: videos } = await _supabase.from('fahem_videos').select('*');
         if (videos) {
           videosList = videos;
@@ -697,7 +739,6 @@
           renderVideos();
         }
 
-        // 2. مزامنة الامتحانات
         let { data: exams } = await _supabase.from('fahem_exams').select('*');
         if (exams) {
           examsList = exams;
@@ -707,14 +748,12 @@
           renderStats();
         }
 
-        // 3. مزامنة ملفات PDF
         let { data: pdfs } = await _supabase.from('fahem_pdfs').select('*');
         if (pdfs) {
           pdfsList = pdfs;
           renderPdfs();
         }
 
-        // 4. مزامنة لوحة الترتيب
         let { data: leaderboard } = await _supabase.from('fahem_leaderboard').select('*');
         if (leaderboard) {
           renderLeaderboardsFromCloud(leaderboard);
@@ -754,7 +793,6 @@
       
       localStorage.setItem('fahem_email', emailInput);
       
-      // تسجيل الطالب سحابياً في جدول لوحة الترتيب
       await _supabase.from('fahem_leaderboard').upsert({
         email: emailInput,
         name: emailInput === ADMIN_EMAIL ? 'يوسف فرج (الأدمن)' : emailInput,
@@ -765,7 +803,6 @@
       setupSession(emailInput);
     }
 
-    // ✉️ نظام إرسال كود استعادة كلمة المرور آمن عبر الجيميل المباشر
     async function sendResetCode() {
       const email = document.getElementById('forgot-email').value.trim();
       if(!email) {
@@ -776,17 +813,14 @@
       activeResetEmail = email;
       generatedResetCode = Math.floor(1000 + Math.random() * 9000).toString();
 
-      // استخدام Supabase Auth API لإرسال إشعار بريدي آمن حقيقي للطالب على جيميله
       try {
         const { error } = await _supabase.auth.resetPasswordForEmail(email, {
           redirectTo: window.location.href,
         });
         
-        // إظهار تنفيدي نجاح الإرسال حصرياً للجيميل بدون كشف الكود نهائياً على الشاشة
-        alert(`تم إرسال تعليمات ورامز استعادة كلمة المرور بنجاح إلى بريدك الإلكتروني (${email}) عبر خادم جيميل الآمن ✉️\nيرجى تفقد بريدك (صندوق الوارد أو الرسائل غير المرغوب فيها Spam).`);
+        alert(`تم إرسال تعليمات ورمز استعادة كلمة المرور بنجاح إلى بريدك الإلكتروني (${email}) عبر خادم جيميل الآمن ✉️\nيرجى تفقد بريدك (صندوق الوارد أو الرسائل غير المرغوب فيها Spam).`);
         switchAuthPane('pane-reset');
       } catch (err) {
-        // بديل آمن تماماً في حال تفعيل النظام اليدوي
         alert(`تم إرسال رمز التحقق الأمني المباشر إلى بريدك (${email}) بنجاح ✉️`);
         switchAuthPane('pane-reset');
       }
@@ -806,7 +840,6 @@
         return;
       }
 
-      // حفظ كلمة المرور الجديدة محلياً وسحابياً بأمان
       localStorage.setItem('pass_' + activeResetEmail, newPass);
       alert('تم تغيير وتحديث كلمة المرور بنجاح! يمكنك تسجيل الدخول الآن.');
       switchAuthPane('pane-login');
@@ -946,7 +979,6 @@
         }
       }
 
-      // رفع الامتحان سحابياً في Supabase
       const { error } = await _supabase.from('fahem_exams').insert([{
         title: title,
         totalTime: totalTimeMin * 60,
@@ -1158,7 +1190,6 @@
       });
       let overallPercentage = totalMaxScore > 0 ? ((totalSumScore / totalMaxScore) * 100).toFixed(1) : 0;
       
-      // حفظ وترقية النتيجة سحابياً في جدول الترتيب بـ Supabase
       await _supabase.from('fahem_leaderboard').upsert({
         email: email,
         name: email === ADMIN_EMAIL ? 'يوسف فرج (الأدمن)' : email,
