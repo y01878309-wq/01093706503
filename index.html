@@ -48,26 +48,49 @@
       overflow: hidden;
     }
 
-    /* 🎬 شاشة البداية (الدخلة البرتقالية متحركة تلقائياً) */
+    /* 🎬 شاشة الدخلة البرتقالية الحركية (بدون الحاجة لملف فيديو مفقود) */
     #intro-splash-screen {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: #f97316;
+      background: linear-gradient(135deg, #f97316, #ea580c, #c2410c);
       z-index: 9999;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      transition: opacity 0.8s ease;
+      transition: opacity 0.8s ease, transform 0.8s ease;
     }
-    .intro-animation-box {
-      width: 100%;
-      height: 100%;
-      position: relative;
+    .intro-avatar-box {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 4px solid white;
+      overflow: hidden;
+      box-shadow: 0 0 30px rgba(0,0,0,0.4);
+      animation: pulseIntro 1.5s infinite alternate ease-in-out;
     }
-    .intro-animation-box video {
+    .intro-avatar-box img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+    }
+    .intro-text {
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 20px;
+      letter-spacing: 1px;
+      animation: fadeInUp 1s ease forwards;
+    }
+
+    @keyframes pulseIntro {
+      0% { transform: scale(0.95); box-shadow: 0 0 15px rgba(255,255,255,0.4); }
+      100% { transform: scale(1.08); box-shadow: 0 0 35px rgba(255,255,255,0.8); }
+    }
+
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
 
     #auth-screen-container {
@@ -444,13 +467,12 @@
 </head>
 <body>
 
-  <!-- 🎬 شاشة البداية (الدخلة البرتقالية تعمل تلقائياً وبدون أي أزرار) -->
+  <!-- 🎬 شاشة البداية البرتقالية الحركية الخالية من الأخطاء -->
   <div id="intro-splash-screen">
-    <div class="intro-animation-box">
-      <video id="intro-video-el" autoplay muted playsinline style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; pointer-events: none;">
-        <source src="1000514421.mp4" type="video/mp4">
-      </video>
+    <div class="intro-avatar-box">
+      <img src="1000514471_2.jpg" alt="يوسف فرج">
     </div>
+    <div class="intro-text">منصة فاهم التعليمية</div>
   </div>
 
   <div class="top-app-bar">
@@ -697,30 +719,16 @@
   </div>
 
   <script>
-    // 🎬 سكريبت التشغيل التلقائي للدخلة وإخفائها بسلاسة
+    // 🎬 إخفاء الدخلة بسلاسة بعد ثانيتين ونصف
     window.addEventListener('DOMContentLoaded', () => {
       const splashScreen = document.getElementById('intro-splash-screen');
-      const introVideo = document.getElementById('intro-video-el');
-
-      if(introVideo) {
-        introVideo.play().catch(e => {
-          console.log("Auto-play prevented:", e);
-        });
-        introVideo.onended = () => {
-          if(splashScreen) {
-            splashScreen.style.opacity = '0';
-            setTimeout(() => splashScreen.style.display = 'none', 800);
-          }
-        };
-      }
-
-      // وقت احتياطي 4 ثوانٍ في حال انتهى الفيديو أو حدثت أي مشكلة
       setTimeout(() => {
-        if(splashScreen && splashScreen.style.display !== 'none') {
+        if(splashScreen) {
           splashScreen.style.opacity = '0';
+          splashScreen.style.transform = 'scale(1.1)';
           setTimeout(() => splashScreen.style.display = 'none', 800);
         }
-      }, 4000);
+      }, 2500);
     });
 
     const SUPABASE_URL = "https://lqllphlnairxuahpiaor.supabase.co";
