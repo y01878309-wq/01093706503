@@ -46,7 +46,7 @@
     }
     .mini-logo img { width: 100%; height: 100%; object-fit: cover; }
 
-    /* 🎬 شاشة الدخلة البرتقالية الفخمة (بدون أي أخطاء أو صور مكسورة) */
+    /* شاشة الدخلة البرتقالية الفخمة */
     #intro-splash-screen {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -348,10 +348,6 @@
       border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;
       text-decoration: none; display: inline-block;
     }
-    .btn-custom-delete {
-      background: #ef4444; color: white; border: none; padding: 6px 12px;
-      border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;
-    }
 
     .media-preview-container {
       width: 100%;
@@ -461,7 +457,7 @@
 </head>
 <body>
 
-  <!-- 🎬 شاشة الدخلة البرتقالية الفخمة (بدون أي أخطاء في الصور) -->
+  <!-- شاشة الدخلة البرتقالية -->
   <div id="intro-splash-screen">
     <div class="intro-card-box">
       <div class="intro-title">منصة فاهم التعليمية</div>
@@ -481,7 +477,6 @@
     <div class="login-card">
       
       <div id="pane-login" class="auth-screen-pane active">
-        <!-- 📸 صورتك الشخصية في تسجيل الدخول -->
         <div class="login-hero-image-container">
           <img src="1000514471_2.jpg" alt="يوسف فرج">
         </div>
@@ -507,7 +502,7 @@
         <button class="back-btn" onclick="switchAuthPane('pane-login')">‹</button>
         <div style="font-size: 40px; margin-bottom: 10px; margin-top: 15px;">🔒</div>
         <h2 style="margin-bottom: 5px; font-size: 18px;">نسيت كلمة المرور؟</h2>
-        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 20px;">أدخل بريدك الإلكتروني وسنرسل لك رمزاً حقيقياً لإعادة تعيين كلمة المرور.</p>
+        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 20px;">أدخل بريدك الإلكتروني وسنرسل لك رمزاً لإعادة تعيين كلمة المرور.</p>
         
         <div class="input-wrapper">
           <input type="email" id="forgot-email" class="auth-input" placeholder="البريد الإلكتروني">
@@ -713,7 +708,7 @@
   </div>
 
   <script>
-    // 🎬 إخفاء شاشة الدخلة البرتقالية بسلاسة
+    // إخفاء شاشة الدخلة البرتقالية بسلاسة
     window.addEventListener('DOMContentLoaded', () => {
       const splashScreen = document.getElementById('intro-splash-screen');
       setTimeout(() => {
@@ -725,7 +720,7 @@
       }, 2500);
     });
 
-    // 🚀 إعداد رابط السيرفر السحابي المباشر
+    // رابط السيرفر السحابي المباشر الخاص بك
     const FAHEM_SERVER = "https://ais-dev-yhkbzyacunht5aird53l4c-362968486830.europe-west1.run.app";
 
     let activeQuestions = [];
@@ -780,13 +775,14 @@
       syncDataFromCloud();
     };
 
-    // 🌐 دالة مزامنة وجلب البيانات من السيرفر السحابي
+    // مزامنة البيانات بالكامل من السيرفر السحابي
     async function syncDataFromCloud() {
       try {
         const examsRes = await fetch(FAHEM_SERVER + '/api/exams');
         if (examsRes.ok) {
           examsList = await examsRes.json();
-          document.getElementById('stat-exams-display').innerText = examsList.length;
+          const statExams = document.getElementById('stat-exams-display');
+          if(statExams) statExams.innerText = examsList.length;
           statsData.exams = examsList.length.toString();
           renderExams();
           renderStats();
@@ -795,7 +791,8 @@
         const vidsRes = await fetch(FAHEM_SERVER + '/api/videos');
         if (vidsRes.ok) {
           videosList = await vidsRes.json();
-          document.getElementById('stat-videos-count').innerText = videosList.length;
+          const statVids = document.getElementById('stat-videos-count');
+          if(statVids) statVids.innerText = videosList.length;
           renderVideos();
         }
 
@@ -948,7 +945,7 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
               <span style="font-size: 11px; font-weight: bold; color: #0284c7;">السؤال رقم (${i})</span>
               <div style="display: flex; gap: 4px;">
-                <input type="number" id="q_time_${i}" class="auth-input" placeholder="وقت السؤال بالثواني (فارغ = مفتوح)" style="width: 140px; padding: 4px; background: #f8fafc; color: #1e293b; font-size: 10px; margin-bottom: 0;">
+                <input type="number" id="q_time_${i}" class="auth-input" placeholder="وقت السؤال بالثواني..." style="width: 140px; padding: 4px; background: #f8fafc; color: #1e293b; font-size: 10px; margin-bottom: 0;">
                 <select id="q_type_${i}" class="auth-input" style="width: 110px; padding: 4px; background: #f8fafc; color: #1e293b; font-size: 11px; margin-bottom: 0;" onchange="toggleQuestionTypeFields(${i})">
                   <option value="mcq">اختر من متعدد</option>
                   <option value="essay">مقالي</option>
@@ -989,12 +986,16 @@
       }
     }
 
-    // 🌐 دالة إضافة امتحان ونشره عبر السيرفر السحابي
+    // نشر الامتحان مباشرة إلى السيرفر السحابي
     async function addExam() {
       const title = document.getElementById('new-exam-title').value.trim();
       const totalTimeMin = parseInt(document.getElementById('new-exam-total-time').value.trim()) || 0;
       const countVal = parseInt(document.getElementById('new-exam-count').value.trim()) || 1;
-      if(!title) { alert('الرجاء كتابة عنوان الامتحان'); return; }
+      
+      if(!title) { 
+        alert('الرجاء كتابة عنوان الامتحان'); 
+        return; 
+      }
       
       let questionsArr = [];
       for(let i=1; i<=countVal; i++) {
@@ -1034,10 +1035,11 @@
           alert('تم إضافة الامتحان ونشره على السيرفر بنجاح لجميع الطلاب! ✅');
           syncDataFromCloud();
         } else {
-          alert('فشل في حفظ الامتحان على السيرفر.');
+          alert('فشل السيرفر في حفظ الامتحان، تأكد من اتصالك.');
         }
       } catch (err) {
-        alert('خطأ في الاتصال بالشبكة أثناء رفع الامتحان.');
+        console.error(err);
+        alert('خطأ في الاتصال بالشبكة أو السيرفر مغلق.');
       }
     }
 
@@ -1394,7 +1396,8 @@
       if(!container) return;
       container.innerHTML = '';
 
-      document.getElementById('stat-videos-count').innerText = videosList.length;
+      const statVids = document.getElementById('stat-videos-count');
+      if(statVids) statVids.innerText = videosList.length;
 
       if(videosList.length === 0) {
         container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد فيديوهات متاحة سحابياً حالياً</p>';
@@ -1479,8 +1482,10 @@
     }
 
     function renderStats() {
-      document.getElementById('stat-exams-display').innerText = statsData.exams;
-      document.getElementById('stat-rank-display').innerText = statsData.rank;
+      const statExams = document.getElementById('stat-exams-display');
+      const statRank = document.getElementById('stat-rank-display');
+      if(statExams) statExams.innerText = statsData.exams;
+      if(statRank) statRank.innerText = statsData.rank;
       
       const rankInput = document.getElementById('set-rank-val');
       if(rankInput) {
