@@ -7,9 +7,6 @@
   <meta name="description" content="منصة فاهم التعليمية - منصة يوسف فرج التعليمية للمناهج والامتحانات والفيديوهات والشروحات الدراسية.">
   <title>منصة فاهم التعليمية - يوسف فرج</title>
   
-  <!-- 🌐 استدعاء سكريبت سيرفر فاهم السحابي المباشر -->
-  <script src="https://ais-dev-yhkbzyacunht5aird53l4c-362968486830.europe-west1.run.app/api/sdk.js"></script>
-
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body {
@@ -49,7 +46,7 @@
     }
     .mini-logo img { width: 100%; height: 100%; object-fit: cover; }
 
-    /* 🎬 شاشة الدخلة الفخمة (مزاج عالي وتصميم شيك جداً) */
+    /* 🎬 شاشة الدخلة البرتقالية الفخمة (بدون أي أخطاء أو صور مكسورة) */
     #intro-splash-screen {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -65,31 +62,19 @@
       background: rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.3);
-      padding: 30px;
+      padding: 35px 25px;
       border-radius: 30px;
       text-align: center;
       box-shadow: 0 20px 40px rgba(0,0,0,0.2);
       animation: popInIntro 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    }
-    .intro-avatar-box {
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      border: 4px solid white;
-      overflow: hidden;
-      margin: 0 auto 15px auto;
-      box-shadow: 0 0 25px rgba(255,255,255,0.5);
-    }
-    .intro-avatar-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      max-width: 320px;
+      width: 90%;
     }
     .intro-title {
       color: white;
       font-size: 22px;
       font-weight: bold;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
     }
     .intro-subtitle {
       color: #ffedd5;
@@ -476,12 +461,9 @@
 </head>
 <body>
 
-  <!-- 🎬 شاشة الدخلة الجديدة المزاج العالي -->
+  <!-- 🎬 شاشة الدخلة البرتقالية الفخمة (بدون أي أخطاء في الصور) -->
   <div id="intro-splash-screen">
     <div class="intro-card-box">
-      <div class="intro-avatar-box">
-        <img src="1000514471_2.jpg" alt="يوسف فرج">
-      </div>
       <div class="intro-title">منصة فاهم التعليمية</div>
       <div class="intro-subtitle">إعداد: يوسف فرج 🛡️</div>
     </div>
@@ -499,7 +481,7 @@
     <div class="login-card">
       
       <div id="pane-login" class="auth-screen-pane active">
-        <!-- 📸 صورتك الشخصية المعدولة تماماً -->
+        <!-- 📸 صورتك الشخصية في تسجيل الدخول -->
         <div class="login-hero-image-container">
           <img src="1000514471_2.jpg" alt="يوسف فرج">
         </div>
@@ -731,7 +713,7 @@
   </div>
 
   <script>
-    // 🎬 إخفاء شاشة الدخلة بسلاسة بعد ثانيتين ونصف
+    // 🎬 إخفاء شاشة الدخلة البرتقالية بسلاسة
     window.addEventListener('DOMContentLoaded', () => {
       const splashScreen = document.getElementById('intro-splash-screen');
       setTimeout(() => {
@@ -1032,26 +1014,30 @@
         }
       }
 
-      const response = await fetch(FAHEM_SERVER + '/api/exams', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: title,
-          totalTime: totalTimeMin * 60,
-          questions: questionsArr,
-          info: `عدد الأسئلة: ${countVal} | متاح الآن`
-        })
-      });
+      try {
+        const response = await fetch(FAHEM_SERVER + '/api/exams', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: title,
+            totalTime: totalTimeMin * 60,
+            questions: questionsArr,
+            info: `عدد الأسئلة: ${countVal} | متاح الآن`
+          })
+        });
 
-      if (response.ok) {
-        document.getElementById('new-exam-title').value = '';
-        document.getElementById('new-exam-total-time').value = '';
-        document.getElementById('new-exam-count').value = '1';
-        generateQuestionFields();
-        alert('تم إضافة الامتحان ونشره على السيرفر بنجاح لجميع الطلاب! ✅');
-        syncDataFromCloud();
-      } else {
-        alert('خطأ في رفع الامتحان للسيرفر');
+        if (response.ok) {
+          document.getElementById('new-exam-title').value = '';
+          document.getElementById('new-exam-total-time').value = '';
+          document.getElementById('new-exam-count').value = '1';
+          generateQuestionFields();
+          alert('تم إضافة الامتحان ونشره على السيرفر بنجاح لجميع الطلاب! ✅');
+          syncDataFromCloud();
+        } else {
+          alert('فشل في حفظ الامتحان على السيرفر.');
+        }
+      } catch (err) {
+        alert('خطأ في الاتصال بالشبكة أثناء رفع الامتحان.');
       }
     }
 
@@ -1222,7 +1208,6 @@
       userResultsMap[currentExamId] = examResultData;
       localStorage.setItem('exam_results_detail_' + currentEmail, JSON.stringify(userResultsMap));
 
-      // إرسال النتيجة للسيرفر السحابي
       try {
         await fetch(FAHEM_SERVER + '/api/exams/' + currentExamId + '/submit', {
           method: 'POST',
@@ -1246,7 +1231,6 @@
       if(!lbData || !Array.isArray(lbData)) return;
       
       let htmlContent = '';
-      const currentEmail = localStorage.getItem('fahem_email') || ADMIN_EMAIL;
       
       if(lbData.length === 0) {
         htmlContent = '<div style="text-align:center; color:#64748b; font-size:12px; padding:10px;">لا توجد نتائج مسجلة حتى الآن</div>';
