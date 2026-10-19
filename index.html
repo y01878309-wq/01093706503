@@ -656,7 +656,7 @@
   </div>
 
   <script>
-    // إعدادات JSONBin السحابية المحدثة (الصندوق الجديد)
+    // إعدادات JSONBin السحابية المحدثة
     const JSONBIN_BIN_ID = "6ad5d97affd5d1605377e3c5";
     const JSONBIN_MASTER_KEY = "$2a$10$NqkCGC1GAztpqUH.Y3vKo.3Cfcd3cwymvds9xtzwhMDjImwkFl0.";
     const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
@@ -739,20 +739,28 @@
       renderAll();
     }
 
-    // حفظ ونشر البيانات سحابياً على JSONBin بحالة تحقق أمان
+    // حفظ ونشر البيانات سحابياً مع منع تعارض الإصدارات وتأكيد القبول الفوري
     async function saveDatatoJSONBin() {
       try {
         const res = await fetch(JSONBIN_URL, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
-            'X-Master-Key': JSONBIN_MASTER_KEY
+            'X-Master-Key': JSONBIN_MASTER_KEY,
+            'X-Bin-Versioning': 'false'
           },
           body: JSON.stringify(appData)
         });
-        return res.ok;
+        
+        if(res.ok) {
+          return true;
+        } else {
+          const errText = await res.text();
+          console.error("خطأ من السيرفر:", errText);
+          return false;
+        }
       } catch (err) {
-        console.error('خطأ في حفظ البيانات:', err);
+        console.error('خطأ في شبكة الاتصال:', err);
         return false;
       }
     }
