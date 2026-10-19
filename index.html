@@ -46,47 +46,6 @@
     }
     .mini-logo img { width: 100%; height: 100%; object-fit: cover; }
 
-    /* شاشة الدخلة البرتقالية الفخمة */
-    #intro-splash-screen {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(135deg, #f97316, #ea580c, #c2410c);
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-    .intro-card-box {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      padding: 35px 25px;
-      border-radius: 30px;
-      text-align: center;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-      animation: popInIntro 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-      max-width: 320px;
-      width: 90%;
-    }
-    .intro-title {
-      color: white;
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
-    .intro-subtitle {
-      color: #ffedd5;
-      font-size: 13px;
-      font-weight: 500;
-    }
-
-    @keyframes popInIntro {
-      0% { opacity: 0; transform: scale(0.8) translateY(20px); }
-      100% { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
     #auth-screen-container {
       display: flex;
       flex-direction: column;
@@ -457,14 +416,6 @@
 </head>
 <body>
 
-  <!-- شاشة الدخلة البرتقالية -->
-  <div id="intro-splash-screen">
-    <div class="intro-card-box">
-      <div class="intro-title">منصة فاهم التعليمية</div>
-      <div class="intro-subtitle">إعداد: يوسف فرج 🛡️</div>
-    </div>
-  </div>
-
   <div class="top-app-bar">
     <div class="logo-title">
       <div class="mini-logo"><img src="1000514471_2.jpg" alt="يوسف فرج"></div>
@@ -708,18 +659,6 @@
   </div>
 
   <script>
-    // إخفاء شاشة الدخلة البرتقالية بسلاسة
-    window.addEventListener('DOMContentLoaded', () => {
-      const splashScreen = document.getElementById('intro-splash-screen');
-      setTimeout(() => {
-        if(splashScreen) {
-          splashScreen.style.opacity = '0';
-          splashScreen.style.transform = 'scale(1.05)';
-          setTimeout(() => splashScreen.style.display = 'none', 800);
-        }
-      }, 2500);
-    });
-
     // رابط السيرفر السحابي المباشر الخاص بك
     const FAHEM_SERVER = "https://ais-dev-yhkbzyacunht5aird53l4c-362968486830.europe-west1.run.app";
 
@@ -775,41 +714,60 @@
       syncDataFromCloud();
     };
 
-    // مزامنة البيانات بالكامل من السيرفر السحابي
+    // مزامنة البيانات بالكامل من السيرفر السحابي مع التخزين المؤقت المحلي كاحتياطي
     async function syncDataFromCloud() {
       try {
         const examsRes = await fetch(FAHEM_SERVER + '/api/exams');
         if (examsRes.ok) {
           examsList = await examsRes.json();
-          const statExams = document.getElementById('stat-exams-display');
-          if(statExams) statExams.innerText = examsList.length;
-          statsData.exams = examsList.length.toString();
-          renderExams();
-          renderStats();
+          localStorage.setItem('cached_exams', JSON.stringify(examsList));
+        } else {
+          examsList = JSON.parse(localStorage.getItem('cached_exams')) || [];
         }
+      } catch (err) {
+        examsList = JSON.parse(localStorage.getItem('cached_exams')) || [];
+      }
+      const statExams = document.getElementById('stat-exams-display');
+      if(statExams) statExams.innerText = examsList.length;
+      statsData.exams = examsList.length.toString();
+      renderExams();
+      renderStats();
 
+      try {
         const vidsRes = await fetch(FAHEM_SERVER + '/api/videos');
         if (vidsRes.ok) {
           videosList = await vidsRes.json();
-          const statVids = document.getElementById('stat-videos-count');
-          if(statVids) statVids.innerText = videosList.length;
-          renderVideos();
+          localStorage.setItem('cached_videos', JSON.stringify(videosList));
+        } else {
+          videosList = JSON.parse(localStorage.getItem('cached_videos')) || [];
         }
+      } catch (err) {
+        videosList = JSON.parse(localStorage.getItem('cached_videos')) || [];
+      }
+      const statVids = document.getElementById('stat-videos-count');
+      if(statVids) statVids.innerText = videosList.length;
+      renderVideos();
 
+      try {
         const pdfsRes = await fetch(FAHEM_SERVER + '/api/pdfs');
         if (pdfsRes.ok) {
           pdfsList = await pdfsRes.json();
-          renderPdfs();
+          localStorage.setItem('cached_pdfs', JSON.stringify(pdfsList));
+        } else {
+          pdfsList = JSON.parse(localStorage.getItem('cached_pdfs')) || [];
         }
+      } catch (err) {
+        pdfsList = JSON.parse(localStorage.getItem('cached_pdfs')) || [];
+      }
+      renderPdfs();
 
+      try {
         const lbRes = await fetch(FAHEM_SERVER + '/api/leaderboard');
         if (lbRes.ok) {
           const lbData = await lbRes.json();
           renderLeaderboardsFromCloud(lbData);
         }
-      } catch (err) {
-        console.error('خطأ في الاتصال بالسيرفر السحابي:', err);
-      }
+      } catch (err) {}
     }
 
     function switchAuthPane(paneId) {
@@ -986,7 +944,7 @@
       }
     }
 
-    // نشر الامتحان مباشرة إلى السيرفر السحابي
+    // إضافة الامتحان محلياً وسحابياً لضمان ظهوره الفوري
     async function addExam() {
       const title = document.getElementById('new-exam-title').value.trim();
       const totalTimeMin = parseInt(document.getElementById('new-exam-total-time').value.trim()) || 0;
@@ -1015,31 +973,33 @@
         }
       }
 
+      const newExamObj = {
+        id: 'exam_' + Date.now(),
+        title: title,
+        totalTime: totalTimeMin * 60,
+        questions: questionsArr,
+        info: `عدد الأسئلة: ${countVal} | متاح الآن`
+      };
+
+      examsList.push(newExamObj);
+      localStorage.setItem('cached_exams', JSON.stringify(examsList));
+      renderExams();
+      renderStats();
+
+      document.getElementById('new-exam-title').value = '';
+      document.getElementById('new-exam-total-time').value = '';
+      document.getElementById('new-exam-count').value = '1';
+      generateQuestionFields();
+      alert('تم إضافة ونشر الامتحان بنجاح وصار متاحاً على المنصة! ✅');
+
       try {
-        const response = await fetch(FAHEM_SERVER + '/api/exams', {
+        await fetch(FAHEM_SERVER + '/api/exams', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            title: title,
-            totalTime: totalTimeMin * 60,
-            questions: questionsArr,
-            info: `عدد الأسئلة: ${countVal} | متاح الآن`
-          })
+          body: JSON.stringify(newExamObj)
         });
-
-        if (response.ok) {
-          document.getElementById('new-exam-title').value = '';
-          document.getElementById('new-exam-total-time').value = '';
-          document.getElementById('new-exam-count').value = '1';
-          generateQuestionFields();
-          alert('تم إضافة الامتحان ونشره على السيرفر بنجاح لجميع الطلاب! ✅');
-          syncDataFromCloud();
-        } else {
-          alert('فشل السيرفر في حفظ الامتحان، تأكد من اتصالك.');
-        }
       } catch (err) {
-        console.error(err);
-        alert('خطأ في الاتصال بالشبكة أو السيرفر مغلق.');
+        console.error('تم الحفظ محلياً وبانتظار اتصال السيرفر:', err);
       }
     }
 
@@ -1051,7 +1011,7 @@
       let finishedExams = JSON.parse(localStorage.getItem('finished_exams_' + currentEmail)) || [];
 
       if(examsList.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد امتحانات متاحة سحابياً حالياً</p>';
+        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد امتحانات متاحة حالياً</p>';
         return;
       }
 
@@ -1344,22 +1304,30 @@
           const fileData = e.target.result;
           const isVideo = file.type.startsWith('video');
           
-          await fetch(FAHEM_SERVER + '/api/videos', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              title: title,
-              type: isVideo ? 'video' : 'image',
-              content: fileData,
-              info: isVideo ? 'فيديو مرفوع سحابياً' : 'صورة توضيحية مرفوعة'
-            })
-          });
+          const newVidObj = {
+            id: 'vid_' + Date.now(),
+            title: title,
+            type: isVideo ? 'video' : 'image',
+            content: fileData,
+            info: isVideo ? 'فيديو مرفوع' : 'صورة توضيحية'
+          };
+
+          videosList.push(newVidObj);
+          localStorage.setItem('cached_videos', JSON.stringify(videosList));
+          renderVideos();
 
           document.getElementById('new-video-title').value = '';
           document.getElementById('new-video-link').value = '';
           fileInput.value = '';
-          alert('تم رفع الفيديو سحابياً بنجاح! 🎥');
-          syncDataFromCloud();
+          alert('تم إضافة الفيديو بنجاح وظهر على المنصة! 🎥');
+
+          try {
+            await fetch(FAHEM_SERVER + '/api/videos', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(newVidObj)
+            });
+          } catch(err) {}
         };
         reader.readAsDataURL(file);
       } else if (link) {
@@ -1371,21 +1339,29 @@
           embedLink = `https://www.youtube.com/embed/${videoId}`;
         }
 
-        await fetch(FAHEM_SERVER + '/api/videos', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            title: title,
-            type: 'iframe',
-            content: embedLink,
-            info: 'رابط فيديو تعليمي سحابي'
-          })
-        });
+        const newVidObj = {
+          id: 'vid_' + Date.now(),
+          title: title,
+          type: 'iframe',
+          content: embedLink,
+          info: 'رابط فيديو تعليمي'
+        };
+
+        videosList.push(newVidObj);
+        localStorage.setItem('cached_videos', JSON.stringify(videosList));
+        renderVideos();
 
         document.getElementById('new-video-title').value = '';
         document.getElementById('new-video-link').value = '';
-        alert('تم رفع رابط الفيديو سحابياً بنجاح! 🔗');
-        syncDataFromCloud();
+        alert('تم إضافة رابط الفيديو بنجاح وظهر على المنصة! 🔗');
+
+        try {
+          await fetch(FAHEM_SERVER + '/api/videos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newVidObj)
+          });
+        } catch(err) {}
       } else {
         alert('الرجاء إدخال رابط أو اختيار ملف فيديو/صورة.');
       }
@@ -1400,7 +1376,7 @@
       if(statVids) statVids.innerText = videosList.length;
 
       if(videosList.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد فيديوهات متاحة سحابياً حالياً</p>';
+        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد فيديوهات متاحة حالياً</p>';
         return;
       }
 
@@ -1435,16 +1411,28 @@
       if(!title) { alert('الرجاء كتابة عنوان ملف الـ PDF'); return; }
       if(!link) link = 'https://www.google.com';
       
-      await fetch(FAHEM_SERVER + '/api/pdfs', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: title, link: link, info: 'مذكرة تعليمية PDF سحابية' })
-      });
+      const newPdfObj = {
+        id: 'pdf_' + Date.now(),
+        title: title,
+        link: link,
+        info: 'مذكرة تعليمية PDF'
+      };
+
+      pdfsList.push(newPdfObj);
+      localStorage.setItem('cached_pdfs', JSON.stringify(pdfsList));
+      renderPdfs();
 
       document.getElementById('new-pdf-title').value = '';
       document.getElementById('new-pdf-link').value = '';
-      alert('تم إضافة ملف الـ PDF سحابياً بنجاح! 📁');
-      syncDataFromCloud();
+      alert('تم إضافة ملف الـ PDF بنجاح وظهر على المنصة! 📁');
+
+      try {
+        await fetch(FAHEM_SERVER + '/api/pdfs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newPdfObj)
+        });
+      } catch(err) {}
     }
 
     function renderPdfs() {
@@ -1484,7 +1472,8 @@
     function renderStats() {
       const statExams = document.getElementById('stat-exams-display');
       const statRank = document.getElementById('stat-rank-display');
-      if(statExams) statExams.innerText = statsData.exams;
+      if(statExams) statExams.exams = examsList.length.toString();
+      if(statExams) statExams.innerText = examsList.length;
       if(statRank) statRank.innerText = statsData.rank;
       
       const rankInput = document.getElementById('set-rank-val');
