@@ -502,15 +502,15 @@
       
       <div id="dynamic-questions-builder" style="margin-bottom: 10px;"></div>
 
-      <button class="btn-main" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة الامتحان وتخزينه سحابياً 📝</button>
+      <button class="btn-main" id="btn-add-exam" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة الامتحان وتخزينه سحابياً 📝</button>
 
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة فيديو الشرح للمنصة (بالعرض):</div>
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة فيديو الشرح للمنصة (رابط يوتيوب أو تليجرام):</div>
       <div class="input-wrapper">
         <input type="text" id="new-video-title" class="auth-input" placeholder="اكتب اسم الفيديو هنا..." style="background: white; color: #1e293b; margin-bottom: 0;">
         <button type="button" class="voice-btn" onclick="startVoiceInput('new-video-title')">🎤</button>
       </div>
       <input type="text" id="new-video-link" class="auth-input" placeholder="رابط يوتيوب أو تليجرام..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px;">
-      <button class="btn-main" onclick="addVideo()" style="width: 100%; margin-bottom: 10px;">إضافة الفيديو للمنصة سحابياً 🎥</button>
+      <button class="btn-main" id="btn-add-video" onclick="addVideo()" style="width: 100%; margin-bottom: 10px;">إضافة الفيديو للمنصة سحابياً 🎥</button>
 
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة ملف PDF:</div>
       <div class="input-wrapper">
@@ -717,7 +717,7 @@
       fetchDataFromJSONBin();
     };
 
-    // جلب البيانات مباشرة من سحابة JSONBin عند فتح الصفحة (قراءة فقط بدون مسح السيرفر)
+    // جلب البيانات مباشرة من سحابة JSONBin عند فتح الصفحة
     async function fetchDataFromJSONBin() {
       try {
         const res = await fetch(JSONBIN_URL + '/latest', {
@@ -739,7 +739,7 @@
       renderAll();
     }
 
-    // حفظ ونشر البيانات سحابياً على JSONBin (عند إضافة محتوى جديد فقط)
+    // حفظ ونشر البيانات سحابياً على JSONBin بحالة تحقق أمان
     async function saveDatatoJSONBin() {
       try {
         const res = await fetch(JSONBIN_URL, {
@@ -750,13 +750,10 @@
           },
           body: JSON.stringify(appData)
         });
-        if(res.ok) {
-          console.log('تم الحفظ في السحابة بنجاح!');
-        } else {
-          alert('حدث خطأ أثناء الحفظ على السيرفر، يرجى المحاولة مرة أخرى.');
-        }
+        return res.ok;
       } catch (err) {
         console.error('خطأ في حفظ البيانات:', err);
+        return false;
       }
     }
 
@@ -942,6 +939,7 @@
       }
     }
 
+    // إضافة الامتحان مع مزامنة وجلب أحدث البيانات لتجنب المسح والتضارب
     async function addExam() {
       const title = document.getElementById('new-exam-title').value.trim();
       const totalTimeMin = parseInt(document.getElementById('new-exam-total-time').value.trim()) || 0;
@@ -951,7 +949,14 @@
         alert('الرجاء كتابة عنوان الامتحان'); 
         return; 
       }
-      
+
+      const btn = document.getElementById('btn-add-exam');
+      btn.innerText = "جاري الحفظ في السحابة... ⏳";
+      btn.disabled = true;
+
+      // 1. جلب البيانات الأخيرة من السيرفر أولاً
+      await fetchDataFromJSONBin();
+
       let questionsArr = [];
       for(let i=1; i<=countVal; i++) {
         let qType = document.getElementById(`q_type_${i}`).value;
@@ -979,14 +984,23 @@
       };
 
       appData.exams.push(newExamObj);
-      await saveDatatoJSONBin();
-      renderAll();
 
-      document.getElementById('new-exam-title').value = '';
-      document.getElementById('new-exam-total-time').value = '';
-      document.getElementById('new-exam-count').value = '1';
-      generateQuestionFields();
-      alert('تم إضافة الامتحان ونشره سحابياً بنجاح للجميع! ✅');
+      // 2. الحفظ على السيرفر
+      const success = await saveDatatoJSONBin();
+
+      btn.innerText = "إضافة الامتحان وتخزينه سحابياً 📝";
+      btn.disabled = false;
+
+      if(success) {
+        document.getElementById('new-exam-title').value = '';
+        document.getElementById('new-exam-total-time').value = '';
+        document.getElementById('new-exam-count').value = '1';
+        generateQuestionFields();
+        renderAll();
+        alert('تم حفظ ونشر الامتحان سحابياً بنجاح وثبات تام للجميع! ✅');
+      } else {
+        alert('حدث خطأ أثناء الحفظ بالسيرفر، يرجى المحاولة مرة أخرى.');
+      }
     }
 
     function renderExams() {
@@ -1146,7 +1160,10 @@
 
       let studentNameVal = currentEmail === ADMIN_EMAIL ? 'يوسف فرج (الأدمن)' : currentEmail;
       
+      // جلب البيانات الأخيرة لتحديث لوحة الشرف بأمان
+      await fetchDataFromJSONBin();
       if(!appData.leaderboard) appData.leaderboard = [];
+
       appData.leaderboard.push({
         studentName: studentNameVal,
         score: score,
@@ -1261,12 +1278,20 @@
       document.getElementById('exam-modal').style.display = 'flex';
     }
 
+    // إضافة فيديو برابط مع مزامنة الجلب مسبقاً
     async function addVideo() {
       const title = document.getElementById('new-video-title').value.trim();
       let link = document.getElementById('new-video-link').value.trim();
       
       if(!title) { alert('الرجاء كتابة اسم الفيديو'); return; }
-      if(!link) { alert('الرجاء إدخال رابط الفيديو'); return; }
+      if(!link) { alert('الرجاء إدخال رابط الفيديو (يوتيوب أو تليجرام)'); return; }
+
+      const btn = document.getElementById('btn-add-video');
+      btn.innerText = "جاري رفع الفيديو... ⏳";
+      btn.disabled = true;
+
+      // 1. جلب البيانات الأخيرة
+      await fetchDataFromJSONBin();
 
       let embedLink = link;
       if(link.includes('watch?v=')) {
@@ -1285,12 +1310,19 @@
       };
 
       appData.videos.push(newVidObj);
-      await saveDatatoJSONBin();
-      renderAll();
+      const success = await saveDatatoJSONBin();
 
-      document.getElementById('new-video-title').value = '';
-      document.getElementById('new-video-link').value = '';
-      alert('تم إضافة ورس أرشفة الفيديو سحابياً بنجاح! 🔗');
+      btn.innerText = "إضافة الفيديو للمنصة سحابياً 🎥";
+      btn.disabled = false;
+
+      if(success) {
+        document.getElementById('new-video-title').value = '';
+        document.getElementById('new-video-link').value = '';
+        renderAll();
+        alert('تم إضافة الفيديو ونشره سحابياً بنجاح للجميع! 🔗');
+      } else {
+        alert('حدث خطأ أثناء الحفظ بالسيرفر.');
+      }
     }
 
     function renderVideos() {
@@ -1329,7 +1361,9 @@
       
       if(!title) { alert('الرجاء كتابة عنوان ملف الـ PDF'); return; }
       if(!link) link = 'https://www.google.com';
-      
+
+      await fetchDataFromJSONBin();
+
       const newPdfObj = {
         id: 'pdf_' + Date.now(),
         title: title,
