@@ -509,10 +509,7 @@
         <input type="text" id="new-video-title" class="auth-input" placeholder="اكتب اسم الفيديو هنا..." style="background: white; color: #1e293b; margin-bottom: 0;">
         <button type="button" class="voice-btn" onclick="startVoiceInput('new-video-title')">🎤</button>
       </div>
-      <input type="text" id="new-video-link" class="auth-input" placeholder="رابط يوتيوب أو تليجرام (اختياري)..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px;">
-      
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">أو ارفع فيديو من جهازك:</div>
-      <input type="file" id="new-media-file" class="auth-input" accept="video/*,image/*" style="background: white; color: #1e293b; margin-bottom: 6px; padding: 8px; padding-left: 12px;">
+      <input type="text" id="new-video-link" class="auth-input" placeholder="رابط يوتيوب أو تليجرام..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px;">
       <button class="btn-main" onclick="addVideo()" style="width: 100%; margin-bottom: 10px;">إضافة الفيديو للمنصة سحابياً 🎥</button>
 
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة ملف PDF:</div>
@@ -720,7 +717,7 @@
       fetchDataFromJSONBin();
     };
 
-    // جلب البيانات مباشرة من سحابة JSONBin
+    // جلب البيانات مباشرة من سحابة JSONBin عند فتح الصفحة (قراءة فقط بدون مسح السيرفر)
     async function fetchDataFromJSONBin() {
       try {
         const res = await fetch(JSONBIN_URL + '/latest', {
@@ -742,10 +739,10 @@
       renderAll();
     }
 
-    // حفظ ونشر البيانات سحابياً على JSONBin
+    // حفظ ونشر البيانات سحابياً على JSONBin (عند إضافة محتوى جديد فقط)
     async function saveDatatoJSONBin() {
       try {
-        await fetch(JSONBIN_URL, {
+        const res = await fetch(JSONBIN_URL, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -753,6 +750,11 @@
           },
           body: JSON.stringify(appData)
         });
+        if(res.ok) {
+          console.log('تم الحفظ في السحابة بنجاح!');
+        } else {
+          alert('حدث خطأ أثناء الحفظ على السيرفر، يرجى المحاولة مرة أخرى.');
+        }
       } catch (err) {
         console.error('خطأ في حفظ البيانات:', err);
       }
@@ -1145,13 +1147,11 @@
       let studentNameVal = currentEmail === ADMIN_EMAIL ? 'يوسف فرج (الأدمن)' : currentEmail;
       
       if(!appData.leaderboard) appData.leaderboard = [];
-      // إضافة النتيجة للوحة الشرف السحابية
       appData.leaderboard.push({
         studentName: studentNameVal,
         score: score,
         percentage: percentVal
       });
-      // ترتيبهم تصاعدياً حسب النسبة المئوية
       appData.leaderboard.sort((a, b) => parseFloat(b.percentage) - parseFloat(a.percentage));
       await saveDatatoJSONBin();
 
@@ -1264,62 +1264,33 @@
     async function addVideo() {
       const title = document.getElementById('new-video-title').value.trim();
       let link = document.getElementById('new-video-link').value.trim();
-      const fileInput = document.getElementById('new-media-file');
       
       if(!title) { alert('الرجاء كتابة اسم الفيديو'); return; }
+      if(!link) { alert('الرجاء إدخال رابط الفيديو'); return; }
 
-      if (fileInput.files && fileInput.files[0]) {
-        const file = fileInput.files[0];
-        const reader = new FileReader();
-        reader.onload = async function(e) {
-          const fileData = e.target.result;
-          const isVideo = file.type.startsWith('video');
-          
-          const newVidObj = {
-            id: 'vid_' + Date.now(),
-            title: title,
-            type: isVideo ? 'video' : 'image',
-            content: fileData,
-            info: isVideo ? 'فيديو مرفوع سحابياً' : 'صورة توضيحية'
-          };
-
-          appData.videos.push(newVidObj);
-          await saveDatatoJSONBin();
-          renderAll();
-
-          document.getElementById('new-video-title').value = '';
-          document.getElementById('new-video-link').value = '';
-          fileInput.value = '';
-          alert('تم رفع الفيديو سحابياً بنجاح! 🎥');
-        };
-        reader.readAsDataURL(file);
-      } else if (link) {
-        let embedLink = link;
-        if(link.includes('watch?v=')) {
-          embedLink = link.replace('watch?v=', 'embed/');
-        } else if(link.includes('youtu.be/')) {
-          let videoId = link.split('youtu.be/')[1].split('?')[0];
-          embedLink = `https://www.youtube.com/embed/${videoId}`;
-        }
-
-        const newVidObj = {
-          id: 'vid_' + Date.now(),
-          title: title,
-          type: 'iframe',
-          content: embedLink,
-          info: 'رابط فيديو تعليمي سحابي'
-        };
-
-        appData.videos.push(newVidObj);
-        await saveDatatoJSONBin();
-        renderAll();
-
-        document.getElementById('new-video-title').value = '';
-        document.getElementById('new-video-link').value = '';
-        alert('تم رفع رابط الفيديو سحابياً بنجاح! 🔗');
-      } else {
-        alert('الرجاء إدخال رابط أو اختيار ملف فيديو/صورة.');
+      let embedLink = link;
+      if(link.includes('watch?v=')) {
+        embedLink = link.replace('watch?v=', 'embed/');
+      } else if(link.includes('youtu.be/')) {
+        let videoId = link.split('youtu.be/')[1].split('?')[0];
+        embedLink = `https://www.youtube.com/embed/${videoId}`;
       }
+
+      const newVidObj = {
+        id: 'vid_' + Date.now(),
+        title: title,
+        type: 'iframe',
+        content: embedLink,
+        info: 'رابط فيديو تعليمي سحابي'
+      };
+
+      appData.videos.push(newVidObj);
+      await saveDatatoJSONBin();
+      renderAll();
+
+      document.getElementById('new-video-title').value = '';
+      document.getElementById('new-video-link').value = '';
+      alert('تم إضافة ورس أرشفة الفيديو سحابياً بنجاح! 🔗');
     }
 
     function renderVideos() {
@@ -1336,14 +1307,7 @@
       }
 
       appData.videos.forEach(vid => {
-        let mediaHtml = '';
-        if (vid.type === 'video') {
-          mediaHtml = `<div class="media-preview-container"><video src="${vid.content}" controls controlsList="nodownload"></video></div>`;
-        } else if (vid.type === 'image') {
-          mediaHtml = `<div class="media-preview-container"><img src="${vid.content}" alt="مرفق"></div>`;
-        } else {
-          mediaHtml = `<div class="media-preview-container"><iframe src="${vid.content}" allowfullscreen></iframe></div>`;
-        }
+        let mediaHtml = `<div class="media-preview-container"><iframe src="${vid.content}" allowfullscreen></iframe></div>`;
 
         container.innerHTML += `
           <div class="card-item">
