@@ -659,7 +659,6 @@
   </div>
 
   <script>
-    // رابط السيرفر السحابي المباشر الخاص بك
     const FAHEM_SERVER = "https://ais-dev-yhkbzyacunht5aird53l4c-362968486830.europe-west1.run.app";
 
     let activeQuestions = [];
@@ -673,9 +672,9 @@
     let activeResetEmail = "";
     let generatedResetCode = "";
 
-    let examsList = [];
-    let videosList = [];
-    let pdfsList = [];
+    let examsList = JSON.parse(localStorage.getItem('cached_exams')) || [];
+    let videosList = JSON.parse(localStorage.getItem('cached_videos')) || [];
+    let pdfsList = JSON.parse(localStorage.getItem('cached_pdfs')) || [];
     let statsData = { exams: '0', rank: '1' };
 
     function startVoiceInput(targetId) {
@@ -711,55 +710,50 @@
         setupSession(savedEmail);
       }
       generateQuestionFields();
+      renderExams();
+      renderVideos();
+      renderPdfs();
+      renderStats();
       syncDataFromCloud();
     };
 
-    // مزامنة البيانات بالكامل من السيرفر السحابي مع التخزين المؤقت المحلي كاحتياطي
     async function syncDataFromCloud() {
       try {
         const examsRes = await fetch(FAHEM_SERVER + '/api/exams');
         if (examsRes.ok) {
-          examsList = await examsRes.json();
-          localStorage.setItem('cached_exams', JSON.stringify(examsList));
-        } else {
-          examsList = JSON.parse(localStorage.getItem('cached_exams')) || [];
+          const cloudExams = await examsRes.json();
+          if(Array.isArray(cloudExams) && cloudExams.length > 0) {
+            examsList = cloudExams;
+            localStorage.setItem('cached_exams', JSON.stringify(examsList));
+            renderExams();
+            renderStats();
+          }
         }
-      } catch (err) {
-        examsList = JSON.parse(localStorage.getItem('cached_exams')) || [];
-      }
-      const statExams = document.getElementById('stat-exams-display');
-      if(statExams) statExams.innerText = examsList.length;
-      statsData.exams = examsList.length.toString();
-      renderExams();
-      renderStats();
+      } catch (err) {}
 
       try {
         const vidsRes = await fetch(FAHEM_SERVER + '/api/videos');
         if (vidsRes.ok) {
-          videosList = await vidsRes.json();
-          localStorage.setItem('cached_videos', JSON.stringify(videosList));
-        } else {
-          videosList = JSON.parse(localStorage.getItem('cached_videos')) || [];
+          const cloudVids = await vidsRes.json();
+          if(Array.isArray(cloudVids) && cloudVids.length > 0) {
+            videosList = cloudVids;
+            localStorage.setItem('cached_videos', JSON.stringify(videosList));
+            renderVideos();
+          }
         }
-      } catch (err) {
-        videosList = JSON.parse(localStorage.getItem('cached_videos')) || [];
-      }
-      const statVids = document.getElementById('stat-videos-count');
-      if(statVids) statVids.innerText = videosList.length;
-      renderVideos();
+      } catch (err) {}
 
       try {
         const pdfsRes = await fetch(FAHEM_SERVER + '/api/pdfs');
         if (pdfsRes.ok) {
-          pdfsList = await pdfsRes.json();
-          localStorage.setItem('cached_pdfs', JSON.stringify(pdfsList));
-        } else {
-          pdfsList = JSON.parse(localStorage.getItem('cached_pdfs')) || [];
+          const cloudPdfs = await pdfsRes.json();
+          if(Array.isArray(cloudPdfs) && cloudPdfs.length > 0) {
+            pdfsList = cloudPdfs;
+            localStorage.setItem('cached_pdfs', JSON.stringify(pdfsList));
+            renderPdfs();
+          }
         }
-      } catch (err) {
-        pdfsList = JSON.parse(localStorage.getItem('cached_pdfs')) || [];
-      }
-      renderPdfs();
+      } catch (err) {}
 
       try {
         const lbRes = await fetch(FAHEM_SERVER + '/api/leaderboard');
@@ -944,7 +938,6 @@
       }
     }
 
-    // إضافة الامتحان محلياً وسحابياً لضمان ظهوره الفوري
     async function addExam() {
       const title = document.getElementById('new-exam-title').value.trim();
       const totalTimeMin = parseInt(document.getElementById('new-exam-total-time').value.trim()) || 0;
@@ -990,7 +983,7 @@
       document.getElementById('new-exam-total-time').value = '';
       document.getElementById('new-exam-count').value = '1';
       generateQuestionFields();
-      alert('تم إضافة ونشر الامتحان بنجاح وصار متاحاً على المنصة! ✅');
+      alert('تم إضافة الامتحان ونشره بنجاح! ✅');
 
       try {
         await fetch(FAHEM_SERVER + '/api/exams', {
@@ -998,9 +991,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newExamObj)
         });
-      } catch (err) {
-        console.error('تم الحفظ محلياً وبانتظار اتصال السيرفر:', err);
-      }
+      } catch (err) {}
     }
 
     function renderExams() {
@@ -1184,7 +1175,6 @@
         });
       } catch(e) {}
 
-      syncDataFromCloud();
       renderExams();
       viewExamResult(currentExamId, document.getElementById('modal-title').innerText, activeQuestions);
     }
@@ -1472,7 +1462,6 @@
     function renderStats() {
       const statExams = document.getElementById('stat-exams-display');
       const statRank = document.getElementById('stat-rank-display');
-      if(statExams) statExams.exams = examsList.length.toString();
       if(statExams) statExams.innerText = examsList.length;
       if(statRank) statRank.innerText = statsData.rank;
       
