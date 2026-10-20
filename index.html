@@ -19,15 +19,17 @@
       padding-bottom: 90px;
     }
 
+    /* شريط التنبيهات الزرقاء فقط */
     .announcement-bar {
       width: 100%;
       background: #38bdf8;
       color: #0b0f19;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: bold;
-      padding: 6px 10px;
+      padding: 8px 10px;
       overflow: hidden;
       white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
     .announcement-text {
       display: inline-block;
@@ -37,33 +39,6 @@
       0% { transform: translateX(-100%); }
       100% { transform: translateX(100%); }
     }
-
-    .top-app-bar {
-      width: 100%;
-      background: #0b0f19;
-      color: white;
-      padding: 12px 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 14px;
-      font-weight: bold;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    }
-    .top-app-bar .logo-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .mini-logo {
-      width: 28px; height: 28px;
-      background: #38bdf8;
-      border-radius: 6px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px;
-      overflow: hidden;
-    }
-    .mini-logo img { width: 100%; height: 100%; object-fit: cover; }
 
     #auth-screen-container {
       display: flex;
@@ -311,11 +286,6 @@
       border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; text-align: center;
     }
     
-    .btn-action-group {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
     .btn-custom-open {
       background: #0284c7; color: white; border: none; padding: 6px 12px;
       border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;
@@ -330,23 +300,12 @@
       overflow: hidden;
       margin-top: 8px;
     }
-    .media-preview-container iframe {
+    .media-preview-container iframe, .media-preview-container img, .media-preview-container video {
       width: 100%;
       height: 100%;
       border: none;
+      object-fit: contain;
     }
-
-    .settings-profile-box {
-      background: linear-gradient(135deg, #6366f1, #4f46e5);
-      border-radius: 20px; padding: 20px; color: white;
-      display: flex; align-items: center; gap: 15px; margin-bottom: 20px;
-    }
-    .profile-avatar {
-      width: 55px; height: 55px; background: rgba(255,255,255,0.2);
-      border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      font-size: 22px; font-weight: bold; overflow: hidden;
-    }
-    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
     .settings-card-box {
       background: white; border-radius: 16px; overflow: hidden;
@@ -410,22 +369,24 @@
     .rank-1 { background: #f59e0b !important; }
     .rank-2 { background: #94a3b8 !important; }
     .rank-3 { background: #b45309 !important; }
+
+    .btn-block {
+      background: #ef4444; color: white; border: none; padding: 4px 8px;
+      border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;
+    }
+    .btn-unblock {
+      background: #10b981; color: white; border: none; padding: 4px 8px;
+      border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;
+    }
   </style>
 </head>
 <body oncopy="logCheat('نسخ')" onpaste="logCheat('لصق')">
 
+  <!-- الجملة الزرقاء المتحركة فقط -->
   <div class="announcement-bar">
     <div class="announcement-text" id="header-announcement-text">
       📢 أهلاً بكم في منصة فاهم التعليمية - بإشراف أ/ يوسف فرج | تابع أحدث الامتحانات والواجبات والتنبيهات فور نزولها!
     </div>
-  </div>
-
-  <div class="top-app-bar">
-    <div class="logo-title">
-      <div class="mini-logo"><img src="1000514471_2.jpg" alt="يوسف فرج"></div>
-      <span>منصة فاهم التعليمية - يوسف فرج</span>
-    </div>
-    <div id="top-bar-user-status" style="font-size: 11px; color: #38bdf8;">مرحباً بك</div>
   </div>
 
   <div id="auth-screen-container">
@@ -507,14 +468,14 @@
     <!-- لوحة تحكم الأدمن -->
     <div id="admin-panel-box">
       <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 10px;">⚙ لوحة تحكم الأدمن (يوسف فرج)</div>
-      
-      <!-- نشر التنبيهات -->
+
+      <!-- نشر تنبيه جديد في الشريط الأزرق -->
       <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1;">
         <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">📢 نشر تنبيه / واجب / امتحان جديد في الشريط المتحرك:</div>
         <input type="text" id="admin-announcement-input" class="auth-input" placeholder="اكتب التنبيه هنا..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; font-size: 12px;">
         <button class="btn-main" onclick="updateAnnouncement()" style="width: 100%; background: #059669;">تحديث ونشر التنبيه سحابياً 🚀</button>
       </div>
-
+      
       <!-- إضافة امتحان -->
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد (مع جدولة الوقت):</div>
       <input type="text" id="new-exam-title" class="auth-input" placeholder="عنوان الامتحان..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
@@ -534,20 +495,28 @@
       <div id="dynamic-questions-builder" style="margin-bottom: 10px;"></div>
       <button class="btn-main" id="btn-add-exam" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة وجدولة الامتحان سحابياً 📝</button>
 
-      <!-- إضافة فيديوهات -->
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة فيديو شرح للمنصة:</div>
-      <input type="text" id="new-video-title" class="auth-input" placeholder="اسم الفيديو..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
-      <input type="text" id="new-video-link" class="auth-input" placeholder="رابط يوتيوب أو تليجرام..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
-      <button class="btn-main" onclick="addVideo()" style="width: 100%; margin-bottom: 10px; background: #0284c7;">إضافة الفيديو للمنصة 🎥</button>
+      <!-- إضافة فيديوهات (روابط أو رفع ملف مباشر) -->
+      <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1;">
+        <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">🎥 إضافة فيديو شرح (رابط أو اختيار فيديو من جهازك):</div>
+        <input type="text" id="new-video-title" class="auth-input" placeholder="اسم الفيديو..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
+        <input type="text" id="new-video-link" class="auth-input" placeholder="رابط يوتيوب أو تليجرام..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
+        <div style="font-size: 11px; color: #64748b; margin-bottom: 4px;">أو اختر فيديو مباشر من جهازك:</div>
+        <input type="file" id="new-video-file" accept="video/*" class="auth-input" style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 11px;">
+        <button class="btn-main" onclick="addVideo()" style="width: 100%; background: #0284c7;">إضافة الفيديو للمنصة 🎥</button>
+      </div>
 
-      <!-- إضافة PDF -->
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة ملف PDF أو مذكرة:</div>
-      <input type="text" id="new-pdf-title" class="auth-input" placeholder="عنوان المذكرة..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
-      <input type="text" id="new-pdf-link" class="auth-input" placeholder="رابط الـ PDF (https://...)" style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
-      <button class="btn-main" onclick="addPdfLink()" style="width: 100%; margin-bottom: 10px; background: #7c3aed;">إضافة ملف الـ PDF 📁</button>
+      <!-- إضافة PDF / صورة (روابط أو رفع ملف مباشر) -->
+      <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1;">
+        <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">📁 إضافة ملف PDF / صورة (رابط أو اختيار من جهازك):</div>
+        <input type="text" id="new-pdf-title" class="auth-input" placeholder="عنوان المذكرة أو الصورة..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
+        <input type="text" id="new-pdf-link" class="auth-input" placeholder="رابط الـ PDF (https://...)" style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
+        <div style="font-size: 11px; color: #64748b; margin-bottom: 4px;">أو اختر ملف PDF / صورة مباشرة من الاستوديو/الملفات:</div>
+        <input type="file" id="new-pdf-file" accept="application/pdf,image/*" class="auth-input" style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 11px;">
+        <button class="btn-main" onclick="addPdfLink()" style="width: 100%; background: #7c3aed;">إضافة الملف / الصورة 📁</button>
+      </div>
 
       <!-- الطلاب والتقارير -->
-      <button class="btn-main" onclick="showRegisteredStudentsModal()" style="width: 100%; background: #059669; margin-bottom: 6px;">👥 عرض جميع الطلاب المسجلين على المنصة</button>
+      <button class="btn-main" onclick="showRegisteredStudentsModal()" style="width: 100%; background: #059669; margin-bottom: 6px;">👥 عرض إدارة جميع الطلاب وحظرهم</button>
       <button class="btn-main" onclick="showStudentReports()" style="width: 100%; background: #4f46e5; margin-bottom: 6px;">📋 تقارير الغش ومحاولات النسخ</button>
     </div>
 
@@ -581,7 +550,7 @@
     </div>
 
     <div id="sec-pdfs" class="content-section">
-      <div class="section-header-title">ملفات الـ PDF والمذكرات الدراسية</div>
+      <div class="section-header-title">ملفات الـ PDF والمذكرات الدراسية والصور</div>
       <div id="pdfs-container"></div>
     </div>
 
@@ -605,7 +574,7 @@
     <button class="nav-item active" id="nav-home" onclick="switchTab('sec-home', 'nav-home')"><span>🏠</span> الرئيسية</button>
     <button class="nav-item" id="nav-exams" onclick="switchTab('sec-exams', 'nav-exams')"><span>❓</span> الامتحانات</button>
     <button class="nav-item" id="nav-videos" onclick="switchTab('sec-videos', 'nav-videos')"><span>🎥</span> الفيديوهات</button>
-    <button class="nav-item" id="nav-pdfs" onclick="switchTab('sec-pdfs', 'nav-pdfs')"><span>📁</span> PDF</button>
+    <button class="nav-item" id="nav-pdfs" onclick="switchTab('sec-pdfs', 'nav-pdfs')"><span>📁</span> PDF/صور</button>
     <button class="nav-item" id="nav-leaderboard" onclick="switchTab('sec-leaderboard', 'nav-leaderboard')"><span>🏆</span> الترتيب</button>
     <button class="nav-item" id="nav-settings" onclick="switchTab('sec-settings', 'nav-settings')"><span>⚙️</span> الإعدادات</button>
   </div>
@@ -628,7 +597,7 @@
     const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
 
     const ADMIN_EMAIL = "y01878309@gmail.com";
-    const VALID_CODES = ["74", "20"]; // أكواد إعادة التعيين المعتمدة
+    const VALID_CODES = ["74", "20"];
 
     let activeQuestions = [];
     let currentExamId = null;
@@ -641,6 +610,7 @@
       leaderboard: [],
       reports: [],
       registeredUsers: [],
+      blockedUsers: [],
       announcementText: "📢 أهلاً بكم في منصة فاهم التعليمية - بإشراف أ/ يوسف فرج | تابع أحدث الامتحانات والواجبات والتنبيهات فور نزولها!"
     };
 
@@ -690,6 +660,7 @@
             if(!appData.leaderboard) appData.leaderboard = [];
             if(!appData.reports) appData.reports = [];
             if(!appData.registeredUsers) appData.registeredUsers = [];
+            if(!appData.blockedUsers) appData.blockedUsers = [];
             if(appData.announcementText) {
               document.getElementById('header-announcement-text').innerText = appData.announcementText;
             }
@@ -726,11 +697,17 @@
       document.getElementById(paneId).classList.add('active');
     }
 
-    function proceedToPhoneStep() {
+    async function proceedToPhoneStep() {
       const email = document.getElementById('login-email').value.trim();
       const pass = document.getElementById('user-pass').value.trim();
       if(!email || !pass) { alert('أدخل البريد الإلكتروني وكلمة المرور'); return; }
       
+      await fetchDataFromJSONBin();
+      if(appData.blockedUsers && appData.blockedUsers.includes(email)) {
+        alert('❌ تم حظر هذا الحساب من دخول المنصة بواسطة الأدمن!');
+        return;
+      }
+
       let userStoredPass = localStorage.getItem('pass_' + email);
       if(userStoredPass && pass !== userStoredPass) {
         alert('كلمة المرور غير صحيحة!');
@@ -755,8 +732,14 @@
     }
 
     async function finishLoginProcess(email) {
-      localStorage.setItem('fahem_email', email);
       await fetchDataFromJSONBin();
+      if(appData.blockedUsers && appData.blockedUsers.includes(email)) {
+        alert('❌ تم حظر حسابك من قبل الأدمن!');
+        location.reload();
+        return;
+      }
+
+      localStorage.setItem('fahem_email', email);
       let exists = appData.registeredUsers.some(u => u.email === email);
       if(!exists) {
         appData.registeredUsers.push({
@@ -769,7 +752,6 @@
       setupSession(email);
     }
 
-    // إرسال الطلب للمعلم على الواتساب وفتح شاشة تعيين الكود
     function sendCodeToTeacher() {
       const email = document.getElementById('forgot-email').value.trim();
       if(!email) { alert('الرجاء إدخال البريد الإلكتروني أولاً'); return; }
@@ -781,7 +763,6 @@
       switchAuthPane('pane-reset');
     }
 
-    // تأكيد الكود وتغيير كلمة المرور
     function confirmPasswordReset() {
       const code = document.getElementById('reset-code-input').value.trim();
       const newPass = document.getElementById('new-pass-input').value.trim();
@@ -809,6 +790,12 @@
     }
 
     function setupSession(email) {
+      if(appData.blockedUsers && appData.blockedUsers.includes(email) && email !== ADMIN_EMAIL) {
+        alert('❌ تم حظر هذا الحساب بقرار من الأدمن!');
+        logout();
+        return;
+      }
+
       document.getElementById('auth-screen-container').style.display = 'none';
       document.getElementById('dashboard-view').style.display = 'block';
       document.getElementById('bottom-navigation').style.display = 'flex';
@@ -918,26 +905,68 @@
     async function addVideo() {
       const title = document.getElementById('new-video-title').value.trim();
       let link = document.getElementById('new-video-link').value.trim();
-      if(!title || !link) { alert('أدخل اسم ورابط الفيديو'); return; }
+      const fileInput = document.getElementById('new-video-file');
+
+      if(!title) { alert('أدخل اسم الفيديو أولاً'); return; }
 
       await fetchDataFromJSONBin();
-      let embedLink = link.includes('watch?v=') ? link.replace('watch?v=', 'embed/') : link;
-      appData.videos.push({ id: 'vid_' + Date.now(), title: title, content: embedLink, info: 'فيديو تعليمي' });
-      await saveDatatoJSONBin();
-      renderAll();
-      alert('تم إضافة الفيديو بنجاح! 🎥');
+
+      if(fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+          appData.videos.push({ id: 'vid_' + Date.now(), title: title, content: e.target.result, isLocalFile: true, info: 'فيديو مرفع من الاستوديو' });
+          await saveDatatoJSONBin();
+          renderAll();
+          document.getElementById('new-video-title').value = '';
+          fileInput.value = '';
+          alert('تم رفع الفيديو من جهازك بنجاح! 🎥');
+        };
+        reader.readAsDataURL(file);
+      } else if(link) {
+        let embedLink = link.includes('watch?v=') ? link.replace('watch?v=', 'embed/') : link;
+        appData.videos.push({ id: 'vid_' + Date.now(), title: title, content: embedLink, isLocalFile: false, info: 'فيديو تعليمي' });
+        await saveDatatoJSONBin();
+        renderAll();
+        document.getElementById('new-video-title').value = '';
+        document.getElementById('new-video-link').value = '';
+        alert('تم إضافة الفيديو بنجاح! 🎥');
+      } else {
+        alert('ضع رابط الفيديو أو اختر ملف فيديو من جهازك.');
+      }
     }
 
     async function addPdfLink() {
       const title = document.getElementById('new-pdf-title').value.trim();
       let link = document.getElementById('new-pdf-link').value.trim();
-      if(!title || !link) { alert('أدخل عنوان ورابط ملف الـ PDF'); return; }
+      const fileInput = document.getElementById('new-pdf-file');
+
+      if(!title) { alert('أدخل عنوان الملف/الصورة أولاً'); return; }
 
       await fetchDataFromJSONBin();
-      appData.pdfs.push({ id: 'pdf_' + Date.now(), title: title, link: link, info: 'ملف PDF' });
-      await saveDatatoJSONBin();
-      renderAll();
-      alert('تم إضافة ملف الـ PDF بنجاح! 📁');
+
+      if(fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+          appData.pdfs.push({ id: 'pdf_' + Date.now(), title: title, link: e.target.result, isImage: file.type.startsWith('image/'), info: 'ملف/صورة ممرسلة من جهازك' });
+          await saveDatatoJSONBin();
+          renderAll();
+          document.getElementById('new-pdf-title').value = '';
+          fileInput.value = '';
+          alert('تم رفع الملف/الصورة بنجاح! 📁');
+        };
+        reader.readAsDataURL(file);
+      } else if(link) {
+        appData.pdfs.push({ id: 'pdf_' + Date.now(), title: title, link: link, isImage: false, info: 'ملف PDF' });
+        await saveDatatoJSONBin();
+        renderAll();
+        document.getElementById('new-pdf-title').value = '';
+        document.getElementById('new-pdf-link').value = '';
+        alert('تم إضافة ملف الـ PDF بنجاح! 📁');
+      } else {
+        alert('ضع رابط الملف أو اختر ملف/صورة من الاستوديو.');
+      }
     }
 
     function renderAll() {
@@ -1103,7 +1132,7 @@
 
     function showRegisteredStudentsModal() {
       let container = document.getElementById('modal-questions-container');
-      document.getElementById('modal-title').innerText = "👥 قائمة جميع الطلاب المسجلين";
+      document.getElementById('modal-title').innerText = "👥 إدراة قائمة الطلاب والحظر";
       document.getElementById('submit-exam-btn').style.display = 'none';
 
       let html = `<div style="font-size:12px; margin-bottom:10px; font-weight:bold;">إجمالي الطلاب: ${appData.registeredUsers.length}</div>`;
@@ -1111,17 +1140,43 @@
         html += `<p style="text-align:center; color:#64748b;">لا يوجد طلاب مسجلين حتى الآن.</p>`;
       } else {
         appData.registeredUsers.forEach(u => {
+          let isBlocked = appData.blockedUsers && appData.blockedUsers.includes(u.email);
+          let blockBtn = isBlocked ? 
+            `<button class="btn-unblock" onclick="toggleBlockUser('${u.email}')">فك الحظر ✅</button>` : 
+            `<button class="btn-block" onclick="toggleBlockUser('${u.email}')">حظر 🚫</button>`;
+
           html += `
-            <div style="background:#f8fafc; border:1px solid #cbd5e1; padding:8px; border-radius:8px; margin-bottom:6px; text-align:right;">
-              <div style="font-size:12px; font-weight:bold; color:#0f172a;">👤 ${u.email}</div>
-              <div style="font-size:11px; color:#475569;">📞 الهاتف: ${u.phone}</div>
-              <div style="font-size:10px; color:#94a3b8;">🕒 وقت الانضمام: ${u.joinTime}</div>
+            <div style="background:#f8fafc; border:1px solid #cbd5e1; padding:10px; border-radius:8px; margin-bottom:6px; text-align:right; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-size:12px; font-weight:bold; color:#0f172a;">👤 ${u.email} ${isBlocked ? '<span style="color:#ef4444;">(محظور)</span>' : ''}</div>
+                <div style="font-size:11px; color:#475569;">📞 الهاتف: ${u.phone}</div>
+                <div style="font-size:10px; color:#94a3b8;">🕒 وقت الانضمام: ${u.joinTime}</div>
+              </div>
+              <div>${blockBtn}</div>
             </div>
           `;
         });
       }
       container.innerHTML = html;
       document.getElementById('exam-modal').style.display = 'flex';
+    }
+
+    async function toggleBlockUser(emailTarget) {
+      if(emailTarget === ADMIN_EMAIL) { alert('لا يمكنك حظر حساب الأدمن!'); return; }
+      
+      await fetchDataFromJSONBin();
+      if(!appData.blockedUsers) appData.blockedUsers = [];
+
+      if(appData.blockedUsers.includes(emailTarget)) {
+        appData.blockedUsers = appData.blockedUsers.filter(e => e !== emailTarget);
+        alert(`تم فك الحظر عن الطالب: ${emailTarget}`);
+      } else {
+        appData.blockedUsers.push(emailTarget);
+        alert(`تم حظر الطالب: ${emailTarget} ولن يستطيع الدخول مجدداً!`);
+      }
+
+      await saveDatatoJSONBin();
+      showRegisteredStudentsModal();
     }
 
     function showStudentReports() {
@@ -1161,10 +1216,14 @@
       }
 
       appData.videos.forEach(v => {
+        let videoContent = v.isLocalFile ? 
+          `<video src="${v.content}" controls style="width:100%; height:100%; border-radius:10px;"></video>` : 
+          `<iframe src="${v.content}" allowfullscreen></iframe>`;
+
         container.innerHTML += `
           <div class="card-item">
             <div class="card-row"><div class="card-title">${v.title}</div></div>
-            <div class="media-preview-container"><iframe src="${v.content}" allowfullscreen></iframe></div>
+            <div class="media-preview-container">${videoContent}</div>
           </div>
         `;
       });
@@ -1176,16 +1235,20 @@
       container.innerHTML = '';
 
       if(!appData.pdfs || appData.pdfs.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لا توجد ملفات PDF</p>';
+        container.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لا توجد ملفات أو صور</p>';
         return;
       }
 
       appData.pdfs.forEach(p => {
+        let displayContent = p.isImage ? 
+          `<div class="media-preview-container"><img src="${p.link}" alt="صورة ممرسلة" /></div>` : 
+          `<a class="btn-custom-open" href="${p.link}" target="_blank">فتح الملف 📄</a>`;
+
         container.innerHTML += `
           <div class="card-item">
             <div class="card-row">
               <div class="card-info"><div class="card-title">${p.title}</div><div class="card-subtitle">${p.info}</div></div>
-              <div><a class="btn-custom-open" href="${p.link}" target="_blank">فتح 📄</a></div>
+              <div>${displayContent}</div>
             </div>
           </div>
         `;
