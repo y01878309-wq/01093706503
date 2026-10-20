@@ -297,6 +297,11 @@
       border-radius: 10px; font-size: 13px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; text-align: center;
     }
     
+    .btn-danger-sm {
+      background: #ef4444; color: white; border: none; padding: 10px 12px;
+      border-radius: 10px; font-size: 12px; font-weight: bold; cursor: pointer; margin-right: 5px;
+    }
+
     .btn-custom-open {
       background: #0284c7; color: white; border: none; padding: 6px 12px;
       border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;
@@ -653,7 +658,7 @@
       </div>
       <div id="modal-questions-container" style="margin-bottom: 15px; flex: 1;"></div>
       <div>
-        <button class="btn-main" id="submit-exam-btn" onclick="submitExam()" style="width: 100%; padding: 12px; font-size: 15px; display:none;">تسليم الامتحان 🎯</button>
+        <button class="btn-main" id="submit-exam-btn" style="width: 100%; padding: 12px; font-size: 15px; display:none;">تسليم الامتحان 🎯</button>
         <button class="btn-main" onclick="closeExam()" style="background: #ef4444; width: 100%; padding: 12px; font-size: 14px; margin-top: 8px;">إغلاق ✕</button>
       </div>
     </div>
@@ -732,6 +737,8 @@
 
     let activeQuestions = [];
     let currentExamId = null;
+    let currentExamMode = 'eval';
+    let currentExamTitle = '';
     let questionTimerInterval = null;
     let currentQuestionIndex = 0;
     let studentExamAnswers = {};
@@ -1072,6 +1079,16 @@
       alert('تم إضافة وجدولة الامتحان بنجاح على السيرفر! ⏰');
     }
 
+    // 🗑️ دالة مسح الامتحان وحذفه نهائياً
+    async function deleteExam(examId) {
+      if(!confirm("هل أنت تأكد من رغبتك في حذف هذا الامتحان نهائياً؟")) return;
+      
+      appData.exams = (appData.exams || []).filter(ex => ex.id !== examId);
+      if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
+      renderAll();
+      alert('تم حذف الامتحان بنجاح! 🗑️');
+    }
+
     async function addVideo() {
       const title = document.getElementById('new-video-title').value.trim();
       let link = document.getElementById('new-video-link').value.trim();
@@ -1194,18 +1211,22 @@
         let isPublished = !ex.publishTime || currentTime >= ex.publishTime;
         if(!isPublished && email !== ADMIN_EMAIL) return;
 
-        // التحقق مما إذا كان الطالب قد قام بحل هذا الامتحان من قبل
         let hasAlreadyTaken = (appData.leaderboard || []).some(l => l.studentName === email && l.examTitle === ex.title);
 
         let subtitleText = isPublished ? `${ex.info}` : `${ex.info} (⏰ مجدول لاحقاً)`;
         let actionBtn = '';
 
         if(email === ADMIN_EMAIL) {
-          actionBtn = `<button class="btn-main" onclick='startExam("${ex.id}", "${ex.title}", ${JSON.stringify(ex.questions || [])}, "${ex.mode}", 0)'>معاينة الامتحان 👁️</button>`;
+          actionBtn = `
+            <div style="display:flex; align-items:center;">
+              <button class="btn-danger-sm" onclick="deleteExam('${ex.id}')">حذف 🗑️</button>
+              <button class="btn-main" onclick='prepareAndStartExam("${ex.id}")'>معاينة الامتحان 👁️</button>
+            </div>
+          `;
         } else if(hasAlreadyTaken) {
           actionBtn = `<span style="color:#16a34a; font-size:12px; font-weight:bold;">تم التسليم بنجاح ✓</span>`;
         } else if(isPublished) {
-          actionBtn = `<button class="btn-main" onclick='startExam("${ex.id}", "${ex.title}", ${JSON.stringify(ex.questions || [])}, "${ex.mode}", 0)'>بدء الامتحان 📝</button>`;
+          actionBtn = `<button class="btn-main" onclick='prepareAndStartExam("${ex.id}")'>بدء الامتحان 📝</button>`;
         } else {
           actionBtn = `<span style="color:#f59e0b; font-size:11px;">قيد الجدولة</span>`;
         }
@@ -1221,32 +1242,43 @@
       });
     }
 
-    function startExam(id, title, questions, mode, qIndex = 0) {
+    function prepareAndStartExam(examId) {
       const email = localStorage.getItem('fahem_email');
-      let hasAlreadyTaken = (appData.leaderboard || []).some(l => l.studentName === email && l.examTitle === title);
+      const examObj = (appData.exams || []).find(e => e.id === examId);
+      if(!examObj) return;
+
+      let hasAlreadyTaken = (appData.leaderboard || []).some(l => l.studentName === email && l.examTitle === examObj.title);
       if(hasAlreadyTaken && email !== ADMIN_EMAIL) {
         alert('❌ عذراً، لا يمكنك دخول الامتحان مرة أخرى. لقد قمت بتسليمه مسبقاً!');
         return;
       }
 
-      currentExamId = id;
-      activeQuestions = questions;
+      currentExamId = examObj.id;
+      currentExamTitle = examObj.title;
+      currentExamMode = examObj.mode;
+      activeQuestions = examObj.questions || [];
+      studentExamAnswers = {};
+
+      showQuestionAt(0);
+    }
+
+    function showQuestionAt(qIndex) {
       currentQuestionIndex = qIndex;
       isInsideExam = true;
 
-      document.getElementById('modal-title').innerText = `${title} (السؤال ${currentQuestionIndex + 1} من ${activeQuestions.length})`;
+      document.getElementById('modal-title').innerText = `${currentExamTitle} (السؤال ${currentQuestionIndex + 1} من ${activeQuestions.length})`;
       
       let container = document.getElementById('modal-questions-container');
       container.innerHTML = '';
 
       if(questionTimerInterval) clearInterval(questionTimerInterval);
 
-      if(!questions || questions.length === 0 || currentQuestionIndex >= questions.length) {
+      if(!activeQuestions || activeQuestions.length === 0 || currentQuestionIndex >= activeQuestions.length) {
         submitExam();
         return;
       }
 
-      let q = questions[currentQuestionIndex];
+      let q = activeQuestions[currentQuestionIndex];
       let timeLeft = q.timeSec || 30;
 
       let timerHtml = `<div id="q-timer" style="background: #fee2e2; color: #ef4444; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: bold;">الوقت المتبقي: ${timeLeft} ث</div>`;
@@ -1260,7 +1292,7 @@
         if(timeLeft <= 0) {
           clearInterval(questionTimerInterval);
           alert('انتهى وقت هذا السؤال!');
-          nextQuestion(mode);
+          nextQuestion();
         }
       }, 1000);
 
@@ -1277,19 +1309,19 @@
         container.innerHTML = `
           <div style="background:#f8fafc; padding:16px; border-radius:14px; margin-bottom:12px; text-align:right; border:1px solid #e2e8f0;">
             <div style="font-size:16px; font-weight:bold; margin-bottom:12px; color:#0f172a;">${q.q}</div>
-            <label style="display:block; font-size:14px; margin-bottom:10px; background:white; padding:10px; border-radius:10px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o1}" ${savedAns === q.o1 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o1}</label>
-            <label style="display:block; font-size:14px; margin-bottom:10px; background:white; padding:10px; border-radius:10px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o2}" ${savedAns === q.o2 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o2}</label>
-            <label style="display:block; font-size:14px; margin-bottom:10px; background:white; padding:10px; border-radius:10px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o3}" ${savedAns === q.o3 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o3}</label>
-            <label style="display:block; font-size:14px; margin-bottom:10px; background:white; padding:10px; border-radius:10px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o4}" ${savedAns === q.o4 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o4}</label>
+            <label style="display:block; font-size:14px; margin-bottom:10px; background:white; padding:10px; border-radius:10px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o1}" ${savedAns === q.o1 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${currentExamMode}')"> ${q.o1}</label>
+            <label style="display:block; font-size:14px; margin-bottom:10px; background:white; padding:10px; border-radius:10px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o2}" ${savedAns === q.o2 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${currentExamMode}')"> ${q.o2}</label>
+            <label style="display:block; font-size:14px; margin-bottom:10px; background:white; padding:10px; border-radius:10px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o3}" ${savedAns === q.o3 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${currentExamMode}')"> ${q.o3}</label>
+            <label style="display:block; font-size:14px; margin-bottom:10px; background:white; padding:10px; border-radius:10px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o4}" ${savedAns === q.o4 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${currentExamMode}')"> ${q.o4}</label>
             <div id="practice_fb" style="font-size:12px; font-weight:bold; margin-top:6px;"></div>
           </div>
         `;
       }
 
-      let nextBtnText = currentQuestionIndex === activeQuestions.length - 1 ? 'تسليم الامتحان ✅' : 'السؤال التالي ➔';
-      document.getElementById('submit-exam-btn').style.display = 'block';
-      document.getElementById('submit-exam-btn').innerText = nextBtnText;
-      document.getElementById('submit-exam-btn').onclick = function() { nextQuestion(mode); };
+      let submitBtn = document.getElementById('submit-exam-btn');
+      submitBtn.style.display = 'block';
+      submitBtn.innerText = currentQuestionIndex === activeQuestions.length - 1 ? 'تسليم الامتحان ✅' : 'السؤال التالي ➔';
+      submitBtn.onclick = function() { nextQuestion(); };
 
       document.getElementById('exam-modal').style.display = 'flex';
     }
@@ -1309,11 +1341,10 @@
       }
     }
 
-    function nextQuestion(mode) {
+    function nextQuestion() {
       if(questionTimerInterval) clearInterval(questionTimerInterval);
-      currentQuestionIndex++;
-      if(currentQuestionIndex < activeQuestions.length) {
-        startExam(currentExamId, document.getElementById('modal-title').innerText.split(' (')[0], activeQuestions, mode, currentQuestionIndex);
+      if(currentQuestionIndex + 1 < activeQuestions.length) {
+        showQuestionAt(currentQuestionIndex + 1);
       } else {
         submitExam();
       }
@@ -1357,7 +1388,7 @@
       const newSubmission = {
         studentName: email,
         displayName: getUserDisplayName(email),
-        examTitle: document.getElementById('modal-title').innerText.split(' (')[0],
+        examTitle: currentExamTitle,
         score: score,
         total: total,
         percentage: percentVal,
