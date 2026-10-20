@@ -557,7 +557,7 @@
         <button class="btn-main" onclick="addPdfLink()" style="width: 100%; background: #7c3aed;">إضافة الملف / الصورة 📁</button>
       </div>
 
-      <button class="btn-main" onclick="showRegisteredStudentsModal()" style="width: 100%; background: #059669; margin-bottom: 6px;">👥 سجل الطلاب والتفاصيل الدقيقة وحظرهم</button>
+      <button class="btn-main" onclick="showRegisteredStudentsModal()" style="width: 100%; background: #059669; margin-bottom: 6px;">👥 سجل الطلاب والتفاصيل الدقيقة وتعديل الأسماء وحظرهم</button>
       <button class="btn-main" onclick="showStudentReports()" style="width: 100%; background: #4f46e5; margin-bottom: 6px;">📋 تقارير محاولات لقطات الشاشة والغش</button>
     </div>
 
@@ -613,8 +613,14 @@
 
     <div id="sec-settings" class="content-section">
       <div class="settings-card-box" style="padding: 15px; background: white; border-radius: 16px; margin-bottom: 15px;">
-        <div style="font-size: 14px; font-weight: bold;" id="profile-email-display">البريد: --</div>
-        <div style="font-size: 12px; color: #64748b; margin-top: 4px;" id="profile-phone-display">الهاتف: --</div>
+        <div style="font-size: 14px; font-weight: bold; margin-bottom: 10px;" id="profile-email-display">البريد: --</div>
+        <div style="font-size: 12px; color: #64748b; margin-bottom: 15px;" id="profile-phone-display">الهاتف: --</div>
+        
+        <div style="font-size: 12px; font-weight: bold; color: #0284c7; margin-bottom: 5px;">تعديل اسمك في المنصة:</div>
+        <div style="display: flex; gap: 6px;">
+          <input type="text" id="my-custom-name-input" class="auth-input" placeholder="اكتب اسمك هنا..." style="background: #f8fafc; color: #1e293b; margin-bottom: 0; font-size: 12px; padding: 8px;">
+          <button class="btn-main" onclick="saveMyProfileName()" style="padding: 8px 14px; font-size: 12px;">حفظ الاسم</button>
+        </div>
       </div>
       <div class="logout-row" onclick="logout()">
         🚪 تسجيل الخروج
@@ -846,6 +852,7 @@
         if(!appData.registeredUsers) appData.registeredUsers = [];
         appData.registeredUsers.push({
           email: email,
+          name: email.split('@')[0],
           phone: localStorage.getItem('phone_' + email) || 'غير متاح',
           joinTime: nowTimeStr,
           lastActive: nowTimeStr,
@@ -856,6 +863,7 @@
         userObj.lastActive = nowTimeStr;
         userObj.loginCount = (userObj.loginCount || 1) + 1;
         userObj.device = userAgentStr;
+        if(!userObj.name) userObj.name = email.split('@')[0];
       }
 
       if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
@@ -886,6 +894,26 @@
       switchAuthPane('pane-login');
     }
 
+    function getUserDisplayName(email) {
+      if(!appData.registeredUsers) return email;
+      let u = appData.registeredUsers.find(x => x.email === email);
+      return u && u.name ? u.name : email;
+    }
+
+    async function saveMyProfileName() {
+      const email = localStorage.getItem('fahem_email');
+      const newName = document.getElementById('my-custom-name-input').value.trim();
+      if(!newName) { alert('اكتب الاسم الجديد أولاً'); return; }
+
+      let userObj = (appData.registeredUsers || []).find(u => u.email === email);
+      if(userObj) {
+        userObj.name = newName;
+        if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
+        alert('تم تحديث اسمك بنجاح في المنصة! 🎉');
+        setupSession(email);
+      }
+    }
+
     function setupSession(email) {
       if(appData.blockedUsers && appData.blockedUsers.includes(email) && email !== ADMIN_EMAIL) {
         alert('❌ تم حظر هذا الحساب بقرار من الأدمن!');
@@ -898,9 +926,12 @@
       document.getElementById('bottom-navigation').style.display = 'flex';
 
       const phone = localStorage.getItem('phone_' + email) || 'غير متوفر';
+      const currentDisplayName = getUserDisplayName(email);
+
       document.getElementById('profile-email-display').innerText = `البريد: ${email}`;
       document.getElementById('profile-phone-display').innerText = `الهاتف: ${phone}`;
-      document.getElementById('welcome-user-name').innerText = `👋 مرحباً، ${email === ADMIN_EMAIL ? 'يوسف فرج (الأدمن)' : email}`;
+      document.getElementById('my-custom-name-input').value = currentDisplayName;
+      document.getElementById('welcome-user-name').innerText = `👋 مرحباً، ${email === ADMIN_EMAIL ? 'يوسف فرج (الأدمن)' : currentDisplayName}`;
 
       if(email === ADMIN_EMAIL) {
         document.getElementById('admin-panel-box').style.display = 'block';
@@ -1118,7 +1149,7 @@
                   <div class="card-subtitle">النسبة المئوية: <b style="color:#0284c7;">${sub.percentage}%</b> | وقت التسليم: ${sub.time}</div>
                 </div>
                 <div>
-                  <button class="btn-main" style="background: #059669;" onclick="openExamResultDetails(${index})">معرفة الدرجة والتفاصيل 📊</button>
+                  <button class="btn-main" style="background: #059669;" onclick="openExamResultDetails('${email}', ${index})">معرفة الدرجة والتفاصيل 📊</button>
                 </div>
               </div>
             </div>
@@ -1272,6 +1303,7 @@
       
       const newSubmission = {
         studentName: email,
+        displayName: getUserDisplayName(email),
         examTitle: document.getElementById('modal-title').innerText.split(' (')[0],
         score: score,
         total: total,
@@ -1294,9 +1326,8 @@
       renderFullResultUI(newSubmission);
     }
 
-    function openExamResultDetails(subIndex) {
-      const email = localStorage.getItem('fahem_email');
-      const userSubmissions = (appData.leaderboard || []).filter(l => l.studentName === email);
+    function openExamResultDetails(targetEmail, subIndex) {
+      const userSubmissions = (appData.leaderboard || []).filter(l => l.studentName === targetEmail);
       if(userSubmissions[subIndex]) {
         renderFullResultUI(userSubmissions[subIndex]);
       }
@@ -1304,7 +1335,7 @@
 
     function renderFullResultUI(sub) {
       let container = document.getElementById('modal-questions-container');
-      document.getElementById('modal-title').innerText = "نتيجة الامتحان";
+      document.getElementById('modal-title').innerText = `نتيجة الامتحان (${sub.displayName || sub.studentName})`;
       document.getElementById('submit-exam-btn').style.display = 'none';
 
       let allLeaderboard = appData.leaderboard || [];
@@ -1325,9 +1356,9 @@
                 <span style="font-size:11px; color:#64748b;">${q.points || (q.isCorrect?1:0)}.00 درجات</span>
               </div>
               <div style="font-size:14px; font-weight:bold; color:#1e293b; margin-bottom:8px;">${q.questionText}</div>
-              <div style="font-size:12px; color:#64748b;">إجابتك:</div>
+              <div style="font-size:12px; color:#64748b;">إجابة الطالب:</div>
               <div style="font-size:13px; font-weight:bold; color:${ansColor}; margin-bottom:6px;">${q.studentAnswer}</div>
-              <div style="font-size:12px; color:#64748b;">الإجابة الصحيحة:</div>
+              <div style="font-size:12px; color:#64748b;">الإجابة الصحيحة / النموذجية:</div>
               <div style="font-size:13px; font-weight:bold; color:#16a34a;">${q.correctAnswer}</div>
             </div>
           `;
@@ -1339,8 +1370,8 @@
       container.innerHTML = `
         <div class="result-summary-card">
           <div class="result-badge-icon">✓</div>
-          <h2 style="font-size:20px; font-weight:bold; color:#0f172a;">مبروك!</h2>
-          <p style="font-size:13px; color:#64748b; margin-top:4px;">لقد نجحت في الامتحان</p>
+          <h2 style="font-size:20px; font-weight:bold; color:#0f172a;">نتيجة الامتحان</h2>
+          <p style="font-size:13px; color:#64748b; margin-top:4px;">الطالب: ${sub.displayName || sub.studentName}</p>
           
           <div class="result-stats-row">
             <div class="result-stat-item">
@@ -1366,7 +1397,7 @@
           <button class="btn-custom-open" onclick="switchTab('sec-leaderboard', 'nav-leaderboard'); closeExam();">عرض الترتيب ➔</button>
         </div>
 
-        <div style="font-size:14px; font-weight:bold; color:#0f172a; margin:15px 0 10px 0; text-align:right;">مراجعة الأسئلة</div>
+        <div style="font-size:14px; font-weight:bold; color:#0f172a; margin:15px 0 10px 0; text-align:right;">مراجعة إجابات الطالب بالتفصيل</div>
         ${questionsHtml}
       `;
 
@@ -1375,7 +1406,7 @@
 
     function showRegisteredStudentsModal() {
       let container = document.getElementById('modal-questions-container');
-      document.getElementById('modal-title').innerText = "👥 سجل تفاصيل الطلاب والحظر";
+      document.getElementById('modal-title').innerText = "👥 سجل تفاصيل الطلاب وتعديل الأسماء";
       document.getElementById('submit-exam-btn').style.display = 'none';
 
       let usersList = appData.registeredUsers || [];
@@ -1391,15 +1422,20 @@
             `<button class="btn-block" onclick="toggleBlockUser('${u.email}')">حظر 🚫</button>`;
 
           html += `
-            <div style="background:#f8fafc; border:1px solid #cbd5e1; padding:10px; border-radius:8px; margin-bottom:6px; text-align:right;">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                <div style="font-size:12px; font-weight:bold; color:#0f172a;">👤 ${u.email} ${isBlocked ? '<span style="color:#ef4444;">(محظور)</span>' : ''}</div>
+            <div style="background:#f8fafc; border:1px solid #cbd5e1; padding:10px; border-radius:8px; margin-bottom:8px; text-align:right;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <div style="font-size:13px; font-weight:bold; color:#0f172a;">👤 ${u.name || u.email} ${isBlocked ? '<span style="color:#ef4444;">(محظور)</span>' : ''}</div>
                 <div>
-                  <button class="btn-details" onclick="showSingleStudentDetails('${u.email}')">تفاصيل الطالب 📊</button>
+                  <button class="btn-details" onclick="showSingleStudentDetails('${u.email}')">تفاصيل الطالب وإجاباته 📊</button>
                   ${blockBtn}
                 </div>
               </div>
-              <div style="font-size:11px; color:#475569;">📞 الهاتف: ${u.phone || 'غير متاح'} | 🔁 مرات الدخول: <b>${u.loginCount || 1}</b></div>
+              <div style="font-size:11px; color:#475569; margin-bottom:6px;">📧 البريد: ${u.email} | 📞 الهاتف: ${u.phone || 'غير متاح'}</div>
+              
+              <div style="display:flex; gap:6px; align-items:center;">
+                <input type="text" id="admin_rename_${u.email.replace(/[@.]/g, '_')}" class="auth-input" value="${u.name || ''}" placeholder="تعديل اسم الطالب..." style="background:white; color:#1e293b; font-size:11px; padding:6px; margin-bottom:0;">
+                <button class="btn-main" onclick="adminUpdateStudentName('${u.email}')" style="padding:6px 10px; font-size:11px; background:#0284c7;">حفظ الاسم</button>
+              </div>
             </div>
           `;
         });
@@ -1408,9 +1444,28 @@
       document.getElementById('exam-modal').style.display = 'flex';
     }
 
+    async function adminUpdateStudentName(targetEmail) {
+      const inputId = `admin_rename_${targetEmail.replace(/[@.]/g, '_')}`;
+      const newName = document.getElementById(inputId).value.trim();
+      if(!newName) { alert('اكتب الاسم الجديد أولاً'); return; }
+
+      let userObj = (appData.registeredUsers || []).find(u => u.email === targetEmail);
+      if(userObj) {
+        userObj.name = newName;
+        // تحديث الاسم أيضاً في جدول المتصدرين والسجلات
+        (appData.leaderboard || []).forEach(l => {
+          if(l.studentName === targetEmail) l.displayName = newName;
+        });
+
+        if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
+        alert(`تم تغيير اسم الطالب إلى (${newName}) بنجاح! ✏️`);
+        showRegisteredStudentsModal();
+      }
+    }
+
     function showSingleStudentDetails(emailTarget) {
       let container = document.getElementById('modal-questions-container');
-      document.getElementById('modal-title').innerText = `📊 سجل نشاط: ${emailTarget}`;
+      document.getElementById('modal-title').innerText = `📊 سجل نشاط وإجابات: ${emailTarget}`;
 
       let userObj = (appData.registeredUsers || []).find(u => u.email === emailTarget) || {};
       let userReports = (appData.reports || []).filter(r => r.email === emailTarget);
@@ -1418,33 +1473,33 @@
 
       let html = `
         <div style="background:#eff6ff; padding:10px; border-radius:8px; margin-bottom:10px; font-size:12px; text-align:right; border:1px solid #38bdf8;">
+          <div>👤 <b>الاسم:</b> ${userObj.name || emailTarget}</div>
           <div>📧 <b>البريد:</b> ${emailTarget}</div>
           <div>📞 <b>الهاتف:</b> ${userObj.phone || 'غير متاح'}</div>
-          <div>🔄 <b>عدد مرات دخول المنصة:</b> ${userObj.loginCount || 1} مرة</div>
+          <div>🔄 <b>عدد مرات الدخول:</b> ${userObj.loginCount || 1} مرة</div>
           <div>💻 <b>الجهاز:</b> ${userObj.device || 'غير محدد'}</div>
-          <div>🕒 <b>آخر تواجد:</b> ${userObj.lastActive || 'غير متوفر'}</div>
         </div>
-        <div style="font-size:12px; font-weight:bold; color:#0284c7; margin-bottom:6px; text-align:right;">📝 الامتحانات:</div>
+        <div style="font-size:12px; font-weight:bold; color:#0284c7; margin-bottom:6px; text-align:right;">📝 امتحانات الطالب وإجاباته (اضغط لعرض تفاصيل الإجابات):</div>
       `;
 
       if(userExams.length === 0) {
-        html += `<p style="font-size:11px; color:#64748b; text-align:right;">لم يكمل أي امتحان.</p>`;
+        html += `<p style="font-size:11px; color:#64748b; text-align:right;">لم يكمل أي امتحان حتى الآن.</p>`;
       } else {
-        userExams.forEach(ex => {
-          html += `<div style="background:white; border:1px solid #cbd5e1; padding:6px 10px; border-radius:6px; margin-bottom:4px; font-size:11px; text-align:right;">🎯 النتيجة: <b>${ex.percentage}%</b></div>`;
+        userExams.forEach((ex, idx) => {
+          let globalIdx = (appData.leaderboard || []).findIndex(l => l.studentName === ex.studentName && l.percentage === ex.percentage && l.time === ex.time);
+          html += `
+            <div style="background:white; border:1px solid #cbd5e1; padding:8px 10px; border-radius:6px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+              <div style="font-size:12px; text-align:right;">
+                <div style="font-weight:bold; color:#0f172a;">${ex.examTitle}</div>
+                <div style="color:#16a34a; font-size:11px;">النتيجة: ${ex.percentage}% (${ex.score}/${ex.total}) | ${ex.time}</div>
+              </div>
+              <button class="btn-details" onclick="openExamResultDetails('${emailTarget}', ${idx})">عرض إجاباته 🔍</button>
+            </div>
+          `;
         });
       }
 
-      html += `<div style="font-size:12px; font-weight:bold; color:#ef4444; margin:10px 0 6px 0; text-align:right;">📸 تقارير لقطات الشاشة:</div>`;
-      if(userReports.length === 0) {
-        html += `<p style="font-size:11px; color:#059669; text-align:right;">سجل نظيف ✅</p>`;
-      } else {
-        userReports.forEach(rep => {
-          html += `<div style="background:#fff1f2; border:1px solid #fecdd3; padding:6px; border-radius:6px; margin-bottom:4px; font-size:11px; color:#991b1b;">⚠️ ${rep.action} (${rep.time})</div>`;
-        });
-      }
-
-      html += `<button class="btn-main" onclick="showRegisteredStudentsModal()" style="width:100%; margin-top:12px; background:#475569;">⬅ العودة</button>`;
+      html += `<button class="btn-main" onclick="showRegisteredStudentsModal()" style="width:100%; margin-top:12px; background:#475569;">⬅ العودة لقائمة الطلاب</button>`;
       container.innerHTML = html;
     }
 
@@ -1521,7 +1576,8 @@
       appData.leaderboard.forEach((st, idx) => {
         let rankClass = idx === 0 ? 'rank-1' : (idx === 1 ? 'rank-2' : (idx === 2 ? 'rank-3' : ''));
         let medalEmoji = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `#${idx+1}`));
-        html += `<div class="leaderboard-item"><div style="display:flex; align-items:center; gap:10px;"><div class="leaderboard-rank ${rankClass}">${medalEmoji}</div><div style="font-size:13px; font-weight:bold;">${st.studentName}</div></div><div style="font-size:14px; font-weight:bold; color:#0284c7;">${st.percentage}%</div></div>`;
+        let displayName = st.displayName || getUserDisplayName(st.studentName);
+        html += `<div class="leaderboard-item"><div style="display:flex; align-items:center; gap:10px;"><div class="leaderboard-rank ${rankClass}">${medalEmoji}</div><div style="font-size:13px; font-weight:bold;">${displayName}</div></div><div style="font-size:14px; font-weight:bold; color:#0284c7;">${st.percentage}%</div></div>`;
       });
       if(homeBox) homeBox.innerHTML = html;
       if(fullBox) fullBox.innerHTML = html;
