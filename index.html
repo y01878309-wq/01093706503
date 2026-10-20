@@ -28,7 +28,7 @@
       padding-bottom: 90px;
     }
 
-    /* شريط التنبيهات الزرقاء فقط */
+    /* شريط التنبيهات الزرقاء */
     .announcement-bar {
       width: 100%;
       background: #38bdf8;
@@ -226,7 +226,7 @@
     }
 
     .stats-grid {
-      display: none; /* مخفي افتراضياً، ويظهر للأدمن فقط */
+      display: none;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
       margin-bottom: 20px;
@@ -353,10 +353,6 @@
       background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; padding: 20px;
     }
     
-    .exam-secure-active {
-      filter: blur(0px);
-      transition: filter 0.1s ease;
-    }
     .exam-secure-blur {
       filter: blur(25px) !important;
     }
@@ -406,7 +402,7 @@
 </head>
 <body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
 
-  <!-- الجملة الزرقاء المتحركة فقط -->
+  <!-- شريط التنبيهات الزرقاء -->
   <div class="announcement-bar">
     <div class="announcement-text" id="header-announcement-text">
       📢 أهلاً بكم في منصة فاهم التعليمية - بإشراف أ/ يوسف فرج | تابع أحدث الامتحانات والواجبات والتنبيهات فور نزولها!
@@ -416,7 +412,7 @@
   <div id="auth-screen-container">
     <div class="login-card">
       
-      <!-- شاشة تسجيل الدخول 1: البريد وكلمة السر -->
+      <!-- شاشة تسجيل الدخول 1 -->
       <div id="pane-login" class="auth-screen-pane active">
         <div class="login-hero-image-container">
           <img src="1000514471_2.jpg" alt="يوسف فرج">
@@ -437,7 +433,7 @@
         <div class="text-link-auth" onclick="switchAuthPane('pane-forgot')">نسيت كلمة المرور؟</div>
       </div>
 
-      <!-- شاشة تسجيل الدخول 2: رقم الهاتف أو التخطي -->
+      <!-- شاشة تسجيل الدخول 2 -->
       <div id="pane-phone" class="auth-screen-pane">
         <div class="login-hero-image-container"><img src="1000514471_2.jpg" alt="يوسف فرج"></div>
         <h2 style="margin-bottom: 5px; font-size: 18px;">رقم الهاتف (اختياري)</h2>
@@ -451,7 +447,7 @@
         <button class="auth-btn" onclick="skipPhoneStep()" style="background: #475569; margin-top: 8px;">تخطي هذه الخطوة ⏭️</button>
       </div>
 
-      <!-- شاشة نسيت كلمة المرور (طلب الكود من المشرف) -->
+      <!-- شاشة نسيت كلمة المرور -->
       <div id="pane-forgot" class="auth-screen-pane">
         <button class="back-btn" onclick="switchAuthPane('pane-login')">‹</button>
         <div style="font-size: 40px; margin-bottom: 10px; margin-top: 15px;">🔒</div>
@@ -464,7 +460,7 @@
         <button class="auth-btn" onclick="sendCodeToTeacher()">إرسال الطلب إلى المعلم 📱</button>
       </div>
 
-      <!-- شاشة إدخال الكود وتغيير كلمة المرور الجديدة -->
+      <!-- شاشة إعادة تعيين كلمة المرور -->
       <div id="pane-reset" class="auth-screen-pane">
         <button class="back-btn" onclick="switchAuthPane('pane-forgot')">‹</button>
         <div style="font-size: 40px; margin-bottom: 10px; margin-top: 15px;">🔑</div>
@@ -493,20 +489,19 @@
     <div id="admin-panel-box">
       <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 10px;">⚙ لوحة تحكم الأدمن (يوسف فرج)</div>
 
-      <!-- نشر تنبيه جديد في الشريط الأزرق -->
+      <!-- نشر تنبيه جديد -->
       <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1;">
-        <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">📢 نشر تنبيه / واجب / امتحان جديد في الشريط المتحرك:</div>
+        <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">📢 نشر تنبيه جديد في الشريط المتحرك:</div>
         <input type="text" id="admin-announcement-input" class="auth-input" placeholder="اكتب التنبيه هنا..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; font-size: 12px;">
         <button class="btn-main" onclick="updateAnnouncement()" style="width: 100%; background: #059669;">تحديث ونشر التنبيه سحابياً 🚀</button>
       </div>
       
-      <!-- إضافة امتحان -->
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد (مع جدولة الوقت):</div>
+      <!-- إضافة امتحان مع وقت لكل سؤال -->
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد (مع تحديد وقت لكل سؤال بالثانية):</div>
       <input type="text" id="new-exam-title" class="auth-input" placeholder="عنوان الامتحان..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
       
       <div style="display: flex; gap: 8px; margin-bottom: 6px;">
-        <input type="number" id="new-exam-total-time" class="auth-input" placeholder="الوقت (د)" style="background: white; color: #1e293b; margin-bottom: 0; font-size: 11px; padding-left:12px;">
-        <input type="number" id="new-exam-count" class="auth-input" placeholder="عدد الأسئلة" value="1" oninput="generateQuestionFields()" style="background: white; color: #1e293b; margin-bottom: 0; width: 100px; font-size: 11px; padding-left:12px;">
+        <input type="number" id="new-exam-count" class="auth-input" placeholder="عدد الأسئلة" value="1" oninput="generateQuestionFields()" style="background: white; color: #1e293b; margin-bottom: 0; width: 130px; font-size: 11px; padding-left:12px;">
         <select id="new-exam-mode" class="auth-input" style="background: white; color: #1e293b; margin-bottom: 0; font-size: 11px; padding-left:8px;">
           <option value="eval">تقييمي</option>
           <option value="practice">تدريبي</option>
@@ -519,9 +514,9 @@
       <div id="dynamic-questions-builder" style="margin-bottom: 10px;"></div>
       <button class="btn-main" id="btn-add-exam" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة وجدولة الامتحان سحابياً 📝</button>
 
-      <!-- إضافة فيديوهات (روابط أو رفع ملف مباشر) -->
+      <!-- إضافة فيديوهات -->
       <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1;">
-        <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">🎥 إضافة فيديو شرح (رابط أو اختيار فيديو من جهازك):</div>
+        <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">🎥 إضافة فيديو شرح:</div>
         <input type="text" id="new-video-title" class="auth-input" placeholder="اسم الفيديو..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
         <input type="text" id="new-video-link" class="auth-input" placeholder="رابط يوتيوب أو تليجرام..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
         <div style="font-size: 11px; color: #64748b; margin-bottom: 4px;">أو اختر فيديو مباشر من جهازك:</div>
@@ -529,23 +524,21 @@
         <button class="btn-main" onclick="addVideo()" style="width: 100%; background: #0284c7;">إضافة الفيديو للمنصة 🎥</button>
       </div>
 
-      <!-- إضافة PDF / صورة (روابط أو رفع ملف مباشر) -->
+      <!-- إضافة PDF / صورة -->
       <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1;">
-        <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">📁 إضافة ملف PDF / صورة (رابط أو اختيار من جهازك):</div>
+        <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">📁 إضافة ملف PDF / صورة:</div>
         <input type="text" id="new-pdf-title" class="auth-input" placeholder="عنوان المذكرة أو الصورة..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
         <input type="text" id="new-pdf-link" class="auth-input" placeholder="رابط الـ PDF (https://...)" style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
-        <div style="font-size: 11px; color: #64748b; margin-bottom: 4px;">أو اختر ملف PDF / صورة مباشرة من الاستوديو/الملفات:</div>
+        <div style="font-size: 11px; color: #64748b; margin-bottom: 4px;">أو اختر ملف PDF / صورة من الجهاز:</div>
         <input type="file" id="new-pdf-file" accept="application/pdf,image/*" class="auth-input" style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 11px;">
         <button class="btn-main" onclick="addPdfLink()" style="width: 100%; background: #7c3aed;">إضافة الملف / الصورة 📁</button>
       </div>
 
-      <!-- الطلاب والتقارير -->
       <button class="btn-main" onclick="showRegisteredStudentsModal()" style="width: 100%; background: #059669; margin-bottom: 6px;">👥 سجل الطلاب والتفاصيل الدقيقة وحظرهم</button>
       <button class="btn-main" onclick="showStudentReports()" style="width: 100%; background: #4f46e5; margin-bottom: 6px;">📋 تقارير محاولات لقطات الشاشة والغش</button>
     </div>
 
     <div id="sec-home" class="content-section active-section">
-      <!-- الإحصائيات الأربعة (تظهر للأدمن فقط) -->
       <div class="stats-grid" id="admin-stats-box">
         <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-value">100%</div><div class="stat-label">الحضور</div></div>
         <div class="stat-card"><div class="stat-icon">🎥</div><div class="stat-value" id="stat-videos-count">0</div><div class="stat-label">الفيديوهات</div></div>
@@ -608,7 +601,7 @@
     <div class="modal-box" id="modal-box-inner">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
         <h3 id="modal-title" style="color: #0284c7; font-size: 16px;">نافذة المنصة</h3>
-        <div id="exam-global-timer" style="background: #fee2e2; color: #ef4444; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; display: none;"></div>
+        <div id="exam-global-timer" style="background: #fee2e2; color: #ef4444; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold;"></div>
       </div>
       <div id="modal-questions-container" style="margin-bottom: 15px;"></div>
       <button class="btn-main" id="submit-exam-btn" onclick="submitExam()" style="width: 100%; padding: 10px; display:none;">تسليم الإجابات ✅</button>
@@ -626,7 +619,9 @@
 
     let activeQuestions = [];
     let currentExamId = null;
-    let globalExamTimerInterval = null;
+    let questionTimerInterval = null;
+    let currentQuestionIndex = 0;
+    let studentExamAnswers = {};
     let isInsideExam = false;
 
     let appData = {
@@ -652,6 +647,7 @@
       recognition.onresult = function(e) { document.getElementById(targetId).value = e.results[0][0].transcript; };
     }
 
+    // الحماية من لقطات الشاشة ومغادرة التبويب
     window.addEventListener("blur", function() {
       if (isInsideExam) {
         document.getElementById('modal-box-inner').classList.add('exam-secure-blur');
@@ -681,13 +677,6 @@
       }
     });
 
-    window.addEventListener("keyup", function(e) {
-      if (e.key === "PrintScreen") {
-        if (navigator.clipboard) { navigator.clipboard.writeText(""); }
-        logCheat("محاولة طباعة الشاشة (PrintScreen Captured) 📸🚫");
-      }
-    });
-
     async function logCheat(actionType) {
       const email = localStorage.getItem('fahem_email');
       if(!email || email === ADMIN_EMAIL) return;
@@ -714,6 +703,19 @@
       const cached = localStorage.getItem('fahem_cached_data');
       if(cached) {
         try { appData = JSON.parse(cached); } catch(e){}
+      }
+      
+      // استعادة حالة الامتحان الحالي في حال حدوث Refresh للطالب
+      const activeExamState = localStorage.getItem('fahem_active_exam_state');
+      if(activeExamState) {
+        try {
+          let state = JSON.parse(activeExamState);
+          if(state && state.isExamActive) {
+            setTimeout(() => {
+              startExam(state.examId, state.examTitle, state.questions, state.mode, state.qIndex);
+            }, 1000);
+          }
+        } catch(e){}
       }
     }
 
@@ -832,9 +834,6 @@
         userObj.lastActive = nowTimeStr;
         userObj.loginCount = (userObj.loginCount || 1) + 1;
         userObj.device = userAgentStr;
-        if(!userObj.phone || userObj.phone === 'غير متاح') {
-          userObj.phone = localStorage.getItem('phone_' + email) || 'غير متاح';
-        }
       }
 
       await saveDatatoJSONBin();
@@ -848,7 +847,6 @@
       resetEmailTarget = email;
       const msg = encodeURIComponent(`السلام عليكم، أريد كود إعادة تعيين كلمة المرور لحسابي: ${email}`);
       window.open(`https://wa.me/201039914421?text=${msg}`, '_blank');
-
       switchAuthPane('pane-reset');
     }
 
@@ -857,24 +855,12 @@
       const newPass = document.getElementById('new-pass-input').value.trim();
       const confirmPass = document.getElementById('confirm-pass-input').value.trim();
 
-      if(!code || !newPass || !confirmPass) {
-        alert('الرجاء ملء جميع الحقول'); return;
-      }
-
-      if(!VALID_CODES.includes(code)) {
-        alert('كود التحقق غير صحيح! يرجى طلب الكود من المشرف.'); return;
-      }
-
-      if(newPass !== confirmPass) {
-        alert('كلمتا المرور غير متطابقتين!'); return;
-      }
+      if(!code || !newPass || !confirmPass) { alert('الرجاء ملء جميع الحقول'); return; }
+      if(!VALID_CODES.includes(code)) { alert('كود التحقق غير صحيح!'); return; }
+      if(newPass !== confirmPass) { alert('كلمتا المرور غير متطابقتين!'); return; }
 
       localStorage.setItem('pass_' + resetEmailTarget, newPass);
-      alert('تم تغيير كلمة المرور بنجاح! يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة.');
-      
-      document.getElementById('reset-code-input').value = '';
-      document.getElementById('new-pass-input').value = '';
-      document.getElementById('confirm-pass-input').value = '';
+      alert('تم تغيير كلمة المرور بنجاح!');
       switchAuthPane('pane-login');
     }
 
@@ -897,17 +883,15 @@
       if(email === ADMIN_EMAIL) {
         document.getElementById('admin-panel-box').style.display = 'block';
         document.getElementById('role-badge').style.display = 'block';
-        document.getElementById('admin-stats-box').style.display = 'grid'; // إظهار الإحصائيات للأدمن فقط
+        document.getElementById('admin-stats-box').style.display = 'grid';
       } else {
-        document.getElementById('admin-stats-box').style.display = 'none'; // إخفاء تماماً للطلاب
+        document.getElementById('admin-stats-box').style.display = 'none';
       }
       renderAll();
     }
 
     function logout() { 
-      const saveBin = localStorage.getItem('fahem_cached_data');
       localStorage.clear(); 
-      if(saveBin) localStorage.setItem('fahem_cached_data', saveBin);
       location.reload(); 
     }
 
@@ -926,10 +910,13 @@
           <div style="background: #ffffff; padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #cbd5e1;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
               <span style="font-size: 11px; font-weight: bold; color: #0284c7;">السؤال رقم (${i})</span>
-              <select id="q_type_${i}" class="auth-input" style="width: 100px; padding: 4px; background: #f8fafc; color: #1e293b; font-size: 11px; margin-bottom: 0;" onchange="toggleQuestionTypeFields(${i})">
-                <option value="mcq">اختيار</option>
-                <option value="essay">مقالي</option>
-              </select>
+              <div style="display: flex; gap: 5px; align-items: center;">
+                <input type="number" id="q_time_${i}" class="auth-input" placeholder="الوقت (ثانية)" value="30" style="width: 90px; padding: 4px; background: #f8fafc; color: #1e293b; font-size: 11px; margin-bottom: 0;">
+                <select id="q_type_${i}" class="auth-input" style="width: 90px; padding: 4px; background: #f8fafc; color: #1e293b; font-size: 11px; margin-bottom: 0;" onchange="toggleQuestionTypeFields(${i})">
+                  <option value="mcq">اختيار</option>
+                  <option value="essay">مقالي</option>
+                </select>
+              </div>
             </div>
             
             <div class="input-wrapper" style="margin-top: 4px;">
@@ -960,7 +947,6 @@
 
     async function addExam() {
       const title = document.getElementById('new-exam-title').value.trim();
-      const totalTimeMin = parseInt(document.getElementById('new-exam-total-time').value.trim()) || 10;
       const countVal = parseInt(document.getElementById('new-exam-count').value.trim()) || 1;
       const mode = document.getElementById('new-exam-mode').value;
       const publishTimeVal = document.getElementById('new-exam-publish-time').value;
@@ -972,64 +958,57 @@
       for(let i=1; i<=countVal; i++) {
         let qType = document.getElementById(`q_type_${i}`).value;
         let qText = document.getElementById(`q_text_${i}`).value.trim() || `السؤال (${i})`;
+        let qSec = parseInt(document.getElementById(`q_time_${i}`).value) || 30;
+
         if(qType === 'essay') {
-          questionsArr.push({ type: 'essay', q: qText, modelAns: document.getElementById(`q_model_ans_${i}`).value.trim() || 'نموذج غير متوفر' });
+          questionsArr.push({ type: 'essay', q: qText, timeSec: qSec, modelAns: document.getElementById(`q_model_ans_${i}`).value.trim() || 'نموذج غير متوفر' });
         } else {
           let o1 = document.getElementById(`q_opt1_${i}`).value.trim() || 'أ';
           let o2 = document.getElementById(`q_opt2_${i}`).value.trim() || 'ب';
           let o3 = document.getElementById(`q_opt3_${i}`).value.trim() || 'ج';
           let o4 = document.getElementById(`q_opt4_${i}`).value.trim() || 'د';
           let ans = document.getElementById(`q_ans_${i}`).value.trim() || o1;
-          questionsArr.push({ type: 'mcq', q: qText, o1: o1, o2: o2, o3: o3, o4: o4, ans: ans });
+          questionsArr.push({ type: 'mcq', q: qText, timeSec: qSec, o1: o1, o2: o2, o3: o3, o4: o4, ans: ans });
         }
       }
 
       appData.exams.push({
         id: 'exam_' + Date.now(),
         title: title,
-        totalTime: totalTimeMin * 60,
         mode: mode,
         questions: questionsArr,
         publishTime: publishTimeVal ? new Date(publishTimeVal).getTime() : Date.now(),
-        info: `الوقت: ${totalTimeMin} د | عدد الأسئلة: ${countVal}`
+        info: `عدد الأسئلة: ${countVal}`
       });
 
       await saveDatatoJSONBin();
       renderAll();
-      alert('تم إضافة وجدولة الامتحان بنجاح سحابياً! ⏰');
+      alert('تم إضافة وجدولة الامتحان مع وقت لكل سؤال بنجاح! ⏰');
     }
 
     async function addVideo() {
       const title = document.getElementById('new-video-title').value.trim();
       let link = document.getElementById('new-video-link').value.trim();
       const fileInput = document.getElementById('new-video-file');
-
       if(!title) { alert('أدخل اسم الفيديو أولاً'); return; }
 
       await fetchDataFromJSONBin();
-
       if(fileInput.files && fileInput.files[0]) {
         const file = fileInput.files[0];
         const reader = new FileReader();
         reader.onload = async function(e) {
-          appData.videos.push({ id: 'vid_' + Date.now(), title: title, content: e.target.result, isLocalFile: true, info: 'فيديو مرفع من الاستوديو' });
+          appData.videos.push({ id: 'vid_' + Date.now(), title: title, content: e.target.result, isLocalFile: true });
           await saveDatatoJSONBin();
           renderAll();
-          document.getElementById('new-video-title').value = '';
-          fileInput.value = '';
-          alert('تم رفع الفيديو من جهازك بنجاح! 🎥');
+          alert('تم رفع الفيديو بنجاح! 🎥');
         };
         reader.readAsDataURL(file);
       } else if(link) {
         let embedLink = link.includes('watch?v=') ? link.replace('watch?v=', 'embed/') : link;
-        appData.videos.push({ id: 'vid_' + Date.now(), title: title, content: embedLink, isLocalFile: false, info: 'فيديو تعليمي' });
+        appData.videos.push({ id: 'vid_' + Date.now(), title: title, content: embedLink, isLocalFile: false });
         await saveDatatoJSONBin();
         renderAll();
-        document.getElementById('new-video-title').value = '';
-        document.getElementById('new-video-link').value = '';
         alert('تم إضافة الفيديو بنجاح! 🎥');
-      } else {
-        alert('ضع رابط الفيديو أو اختر ملف فيديو من جهازك.');
       }
     }
 
@@ -1037,32 +1016,24 @@
       const title = document.getElementById('new-pdf-title').value.trim();
       let link = document.getElementById('new-pdf-link').value.trim();
       const fileInput = document.getElementById('new-pdf-file');
-
-      if(!title) { alert('أدخل عنوان الملف/الصورة أولاً'); return; }
+      if(!title) { alert('أدخل عنوان الملف أولاً'); return; }
 
       await fetchDataFromJSONBin();
-
       if(fileInput.files && fileInput.files[0]) {
         const file = fileInput.files[0];
         const reader = new FileReader();
         reader.onload = async function(e) {
-          appData.pdfs.push({ id: 'pdf_' + Date.now(), title: title, link: e.target.result, isImage: file.type.startsWith('image/'), info: 'ملف/صورة ممرسلة من جهازك' });
+          appData.pdfs.push({ id: 'pdf_' + Date.now(), title: title, link: e.target.result, isImage: file.type.startsWith('image/') });
           await saveDatatoJSONBin();
           renderAll();
-          document.getElementById('new-pdf-title').value = '';
-          fileInput.value = '';
-          alert('تم رفع الملف/الصورة بنجاح! 📁');
+          alert('تم رفع الملف بنجاح! 📁');
         };
         reader.readAsDataURL(file);
       } else if(link) {
-        appData.pdfs.push({ id: 'pdf_' + Date.now(), title: title, link: link, isImage: false, info: 'ملف PDF' });
+        appData.pdfs.push({ id: 'pdf_' + Date.now(), title: title, link: link, isImage: false });
         await saveDatatoJSONBin();
         renderAll();
-        document.getElementById('new-pdf-title').value = '';
-        document.getElementById('new-pdf-link').value = '';
-        alert('تم إضافة ملف الـ PDF بنجاح! 📁');
-      } else {
-        alert('ضع رابط الملف أو اختر ملف/صورة من الاستوديو.');
+        alert('تم إضافة الملف بنجاح! 📁');
       }
     }
 
@@ -1097,8 +1068,8 @@
         let isPublished = !ex.publishTime || currentTime >= ex.publishTime;
         if(!isPublished && email !== ADMIN_EMAIL) return;
 
-        let subtitleText = isPublished ? ex.info : `${ex.info} (⏰ مجدول للنشر لاحقاً)`;
-        let actionBtn = isPublished ? `<button class="btn-main" onclick='startExam("${ex.id}", "${ex.title}", ${JSON.stringify(ex.questions || [])}, ${ex.totalTime || 0}, "${ex.mode}")'>بدء الامتحان 📝</button>` : `<span style="color:#f59e0b; font-size:11px;">قيد الجدولة</span>`;
+        let subtitleText = isPublished ? `${ex.info} (⏱ وقت مخصص لكل سؤال)` : `${ex.info} (⏰ مجدول لاحقاً)`;
+        let actionBtn = isPublished ? `<button class="btn-main" onclick='startExam("${ex.id}", "${ex.title}", ${JSON.stringify(ex.questions || [])}, "${ex.mode}", 0)'>بدء الامتحان 📝</button>` : `<span style="color:#f59e0b; font-size:11px;">قيد الجدولة</span>`;
 
         container.innerHTML += `
           <div class="card-item">
@@ -1111,71 +1082,89 @@
       });
     }
 
-    function startExam(id, title, questions, totalTimeSeconds, mode) {
+    function startExam(id, title, questions, mode, qIndex = 0) {
       currentExamId = id;
       activeQuestions = questions;
+      currentQuestionIndex = qIndex;
       isInsideExam = true;
 
-      document.getElementById('modal-title').innerText = title;
-      document.getElementById('submit-exam-btn').style.display = 'block';
+      // حفظ حالة الامتحان في الـ LocalStorage لضمان عدم ضياعه عند عمل Refresh
+      localStorage.setItem('fahem_active_exam_state', JSON.stringify({
+        isExamActive: true,
+        examId: id,
+        examTitle: title,
+        questions: questions,
+        mode: mode,
+        qIndex: qIndex
+      }));
 
+      document.getElementById('modal-title').innerText = `${title} (السؤال ${currentQuestionIndex + 1} من ${activeQuestions.length})`;
+      
       let container = document.getElementById('modal-questions-container');
       container.innerHTML = '';
 
-      if(globalExamTimerInterval) clearInterval(globalExamTimerInterval);
-      let timerBox = document.getElementById('exam-global-timer');
-      if(totalTimeSeconds > 0) {
-        timerBox.style.display = 'block';
-        let timeLeft = totalTimeSeconds;
-        globalExamTimerInterval = setInterval(() => {
-          let mins = Math.floor(timeLeft / 60);
-          let secs = timeLeft % 60;
-          timerBox.innerText = `الوقت: ${mins}:${secs < 10 ? '0' : ''}${secs}`;
-          timeLeft--;
-          if(timeLeft < 0) {
-            clearInterval(globalExamTimerInterval);
-            alert('انتهى الوقت!');
-            submitExam();
-          }
-        }, 1000);
-      } else {
-        timerBox.style.display = 'none';
-      }
+      if(questionTimerInterval) clearInterval(questionTimerInterval);
 
-      if(!questions || questions.length === 0) {
-        container.innerHTML = `<p style="text-align:center;">لا توجد أسئلة مضافة لهذا الامتحان.</p>`;
+      if(!questions || questions.length === 0 || currentQuestionIndex >= questions.length) {
+        submitExam();
         return;
       }
 
-      questions.forEach((q, i) => {
-        if(q.type === 'essay') {
-          container.innerHTML += `
-            <div style="background:#f8fafc; padding:10px; border-radius:8px; margin-bottom:8px; text-align:right;">
-              <div style="font-size:13px; font-weight:bold; margin-bottom:5px;">(${i+1}) ${q.q}</div>
-              <textarea id="exam_q_input_${i}" class="auth-input" placeholder="اكتب إجابتك..." style="background:white; color:#1e293b; height:70px;"></textarea>
-            </div>
-          `;
-        } else {
-          container.innerHTML += `
-            <div style="background:#f8fafc; padding:10px; border-radius:8px; margin-bottom:8px; text-align:right;">
-              <div style="font-size:13px; font-weight:bold; margin-bottom:5px;">(${i+1}) ${q.q}</div>
-              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o1}" onchange="checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o1}</label>
-              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o2}" onchange="checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o2}</label>
-              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o3}" onchange="checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o3}</label>
-              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o4}" onchange="checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o4}</label>
-              <div id="practice_fb_${i}" style="font-size:11px; font-weight:bold; margin-top:4px;"></div>
-            </div>
-          `;
+      let q = questions[currentQuestionIndex];
+      let timeLeft = q.timeSec || 30;
+
+      let timerHtml = `<div id="q-timer" style="background: #fee2e2; color: #ef4444; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold;">الوقت المتبقي للسؤال: ${timeLeft} ث</div>`;
+      document.getElementById('exam-global-timer').outerHTML = timerHtml;
+
+      questionTimerInterval = setInterval(() => {
+        timeLeft--;
+        let tBox = document.getElementById('q-timer');
+        if(tBox) tBox.innerText = `الوقت المتبقي للسؤال: ${timeLeft} ث`;
+        
+        if(timeLeft <= 0) {
+          clearInterval(questionTimerInterval);
+          alert('انتهى وقت هذا السؤال!');
+          nextQuestion(mode);
         }
-      });
+      }, 1000);
+
+      let savedAns = studentExamAnswers[currentQuestionIndex] || '';
+
+      if(q.type === 'essay') {
+        container.innerHTML = `
+          <div style="background:#f8fafc; padding:10px; border-radius:8px; margin-bottom:8px; text-align:right;">
+            <div style="font-size:13px; font-weight:bold; margin-bottom:5px;">${q.q}</div>
+            <textarea id="exam_essay_input" class="auth-input" placeholder="اكتب إجابتك هنا..." style="background:white; color:#1e293b; height:80px;" oninput="saveStudentAnswer(${currentQuestionIndex}, this.value)">${savedAns}</textarea>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div style="background:#f8fafc; padding:10px; border-radius:8px; margin-bottom:8px; text-align:right;">
+            <div style="font-size:13px; font-weight:bold; margin-bottom:5px;">${q.q}</div>
+            <label style="display:block; font-size:12px; margin-bottom:4px;"><input type="radio" name="q_current" value="${q.o1}" ${savedAns === q.o1 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o1}</label>
+            <label style="display:block; font-size:12px; margin-bottom:4px;"><input type="radio" name="q_current" value="${q.o2}" ${savedAns === q.o2 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o2}</label>
+            <label style="display:block; font-size:12px; margin-bottom:4px;"><input type="radio" name="q_current" value="${q.o3}" ${savedAns === q.o3 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o3}</label>
+            <label style="display:block; font-size:12px; margin-bottom:4px;"><input type="radio" name="q_current" value="${q.o4}" ${savedAns === q.o4 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o4}</label>
+            <div id="practice_fb" style="font-size:11px; font-weight:bold; margin-top:4px;"></div>
+          </div>
+        `;
+      }
+
+      let nextBtnText = currentQuestionIndex === activeQuestions.length - 1 ? 'تسليم الامتحان ✅' : 'السؤال التالي ➔';
+      document.getElementById('submit-exam-btn').style.display = 'block';
+      document.getElementById('submit-exam-btn').innerText = nextBtnText;
+      document.getElementById('submit-exam-btn').onclick = function() { nextQuestion(mode); };
 
       document.getElementById('exam-modal').style.display = 'flex';
     }
 
+    function saveStudentAnswer(qIdx, val) {
+      studentExamAnswers[qIdx] = val;
+    }
+
     function checkPracticeMode(el, correctAns, mode) {
       if(mode === 'practice') {
-        let parentBox = el.closest('div');
-        let fb = parentBox.querySelector('[id^="practice_fb_"]');
+        let fb = document.getElementById('practice_fb');
         if(el.value.trim() === correctAns.trim()) {
           fb.style.color = '#059669'; fb.innerText = 'إجابة صحيحة ✓';
         } else {
@@ -1184,16 +1173,28 @@
       }
     }
 
+    function nextQuestion(mode) {
+      if(questionTimerInterval) clearInterval(questionTimerInterval);
+      currentQuestionIndex++;
+      if(currentQuestionIndex < activeQuestions.length) {
+        startExam(currentExamId, document.getElementById('modal-title').innerText.split(' (')[0], activeQuestions, mode, currentQuestionIndex);
+      } else {
+        submitExam();
+      }
+    }
+
     function closeExam() {
       isInsideExam = false;
-      if(globalExamTimerInterval) clearInterval(globalExamTimerInterval);
+      if(questionTimerInterval) clearInterval(questionTimerInterval);
+      localStorage.removeItem('fahem_active_exam_state');
       document.getElementById('modal-box-inner').classList.remove('exam-secure-blur');
       document.getElementById('exam-modal').style.display = 'none';
     }
 
     async function submitExam() {
       isInsideExam = false;
-      if(globalExamTimerInterval) clearInterval(globalExamTimerInterval);
+      if(questionTimerInterval) clearInterval(questionTimerInterval);
+      localStorage.removeItem('fahem_active_exam_state');
       document.getElementById('modal-box-inner').classList.remove('exam-secure-blur');
 
       let score = 0;
@@ -1201,8 +1202,8 @@
 
       activeQuestions.forEach((q, i) => {
         if(q.type !== 'essay') {
-          let sel = document.querySelector(`input[name="q_${i}"]:checked`);
-          if(sel && sel.value.trim() === q.ans.trim()) score++;
+          let studentAns = studentExamAnswers[i];
+          if(studentAns && studentAns.trim() === q.ans.trim()) score++;
         }
       });
 
@@ -1215,6 +1216,7 @@
       appData.leaderboard.sort((a, b) => parseFloat(b.percentage) - parseFloat(a.percentage));
       await saveDatatoJSONBin();
 
+      studentExamAnswers = {};
       renderAll();
       showCertificate(email, percentVal + '%');
     }
@@ -1261,7 +1263,6 @@
                 </div>
               </div>
               <div style="font-size:11px; color:#475569;">📞 الهاتف: ${u.phone || 'غير متاح'} | 🔁 مرات الدخول: <b>${u.loginCount || 1}</b></div>
-              <div style="font-size:10px; color:#94a3b8; margin-top:2px;">💻 الجهاز: ${u.device || 'غير محدد'} | 🕒 آخر نشاط: ${u.lastActive || u.joinTime || 'غير معروف'}</div>
             </div>
           `;
         });
@@ -1283,81 +1284,57 @@
           <div>📧 <b>البريد:</b> ${emailTarget}</div>
           <div>📞 <b>الهاتف:</b> ${userObj.phone || 'غير متاح'}</div>
           <div>🔄 <b>عدد مرات دخول المنصة:</b> ${userObj.loginCount || 1} مرة</div>
-          <div>💻 <b>نوع الجهاز المستخدم:</b> ${userObj.device || 'غير محدد'}</div>
-          <div>📅 <b>تاريخ الانضمام:</b> ${userObj.joinTime || 'غير متوفر'}</div>
-          <div>🕒 <b>آخر تواجد على المنصة:</b> ${userObj.lastActive || 'غير متوفر'}</div>
+          <div>💻 <b>الجهاز:</b> ${userObj.device || 'غير محدد'}</div>
+          <div>🕒 <b>آخر تواجد:</b> ${userObj.lastActive || 'غير متوفر'}</div>
         </div>
-
-        <div style="font-size:12px; font-weight:bold; color:#0284c7; margin-bottom:6px; text-align:right;">📝 امتحانات الطالب وتقييماته:</div>
+        <div style="font-size:12px; font-weight:bold; color:#0284c7; margin-bottom:6px; text-align:right;">📝 الامتحانات:</div>
       `;
 
       if(userExams.length === 0) {
-        html += `<p style="font-size:11px; color:#64748b; text-align:right;">لم يكمل هذا الطالب أي امتحان حتى الآن.</p>`;
+        html += `<p style="font-size:11px; color:#64748b; text-align:right;">لم يكمل أي امتحان.</p>`;
       } else {
         userExams.forEach(ex => {
-          html += `
-            <div style="background:white; border:1px solid #cbd5e1; padding:6px 10px; border-radius:6px; margin-bottom:4px; font-size:11px; text-align:right;">
-              🎯 النتيجة: <b>${ex.percentage}%</b> | الدرجة: (${ex.score}) | 🕒 الوقت: ${ex.time || 'السابق'}
-            </div>
-          `;
+          html += `<div style="background:white; border:1px solid #cbd5e1; padding:6px 10px; border-radius:6px; margin-bottom:4px; font-size:11px; text-align:right;">🎯 النتيجة: <b>${ex.percentage}%</b></div>`;
         });
       }
 
-      html += `<div style="font-size:12px; font-weight:bold; color:#ef4444; margin:10px 0 6px 0; text-align:right;">📸 سجل لقطات الشاشة والمخالفات:</div>`;
-
+      html += `<div style="font-size:12px; font-weight:bold; color:#ef4444; margin:10px 0 6px 0; text-align:right;">📸 تقارير لقطات الشاشة:</div>`;
       if(userReports.length === 0) {
-        html += `<p style="font-size:11px; color:#059669; text-align:right;">سجل الطالب نظيف الخالي من محاولات الغش أو لقطات الشاشة ✅</p>`;
+        html += `<p style="font-size:11px; color:#059669; text-align:right;">سجل نظيف ✅</p>`;
       } else {
         userReports.forEach(rep => {
-          html += `
-            <div style="background:#fff1f2; border:1px solid #fecdd3; padding:6px 10px; border-radius:6px; margin-bottom:4px; font-size:11px; text-align:right; color:#991b1b;">
-              ⚠️ <b>${rep.action}</b> <span style="font-size:10px; color:#64748b;">(${rep.time})</span>
-            </div>
-          `;
+          html += `<div style="background:#fff1f2; border:1px solid #fecdd3; padding:6px; border-radius:6px; margin-bottom:4px; font-size:11px; color:#991b1b;">⚠️ ${rep.action} (${rep.time})</div>`;
         });
       }
 
-      html += `<button class="btn-main" onclick="showRegisteredStudentsModal()" style="width:100%; margin-top:12px; background:#475569;">⬅ العودة لقائمة الطلاب</button>`;
+      html += `<button class="btn-main" onclick="showRegisteredStudentsModal()" style="width:100%; margin-top:12px; background:#475569;">⬅ العودة</button>`;
       container.innerHTML = html;
     }
 
     async function toggleBlockUser(emailTarget) {
-      if(emailTarget === ADMIN_EMAIL) { alert('لا يمكنك حظر حساب الأدمن!'); return; }
-      
+      if(emailTarget === ADMIN_EMAIL) return;
       await fetchDataFromJSONBin();
       if(!appData.blockedUsers) appData.blockedUsers = [];
-
       if(appData.blockedUsers.includes(emailTarget)) {
         appData.blockedUsers = appData.blockedUsers.filter(e => e !== emailTarget);
-        alert(`تم فك الحظر عن الطالب: ${emailTarget}`);
       } else {
         appData.blockedUsers.push(emailTarget);
-        alert(`تم حظر الطالب: ${emailTarget} ولن يستطيع الدخول مجدداً!`);
       }
-
       await saveDatatoJSONBin();
       showRegisteredStudentsModal();
     }
 
     function showStudentReports() {
       let container = document.getElementById('modal-questions-container');
-      document.getElementById('modal-title').innerText = "📋 تقارير محاولات لقطات الشاشة والغش";
+      document.getElementById('modal-title').innerText = "📋 تقارير لقطات الشاشة والغش";
       document.getElementById('submit-exam-btn').style.display = 'none';
-
       let reportsList = appData.reports || [];
-      let html = `<div style="font-size:12px; margin-bottom:10px; font-weight:bold;">إجمالي المحاولات والمخالفات: ${reportsList.length}</div>`;
-      
+      let html = `<div style="font-size:12px; margin-bottom:10px; font-weight:bold;">المخالفات: ${reportsList.length}</div>`;
       if(reportsList.length === 0) {
-        html += `<p style="text-align:center; color:#64748b;">لا توجد مخالفات أو لقطات شاشة مسجلة حتى الآن.</p>`;
+        html += `<p style="text-align:center; color:#64748b;">لا توجد مخالفات مسجلة.</p>`;
       } else {
         reportsList.slice().reverse().forEach(rep => {
-          html += `
-            <div style="background:#f8fafc; border:1px solid #fee2e2; padding:8px; border-radius:8px; margin-bottom:6px; text-align:right;">
-              <div style="font-size:12px; font-weight:bold; color:#ef4444;">👤 الطالب: ${rep.email}</div>
-              <div style="font-size:11px; color:#1e293b; margin-top:2px;">⚡ المخالفة: ${rep.action}</div>
-              <div style="font-size:10px; color:#94a3b8; margin-top:2px;">🕒 الوقت: ${rep.time}</div>
-            </div>
-          `;
+          html += `<div style="background:#f8fafc; border:1px solid #fee2e2; padding:8px; border-radius:8px; margin-bottom:6px; text-align:right;"><div style="font-size:12px; font-weight:bold; color:#ef4444;">${rep.email}</div><div style="font-size:11px;">${rep.action}</div><div style="font-size:10px; color:#94a3b8;">${rep.time}</div></div>`;
         });
       }
       container.innerHTML = html;
@@ -1372,21 +1349,12 @@
       if(statVids) statVids.innerText = appData.videos ? appData.videos.length : 0;
 
       if(!appData.videos || appData.videos.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لا توجد فيديوهات متاحة</p>';
+        container.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لا توجد فيديوهات</p>';
         return;
       }
-
       appData.videos.forEach(v => {
-        let videoContent = v.isLocalFile ? 
-          `<video src="${v.content}" controls style="width:100%; height:100%; border-radius:10px;"></video>` : 
-          `<iframe src="${v.content}" allowfullscreen></iframe>`;
-
-        container.innerHTML += `
-          <div class="card-item">
-            <div class="card-row"><div class="card-title">${v.title}</div></div>
-            <div class="media-preview-container">${videoContent}</div>
-          </div>
-        `;
+        let vCont = v.isLocalFile ? `<video src="${v.content}" controls style="width:100%; height:100%; border-radius:10px;"></video>` : `<iframe src="${v.content}" allowfullscreen></iframe>`;
+        container.innerHTML += `<div class="card-item"><div class="card-row"><div class="card-title">${v.title}</div></div><div class="media-preview-container">${vCont}</div></div>`;
       });
     }
 
@@ -1394,25 +1362,13 @@
       const container = document.getElementById('pdfs-container');
       if(!container) return;
       container.innerHTML = '';
-
       if(!appData.pdfs || appData.pdfs.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لا توجد ملفات أو صور</p>';
+        container.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لا توجد ملفات</p>';
         return;
       }
-
       appData.pdfs.forEach(p => {
-        let displayContent = p.isImage ? 
-          `<div class="media-preview-container"><img src="${p.link}" alt="صورة ممرسلة" /></div>` : 
-          `<a class="btn-custom-open" href="${p.link}" target="_blank">فتح الملف 📄</a>`;
-
-        container.innerHTML += `
-          <div class="card-item">
-            <div class="card-row">
-              <div class="card-info"><div class="card-title">${p.title}</div><div class="card-subtitle">${p.info}</div></div>
-              <div>${displayContent}</div>
-            </div>
-          </div>
-        `;
+        let pCont = p.isImage ? `<div class="media-preview-container"><img src="${p.link}" /></div>` : `<a class="btn-custom-open" href="${p.link}" target="_blank">فتح الملف 📄</a>`;
+        container.innerHTML += `<div class="card-item"><div class="card-row"><div class="card-info"><div class="card-title">${p.title}</div></div><div>${pCont}</div></div></div>`;
       });
     }
 
@@ -1425,20 +1381,11 @@
         if(fullBox) fullBox.innerHTML = msg;
         return;
       }
-
       let html = '';
       appData.leaderboard.forEach((st, idx) => {
         let rankClass = idx === 0 ? 'rank-1' : (idx === 1 ? 'rank-2' : (idx === 2 ? 'rank-3' : ''));
         let medalEmoji = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `#${idx+1}`));
-        html += `
-          <div class="leaderboard-item">
-            <div style="display:flex; align-items:center; gap:10px;">
-              <div class="leaderboard-rank ${rankClass}">${medalEmoji}</div>
-              <div style="font-size:13px; font-weight:bold; color:#0f172a;">${st.studentName}</div>
-            </div>
-            <div style="font-size:14px; font-weight:bold; color:#0284c7;">${st.percentage}%</div>
-          </div>
-        `;
+        html += `<div class="leaderboard-item"><div style="display:flex; align-items:center; gap:10px;"><div class="leaderboard-rank ${rankClass}">${medalEmoji}</div><div style="font-size:13px; font-weight:bold;">${st.studentName}</div></div><div style="font-size:14px; font-weight:bold; color:#0284c7;">${st.percentage}%</div></div>`;
       });
       if(homeBox) homeBox.innerHTML = html;
       if(fullBox) fullBox.innerHTML = html;
