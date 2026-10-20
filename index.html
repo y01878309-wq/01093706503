@@ -226,7 +226,7 @@
     }
 
     .stats-grid {
-      display: grid;
+      display: none; /* مخفي افتراضياً، ويظهر للأدمن فقط */
       grid-template-columns: 1fr 1fr;
       gap: 12px;
       margin-bottom: 20px;
@@ -353,7 +353,6 @@
       background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; padding: 20px;
     }
     
-    /* حماية الامتحان من لقطات الشاشة */
     .exam-secure-active {
       filter: blur(0px);
       transition: filter 0.1s ease;
@@ -546,7 +545,8 @@
     </div>
 
     <div id="sec-home" class="content-section active-section">
-      <div class="stats-grid">
+      <!-- الإحصائيات الأربعة (تظهر للأدمن فقط) -->
+      <div class="stats-grid" id="admin-stats-box">
         <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-value">100%</div><div class="stat-label">الحضور</div></div>
         <div class="stat-card"><div class="stat-icon">🎥</div><div class="stat-value" id="stat-videos-count">0</div><div class="stat-label">الفيديوهات</div></div>
         <div class="stat-card"><div class="stat-icon">❓</div><div class="stat-value" id="stat-exams-display">0</div><div class="stat-label">الامتحانات</div></div>
@@ -652,9 +652,6 @@
       recognition.onresult = function(e) { document.getElementById(targetId).value = e.results[0][0].transcript; };
     }
 
-    // --- نظام أمان منع لقطة الشاشة المتقدم ---
-    
-    // تمويه التبويب أو الشاشة فور محاولة التصوير أو ترك النافذة
     window.addEventListener("blur", function() {
       if (isInsideExam) {
         document.getElementById('modal-box-inner').classList.add('exam-secure-blur');
@@ -666,7 +663,6 @@
       document.getElementById('modal-box-inner').classList.remove('exam-secure-blur');
     });
 
-    // منع اختصارات كيبورد التصوير والطباعة
     window.addEventListener("keydown", function(e) {
       if (isInsideExam) {
         if (
@@ -819,7 +815,6 @@
 
       localStorage.setItem('fahem_email', email);
       
-      // تسجيل تتبع تفاصيل الطالب ودخوله
       let userObj = appData.registeredUsers.find(u => u.email === email);
       const userAgentStr = navigator.userAgent.includes("Mobile") ? "📱 موبايل" : "💻 كمبيوتر/لاب";
       const nowTimeStr = new Date().toLocaleString('ar-EG');
@@ -902,6 +897,9 @@
       if(email === ADMIN_EMAIL) {
         document.getElementById('admin-panel-box').style.display = 'block';
         document.getElementById('role-badge').style.display = 'block';
+        document.getElementById('admin-stats-box').style.display = 'grid'; // إظهار الإحصائيات للأدمن فقط
+      } else {
+        document.getElementById('admin-stats-box').style.display = 'none'; // إخفاء تماماً للطلاب
       }
       renderAll();
     }
@@ -1236,7 +1234,6 @@
       `;
     }
 
-    // عرض قائمة جميع الطلاب ومعلومات تفصيلية
     function showRegisteredStudentsModal() {
       let container = document.getElementById('modal-questions-container');
       document.getElementById('modal-title').innerText = "👥 سجل تفاصيل الطلاب والحظر";
@@ -1273,7 +1270,6 @@
       document.getElementById('exam-modal').style.display = 'flex';
     }
 
-    // عرض التفاصيل الدقيقة الكاملة لطالب معين
     function showSingleStudentDetails(emailTarget) {
       let container = document.getElementById('modal-questions-container');
       document.getElementById('modal-title').innerText = `📊 سجل نشاط: ${emailTarget}`;
