@@ -526,7 +526,8 @@
       <input type="text" id="new-exam-title" class="auth-input" placeholder="عنوان الامتحان..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
       
       <div style="display: flex; gap: 8px; margin-bottom: 6px;">
-        <input type="number" id="new-exam-count" class="auth-input" placeholder="عدد الأسئلة" value="1" oninput="generateQuestionFields()" style="background: white; color: #1e293b; margin-bottom: 0; width: 130px; font-size: 11px; padding-left:12px;">
+        <input type="number" id="new-exam-count" class="auth-input" placeholder="عدد الأسئلة" value="1" oninput="generateQuestionFields()" style="background: white; color: #1e293b; margin-bottom: 0; width: 100px; font-size: 11px; padding-left:12px;">
+        <input type="number" id="new-exam-total-time" class="auth-input" placeholder="الوقت الكلي (دقائق)" value="10" style="background: white; color: #1e293b; margin-bottom: 0; width: 110px; font-size: 11px; padding-left:12px;">
         <select id="new-exam-mode" class="auth-input" style="background: white; color: #1e293b; margin-bottom: 0; font-size: 11px; padding-left:8px;">
           <option value="eval">تقييمي</option>
           <option value="practice">تدريبي</option>
@@ -612,14 +613,21 @@
     </div>
 
     <div id="sec-settings" class="content-section">
-      <div class="settings-card-box" style="padding: 15px; background: white; border-radius: 16px; margin-bottom: 15px;">
-        <div style="font-size: 14px; font-weight: bold; margin-bottom: 10px;" id="profile-email-display">البريد: --</div>
-        <div style="font-size: 12px; color: #64748b; margin-bottom: 15px;" id="profile-phone-display">الهاتف: --</div>
-        
-        <div style="font-size: 12px; font-weight: bold; color: #0284c7; margin-bottom: 5px;">تعديل اسمك في المنصة:</div>
-        <div style="display: flex; gap: 6px;">
-          <input type="text" id="my-custom-name-input" class="auth-input" placeholder="اكتب اسمك هنا..." style="background: #f8fafc; color: #1e293b; margin-bottom: 0; font-size: 12px; padding: 8px;">
-          <button class="btn-main" onclick="saveMyProfileName()" style="padding: 8px 14px; font-size: 12px;">حفظ الاسم</button>
+      <div class="settings-card-box" style="background: white; border-radius: 16px; overflow: hidden; margin-bottom: 15px;">
+        <div style="background: linear-gradient(135deg, #4f46e5, #6366f1); color: white; padding: 20px; display: flex; align-items: center; gap: 15px;">
+          <div style="width: 55px; height: 55px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold;" id="profile-avatar-letter">Y</div>
+          <div>
+            <div style="font-size: 16px; font-weight: bold;" id="profile-name-header">Youssef Farag</div>
+            <div style="font-size: 12px; opacity: 0.85; margin-top: 2px;" id="profile-email-display">farag.17657@gmail.com</div>
+          </div>
+        </div>
+        <div style="padding: 15px;">
+          <div style="font-size: 12px; font-weight: bold; color: #0284c7; margin-bottom: 6px;">تعديل اسمك في المنصة:</div>
+          <div style="display: flex; gap: 6px; margin-bottom: 10px;">
+            <input type="text" id="my-custom-name-input" class="auth-input" placeholder="اكتب اسمك هنا..." style="background: #f8fafc; color: #1e293b; margin-bottom: 0; font-size: 12px; padding: 8px;">
+            <button class="btn-main" onclick="saveMyProfileName()" style="padding: 8px 14px; font-size: 12px;">حفظ الاسم</button>
+          </div>
+          <div style="font-size: 12px; color: #64748b;" id="profile-phone-display">الهاتف: --</div>
         </div>
       </div>
       <div class="logout-row" onclick="logout()">
@@ -688,6 +696,20 @@
         if(!window.appData.registeredUsers) window.appData.registeredUsers = [];
         if(!window.appData.blockedUsers) window.appData.blockedUsers = [];
 
+        // التأكد من وجود حساب يوسف (البودي) في المسجلين
+        let budiExists = window.appData.registeredUsers.some(u => u.email === "Yousefbooooda98@gmail.com");
+        if(!budiExists) {
+          window.appData.registeredUsers.push({
+            email: "Yousefbooooda98@gmail.com",
+            name: "Yousef Booda",
+            phone: "غير متاح",
+            joinTime: new Date().toLocaleString('ar-EG'),
+            lastActive: new Date().toLocaleString('ar-EG'),
+            loginCount: 1,
+            device: "📱 موبايل"
+          });
+        }
+
         if(window.appData.announcementText) {
           document.getElementById('header-announcement-text').innerText = window.appData.announcementText;
         }
@@ -737,6 +759,13 @@
       recognition.start();
       recognition.onresult = function(e) { document.getElementById(targetId).value = e.results[0][0].transcript; };
     }
+
+    // 🚫 حظر ومراقبة اللصق (Paste) وتسجيله كشبهة غش فوراً
+    document.addEventListener('paste', function(e) {
+      e.preventDefault();
+      alert("⚠️ ممنوع استخدام اللصق (Paste) داخل المنصة!");
+      logCheat("محاولة استخدام اللصق (Paste Attempt) 📋🚫");
+    });
 
     window.addEventListener("blur", function() {
       if (isInsideExam) {
@@ -928,8 +957,10 @@
       const phone = localStorage.getItem('phone_' + email) || 'غير متوفر';
       const currentDisplayName = getUserDisplayName(email);
 
-      document.getElementById('profile-email-display').innerText = `البريد: ${email}`;
+      document.getElementById('profile-email-display').innerText = email;
       document.getElementById('profile-phone-display').innerText = `الهاتف: ${phone}`;
+      document.getElementById('profile-name-header').innerText = currentDisplayName;
+      document.getElementById('profile-avatar-letter').innerText = currentDisplayName.charAt(0).toUpperCase();
       document.getElementById('my-custom-name-input').value = currentDisplayName;
       document.getElementById('welcome-user-name').innerText = `👋 مرحباً، ${email === ADMIN_EMAIL ? 'يوسف فرج (الأدمن)' : currentDisplayName}`;
 
@@ -1001,6 +1032,7 @@
     async function addExam() {
       const title = document.getElementById('new-exam-title').value.trim();
       const countVal = parseInt(document.getElementById('new-exam-count').value.trim()) || 1;
+      const totalTimeVal = parseInt(document.getElementById('new-exam-total-time').value.trim()) || 10;
       const mode = document.getElementById('new-exam-mode').value;
       const publishTimeVal = document.getElementById('new-exam-publish-time').value;
 
@@ -1029,9 +1061,10 @@
         id: 'exam_' + Date.now(),
         title: title,
         mode: mode,
+        totalTimeMinutes: totalTimeVal,
         questions: questionsArr,
         publishTime: publishTimeVal ? new Date(publishTimeVal).getTime() : Date.now(),
-        info: `عدد الأسئلة: ${countVal}`
+        info: `عدد الأسئلة: ${countVal} | الوقت الكلي: ${totalTimeVal} دقيقة`
       });
 
       if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
@@ -1161,8 +1194,21 @@
         let isPublished = !ex.publishTime || currentTime >= ex.publishTime;
         if(!isPublished && email !== ADMIN_EMAIL) return;
 
-        let subtitleText = isPublished ? `${ex.info} (⏱ وقت مخصص لكل سؤال)` : `${ex.info} (⏰ مجدول لاحقاً)`;
-        let actionBtn = isPublished ? `<button class="btn-main" onclick='startExam("${ex.id}", "${ex.title}", ${JSON.stringify(ex.questions || [])}, "${ex.mode}", 0)'>بدء الامتحان 📝</button>` : `<span style="color:#f59e0b; font-size:11px;">قيد الجدولة</span>`;
+        // التحقق مما إذا كان الطالب قد قام بحل هذا الامتحان من قبل
+        let hasAlreadyTaken = (appData.leaderboard || []).some(l => l.studentName === email && l.examTitle === ex.title);
+
+        let subtitleText = isPublished ? `${ex.info}` : `${ex.info} (⏰ مجدول لاحقاً)`;
+        let actionBtn = '';
+
+        if(email === ADMIN_EMAIL) {
+          actionBtn = `<button class="btn-main" onclick='startExam("${ex.id}", "${ex.title}", ${JSON.stringify(ex.questions || [])}, "${ex.mode}", 0)'>معاينة الامتحان 👁️</button>`;
+        } else if(hasAlreadyTaken) {
+          actionBtn = `<span style="color:#16a34a; font-size:12px; font-weight:bold;">تم التسليم بنجاح ✓</span>`;
+        } else if(isPublished) {
+          actionBtn = `<button class="btn-main" onclick='startExam("${ex.id}", "${ex.title}", ${JSON.stringify(ex.questions || [])}, "${ex.mode}", 0)'>بدء الامتحان 📝</button>`;
+        } else {
+          actionBtn = `<span style="color:#f59e0b; font-size:11px;">قيد الجدولة</span>`;
+        }
 
         container.innerHTML += `
           <div class="card-item">
@@ -1176,6 +1222,13 @@
     }
 
     function startExam(id, title, questions, mode, qIndex = 0) {
+      const email = localStorage.getItem('fahem_email');
+      let hasAlreadyTaken = (appData.leaderboard || []).some(l => l.studentName === email && l.examTitle === title);
+      if(hasAlreadyTaken && email !== ADMIN_EMAIL) {
+        alert('❌ عذراً، لا يمكنك دخول الامتحان مرة أخرى. لقد قمت بتسليمه مسبقاً!');
+        return;
+      }
+
       currentExamId = id;
       activeQuestions = questions;
       currentQuestionIndex = qIndex;
@@ -1452,7 +1505,6 @@
       let userObj = (appData.registeredUsers || []).find(u => u.email === targetEmail);
       if(userObj) {
         userObj.name = newName;
-        // تحديث الاسم أيضاً في جدول المتصدرين والسجلات
         (appData.leaderboard || []).forEach(l => {
           if(l.studentName === targetEmail) l.displayName = newName;
         });
@@ -1479,14 +1531,13 @@
           <div>🔄 <b>عدد مرات الدخول:</b> ${userObj.loginCount || 1} مرة</div>
           <div>💻 <b>الجهاز:</b> ${userObj.device || 'غير محدد'}</div>
         </div>
-        <div style="font-size:12px; font-weight:bold; color:#0284c7; margin-bottom:6px; text-align:right;">📝 امتحانات الطالب وإجاباته (اضغط لعرض تفاصيل الإجابات):</div>
+        <div style="font-size:12px; font-weight:bold; color:#0284c7; margin-bottom:6px; text-align:right;">📝 امتحانات الطالب وإجاباته:</div>
       `;
 
       if(userExams.length === 0) {
         html += `<p style="font-size:11px; color:#64748b; text-align:right;">لم يكمل أي امتحان حتى الآن.</p>`;
       } else {
         userExams.forEach((ex, idx) => {
-          let globalIdx = (appData.leaderboard || []).findIndex(l => l.studentName === ex.studentName && l.percentage === ex.percentage && l.time === ex.time);
           html += `
             <div style="background:white; border:1px solid #cbd5e1; padding:8px 10px; border-radius:6px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
               <div style="font-size:12px; text-align:right;">
