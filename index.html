@@ -272,16 +272,19 @@
     .content-section { display: none; }
     .active-section { display: block; }
 
+    /* كروت الامتحانات بحجم أكبر وواضح بناءً على طلبك */
     .card-item {
       background: #ffffff;
-      border-radius: 14px;
-      padding: 15px;
-      margin-bottom: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-      border: 1px solid #f1f5f9;
+      border-radius: 18px;
+      padding: 22px 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+      border: 1px solid #e2e8f0;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 14px;
+      min-height: 110px;
+      justify-content: center;
     }
     .card-row {
       display: flex;
@@ -290,11 +293,11 @@
       width: 100%;
     }
     .card-info { text-align: right; flex: 1; }
-    .card-title { font-size: 14px; font-weight: bold; color: #0f172a; }
-    .card-subtitle { font-size: 12px; color: #64748b; margin-top: 3px; }
+    .card-title { font-size: 16px; font-weight: bold; color: #0f172a; }
+    .card-subtitle { font-size: 13px; color: #64748b; margin-top: 5px; }
     .btn-main {
-      background: #0284c7; color: white; border: none; padding: 8px 14px;
-      border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; text-align: center;
+      background: #0284c7; color: white; border: none; padding: 10px 18px;
+      border-radius: 10px; font-size: 13px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; text-align: center;
     }
     
     .btn-custom-open {
@@ -302,6 +305,33 @@
       border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;
       text-decoration: none; display: inline-block;
     }
+
+    /* تبويبات الامتحانات (القادمة / التسليمات) */
+    .exams-tabs-header {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 10px;
+    }
+    .exam-tab-btn {
+      background: none;
+      border: none;
+      font-size: 14px;
+      font-weight: bold;
+      color: #64748b;
+      cursor: pointer;
+      padding: 6px 16px;
+      border-radius: 20px;
+      transition: all 0.3s;
+    }
+    .exam-tab-btn.active {
+      background: #0284c7;
+      color: white;
+    }
+    .exam-tab-pane { display: none; }
+    .exam-tab-pane.active { display: block; }
 
     .media-preview-container {
       width: 100%;
@@ -557,9 +587,20 @@
       <div class="card-item" id="home-leaderboard-box"></div>
     </div>
 
+    <!-- قسم الامتحانات المحدث بالتبويبين (القادمة / التسليمات) -->
     <div id="sec-exams" class="content-section">
-      <div class="section-header-title">الامتحانات المتاحة والمجدولة</div>
-      <div id="exams-container"></div>
+      <div class="exams-tabs-header">
+        <button class="exam-tab-btn active" id="btn-tab-upcoming" onclick="switchExamTab('upcoming')">القادمة</button>
+        <button class="exam-tab-btn" id="btn-tab-submissions" onclick="switchExamTab('submissions')">التسليمات</button>
+      </div>
+
+      <div id="pane-upcoming" class="exam-tab-pane active">
+        <div id="exams-container"></div>
+      </div>
+
+      <div id="pane-submissions" class="exam-tab-pane">
+        <div id="submissions-container"></div>
+      </div>
     </div>
 
     <div id="sec-videos" class="content-section">
@@ -647,7 +688,6 @@
       recognition.onresult = function(e) { document.getElementById(targetId).value = e.results[0][0].transcript; };
     }
 
-    // الحماية من لقطات الشاشة ومغادرة التبويب
     window.addEventListener("blur", function() {
       if (isInsideExam) {
         document.getElementById('modal-box-inner').classList.add('exam-secure-blur');
@@ -705,7 +745,6 @@
         try { appData = JSON.parse(cached); } catch(e){}
       }
       
-      // استعادة حالة الامتحان الحالي في حال حدوث Refresh للطالب
       const activeExamState = localStorage.getItem('fahem_active_exam_state');
       if(activeExamState) {
         try {
@@ -1052,16 +1091,55 @@
       document.getElementById(navId).classList.add('active');
     }
 
+    function switchExamTab(tabName) {
+      document.querySelectorAll('.exam-tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.exam-tab-pane').forEach(pane => pane.classList.remove('active'));
+
+      if(tabName === 'upcoming') {
+        document.getElementById('btn-tab-upcoming').classList.add('active');
+        document.getElementById('pane-upcoming').classList.add('active');
+      } else {
+        document.getElementById('btn-tab-submissions').classList.add('active');
+        document.getElementById('pane-submissions').classList.add('active');
+      }
+    }
+
     function renderExams() {
       const container = document.getElementById('exams-container');
-      if(!container) return;
+      const submissionsContainer = document.getElementById('submissions-container');
+      if(!container || !submissionsContainer) return;
+      
       container.innerHTML = '';
+      submissionsContainer.innerHTML = '';
+
       const email = localStorage.getItem('fahem_email');
       const currentTime = Date.now();
 
       if(!appData.exams || appData.exams.length === 0) {
         container.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لا توجد امتحانات متاحة حالياً</p>';
-        return;
+      }
+
+      // جلب امتحانات الطالب المسجلة في الـ Leaderboard لعرضها في التسليمات
+      const userSubmissions = (appData.leaderboard || []).filter(l => l.studentName === email);
+
+      if(userSubmissions.length === 0) {
+        submissionsContainer.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لم تقم بتسليم أي امتحان بعد</p>';
+      } else {
+        userSubmissions.forEach(sub => {
+          submissionsContainer.innerHTML += `
+            <div class="card-item" style="background: #f0fdf4; border-color: #bbf7d0;">
+              <div class="card-row">
+                <div class="card-info">
+                  <div class="card-title">✅ نتيجة الامتحان</div>
+                  <div class="card-subtitle">النسبة المئوية: <b>${sub.percentage}%</b> | وقت التسليم: ${sub.time}</div>
+                </div>
+                <div>
+                  <button class="btn-main" style="background: #059669;" onclick="alert('درجتك في هذا الامتحان هي: ${sub.percentage}%')">معرفة الدرجة 📊</button>
+                </div>
+              </div>
+            </div>
+          `;
+        });
       }
 
       appData.exams.forEach(ex => {
@@ -1088,7 +1166,6 @@
       currentQuestionIndex = qIndex;
       isInsideExam = true;
 
-      // حفظ حالة الامتحان في الـ LocalStorage لضمان عدم ضياعه عند عمل Refresh
       localStorage.setItem('fahem_active_exam_state', JSON.stringify({
         isExamActive: true,
         examId: id,
@@ -1218,6 +1295,11 @@
 
       studentExamAnswers = {};
       renderAll();
+      
+      // التوجيه التلقائي المباشر إلى تبويب التسليمات بعد تسليم الامتحان بناءً على طلبك
+      switchExamTab('submissions');
+      switchTab('sec-exams', 'nav-exams');
+
       showCertificate(email, percentVal + '%');
     }
 
