@@ -28,7 +28,7 @@
       padding-bottom: 90px;
     }
 
-    /* شريط التنبيهات الزرقاء */
+    /* شريط التنبيهات */
     .announcement-bar {
       width: 100%;
       background: #38bdf8;
@@ -272,19 +272,16 @@
     .content-section { display: none; }
     .active-section { display: block; }
 
-    /* كروت الامتحانات بحجم أكبر وواضح بناءً على طلبك */
     .card-item {
       background: #ffffff;
       border-radius: 18px;
-      padding: 22px 18px;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+      padding: 20px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
       border: 1px solid #e2e8f0;
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      min-height: 110px;
-      justify-content: center;
+      gap: 12px;
     }
     .card-row {
       display: flex;
@@ -294,7 +291,7 @@
     }
     .card-info { text-align: right; flex: 1; }
     .card-title { font-size: 16px; font-weight: bold; color: #0f172a; }
-    .card-subtitle { font-size: 13px; color: #64748b; margin-top: 5px; }
+    .card-subtitle { font-size: 13px; color: #64748b; margin-top: 4px; }
     .btn-main {
       background: #0284c7; color: white; border: none; padding: 10px 18px;
       border-radius: 10px; font-size: 13px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-block; text-align: center;
@@ -306,7 +303,7 @@
       text-decoration: none; display: inline-block;
     }
 
-    /* تبويبات الامتحانات (القادمة / التسليمات) */
+    /* تبويبات الامتحانات */
     .exams-tabs-header {
       display: flex;
       justify-content: center;
@@ -318,11 +315,11 @@
     .exam-tab-btn {
       background: none;
       border: none;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: bold;
       color: #64748b;
       cursor: pointer;
-      padding: 6px 16px;
+      padding: 8px 22px;
       border-radius: 20px;
       transition: all 0.3s;
     }
@@ -378,9 +375,10 @@
     .nav-item.active { color: #4f46e5; }
     .nav-item span { font-size: 18px; margin-bottom: 2px; }
 
+    /* تكبير نافذة الامتحان (Modal) تكبير تام ليتناسب مع طلبك */
     #exam-modal {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; padding: 20px;
+      background: rgba(0,0,0,0.75); z-index: 2000; justify-content: center; align-items: center; padding: 12px;
     }
     
     .exam-secure-blur {
@@ -388,51 +386,64 @@
     }
 
     .modal-box {
-      background: white; border-radius: 20px; width: 100%; max-width: 420px; max-height: 85vh; overflow-y: auto; padding: 20px;
+      background: white; border-radius: 24px; width: 100%; max-width: 460px; height: 92vh; max-height: 92vh; overflow-y: auto; padding: 22px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
-    .certificate-card {
-      background: linear-gradient(135deg, #fffbeb, #fef3c7);
-      border: 3px double #f59e0b; border-radius: 16px; padding: 20px; text-align: center; color: #78350f;
+
+    /* تصميم شاشة نتيجة الامتحان الشاملة والمطابقة للصورة */
+    .result-summary-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      border: 1px solid #e2e8f0;
+      margin-bottom: 15px;
+    }
+    .result-badge-icon {
+      width: 60px; height: 60px; background: #dcfce7; color: #16a34a; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 10px auto;
+    }
+    .result-stats-row {
+      display: flex; justify-content: space-around; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #cbd5e1;
+    }
+    .result-stat-item { text-align: center; }
+    .result-stat-num { font-size: 20px; font-weight: bold; color: #4f46e5; }
+    .result-stat-lbl { font-size: 11px; color: #64748b; margin-top: 2px; }
+
+    .result-rank-card {
+      background: white; border-radius: 14px; padding: 12px 18px; margin-bottom: 15px;
+      display: flex; justify-content: space-between; align-items: center; border: 1px solid #e2e8f0;
+    }
+
+    .question-review-box {
+      background: #ffffff; border: 1.5px solid #22c55e; border-radius: 14px; padding: 14px; margin-bottom: 12px; text-align: right;
+    }
+    .question-review-box.wrong {
+      border-color: #ef4444;
     }
 
     .leaderboard-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 12px;
-      background: #f8fafc;
-      border-radius: 10px;
-      margin-bottom: 8px;
-      border: 1px solid #e2e8f0;
+      display: flex; justify-content: space-between; align-items: center; padding: 10px 12px;
+      background: #f8fafc; border-radius: 10px; margin-bottom: 8px; border: 1px solid #e2e8f0;
     }
     .leaderboard-rank {
-      width: 28px; height: 28px;
-      background: #38bdf8; color: white;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: bold; font-size: 12px;
+      width: 28px; height: 28px; background: #38bdf8; color: white; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;
     }
     .rank-1 { background: #f59e0b !important; }
     .rank-2 { background: #94a3b8 !important; }
     .rank-3 { background: #b45309 !important; }
 
-    .btn-block {
-      background: #ef4444; color: white; border: none; padding: 4px 8px;
-      border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;
-    }
-    .btn-unblock {
-      background: #10b981; color: white; border: none; padding: 4px 8px;
-      border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;
-    }
-    .btn-details {
-      background: #0284c7; color: white; border: none; padding: 4px 8px;
-      border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; margin-left: 4px;
-    }
+    .btn-block { background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
+    .btn-unblock { background: #10b981; color: white; border: none; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
+    .btn-details { background: #0284c7; color: white; border: none; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; margin-left: 4px; }
   </style>
 </head>
 <body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
 
-  <!-- شريط التنبيهات الزرقاء -->
+  <!-- شريط التنبيهات -->
   <div class="announcement-bar">
     <div class="announcement-text" id="header-announcement-text">
       📢 أهلاً بكم في منصة فاهم التعليمية - بإشراف أ/ يوسف فرج | تابع أحدث الامتحانات والواجبات والتنبيهات فور نزولها!
@@ -441,18 +452,12 @@
 
   <div id="auth-screen-container">
     <div class="login-card">
-      
-      <!-- شاشة تسجيل الدخول 1 -->
       <div id="pane-login" class="auth-screen-pane active">
-        <div class="login-hero-image-container">
-          <img src="1000514471_2.jpg" alt="يوسف فرج">
-        </div>
+        <div class="login-hero-image-container"><img src="1000514471_2.jpg" alt="يوسف فرج"></div>
         <h2 style="margin-bottom: 5px; font-size: 20px;">تسجيل الدخول - منصة فاهم</h2>
         <p style="color: #94a3b8; font-size: 12px; margin-bottom: 20px;">إشراف: أ/ يوسف فرج 🛡️</p>
 
-        <a href="#" class="download-btn" onclick="downloadApp(event)">
-          📦 تحميل تطبيق المنصة (APK)
-        </a>
+        <a href="#" class="download-btn" onclick="downloadApp(event)">📦 تحميل تطبيق المنصة (APK)</a>
 
         <div class="input-wrapper">
           <input type="email" id="login-email" class="auth-input" placeholder="البريد الإلكتروني (Gmail)">
@@ -463,12 +468,10 @@
         <div class="text-link-auth" onclick="switchAuthPane('pane-forgot')">نسيت كلمة المرور؟</div>
       </div>
 
-      <!-- شاشة تسجيل الدخول 2 -->
       <div id="pane-phone" class="auth-screen-pane">
         <div class="login-hero-image-container"><img src="1000514471_2.jpg" alt="يوسف فرج"></div>
         <h2 style="margin-bottom: 5px; font-size: 18px;">رقم الهاتف (اختياري)</h2>
         <p style="color: #94a3b8; font-size: 11px; margin-bottom: 20px;">أدخل رقم هاتفك للتواصل أو اضغط تخطي.</p>
-        
         <div class="input-wrapper">
           <input type="tel" id="user-phone" class="auth-input" placeholder="رقم الهاتف (011xxxxxxxx)">
           <button type="button" class="voice-btn" onclick="startVoiceInput('user-phone')">🎤</button>
@@ -477,7 +480,6 @@
         <button class="auth-btn" onclick="skipPhoneStep()" style="background: #475569; margin-top: 8px;">تخطي هذه الخطوة ⏭️</button>
       </div>
 
-      <!-- شاشة نسيت كلمة المرور -->
       <div id="pane-forgot" class="auth-screen-pane">
         <button class="back-btn" onclick="switchAuthPane('pane-login')">‹</button>
         <div style="font-size: 40px; margin-bottom: 10px; margin-top: 15px;">🔒</div>
@@ -490,19 +492,16 @@
         <button class="auth-btn" onclick="sendCodeToTeacher()">إرسال الطلب إلى المعلم 📱</button>
       </div>
 
-      <!-- شاشة إعادة تعيين كلمة المرور -->
       <div id="pane-reset" class="auth-screen-pane">
         <button class="back-btn" onclick="switchAuthPane('pane-forgot')">‹</button>
         <div style="font-size: 40px; margin-bottom: 10px; margin-top: 15px;">🔑</div>
         <h2 style="margin-bottom: 5px; font-size: 18px;">تغيير كلمة المرور</h2>
         <p style="color: #94a3b8; font-size: 11px; margin-bottom: 15px;">أدخل الكود الذي استلمته من المعلم وكلمة المرور الجديدة.</p>
-        
         <input type="text" id="reset-code-input" class="auth-input" placeholder="أدخل كود التحقق (من المعلم)" style="text-align: center; font-weight: bold; margin-bottom: 8px; padding-left:12px;">
         <input type="password" id="new-pass-input" class="auth-input" placeholder="كلمة المرور الجديدة" style="padding-left: 12px; margin-bottom: 8px;">
         <input type="password" id="confirm-pass-input" class="auth-input" placeholder="تأكيد كلمة المرور الجديدة" style="padding-left: 12px; margin-bottom: 12px;">
         <button class="auth-btn" onclick="confirmPasswordReset()">حفظ كلمة المرور الجديدة ✅</button>
       </div>
-
     </div>
   </div>
 
@@ -519,15 +518,13 @@
     <div id="admin-panel-box">
       <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 10px;">⚙ لوحة تحكم الأدمن (يوسف فرج)</div>
 
-      <!-- نشر تنبيه جديد -->
       <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1;">
         <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">📢 نشر تنبيه جديد في الشريط المتحرك:</div>
         <input type="text" id="admin-announcement-input" class="auth-input" placeholder="اكتب التنبيه هنا..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; font-size: 12px;">
         <button class="btn-main" onclick="updateAnnouncement()" style="width: 100%; background: #059669;">تحديث ونشر التنبيه سحابياً 🚀</button>
       </div>
       
-      <!-- إضافة امتحان مع وقت لكل سؤال -->
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد (مع تحديد وقت لكل سؤال بالثانية):</div>
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد:</div>
       <input type="text" id="new-exam-title" class="auth-input" placeholder="عنوان الامتحان..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
       
       <div style="display: flex; gap: 8px; margin-bottom: 6px;">
@@ -544,7 +541,6 @@
       <div id="dynamic-questions-builder" style="margin-bottom: 10px;"></div>
       <button class="btn-main" id="btn-add-exam" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة وجدولة الامتحان سحابياً 📝</button>
 
-      <!-- إضافة فيديوهات -->
       <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1;">
         <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">🎥 إضافة فيديو شرح:</div>
         <input type="text" id="new-video-title" class="auth-input" placeholder="اسم الفيديو..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
@@ -554,7 +550,6 @@
         <button class="btn-main" onclick="addVideo()" style="width: 100%; background: #0284c7;">إضافة الفيديو للمنصة 🎥</button>
       </div>
 
-      <!-- إضافة PDF / صورة -->
       <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1;">
         <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">📁 إضافة ملف PDF / صورة:</div>
         <input type="text" id="new-pdf-title" class="auth-input" placeholder="عنوان المذكرة أو الصورة..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
@@ -587,7 +582,7 @@
       <div class="card-item" id="home-leaderboard-box"></div>
     </div>
 
-    <!-- قسم الامتحانات المحدث بالتبويبين (القادمة / التسليمات) -->
+    <!-- قسم الامتحانات المحدث بتبويبي القادمة والتسليمات -->
     <div id="sec-exams" class="content-section">
       <div class="exams-tabs-header">
         <button class="exam-tab-btn active" id="btn-tab-upcoming" onclick="switchExamTab('upcoming')">القادمة</button>
@@ -638,15 +633,18 @@
     <button class="nav-item" id="nav-settings" onclick="switchTab('sec-settings', 'nav-settings')"><span>⚙️</span> الإعدادات</button>
   </div>
 
+  <!-- نافذة الامتحان المكبرة المحدثة -->
   <div id="exam-modal">
     <div class="modal-box" id="modal-box-inner">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <h3 id="modal-title" style="color: #0284c7; font-size: 16px;">نافذة المنصة</h3>
-        <div id="exam-global-timer" style="background: #fee2e2; color: #ef4444; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold;"></div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h3 id="modal-title" style="color: #0284c7; font-size: 18px; font-weight: bold;">نافذة المنصة</h3>
+        <div id="exam-global-timer" style="background: #fee2e2; color: #ef4444; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: bold;"></div>
       </div>
-      <div id="modal-questions-container" style="margin-bottom: 15px;"></div>
-      <button class="btn-main" id="submit-exam-btn" onclick="submitExam()" style="width: 100%; padding: 10px; display:none;">تسليم الإجابات ✅</button>
-      <button class="btn-main" onclick="closeExam()" style="background: #ef4444; width: 100%; margin-top: 8px;">إغلاق ✕</button>
+      <div id="modal-questions-container" style="margin-bottom: 15px; flex: 1;"></div>
+      <div>
+        <button class="btn-main" id="submit-exam-btn" onclick="submitExam()" style="width: 100%; padding: 12px; font-size: 15px; display:none;">تسليم الامتحان 🎯</button>
+        <button class="btn-main" onclick="closeExam()" style="background: #ef4444; width: 100%; padding: 12px; font-size: 14px; margin-top: 8px;">إغلاق ✕</button>
+      </div>
     </div>
   </div>
 
@@ -1022,7 +1020,7 @@
 
       await saveDatatoJSONBin();
       renderAll();
-      alert('تم إضافة وجدولة الامتحان مع وقت لكل سؤال بنجاح! ⏰');
+      alert('تم إضافة وجدولة الامتحان بنجاح! ⏰');
     }
 
     async function addVideo() {
@@ -1119,22 +1117,22 @@
         container.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لا توجد امتحانات متاحة حالياً</p>';
       }
 
-      // جلب امتحانات الطالب المسجلة في الـ Leaderboard لعرضها في التسليمات
+      // جلب التسليمات مع تفاصيل الأسئلة والإجابات
       const userSubmissions = (appData.leaderboard || []).filter(l => l.studentName === email);
 
       if(userSubmissions.length === 0) {
         submissionsContainer.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لم تقم بتسليم أي امتحان بعد</p>';
       } else {
-        userSubmissions.forEach(sub => {
+        userSubmissions.forEach((sub, index) => {
           submissionsContainer.innerHTML += `
-            <div class="card-item" style="background: #f0fdf4; border-color: #bbf7d0;">
+            <div class="card-item" style="background: #ffffff; border-color: #cbd5e1;">
               <div class="card-row">
                 <div class="card-info">
-                  <div class="card-title">✅ نتيجة الامتحان</div>
-                  <div class="card-subtitle">النسبة المئوية: <b>${sub.percentage}%</b> | وقت التسليم: ${sub.time}</div>
+                  <div class="card-title">📝 ${sub.examTitle || 'امتحان تعليمي'}</div>
+                  <div class="card-subtitle">النسبة المئوية: <b style="color:#0284c7;">${sub.percentage}%</b> | وقت التسليم: ${sub.time}</div>
                 </div>
                 <div>
-                  <button class="btn-main" style="background: #059669;" onclick="alert('درجتك في هذا الامتحان هي: ${sub.percentage}%')">معرفة الدرجة 📊</button>
+                  <button class="btn-main" style="background: #059669;" onclick="openExamResultDetails(${index})">معرفة الدرجة والتفاصيل 📊</button>
                 </div>
               </div>
             </div>
@@ -1190,13 +1188,13 @@
       let q = questions[currentQuestionIndex];
       let timeLeft = q.timeSec || 30;
 
-      let timerHtml = `<div id="q-timer" style="background: #fee2e2; color: #ef4444; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold;">الوقت المتبقي للسؤال: ${timeLeft} ث</div>`;
+      let timerHtml = `<div id="q-timer" style="background: #fee2e2; color: #ef4444; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: bold;">الوقت المتبقي: ${timeLeft} ث</div>`;
       document.getElementById('exam-global-timer').outerHTML = timerHtml;
 
       questionTimerInterval = setInterval(() => {
         timeLeft--;
         let tBox = document.getElementById('q-timer');
-        if(tBox) tBox.innerText = `الوقت المتبقي للسؤال: ${timeLeft} ث`;
+        if(tBox) tBox.innerText = `الوقت المتبقي: ${timeLeft} ث`;
         
         if(timeLeft <= 0) {
           clearInterval(questionTimerInterval);
@@ -1209,20 +1207,20 @@
 
       if(q.type === 'essay') {
         container.innerHTML = `
-          <div style="background:#f8fafc; padding:10px; border-radius:8px; margin-bottom:8px; text-align:right;">
-            <div style="font-size:13px; font-weight:bold; margin-bottom:5px;">${q.q}</div>
-            <textarea id="exam_essay_input" class="auth-input" placeholder="اكتب إجابتك هنا..." style="background:white; color:#1e293b; height:80px;" oninput="saveStudentAnswer(${currentQuestionIndex}, this.value)">${savedAns}</textarea>
+          <div style="background:#f8fafc; padding:16px; border-radius:14px; margin-bottom:12px; text-align:right; border:1px solid #e2e8f0;">
+            <div style="font-size:16px; font-weight:bold; margin-bottom:10px; color:#0f172a;">${q.q}</div>
+            <textarea id="exam_essay_input" class="auth-input" placeholder="اكتب إجابتك هنا..." style="background:white; color:#1e293b; height:120px; font-size:14px;" oninput="saveStudentAnswer(${currentQuestionIndex}, this.value)">${savedAns}</textarea>
           </div>
         `;
       } else {
         container.innerHTML = `
-          <div style="background:#f8fafc; padding:10px; border-radius:8px; margin-bottom:8px; text-align:right;">
-            <div style="font-size:13px; font-weight:bold; margin-bottom:5px;">${q.q}</div>
-            <label style="display:block; font-size:12px; margin-bottom:4px;"><input type="radio" name="q_current" value="${q.o1}" ${savedAns === q.o1 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o1}</label>
-            <label style="display:block; font-size:12px; margin-bottom:4px;"><input type="radio" name="q_current" value="${q.o2}" ${savedAns === q.o2 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o2}</label>
-            <label style="display:block; font-size:12px; margin-bottom:4px;"><input type="radio" name="q_current" value="${q.o3}" ${savedAns === q.o3 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o3}</label>
-            <label style="display:block; font-size:12px; margin-bottom:4px;"><input type="radio" name="q_current" value="${q.o4}" ${savedAns === q.o4 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o4}</label>
-            <div id="practice_fb" style="font-size:11px; font-weight:bold; margin-top:4px;"></div>
+          <div style="background:#f8fafc; padding:16px; border-radius:14px; margin-bottom:12px; text-align:right; border:1px solid #e2e8f0;">
+            <div style="font-size:16px; font-weight:bold; margin-bottom:12px; color:#0f172a;">${q.q}</div>
+            <label style="display:block; font-size:14px; margin-bottom:10px; background:white; padding:10px; border-radius:10px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o1}" ${savedAns === q.o1 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o1}</label>
+            <label style="display:block; font-size:14px; margin-bottom:10px; background:white; padding:10px; border-radius:10px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o2}" ${savedAns === q.o2 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o2}</label>
+            <label style="display:block; font-size:14px; margin-bottom:10px; background:white; padding:10px; border-radius:10px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o3}" ${savedAns === q.o3 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o3}</label>
+            <label style="display:block; font-size:14px; margin-bottom:10px; background:white; padding:10px; border-radius:10px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o4}" ${savedAns === q.o4 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o4}</label>
+            <div id="practice_fb" style="font-size:12px; font-weight:bold; margin-top:6px;"></div>
           </div>
         `;
       }
@@ -1276,12 +1274,20 @@
 
       let score = 0;
       let total = activeQuestions.length;
+      let detailedQuestions = [];
 
       activeQuestions.forEach((q, i) => {
-        if(q.type !== 'essay') {
-          let studentAns = studentExamAnswers[i];
-          if(studentAns && studentAns.trim() === q.ans.trim()) score++;
-        }
+        let studentAns = studentExamAnswers[i] || 'لم يتم الإجابة';
+        let isCorrect = (q.type !== 'essay') && (studentAns.trim() === q.ans.trim());
+        if(isCorrect) score++;
+
+        detailedQuestions.push({
+          questionText: q.q,
+          studentAnswer: studentAns,
+          correctAnswer: q.type === 'essay' ? (q.modelAns || 'إجابة نموذجية') : q.ans,
+          isCorrect: isCorrect,
+          points: isCorrect ? 1 : 0
+        });
       });
 
       let percentVal = total > 0 ? ((score / total) * 100).toFixed(1) : '100';
@@ -1289,33 +1295,108 @@
 
       await fetchDataFromJSONBin();
       if(!appData.leaderboard) appData.leaderboard = [];
-      appData.leaderboard.push({ studentName: email, score: score, percentage: percentVal, time: new Date().toLocaleString('ar-EG') });
+      
+      const newSubmission = {
+        studentName: email,
+        examTitle: document.getElementById('modal-title').innerText.split(' (')[0],
+        score: score,
+        total: total,
+        percentage: percentVal,
+        time: new Date().toLocaleString('ar-EG'),
+        detailedQuestions: detailedQuestions
+      };
+
+      appData.leaderboard.push(newSubmission);
       appData.leaderboard.sort((a, b) => parseFloat(b.percentage) - parseFloat(a.percentage));
       await saveDatatoJSONBin();
 
       studentExamAnswers = {};
       renderAll();
       
-      // التوجيه التلقائي المباشر إلى تبويب التسليمات بعد تسليم الامتحان بناءً على طلبك
       switchExamTab('submissions');
       switchTab('sec-exams', 'nav-exams');
 
-      showCertificate(email, percentVal + '%');
+      renderFullResultUI(newSubmission);
     }
 
-    function showCertificate(name, scorePercent) {
+    function openExamResultDetails(subIndex) {
+      const email = localStorage.getItem('fahem_email');
+      const userSubmissions = (appData.leaderboard || []).filter(l => l.studentName === email);
+      if(userSubmissions[subIndex]) {
+        renderFullResultUI(userSubmissions[subIndex]);
+      }
+    }
+
+    function renderFullResultUI(sub) {
       let container = document.getElementById('modal-questions-container');
+      document.getElementById('modal-title').innerText = "نتيجة الامتحان";
       document.getElementById('submit-exam-btn').style.display = 'none';
+
+      // حساب ترتيب الطالب
+      let allLeaderboard = appData.leaderboard || [];
+      let rankIndex = allLeaderboard.findIndex(l => l.studentName === sub.studentName && l.percentage === sub.percentage) + 1;
+      if(rankIndex === 0) rankIndex = 1;
+
+      let questionsHtml = '';
+      if(sub.detailedQuestions && sub.detailedQuestions.length > 0) {
+        sub.detailedQuestions.forEach((q, idx) => {
+          let boxClass = q.isCorrect ? 'question-review-box' : 'question-review-box wrong';
+          let statusBadge = q.isCorrect ? '✓' : '✕';
+          let ansColor = q.isCorrect ? '#16a34a' : '#ef4444';
+
+          questionsHtml += `
+            <div class="${boxClass}">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <span style="font-weight:bold; font-size:14px; color:#0f172a;">س${idx + 1} ${statusBadge}</span>
+                <span style="font-size:11px; color:#64748b;">${q.points || (q.isCorrect?1:0)}.00 درجات</span>
+              </div>
+              <div style="font-size:14px; font-weight:bold; color:#1e293b; margin-bottom:8px;">${q.questionText}</div>
+              <div style="font-size:12px; color:#64748b;">إجابتك:</div>
+              <div style="font-size:13px; font-weight:bold; color:${ansColor}; margin-bottom:6px;">${q.studentAnswer}</div>
+              <div style="font-size:12px; color:#64748b;">الإجابة الصحيحة:</div>
+              <div style="font-size:13px; font-weight:bold; color:#16a34a;">${q.correctAnswer}</div>
+            </div>
+          `;
+        });
+      } else {
+        questionsHtml = '<p style="text-align:center; color:#64748b; font-size:12px;">تفاصيل الأسئلة صادرة في الجلسة المباشرة فقط.</p>';
+      }
+
       container.innerHTML = `
-        <div class="certificate-card">
-          <div style="font-size:30px;">🎓</div>
-          <h2 style="font-size:18px; margin-bottom:5px;">شهادة تقدير وتفوق</h2>
-          <p style="font-size:12px;">تمنح من منصة **فاهم التعليمية** للطالب:</p>
-          <h3 style="color:#0284c7; margin:10px 0; font-size:16px;">${name}</h3>
-          <p style="font-size:12px;">لاجتياز الامتحان بنسبة: <b>${scorePercent}</b></p>
-          <div style="margin-top:15px; font-size:10px; color:#92400e;">إشراف: أ/ يوسف فرج 🛡️</div>
+        <div class="result-summary-card">
+          <div class="result-badge-icon">✓</div>
+          <h2 style="font-size:20px; font-weight:bold; color:#0f172a;">مبروك!</h2>
+          <p style="font-size:13px; color:#64748b; margin-top:4px;">لقد نجحت في الامتحان</p>
+          
+          <div class="result-stats-row">
+            <div class="result-stat-item">
+              <div class="result-stat-num" style="color:#4338ca;">${sub.score || 0}</div>
+              <div class="result-stat-lbl">المحصل عليه</div>
+            </div>
+            <div class="result-stat-item">
+              <div class="result-stat-num" style="color:#0f172a;">${sub.total || 0}</div>
+              <div class="result-stat-lbl">الإجمالي</div>
+            </div>
+            <div class="result-stat-item">
+              <div class="result-stat-num" style="color:#16a34a;">${sub.percentage}%</div>
+              <div class="result-stat-lbl">النسبة المئوية</div>
+            </div>
+          </div>
         </div>
+
+        <div class="result-rank-card">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:18px;">🏆</span>
+            <span style="font-size:14px; font-weight:bold; color:#0f172a;">المركز ${rankIndex} من ${allLeaderboard.length || 1}</span>
+          </div>
+          <button class="btn-custom-open" onclick="switchTab('sec-leaderboard', 'nav-leaderboard'); closeExam();">عرض الترتيب ➔</button>
+        </div>
+
+        <div style="font-size:14px; font-weight:bold; color:#0f172a; margin:15px 0 10px 0; text-align:right;">مراجعة الأسئلة</div>
+        ${questionsHtml}
       `;
+
+      document.getElementById('exam-modal').style.display = 'flex';
     }
 
     function showRegisteredStudentsModal() {
