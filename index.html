@@ -375,7 +375,6 @@
     .nav-item.active { color: #4f46e5; }
     .nav-item span { font-size: 18px; margin-bottom: 2px; }
 
-    /* تكبير نافذة الامتحان (Modal) تكبير تام ليتناسب مع طلبك */
     #exam-modal {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.75); z-index: 2000; justify-content: center; align-items: center; padding: 12px;
@@ -391,7 +390,6 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
 
-    /* تصميم شاشة نتيجة الامتحان الشاملة والمطابقة للصورة */
     .result-summary-card {
       background: #ffffff;
       border-radius: 20px;
@@ -633,7 +631,6 @@
     <button class="nav-item" id="nav-settings" onclick="switchTab('sec-settings', 'nav-settings')"><span>⚙️</span> الإعدادات</button>
   </div>
 
-  <!-- نافذة الامتحان المكبرة المحدثة -->
   <div id="exam-modal">
     <div class="modal-box" id="modal-box-inner">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -648,11 +645,60 @@
     </div>
   </div>
 
-  <script>
-    const JSONBIN_BIN_ID = "6ad5d97affd5d1605377e3c5";
-    const JSONBIN_MASTER_KEY = "$2a$10$NqkCGC1GAztpqUH.Y3vKo.3Cfcd3cwymvds9xtzwhMDjImwkFl0.";
-    const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
+  <!-- ربط السيرفر السحابي Firebase مع المنصة -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
+    const firebaseConfig = {
+      apiKey: "AIzaSyAh0S9vAGN-d1A55LOZ_rvZDWcx4Iwdoz0",
+      authDomain: "fahem-platform-farag.firebaseapp.com",
+      databaseURL: "https://fahem-platform-farag-default-rtdb.firebaseio.com",
+      projectId: "fahem-platform-farag",
+      storageBucket: "fahem-platform-farag.firebasestorage.app",
+      messagingSenderId: "482785312141",
+      appId: "1:482785312141:web:14c9509fd6ffdd9921d1c4",
+      measurementId: "G-XXK6TJMH7P"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    window.db = db;
+    window.dbRef = ref;
+    window.dbSet = set;
+    window.dbOnValue = onValue;
+    window.dbGet = get;
+
+    // استماع لحظي للبيانات من سيرفر Firebase عند حدوث أي تغيير
+    onValue(ref(db, 'appData'), (snapshot) => {
+      if (snapshot.exists()) {
+        window.appData = snapshot.val();
+        if(!window.appData.exams) window.appData.exams = [];
+        if(!window.appData.videos) window.appData.videos = [];
+        if(!window.appData.pdfs) window.appData.pdfs = [];
+        if(!window.appData.leaderboard) window.appData.leaderboard = [];
+        if(!window.appData.reports) window.appData.reports = [];
+        if(!window.appData.registeredUsers) window.appData.registeredUsers = [];
+        if(!window.appData.blockedUsers) window.appData.blockedUsers = [];
+
+        if(window.appData.announcementText) {
+          document.getElementById('header-announcement-text').innerText = window.appData.announcementText;
+        }
+        renderAll();
+      }
+    });
+
+    window.saveDatatoFirebase = async function() {
+      try {
+        await set(ref(db, 'appData'), window.appData);
+      } catch (err) {
+        console.error("خطأ في الحفظ السحابي:", err);
+      }
+    };
+  </script>
+
+  <script>
     const ADMIN_EMAIL = "y01878309@gmail.com";
     const VALID_CODES = ["74", "20"];
 
@@ -663,7 +709,7 @@
     let studentExamAnswers = {};
     let isInsideExam = false;
 
-    let appData = {
+    window.appData = {
       exams: [],
       videos: [],
       pdfs: [],
@@ -719,87 +765,27 @@
       const email = localStorage.getItem('fahem_email');
       if(!email || email === ADMIN_EMAIL) return;
 
-      await fetchDataFromJSONBin();
       if(!appData.reports) appData.reports = [];
       appData.reports.push({
         email: email,
         action: actionType,
         time: new Date().toLocaleString('ar-EG')
       });
-      await saveDatatoJSONBin();
+      if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
     }
 
     window.onload = function() {
-      loadLocalCacheData();
       const savedEmail = localStorage.getItem('fahem_email');
       if (savedEmail) { setupSession(savedEmail); }
       generateQuestionFields();
-      fetchDataFromJSONBin();
     };
-
-    function loadLocalCacheData() {
-      const cached = localStorage.getItem('fahem_cached_data');
-      if(cached) {
-        try { appData = JSON.parse(cached); } catch(e){}
-      }
-      
-      const activeExamState = localStorage.getItem('fahem_active_exam_state');
-      if(activeExamState) {
-        try {
-          let state = JSON.parse(activeExamState);
-          if(state && state.isExamActive) {
-            setTimeout(() => {
-              startExam(state.examId, state.examTitle, state.questions, state.mode, state.qIndex);
-            }, 1000);
-          }
-        } catch(e){}
-      }
-    }
-
-    async function fetchDataFromJSONBin() {
-      try {
-        const res = await fetch(JSONBIN_URL + '/latest', { headers: { 'X-Master-Key': JSONBIN_MASTER_KEY } });
-        if (res.ok) {
-          const json = await res.json();
-          if (json && json.record) {
-            appData = json.record;
-            if(!appData.exams) appData.exams = [];
-            if(!appData.videos) appData.videos = [];
-            if(!appData.pdfs) appData.pdfs = [];
-            if(!appData.leaderboard) appData.leaderboard = [];
-            if(!appData.reports) appData.reports = [];
-            if(!appData.registeredUsers) appData.registeredUsers = [];
-            if(!appData.blockedUsers) appData.blockedUsers = [];
-            
-            localStorage.setItem('fahem_cached_data', JSON.stringify(appData));
-
-            if(appData.announcementText) {
-              document.getElementById('header-announcement-text').innerText = appData.announcementText;
-            }
-          }
-        }
-      } catch (err) {}
-      renderAll();
-    }
-
-    async function saveDatatoJSONBin() {
-      localStorage.setItem('fahem_cached_data', JSON.stringify(appData));
-      try {
-        await fetch(JSONBIN_URL, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_MASTER_KEY, 'X-Bin-Versioning': 'false' },
-          body: JSON.stringify(appData)
-        });
-      } catch (err) {}
-    }
 
     async function updateAnnouncement() {
       const newText = document.getElementById('admin-announcement-input').value.trim();
       if(!newText) { alert('اكتب نص التنبيه أولاً'); return; }
 
-      await fetchDataFromJSONBin();
       appData.announcementText = newText;
-      await saveDatatoJSONBin();
+      if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
       document.getElementById('header-announcement-text').innerText = newText;
       document.getElementById('admin-announcement-input').value = '';
       alert('تم نشر التنبيه بنجاح في شريط المنصة! 🚀');
@@ -815,7 +801,6 @@
       const pass = document.getElementById('user-pass').value.trim();
       if(!email || !pass) { alert('أدخل البريد الإلكتروني وكلمة المرور'); return; }
       
-      await fetchDataFromJSONBin();
       if(appData.blockedUsers && appData.blockedUsers.includes(email)) {
         alert('❌ تم حظر هذا الحساب من دخول المنصة بواسطة الأدمن!');
         return;
@@ -845,7 +830,6 @@
     }
 
     async function finishLoginProcess(email) {
-      await fetchDataFromJSONBin();
       if(appData.blockedUsers && appData.blockedUsers.includes(email)) {
         alert('❌ تم حظر حسابك من قبل الأدمن!');
         location.reload();
@@ -854,11 +838,12 @@
 
       localStorage.setItem('fahem_email', email);
       
-      let userObj = appData.registeredUsers.find(u => u.email === email);
+      let userObj = (appData.registeredUsers || []).find(u => u.email === email);
       const userAgentStr = navigator.userAgent.includes("Mobile") ? "📱 موبايل" : "💻 كمبيوتر/لاب";
       const nowTimeStr = new Date().toLocaleString('ar-EG');
 
       if(!userObj) {
+        if(!appData.registeredUsers) appData.registeredUsers = [];
         appData.registeredUsers.push({
           email: email,
           phone: localStorage.getItem('phone_' + email) || 'غير متاح',
@@ -873,7 +858,7 @@
         userObj.device = userAgentStr;
       }
 
-      await saveDatatoJSONBin();
+      if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
       setupSession(email);
     }
 
@@ -990,7 +975,6 @@
 
       if(!title) { alert('أدخل عنوان الامتحان'); return; }
 
-      await fetchDataFromJSONBin();
       let questionsArr = [];
       for(let i=1; i<=countVal; i++) {
         let qType = document.getElementById(`q_type_${i}`).value;
@@ -1009,6 +993,7 @@
         }
       }
 
+      if(!appData.exams) appData.exams = [];
       appData.exams.push({
         id: 'exam_' + Date.now(),
         title: title,
@@ -1018,9 +1003,9 @@
         info: `عدد الأسئلة: ${countVal}`
       });
 
-      await saveDatatoJSONBin();
+      if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
       renderAll();
-      alert('تم إضافة وجدولة الامتحان بنجاح! ⏰');
+      alert('تم إضافة وجدولة الامتحان بنجاح على السيرفر! ⏰');
     }
 
     async function addVideo() {
@@ -1029,23 +1014,24 @@
       const fileInput = document.getElementById('new-video-file');
       if(!title) { alert('أدخل اسم الفيديو أولاً'); return; }
 
-      await fetchDataFromJSONBin();
+      if(!appData.videos) appData.videos = [];
+
       if(fileInput.files && fileInput.files[0]) {
         const file = fileInput.files[0];
         const reader = new FileReader();
         reader.onload = async function(e) {
           appData.videos.push({ id: 'vid_' + Date.now(), title: title, content: e.target.result, isLocalFile: true });
-          await saveDatatoJSONBin();
+          if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
           renderAll();
-          alert('تم رفع الفيديو بنجاح! 🎥');
+          alert('تم رفع الفيديو بنجاح على السيرفر! 🎥');
         };
         reader.readAsDataURL(file);
       } else if(link) {
         let embedLink = link.includes('watch?v=') ? link.replace('watch?v=', 'embed/') : link;
         appData.videos.push({ id: 'vid_' + Date.now(), title: title, content: embedLink, isLocalFile: false });
-        await saveDatatoJSONBin();
+        if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
         renderAll();
-        alert('تم إضافة الفيديو بنجاح! 🎥');
+        alert('تم إضافة الفيديو بنجاح على السيرفر! 🎥');
       }
     }
 
@@ -1055,22 +1041,23 @@
       const fileInput = document.getElementById('new-pdf-file');
       if(!title) { alert('أدخل عنوان الملف أولاً'); return; }
 
-      await fetchDataFromJSONBin();
+      if(!appData.pdfs) appData.pdfs = [];
+
       if(fileInput.files && fileInput.files[0]) {
         const file = fileInput.files[0];
         const reader = new FileReader();
         reader.onload = async function(e) {
           appData.pdfs.push({ id: 'pdf_' + Date.now(), title: title, link: e.target.result, isImage: file.type.startsWith('image/') });
-          await saveDatatoJSONBin();
+          if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
           renderAll();
-          alert('تم رفع الملف بنجاح! 📁');
+          alert('تم رفع الملف بنجاح على السيرفر! 📁');
         };
         reader.readAsDataURL(file);
       } else if(link) {
         appData.pdfs.push({ id: 'pdf_' + Date.now(), title: title, link: link, isImage: false });
-        await saveDatatoJSONBin();
+        if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
         renderAll();
-        alert('تم إضافة الملف بنجاح! 📁');
+        alert('تم إضافة الملف بنجاح على السيرفر! 📁');
       }
     }
 
@@ -1117,7 +1104,6 @@
         container.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لا توجد امتحانات متاحة حالياً</p>';
       }
 
-      // جلب التسليمات مع تفاصيل الأسئلة والإجابات
       const userSubmissions = (appData.leaderboard || []).filter(l => l.studentName === email);
 
       if(userSubmissions.length === 0) {
@@ -1140,7 +1126,7 @@
         });
       }
 
-      appData.exams.forEach(ex => {
+      (appData.exams || []).forEach(ex => {
         let isPublished = !ex.publishTime || currentTime >= ex.publishTime;
         if(!isPublished && email !== ADMIN_EMAIL) return;
 
@@ -1163,15 +1149,6 @@
       activeQuestions = questions;
       currentQuestionIndex = qIndex;
       isInsideExam = true;
-
-      localStorage.setItem('fahem_active_exam_state', JSON.stringify({
-        isExamActive: true,
-        examId: id,
-        examTitle: title,
-        questions: questions,
-        mode: mode,
-        qIndex: qIndex
-      }));
 
       document.getElementById('modal-title').innerText = `${title} (السؤال ${currentQuestionIndex + 1} من ${activeQuestions.length})`;
       
@@ -1261,7 +1238,6 @@
     function closeExam() {
       isInsideExam = false;
       if(questionTimerInterval) clearInterval(questionTimerInterval);
-      localStorage.removeItem('fahem_active_exam_state');
       document.getElementById('modal-box-inner').classList.remove('exam-secure-blur');
       document.getElementById('exam-modal').style.display = 'none';
     }
@@ -1269,7 +1245,6 @@
     async function submitExam() {
       isInsideExam = false;
       if(questionTimerInterval) clearInterval(questionTimerInterval);
-      localStorage.removeItem('fahem_active_exam_state');
       document.getElementById('modal-box-inner').classList.remove('exam-secure-blur');
 
       let score = 0;
@@ -1293,7 +1268,6 @@
       let percentVal = total > 0 ? ((score / total) * 100).toFixed(1) : '100';
       const email = localStorage.getItem('fahem_email');
 
-      await fetchDataFromJSONBin();
       if(!appData.leaderboard) appData.leaderboard = [];
       
       const newSubmission = {
@@ -1308,7 +1282,8 @@
 
       appData.leaderboard.push(newSubmission);
       appData.leaderboard.sort((a, b) => parseFloat(b.percentage) - parseFloat(a.percentage));
-      await saveDatatoJSONBin();
+      
+      if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
 
       studentExamAnswers = {};
       renderAll();
@@ -1332,7 +1307,6 @@
       document.getElementById('modal-title').innerText = "نتيجة الامتحان";
       document.getElementById('submit-exam-btn').style.display = 'none';
 
-      // حساب ترتيب الطالب
       let allLeaderboard = appData.leaderboard || [];
       let rankIndex = allLeaderboard.findIndex(l => l.studentName === sub.studentName && l.percentage === sub.percentage) + 1;
       if(rankIndex === 0) rankIndex = 1;
@@ -1359,7 +1333,7 @@
           `;
         });
       } else {
-        questionsHtml = '<p style="text-align:center; color:#64748b; font-size:12px;">تفاصيل الأسئلة صادرة في الجلسة المباشرة فقط.</p>';
+        questionsHtml = '<p style="text-align:center; color:#64748b; font-size:12px;">تفاصيل الأسئلة صادر في الجلسة المباشرة فقط.</p>';
       }
 
       container.innerHTML = `
@@ -1476,14 +1450,13 @@
 
     async function toggleBlockUser(emailTarget) {
       if(emailTarget === ADMIN_EMAIL) return;
-      await fetchDataFromJSONBin();
       if(!appData.blockedUsers) appData.blockedUsers = [];
       if(appData.blockedUsers.includes(emailTarget)) {
         appData.blockedUsers = appData.blockedUsers.filter(e => e !== emailTarget);
       } else {
         appData.blockedUsers.push(emailTarget);
       }
-      await saveDatatoJSONBin();
+      if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
       showRegisteredStudentsModal();
     }
 
