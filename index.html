@@ -8,7 +8,16 @@
   <title>منصة فاهم التعليمية - يوسف فرج</title>
   
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
     body {
       background-color: #f8fafc;
       color: #1e293b;
@@ -122,6 +131,8 @@
       outline: none;
       text-align: right;
       transition: all 0.3s;
+      -webkit-user-select: text;
+      user-select: text;
     }
     .auth-input:focus {
       border-color: #38bdf8;
@@ -341,6 +352,16 @@
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; padding: 20px;
     }
+    
+    /* حماية الامتحان من لقطات الشاشة */
+    .exam-secure-active {
+      filter: blur(0px);
+      transition: filter 0.1s ease;
+    }
+    .exam-secure-blur {
+      filter: blur(25px) !important;
+    }
+
     .modal-box {
       background: white; border-radius: 20px; width: 100%; max-width: 420px; max-height: 85vh; overflow-y: auto; padding: 20px;
     }
@@ -378,9 +399,13 @@
       background: #10b981; color: white; border: none; padding: 4px 8px;
       border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;
     }
+    .btn-details {
+      background: #0284c7; color: white; border: none; padding: 4px 8px;
+      border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; margin-left: 4px;
+    }
   </style>
 </head>
-<body oncopy="logCheat('نسخ')" onpaste="logCheat('لصق')">
+<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
 
   <!-- الجملة الزرقاء المتحركة فقط -->
   <div class="announcement-bar">
@@ -516,8 +541,8 @@
       </div>
 
       <!-- الطلاب والتقارير -->
-      <button class="btn-main" onclick="showRegisteredStudentsModal()" style="width: 100%; background: #059669; margin-bottom: 6px;">👥 عرض إدارة جميع الطلاب وحظرهم</button>
-      <button class="btn-main" onclick="showStudentReports()" style="width: 100%; background: #4f46e5; margin-bottom: 6px;">📋 تقارير الغش ومحاولات النسخ</button>
+      <button class="btn-main" onclick="showRegisteredStudentsModal()" style="width: 100%; background: #059669; margin-bottom: 6px;">👥 سجل الطلاب والتفاصيل الدقيقة وحظرهم</button>
+      <button class="btn-main" onclick="showStudentReports()" style="width: 100%; background: #4f46e5; margin-bottom: 6px;">📋 تقارير محاولات لقطات الشاشة والغش</button>
     </div>
 
     <div id="sec-home" class="content-section active-section">
@@ -580,7 +605,7 @@
   </div>
 
   <div id="exam-modal">
-    <div class="modal-box">
+    <div class="modal-box" id="modal-box-inner">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
         <h3 id="modal-title" style="color: #0284c7; font-size: 16px;">نافذة المنصة</h3>
         <div id="exam-global-timer" style="background: #fee2e2; color: #ef4444; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; display: none;"></div>
@@ -602,6 +627,7 @@
     let activeQuestions = [];
     let currentExamId = null;
     let globalExamTimerInterval = null;
+    let isInsideExam = false;
 
     let appData = {
       exams: [],
@@ -626,26 +652,74 @@
       recognition.onresult = function(e) { document.getElementById(targetId).value = e.results[0][0].transcript; };
     }
 
-    document.addEventListener("visibilitychange", function() {
-      if (document.hidden && document.getElementById('exam-modal').style.display === 'flex') {
-        logCheat("محاولة مغادرة التبويب أثناء الامتحان ⚠️");
+    // --- نظام أمان منع لقطة الشاشة المتقدم ---
+    
+    // تمويه التبويب أو الشاشة فور محاولة التصوير أو ترك النافذة
+    window.addEventListener("blur", function() {
+      if (isInsideExam) {
+        document.getElementById('modal-box-inner').classList.add('exam-secure-blur');
+        logCheat("محاولة مغادرة نافذة الامتحان أو فتح أداة تصوير شاشة 📸⚠️");
       }
     });
 
-    function logCheat(actionType) {
+    window.addEventListener("focus", function() {
+      document.getElementById('modal-box-inner').classList.remove('exam-secure-blur');
+    });
+
+    // منع اختصارات كيبورد التصوير والطباعة
+    window.addEventListener("keydown", function(e) {
+      if (isInsideExam) {
+        if (
+          e.key === "PrintScreen" ||
+          (e.ctrlKey && e.key === "p") ||
+          (e.ctrlKey && e.shiftKey && (e.key === "S" || e.key === "s" || e.key === "I" || e.key === "i" || e.key === "C" || e.key === "c")) ||
+          e.key === "F12"
+        ) {
+          e.preventDefault();
+          document.getElementById('modal-box-inner').classList.add('exam-secure-blur');
+          setTimeout(() => document.getElementById('modal-box-inner').classList.remove('exam-secure-blur'), 2000);
+          logCheat("محاولة التقاط شاشة باختصار الكيبورد (Screenshot Attempt) 📸🚫");
+          alert("🚫 ممنوع أخذ لقطة شاشة أثناء الامتحان!");
+          return false;
+        }
+      }
+    });
+
+    window.addEventListener("keyup", function(e) {
+      if (e.key === "PrintScreen") {
+        if (navigator.clipboard) { navigator.clipboard.writeText(""); }
+        logCheat("محاولة طباعة الشاشة (PrintScreen Captured) 📸🚫");
+      }
+    });
+
+    async function logCheat(actionType) {
       const email = localStorage.getItem('fahem_email');
       if(!email || email === ADMIN_EMAIL) return;
-      let reportLog = JSON.parse(localStorage.getItem('fahem_cheat_reports')) || [];
-      reportLog.push({ email: email, action: actionType, time: new Date().toLocaleString('ar-EG') });
-      localStorage.setItem('fahem_cheat_reports', JSON.stringify(reportLog));
+
+      await fetchDataFromJSONBin();
+      if(!appData.reports) appData.reports = [];
+      appData.reports.push({
+        email: email,
+        action: actionType,
+        time: new Date().toLocaleString('ar-EG')
+      });
+      await saveDatatoJSONBin();
     }
 
     window.onload = function() {
+      loadLocalCacheData();
       const savedEmail = localStorage.getItem('fahem_email');
       if (savedEmail) { setupSession(savedEmail); }
       generateQuestionFields();
       fetchDataFromJSONBin();
     };
+
+    function loadLocalCacheData() {
+      const cached = localStorage.getItem('fahem_cached_data');
+      if(cached) {
+        try { appData = JSON.parse(cached); } catch(e){}
+      }
+    }
 
     async function fetchDataFromJSONBin() {
       try {
@@ -661,6 +735,9 @@
             if(!appData.reports) appData.reports = [];
             if(!appData.registeredUsers) appData.registeredUsers = [];
             if(!appData.blockedUsers) appData.blockedUsers = [];
+            
+            localStorage.setItem('fahem_cached_data', JSON.stringify(appData));
+
             if(appData.announcementText) {
               document.getElementById('header-announcement-text').innerText = appData.announcementText;
             }
@@ -671,6 +748,7 @@
     }
 
     async function saveDatatoJSONBin() {
+      localStorage.setItem('fahem_cached_data', JSON.stringify(appData));
       try {
         await fetch(JSONBIN_URL, {
           method: 'PUT',
@@ -740,15 +818,31 @@
       }
 
       localStorage.setItem('fahem_email', email);
-      let exists = appData.registeredUsers.some(u => u.email === email);
-      if(!exists) {
+      
+      // تسجيل تتبع تفاصيل الطالب ودخوله
+      let userObj = appData.registeredUsers.find(u => u.email === email);
+      const userAgentStr = navigator.userAgent.includes("Mobile") ? "📱 موبايل" : "💻 كمبيوتر/لاب";
+      const nowTimeStr = new Date().toLocaleString('ar-EG');
+
+      if(!userObj) {
         appData.registeredUsers.push({
           email: email,
           phone: localStorage.getItem('phone_' + email) || 'غير متاح',
-          joinTime: new Date().toLocaleString('ar-EG')
+          joinTime: nowTimeStr,
+          lastActive: nowTimeStr,
+          loginCount: 1,
+          device: userAgentStr
         });
-        await saveDatatoJSONBin();
+      } else {
+        userObj.lastActive = nowTimeStr;
+        userObj.loginCount = (userObj.loginCount || 1) + 1;
+        userObj.device = userAgentStr;
+        if(!userObj.phone || userObj.phone === 'غير متاح') {
+          userObj.phone = localStorage.getItem('phone_' + email) || 'غير متاح';
+        }
       }
+
+      await saveDatatoJSONBin();
       setupSession(email);
     }
 
@@ -812,7 +906,12 @@
       renderAll();
     }
 
-    function logout() { localStorage.clear(); location.reload(); }
+    function logout() { 
+      const saveBin = localStorage.getItem('fahem_cached_data');
+      localStorage.clear(); 
+      if(saveBin) localStorage.setItem('fahem_cached_data', saveBin);
+      location.reload(); 
+    }
 
     function downloadApp(e) {
       if(e) e.preventDefault();
@@ -1017,6 +1116,8 @@
     function startExam(id, title, questions, totalTimeSeconds, mode) {
       currentExamId = id;
       activeQuestions = questions;
+      isInsideExam = true;
+
       document.getElementById('modal-title').innerText = title;
       document.getElementById('submit-exam-btn').style.display = 'block';
 
@@ -1086,12 +1187,17 @@
     }
 
     function closeExam() {
+      isInsideExam = false;
       if(globalExamTimerInterval) clearInterval(globalExamTimerInterval);
+      document.getElementById('modal-box-inner').classList.remove('exam-secure-blur');
       document.getElementById('exam-modal').style.display = 'none';
     }
 
     async function submitExam() {
+      isInsideExam = false;
       if(globalExamTimerInterval) clearInterval(globalExamTimerInterval);
+      document.getElementById('modal-box-inner').classList.remove('exam-secure-blur');
+
       let score = 0;
       let total = activeQuestions.length;
 
@@ -1107,7 +1213,7 @@
 
       await fetchDataFromJSONBin();
       if(!appData.leaderboard) appData.leaderboard = [];
-      appData.leaderboard.push({ studentName: email, score: score, percentage: percentVal });
+      appData.leaderboard.push({ studentName: email, score: score, percentage: percentVal, time: new Date().toLocaleString('ar-EG') });
       appData.leaderboard.sort((a, b) => parseFloat(b.percentage) - parseFloat(a.percentage));
       await saveDatatoJSONBin();
 
@@ -1130,35 +1236,93 @@
       `;
     }
 
+    // عرض قائمة جميع الطلاب ومعلومات تفصيلية
     function showRegisteredStudentsModal() {
       let container = document.getElementById('modal-questions-container');
-      document.getElementById('modal-title').innerText = "👥 إدراة قائمة الطلاب والحظر";
+      document.getElementById('modal-title').innerText = "👥 سجل تفاصيل الطلاب والحظر";
       document.getElementById('submit-exam-btn').style.display = 'none';
 
-      let html = `<div style="font-size:12px; margin-bottom:10px; font-weight:bold;">إجمالي الطلاب: ${appData.registeredUsers.length}</div>`;
-      if(appData.registeredUsers.length === 0) {
+      let usersList = appData.registeredUsers || [];
+      let html = `<div style="font-size:12px; margin-bottom:10px; font-weight:bold;">إجمالي الطلاب المسجلين: ${usersList.length}</div>`;
+
+      if(usersList.length === 0) {
         html += `<p style="text-align:center; color:#64748b;">لا يوجد طلاب مسجلين حتى الآن.</p>`;
       } else {
-        appData.registeredUsers.forEach(u => {
+        usersList.forEach(u => {
           let isBlocked = appData.blockedUsers && appData.blockedUsers.includes(u.email);
           let blockBtn = isBlocked ? 
             `<button class="btn-unblock" onclick="toggleBlockUser('${u.email}')">فك الحظر ✅</button>` : 
             `<button class="btn-block" onclick="toggleBlockUser('${u.email}')">حظر 🚫</button>`;
 
           html += `
-            <div style="background:#f8fafc; border:1px solid #cbd5e1; padding:10px; border-radius:8px; margin-bottom:6px; text-align:right; display:flex; justify-content:space-between; align-items:center;">
-              <div>
+            <div style="background:#f8fafc; border:1px solid #cbd5e1; padding:10px; border-radius:8px; margin-bottom:6px; text-align:right;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
                 <div style="font-size:12px; font-weight:bold; color:#0f172a;">👤 ${u.email} ${isBlocked ? '<span style="color:#ef4444;">(محظور)</span>' : ''}</div>
-                <div style="font-size:11px; color:#475569;">📞 الهاتف: ${u.phone}</div>
-                <div style="font-size:10px; color:#94a3b8;">🕒 وقت الانضمام: ${u.joinTime}</div>
+                <div>
+                  <button class="btn-details" onclick="showSingleStudentDetails('${u.email}')">تفاصيل الطالب 📊</button>
+                  ${blockBtn}
+                </div>
               </div>
-              <div>${blockBtn}</div>
+              <div style="font-size:11px; color:#475569;">📞 الهاتف: ${u.phone || 'غير متاح'} | 🔁 مرات الدخول: <b>${u.loginCount || 1}</b></div>
+              <div style="font-size:10px; color:#94a3b8; margin-top:2px;">💻 الجهاز: ${u.device || 'غير محدد'} | 🕒 آخر نشاط: ${u.lastActive || u.joinTime || 'غير معروف'}</div>
             </div>
           `;
         });
       }
       container.innerHTML = html;
       document.getElementById('exam-modal').style.display = 'flex';
+    }
+
+    // عرض التفاصيل الدقيقة الكاملة لطالب معين
+    function showSingleStudentDetails(emailTarget) {
+      let container = document.getElementById('modal-questions-container');
+      document.getElementById('modal-title').innerText = `📊 سجل نشاط: ${emailTarget}`;
+
+      let userObj = (appData.registeredUsers || []).find(u => u.email === emailTarget) || {};
+      let userReports = (appData.reports || []).filter(r => r.email === emailTarget);
+      let userExams = (appData.leaderboard || []).filter(l => l.studentName === emailTarget);
+
+      let html = `
+        <div style="background:#eff6ff; padding:10px; border-radius:8px; margin-bottom:10px; font-size:12px; text-align:right; border:1px solid #38bdf8;">
+          <div>📧 <b>البريد:</b> ${emailTarget}</div>
+          <div>📞 <b>الهاتف:</b> ${userObj.phone || 'غير متاح'}</div>
+          <div>🔄 <b>عدد مرات دخول المنصة:</b> ${userObj.loginCount || 1} مرة</div>
+          <div>💻 <b>نوع الجهاز المستخدم:</b> ${userObj.device || 'غير محدد'}</div>
+          <div>📅 <b>تاريخ الانضمام:</b> ${userObj.joinTime || 'غير متوفر'}</div>
+          <div>🕒 <b>آخر تواجد على المنصة:</b> ${userObj.lastActive || 'غير متوفر'}</div>
+        </div>
+
+        <div style="font-size:12px; font-weight:bold; color:#0284c7; margin-bottom:6px; text-align:right;">📝 امتحانات الطالب وتقييماته:</div>
+      `;
+
+      if(userExams.length === 0) {
+        html += `<p style="font-size:11px; color:#64748b; text-align:right;">لم يكمل هذا الطالب أي امتحان حتى الآن.</p>`;
+      } else {
+        userExams.forEach(ex => {
+          html += `
+            <div style="background:white; border:1px solid #cbd5e1; padding:6px 10px; border-radius:6px; margin-bottom:4px; font-size:11px; text-align:right;">
+              🎯 النتيجة: <b>${ex.percentage}%</b> | الدرجة: (${ex.score}) | 🕒 الوقت: ${ex.time || 'السابق'}
+            </div>
+          `;
+        });
+      }
+
+      html += `<div style="font-size:12px; font-weight:bold; color:#ef4444; margin:10px 0 6px 0; text-align:right;">📸 سجل لقطات الشاشة والمخالفات:</div>`;
+
+      if(userReports.length === 0) {
+        html += `<p style="font-size:11px; color:#059669; text-align:right;">سجل الطالب نظيف الخالي من محاولات الغش أو لقطات الشاشة ✅</p>`;
+      } else {
+        userReports.forEach(rep => {
+          html += `
+            <div style="background:#fff1f2; border:1px solid #fecdd3; padding:6px 10px; border-radius:6px; margin-bottom:4px; font-size:11px; text-align:right; color:#991b1b;">
+              ⚠️ <b>${rep.action}</b> <span style="font-size:10px; color:#64748b;">(${rep.time})</span>
+            </div>
+          `;
+        });
+      }
+
+      html += `<button class="btn-main" onclick="showRegisteredStudentsModal()" style="width:100%; margin-top:12px; background:#475569;">⬅ العودة لقائمة الطلاب</button>`;
+      container.innerHTML = html;
     }
 
     async function toggleBlockUser(emailTarget) {
@@ -1180,21 +1344,22 @@
     }
 
     function showStudentReports() {
-      let cheatLogs = JSON.parse(localStorage.getItem('fahem_cheat_reports')) || [];
       let container = document.getElementById('modal-questions-container');
-      document.getElementById('modal-title').innerText = "📋 تقارير الغش والأمان";
+      document.getElementById('modal-title').innerText = "📋 تقارير محاولات لقطات الشاشة والغش";
       document.getElementById('submit-exam-btn').style.display = 'none';
 
-      let html = `<div style="font-size:12px; margin-bottom:10px;">إجمالي المخالفات المرصودة: ${cheatLogs.length}</div>`;
-      if(cheatLogs.length === 0) {
-        html += `<p style="text-align:center; color:#64748b;">لا توجد مخالفات مسجلة.</p>`;
+      let reportsList = appData.reports || [];
+      let html = `<div style="font-size:12px; margin-bottom:10px; font-weight:bold;">إجمالي المحاولات والمخالفات: ${reportsList.length}</div>`;
+      
+      if(reportsList.length === 0) {
+        html += `<p style="text-align:center; color:#64748b;">لا توجد مخالفات أو لقطات شاشة مسجلة حتى الآن.</p>`;
       } else {
-        cheatLogs.reverse().forEach(rep => {
+        reportsList.slice().reverse().forEach(rep => {
           html += `
             <div style="background:#f8fafc; border:1px solid #fee2e2; padding:8px; border-radius:8px; margin-bottom:6px; text-align:right;">
-              <div style="font-size:12px; font-weight:bold; color:#ef4444;">👤 البريد: ${rep.email}</div>
-              <div style="font-size:11px; color:#475569;">⚡ النشاط: ${rep.action}</div>
-              <div style="font-size:10px; color:#94a3b8;">🕒 الوقت: ${rep.time}</div>
+              <div style="font-size:12px; font-weight:bold; color:#ef4444;">👤 الطالب: ${rep.email}</div>
+              <div style="font-size:11px; color:#1e293b; margin-top:2px;">⚡ المخالفة: ${rep.action}</div>
+              <div style="font-size:10px; color:#94a3b8; margin-top:2px;">🕒 الوقت: ${rep.time}</div>
             </div>
           `;
         });
@@ -1208,7 +1373,7 @@
       if(!container) return;
       container.innerHTML = '';
       const statVids = document.getElementById('stat-videos-count');
-      if(statVids) statVids.innerText = appData.videos.length;
+      if(statVids) statVids.innerText = appData.videos ? appData.videos.length : 0;
 
       if(!appData.videos || appData.videos.length === 0) {
         container.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لا توجد فيديوهات متاحة</p>';
