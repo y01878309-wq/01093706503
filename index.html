@@ -298,7 +298,7 @@
     }
     
     .btn-danger-sm {
-      background: #ef4444; color: white; border: none; padding: 10px 12px;
+      background: #ef4444; color: white; border: none; padding: 8px 12px;
       border-radius: 10px; font-size: 12px; font-weight: bold; cursor: pointer; margin-right: 5px;
     }
 
@@ -701,7 +701,6 @@
         if(!window.appData.registeredUsers) window.appData.registeredUsers = [];
         if(!window.appData.blockedUsers) window.appData.blockedUsers = [];
 
-        // التأكد من وجود حساب يوسف (البودي) في المسجلين
         let budiExists = window.appData.registeredUsers.some(u => u.email === "Yousefbooooda98@gmail.com");
         if(!budiExists) {
           window.appData.registeredUsers.push({
@@ -767,22 +766,24 @@
       recognition.onresult = function(e) { document.getElementById(targetId).value = e.results[0][0].transcript; };
     }
 
-    // 🚫 حظر ومراقبة اللصق (Paste) وتسجيله كشبهة غش فوراً
-    document.addEventListener('paste', function(e) {
+    // 🚫 مراقبة وحظر اللصق (Paste) والمغادرة حتى في المتصفح المخفي
+    window.addEventListener('paste', function(e) {
       e.preventDefault();
       alert("⚠️ ممنوع استخدام اللصق (Paste) داخل المنصة!");
       logCheat("محاولة استخدام اللصق (Paste Attempt) 📋🚫");
-    });
+    }, true);
 
     window.addEventListener("blur", function() {
       if (isInsideExam) {
-        document.getElementById('modal-box-inner').classList.add('exam-secure-blur');
+        let box = document.getElementById('modal-box-inner');
+        if(box) box.classList.add('exam-secure-blur');
         logCheat("محاولة مغادرة نافذة الامتحان أو فتح أداة تصوير شاشة 📸⚠️");
       }
     });
 
     window.addEventListener("focus", function() {
-      document.getElementById('modal-box-inner').classList.remove('exam-secure-blur');
+      let box = document.getElementById('modal-box-inner');
+      if(box) box.classList.remove('exam-secure-blur');
     });
 
     window.addEventListener("keydown", function(e) {
@@ -794,8 +795,9 @@
           e.key === "F12"
         ) {
           e.preventDefault();
-          document.getElementById('modal-box-inner').classList.add('exam-secure-blur');
-          setTimeout(() => document.getElementById('modal-box-inner').classList.remove('exam-secure-blur'), 2000);
+          let box = document.getElementById('modal-box-inner');
+          if(box) box.classList.add('exam-secure-blur');
+          setTimeout(() => { if(box) box.classList.remove('exam-secure-blur'); }, 2000);
           logCheat("محاولة التقاط شاشة باختصار الكيبورد (Screenshot Attempt) 📸🚫");
           alert("🚫 ممنوع أخذ لقطة شاشة أثناء الامتحان!");
           return false;
@@ -814,6 +816,36 @@
         time: new Date().toLocaleString('ar-EG')
       });
       if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
+    }
+
+    // 🧠 المساعد الذكي لتنظيف وتقييم الإجابات
+    function normalizeText(txt) {
+      if(!txt) return "";
+      return txt
+        .replace(/\\text\{.*?\}/g, '')
+        .replace(/\\mathbf\{.*?\}/g, '')
+        .replace(/\\cdot/g, '*')
+        .replace(/\\rightarrow/g, '->')
+        .replace(/[\{\}\\\$\*\s\t\r\n]/g, '')
+        .toLowerCase();
+    }
+
+    function evaluateSmartAnswer(studentAns, modelAns) {
+      if(!studentAns) return false;
+      let cleanStudent = normalizeText(studentAns);
+      let cleanModel = normalizeText(modelAns);
+
+      if(cleanStudent === cleanModel) return true;
+
+      // مقارنة قيم الأرقام والرموز
+      let studentNums = cleanStudent.match(/\d+(\.\d+)?/g);
+      let modelNums = cleanModel.match(/\d+(\.\d+)?/g);
+
+      if(studentNums && modelNums && studentNums.join(',') === modelNums.join(',')) {
+        return true;
+      }
+
+      return false;
     }
 
     window.onload = function() {
@@ -1079,7 +1111,6 @@
       alert('تم إضافة وجدولة الامتحان بنجاح على السيرفر! ⏰');
     }
 
-    // 🗑️ دالة مسح الامتحان وحذفه نهائياً
     async function deleteExam(examId) {
       if(!confirm("هل أنت تأكد من رغبتك في حذف هذا الامتحان نهائياً؟")) return;
       
@@ -1087,6 +1118,16 @@
       if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
       renderAll();
       alert('تم حذف الامتحان بنجاح! 🗑️');
+    }
+
+    async function deleteSubmission(subIndex) {
+      if(!confirm("هل أنت تأكد من حذف هذا التسليم؟")) return;
+      if(appData.leaderboard && appData.leaderboard[subIndex]) {
+        appData.leaderboard.splice(subIndex, 1);
+        if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
+        renderAll();
+        alert("تم مسح التسليم بنجاح! 🗑️");
+      }
     }
 
     async function addVideo() {
@@ -1191,6 +1232,7 @@
         submissionsContainer.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لم تقم بتسليم أي امتحان بعد</p>';
       } else {
         userSubmissions.forEach((sub, index) => {
+          let deleteBtn = email === ADMIN_EMAIL ? `<button class="btn-danger-sm" onclick="deleteSubmission(${index})">مسح 🗑️</button>` : '';
           submissionsContainer.innerHTML += `
             <div class="card-item" style="background: #ffffff; border-color: #cbd5e1;">
               <div class="card-row">
@@ -1198,8 +1240,9 @@
                   <div class="card-title">📝 ${sub.examTitle || 'امتحان تعليمي'}</div>
                   <div class="card-subtitle">النسبة المئوية: <b style="color:#0284c7;">${sub.percentage}%</b> | وقت التسليم: ${sub.time}</div>
                 </div>
-                <div>
-                  <button class="btn-main" style="background: #059669;" onclick="openExamResultDetails('${email}', ${index})">معرفة الدرجة والتفاصيل 📊</button>
+                <div style="display:flex; align-items:center; gap:4px;">
+                  ${deleteBtn}
+                  <button class="btn-main" style="background: #059669;" onclick="openExamResultDetails('${email}', ${index})">التفاصيل 📊</button>
                 </div>
               </div>
             </div>
@@ -1220,7 +1263,7 @@
           actionBtn = `
             <div style="display:flex; align-items:center;">
               <button class="btn-danger-sm" onclick="deleteExam('${ex.id}')">حذف 🗑️</button>
-              <button class="btn-main" onclick='prepareAndStartExam("${ex.id}")'>معاينة الامتحان 👁️</button>
+              <button class="btn-main" onclick='prepareAndStartExam("${ex.id}")'>معاينة 👁️</button>
             </div>
           `;
         } else if(hasAlreadyTaken) {
@@ -1255,7 +1298,7 @@
 
       currentExamId = examObj.id;
       currentExamTitle = examObj.title;
-      currentExamMode = examObj.mode;
+      currentExamMode = examObj.mode || 'eval';
       activeQuestions = examObj.questions || [];
       studentExamAnswers = {};
 
@@ -1333,7 +1376,7 @@
     function checkPracticeMode(el, correctAns, mode) {
       if(mode === 'practice') {
         let fb = document.getElementById('practice_fb');
-        if(el.value.trim() === correctAns.trim()) {
+        if(evaluateSmartAnswer(el.value, correctAns)) {
           fb.style.color = '#059669'; fb.innerText = 'إجابة صحيحة ✓';
         } else {
           fb.style.color = '#ef4444'; fb.innerText = `خطأ ✕ - الإجابة الصحيحة: (${correctAns})`;
@@ -1353,14 +1396,16 @@
     function closeExam() {
       isInsideExam = false;
       if(questionTimerInterval) clearInterval(questionTimerInterval);
-      document.getElementById('modal-box-inner').classList.remove('exam-secure-blur');
+      let box = document.getElementById('modal-box-inner');
+      if(box) box.classList.remove('exam-secure-blur');
       document.getElementById('exam-modal').style.display = 'none';
     }
 
     async function submitExam() {
       isInsideExam = false;
       if(questionTimerInterval) clearInterval(questionTimerInterval);
-      document.getElementById('modal-box-inner').classList.remove('exam-secure-blur');
+      let box = document.getElementById('modal-box-inner');
+      if(box) box.classList.remove('exam-secure-blur');
 
       let score = 0;
       let total = activeQuestions.length;
@@ -1368,13 +1413,15 @@
 
       activeQuestions.forEach((q, i) => {
         let studentAns = studentExamAnswers[i] || 'لم يتم الإجابة';
-        let isCorrect = (q.type !== 'essay') && (studentAns.trim() === q.ans.trim());
+        let modelAnswer = q.type === 'essay' ? (q.modelAns || '') : q.ans;
+        
+        let isCorrect = evaluateSmartAnswer(studentAns, modelAnswer);
         if(isCorrect) score++;
 
         detailedQuestions.push({
           questionText: q.q,
           studentAnswer: studentAns,
-          correctAnswer: q.type === 'essay' ? (q.modelAns || 'إجابة نموذجية') : q.ans,
+          correctAnswer: modelAnswer || 'إجابة نموذجية',
           isCorrect: isCorrect,
           points: isCorrect ? 1 : 0
         });
@@ -1551,7 +1598,6 @@
       document.getElementById('modal-title').innerText = `📊 سجل نشاط وإجابات: ${emailTarget}`;
 
       let userObj = (appData.registeredUsers || []).find(u => u.email === emailTarget) || {};
-      let userReports = (appData.reports || []).filter(r => r.email === emailTarget);
       let userExams = (appData.leaderboard || []).filter(l => l.studentName === emailTarget);
 
       let html = `
@@ -1645,6 +1691,7 @@
       });
     }
 
+    // 🏆 تصفية الترتيب ليظهر كل طالب مرة واحدة بأعلى درجة
     function renderLeaderboards() {
       const homeBox = document.getElementById('home-leaderboard-box');
       const fullBox = document.getElementById('full-leaderboard-box');
@@ -1654,13 +1701,28 @@
         if(fullBox) fullBox.innerHTML = msg;
         return;
       }
+
+      // تصفية وقصر التكرار (Unique per student)
+      let uniqueMap = new Map();
+      appData.leaderboard.forEach(st => {
+        let studentKey = st.studentName;
+        let currentBest = uniqueMap.get(studentKey);
+        if(!currentBest || parseFloat(st.percentage) > parseFloat(currentBest.percentage)) {
+          uniqueMap.set(studentKey, st);
+        }
+      });
+
+      let uniqueLeaderboard = Array.from(uniqueMap.values());
+      uniqueLeaderboard.sort((a, b) => parseFloat(b.percentage) - parseFloat(a.percentage));
+
       let html = '';
-      appData.leaderboard.forEach((st, idx) => {
+      uniqueLeaderboard.forEach((st, idx) => {
         let rankClass = idx === 0 ? 'rank-1' : (idx === 1 ? 'rank-2' : (idx === 2 ? 'rank-3' : ''));
         let medalEmoji = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `#${idx+1}`));
         let displayName = st.displayName || getUserDisplayName(st.studentName);
         html += `<div class="leaderboard-item"><div style="display:flex; align-items:center; gap:10px;"><div class="leaderboard-rank ${rankClass}">${medalEmoji}</div><div style="font-size:13px; font-weight:bold;">${displayName}</div></div><div style="font-size:14px; font-weight:bold; color:#0284c7;">${st.percentage}%</div></div>`;
       });
+
       if(homeBox) homeBox.innerHTML = html;
       if(fullBox) fullBox.innerHTML = html;
     }
