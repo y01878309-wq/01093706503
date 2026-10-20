@@ -19,6 +19,26 @@
       padding-bottom: 90px;
     }
 
+    /* شريط التنبيهات والإعلانات المتحرك */
+    .announcement-bar {
+      width: 100%;
+      background: #38bdf8;
+      color: #0b0f19;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 6px 10px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .announcement-text {
+      display: inline-block;
+      animation: marquee 18s linear infinite;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
     .top-app-bar {
       width: 100%;
       background: #0b0f19;
@@ -219,11 +239,6 @@
       margin-bottom: 20px;
       display: none;
     }
-    .admin-control-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
 
     .stats-grid {
       display: grid;
@@ -316,11 +331,9 @@
       overflow: hidden;
       margin-top: 8px;
     }
-    .media-preview-container img, .media-preview-container video, .media-preview-container iframe {
+    .media-preview-container iframe {
       width: 100%;
       height: 100%;
-      object-fit: contain;
-      border-radius: 10px;
       border: none;
     }
 
@@ -349,7 +362,6 @@
       padding: 15px; border-bottom: 1px solid #f8fafc; font-size: 13px;
       font-weight: 600; color: #334155; cursor: pointer;
     }
-    .settings-row:last-child { border-bottom: none; }
     .logout-row {
       background: white; border: 1px solid #fee2e2; border-radius: 16px;
       color: #ef4444; text-align: center; padding: 15px; font-weight: bold;
@@ -387,9 +399,9 @@
       background: white; border-radius: 20px; padding: 20px; text-align: center; margin-bottom: 15px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #f1f5f9;
     }
-    .review-question-card {
-      background: white; border-radius: 14px; padding: 15px; margin-bottom: 12px;
-      border: 1px solid #e2e8f0; text-align: right; box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    .certificate-card {
+      background: linear-gradient(135deg, #fffbeb, #fef3c7);
+      border: 3px double #f59e0b; border-radius: 16px; padding: 20px; text-align: center; color: #78350f;
     }
 
     .leaderboard-item {
@@ -416,6 +428,13 @@
 </head>
 <body oncopy="logCheat('نسخ')" onpaste="logCheat('لصق')">
 
+  <!-- شريط الإعلانات والتنبيهات المتحرك -->
+  <div class="announcement-bar">
+    <div class="announcement-text" id="header-announcement-text">
+      📢 أهلاً بكم في منصة فاهم التعليمية - بإشراف أ/ يوسف فرج | تابع أحدث الامتحانات والواجبات والتنبيهات فور نزولها!
+    </div>
+  </div>
+
   <div class="top-app-bar">
     <div class="logo-title">
       <div class="mini-logo"><img src="1000514471_2.jpg" alt="يوسف فرج"></div>
@@ -427,55 +446,52 @@
   <div id="auth-screen-container">
     <div class="login-card">
       
+      <!-- شاشة تسجيل الدخول 1: البريد وكلمة السر -->
       <div id="pane-login" class="auth-screen-pane active">
         <div class="login-hero-image-container">
           <img src="1000514471_2.jpg" alt="يوسف فرج">
         </div>
-        <h2 style="margin-bottom: 5px; font-size: 20px;">مرحباً بك في منصة فاهم</h2>
-        <p style="color: #94a3b8; font-size: 12px; margin-bottom: 20px;">إعداد: يوسف فرج 🛡️</p>
+        <h2 style="margin-bottom: 5px; font-size: 20px;">تسجيل الدخول - منصة فاهم</h2>
+        <p style="color: #94a3b8; font-size: 12px; margin-bottom: 20px;">إشراف: أ/ يوسف فرج 🛡️</p>
 
         <a href="#" class="download-btn" onclick="downloadApp(event)">
           📦 تحميل تطبيق المنصة (APK)
         </a>
 
-        <div style="margin: 15px 0; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
-          <div class="input-wrapper">
-            <input type="email" id="login-email" class="auth-input" placeholder="البريد الإلكتروني">
-            <button type="button" class="voice-btn" onclick="startVoiceInput('login-email')">🎤</button>
-          </div>
-          <div class="input-wrapper">
-            <input type="tel" id="user-phone" class="auth-input" placeholder="رقم الهاتف (مثال: 011xxxxxxxx)">
-            <button type="button" class="voice-btn" onclick="startVoiceInput('user-phone')">🎤</button>
-          </div>
-          <input type="password" id="user-pass" class="auth-input" placeholder="كلمة المرور" style="padding-left: 12px;">
-          <button class="auth-btn" onclick="customLogin()">تسجيل الدخول ✅</button>
-          <div class="text-link-auth" onclick="switchAuthPane('pane-forgot')">نسيت كلمة المرور؟</div>
+        <div class="input-wrapper">
+          <input type="email" id="login-email" class="auth-input" placeholder="البريد الإلكتروني (Gmail)">
+          <button type="button" class="voice-btn" onclick="startVoiceInput('login-email')">🎤</button>
         </div>
+        <input type="password" id="user-pass" class="auth-input" placeholder="كلمة المرور (الافتراضية: goks123)" style="padding-left: 12px;">
+        <button class="auth-btn" onclick="proceedToPhoneStep()">التالي ➔</button>
+        <div class="text-link-auth" onclick="switchAuthPane('pane-forgot')">نسيت كلمة المرور؟</div>
       </div>
 
+      <!-- شاشة تسجيل الدخول 2: رقم الهاتف أو التخطي -->
+      <div id="pane-phone" class="auth-screen-pane">
+        <div class="login-hero-image-container"><img src="1000514471_2.jpg" alt="يوسف فرج"></div>
+        <h2 style="margin-bottom: 5px; font-size: 18px;">رقم الهاتف (اختياري)</h2>
+        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 20px;">أدخل رقم هاتفك للتواصل أو اضغط تخطي.</p>
+        
+        <div class="input-wrapper">
+          <input type="tel" id="user-phone" class="auth-input" placeholder="رقم الهاتف (011xxxxxxxx)">
+          <button type="button" class="voice-btn" onclick="startVoiceInput('user-phone')">🎤</button>
+        </div>
+        <button class="auth-btn" onclick="completeLoginWithPhone()">إتمام تسجيل الدخول ✅</button>
+        <button class="auth-btn" onclick="skipPhoneStep()" style="background: #475569; margin-top: 8px;">تخطي هذه الخطوة ⏭️</button>
+      </div>
+
+      <!-- استعادة كلمة المرور -->
       <div id="pane-forgot" class="auth-screen-pane">
         <button class="back-btn" onclick="switchAuthPane('pane-login')">‹</button>
         <div style="font-size: 40px; margin-bottom: 10px; margin-top: 15px;">🔒</div>
         <h2 style="margin-bottom: 5px; font-size: 18px;">نسيت كلمة المرور؟</h2>
-        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 20px;">أدخل بريدك الإلكتروني وسنرسل لك رمزاً لإعادة تعيين كلمة المرور.</p>
-        
+        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 20px;">أدخل بريدك الإلكتروني لإعادة التعيين.</p>
         <div class="input-wrapper">
           <input type="email" id="forgot-email" class="auth-input" placeholder="البريد الإلكتروني">
           <button type="button" class="voice-btn" onclick="startVoiceInput('forgot-email')">🎤</button>
         </div>
-        <button class="auth-btn" onclick="sendResetCode()">إرسال رمز التحقق إلى الجيميل ✉️</button>
-      </div>
-
-      <div id="pane-reset" class="auth-screen-pane">
-        <button class="back-btn" onclick="switchAuthPane('pane-forgot')">‹</button>
-        <div style="font-size: 40px; margin-bottom: 10px; margin-top: 15px;">🔑</div>
-        <h2 style="margin-bottom: 5px; font-size: 18px;">إعادة تعيين كلمة المرور</h2>
-        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 15px;">أدخل رمز التحقق (OTP) المرسل لبريدك وكلمة المرور الجديدة.</p>
-        
-        <input type="text" id="verification-code-input" class="auth-input" placeholder="أدخل رمز التحقق (4 أرقام)" style="text-align: center; letter-spacing: 3px; padding-left: 12px;">
-        <input type="password" id="new-password-input" class="auth-input" placeholder="كلمة المرور الجديدة" style="padding-left: 12px;">
-        <input type="password" id="confirm-password-input" class="auth-input" placeholder="تأكيد كلمة المرور الجديدة" style="padding-left: 12px;">
-        <button class="auth-btn" onclick="verifyAndResetPassword()">تحقق وإعادة التعيين ✅</button>
+        <button class="auth-btn" onclick="alert('تم إرسال رمز التحقق لبريدك الإلكتروني!')">إرسال رمز التحقق ✉️</button>
       </div>
 
     </div>
@@ -484,94 +500,76 @@
   <div id="dashboard-view">
     <div class="app-header">
       <div>
-        <div class="greeting-text" id="welcome-user-name">👋 مرحباً، يوسف فرج</div>
+        <div class="greeting-text" id="welcome-user-name">👋 مرحباً بك</div>
         <div class="date-text" id="current-date-box">الثلاثاء، أكتوبر 20</div>
       </div>
-      <div class="admin-badge-top" id="role-badge">أدمن (يوسف فرج)</div>
+      <div class="admin-badge-top" id="role-badge" style="display:none;">أدمن (يوسف فرج)</div>
     </div>
 
+    <!-- لوحة تحكم الأدمن (شاملة الإعلانات والطلاب والرفع والامتحانات) -->
     <div id="admin-panel-box">
       <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 10px;">⚙ لوحة تحكم الأدمن (يوسف فرج)</div>
       
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد (مع جدولة وقت الظهور):</div>
-      <div class="input-wrapper">
-        <input type="text" id="new-exam-title" class="auth-input" placeholder="عنوان الامتحان..." style="background: white; color: #1e293b; margin-bottom: 0;">
-        <button type="button" class="voice-btn" onclick="startVoiceInput('new-exam-title')">🎤</button>
-      </div>
-      
-      <div style="display: flex; gap: 8px; margin-top: 6px; margin-bottom: 6px;">
-        <input type="number" id="new-exam-total-time" class="auth-input" placeholder="الوقت الكلي (دقائق)..." style="background: white; color: #1e293b; margin-bottom: 0; padding-left: 12px; font-size: 11px;">
-        <input type="number" id="new-exam-count" class="auth-input" placeholder="عدد الأسئلة..." value="1" oninput="generateQuestionFields()" style="background: white; color: #1e293b; margin-bottom: 0; padding-left: 12px; width: 110px; font-size: 11px;">
+      <!-- إدخال التنبيهات ونشرها في الشريط المتحرك -->
+      <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1;">
+        <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">📢 نشر تنبيه / واجب / امتحان جديد في الشريط المتحرك:</div>
+        <input type="text" id="admin-announcement-input" class="auth-input" placeholder="اكتب التنبيه هنا..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; font-size: 12px;">
+        <button class="btn-main" onclick="updateAnnouncement()" style="width: 100%; background: #059669;">تحديث ونشر التنبيه سحابياً 🚀</button>
       </div>
 
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">وقت نشر الامتحان للطلاب (مثلاً الساعة 12 بليل):</div>
+      <!-- إدارة الامتحانات -->
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد (مع جدولة الوقت):</div>
+      <input type="text" id="new-exam-title" class="auth-input" placeholder="عنوان الامتحان..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
+      
+      <div style="display: flex; gap: 8px; margin-bottom: 6px;">
+        <input type="number" id="new-exam-total-time" class="auth-input" placeholder="الوقت (د)" style="background: white; color: #1e293b; margin-bottom: 0; font-size: 11px; padding-left:12px;">
+        <input type="number" id="new-exam-count" class="auth-input" placeholder="عدد الأسئلة" value="1" oninput="generateQuestionFields()" style="background: white; color: #1e293b; margin-bottom: 0; width: 100px; font-size: 11px; padding-left:12px;">
+        <select id="new-exam-mode" class="auth-input" style="background: white; color: #1e293b; margin-bottom: 0; font-size: 11px; padding-left:8px;">
+          <option value="eval">تقييمي</option>
+          <option value="practice">تدريبي</option>
+        </select>
+      </div>
+
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">وقت نشر الامتحان للطلاب:</div>
       <input type="datetime-local" id="new-exam-publish-time" class="auth-input" style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
       
       <div id="dynamic-questions-builder" style="margin-bottom: 10px;"></div>
-
       <button class="btn-main" id="btn-add-exam" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة وجدولة الامتحان سحابياً 📝</button>
 
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة فيديو الشرح للمنصة (رابط يوتيوب أو تليجرام):</div>
-      <div class="input-wrapper">
-        <input type="text" id="new-video-title" class="auth-input" placeholder="اكتب اسم الفيديو هنا..." style="background: white; color: #1e293b; margin-bottom: 0;">
-        <button type="button" class="voice-btn" onclick="startVoiceInput('new-video-title')">🎤</button>
-      </div>
-      <input type="text" id="new-video-link" class="auth-input" placeholder="رابط يوتيوب أو تليجرام..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px;">
-      <button class="btn-main" id="btn-add-video" onclick="addVideo()" style="width: 100%; margin-bottom: 10px;">إضافة الفيديو للمنصة سحابياً 🎥</button>
+      <!-- إضافة فيديوهات الشرح -->
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة فيديو شرح للمنصة:</div>
+      <input type="text" id="new-video-title" class="auth-input" placeholder="اسم الفيديو..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
+      <input type="text" id="new-video-link" class="auth-input" placeholder="رابط يوتيوب أو تليجرام..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
+      <button class="btn-main" onclick="addVideo()" style="width: 100%; margin-bottom: 10px; background: #0284c7;">إضافة الفيديو للمنصة 🎥</button>
 
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة ملف PDF:</div>
-      <div class="input-wrapper">
-        <input type="text" id="new-pdf-title" class="auth-input" placeholder="عنوان ملف الـ PDF..." style="background: white; color: #1e293b; margin-bottom: 0;">
-        <button type="button" class="voice-btn" onclick="startVoiceInput('new-pdf-title')">🎤</button>
-      </div>
-      <input type="text" id="new-pdf-link" class="auth-input" placeholder="رابط ملف الـ PDF (https://...)" style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px;">
-      <button class="btn-main" onclick="addPdfLink()" style="width: 100%; margin-bottom: 10px; background: #7c3aed;">إضافة ملف الـ PDF سحابياً 📁</button>
+      <!-- إضافة ملفات PDF -->
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة ملف PDF أو مذكرة:</div>
+      <input type="text" id="new-pdf-title" class="auth-input" placeholder="عنوان المذكرة..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
+      <input type="text" id="new-pdf-link" class="auth-input" placeholder="رابط الـ PDF (https://...)" style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
+      <button class="btn-main" onclick="addPdfLink()" style="width: 100%; margin-bottom: 10px; background: #7c3aed;">إضافة ملف الـ PDF 📁</button>
 
-      <div class="section-header-title" style="color: #0284c7; margin-top: 15px;">📊 تقارير الطلاب وسجل الامتحانات (الأدمن فقط)</div>
-      <button class="btn-main" onclick="showStudentReports()" style="width: 100%; background: #4f46e5; margin-bottom: 8px;">عرض تقارير دخول الامتحانات والنسخ/اللصق 📋</button>
+      <!-- أزرار عرض الطلاب والتقارير -->
+      <button class="btn-main" onclick="showRegisteredStudentsModal()" style="width: 100%; background: #059669; margin-bottom: 6px;">👥 عرض جميع الطلاب المسجلين على المنصة</button>
+      <button class="btn-main" onclick="showStudentReports()" style="width: 100%; background: #4f46e5; margin-bottom: 6px;">📋 تقارير الغش ومحاولات النسخ</button>
     </div>
 
+    <!-- الأقسام الرئيسية للعرض -->
     <div id="sec-home" class="content-section active-section">
       <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon">📅</div>
-          <div class="stat-value">100%</div>
-          <div class="stat-label">الحضور</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">🎥</div>
-          <div class="stat-value" id="stat-videos-count">0</div>
-          <div class="stat-label">الفيديوهات</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">❓</div>
-          <div class="stat-value" id="stat-exams-display">0</div>
-          <div class="stat-label">الامتحانات</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">📊</div>
-          <div class="stat-value" id="stat-rank-display">1</div>
-          <div class="stat-label">الترتيب (تلقائي)</div>
-        </div>
+        <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-value">100%</div><div class="stat-label">الحضور</div></div>
+        <div class="stat-card"><div class="stat-icon">🎥</div><div class="stat-value" id="stat-videos-count">0</div><div class="stat-label">الفيديوهات</div></div>
+        <div class="stat-card"><div class="stat-icon">❓</div><div class="stat-value" id="stat-exams-display">0</div><div class="stat-label">الامتحانات</div></div>
+        <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" id="stat-students-count">1</div><div class="stat-label">الطلاب المسجلين</div></div>
       </div>
 
       <div class="section-header-title">إجراءات سريعة</div>
       <div class="action-grid">
-        <div class="action-card" onclick="switchTab('sec-exams', 'nav-exams')">
-          <div class="stat-icon">❓</div>
-          <div class="stat-label">الامتحانات</div>
-        </div>
-        <div class="action-card" onclick="switchTab('sec-videos', 'nav-videos')">
-          <div class="stat-icon">🎥</div>
-          <div class="stat-label">الفيديوهات</div>
-        </div>
-        <div class="action-card" onclick="switchTab('sec-leaderboard', 'nav-leaderboard')">
-          <div class="stat-icon">🏆</div>
-          <div class="stat-label">لوحة الترتيب</div>
-        </div>
+        <div class="action-card" onclick="switchTab('sec-exams', 'nav-exams')"><div class="stat-icon">❓</div><div class="stat-label">الامتحانات</div></div>
+        <div class="action-card" onclick="switchTab('sec-videos', 'nav-videos')"><div class="stat-icon">🎥</div><div class="stat-label">الفيديوهات</div></div>
+        <div class="action-card" onclick="switchTab('sec-leaderboard', 'nav-leaderboard')"><div class="stat-icon">🏆</div><div class="stat-label">الترتيب</div></div>
       </div>
 
-      <div class="section-header-title">🏆 لوحة شرف المتصدرين (سحابي مباشر)</div>
+      <div class="section-header-title">🏆 لوحة شرف المتصدرين</div>
       <div class="card-item" id="home-leaderboard-box"></div>
     </div>
 
@@ -581,80 +579,50 @@
     </div>
 
     <div id="sec-videos" class="content-section">
-      <div class="section-header-title">فيديوهات الشرح التعليمية (بالعرض)</div>
+      <div class="section-header-title">فيديوهات الشرح التعليمية</div>
       <div id="videos-container"></div>
     </div>
 
-    <div id="sec-leaderboard" class="content-section">
-      <div class="section-header-title">🏆 ترتيب الطلاب الأوائل على المنصة</div>
-      <div class="card-item" id="full-leaderboard-box"></div>
-    </div>
-
     <div id="sec-pdfs" class="content-section">
-      <div class="section-header-title">ملفات الـ PDF والمذكرات التعليمية</div>
+      <div class="section-header-title">ملفات الـ PDF والمذكرات الدراسية</div>
       <div id="pdfs-container"></div>
     </div>
 
+    <div id="sec-leaderboard" class="content-section">
+      <div class="section-header-title">🏆 ترتيب الأوائل على المنصة</div>
+      <div class="card-item" id="full-leaderboard-box"></div>
+    </div>
+
     <div id="sec-settings" class="content-section">
-      <div class="settings-profile-box">
-        <div class="profile-avatar"><img src="1000514471_2.jpg" alt="يوسف فرج"></div>
-        <div>
-          <div style="font-size: 16px; font-weight: bold;" id="profile-name-display">يوسف فرج</div>
-          <div style="font-size: 12px; opacity: 0.8;" id="profile-email-display">y01878309@gmail.com</div>
-          <div style="font-size: 11px; opacity: 0.9; margin-top: 2px;" id="profile-phone-display">الهاتف: --</div>
-        </div>
+      <div class="settings-card-box" style="padding: 15px; background: white; border-radius: 16px; margin-bottom: 15px;">
+        <div style="font-size: 14px; font-weight: bold;" id="profile-email-display">البريد: --</div>
+        <div style="font-size: 12px; color: #64748b; margin-top: 4px;" id="profile-phone-display">الهاتف: --</div>
       </div>
-
-      <div class="settings-group-title">إعدادات الإشعارات والتنبيهات</div>
-      <div class="settings-card-box">
-        <div class="settings-row">
-          <span>🔔 تفعيل/إيقاف الإشعارات</span>
-          <input type="checkbox" id="user-notification-toggle" onchange="toggleNotifications(this)" style="width: 20px; height: 20px; cursor: pointer;">
-        </div>
-      </div>
-
-      <div class="settings-group-title">تغيير كلمة المرور الخاصة بك</div>
-      <div class="settings-card-box" style="padding: 15px;">
-        <input type="password" id="change-pass-input" class="auth-input" placeholder="كلمة المرور الجديدة" style="background: #f8fafc; color: #1e293b; margin-bottom: 8px; padding-left: 12px;">
-        <button class="btn-main" onclick="updateUserPassword()" style="width: 100%;">حفظ كلمة المرور الجديدة 🔐</button>
-      </div>
-
-      <div class="settings-group-title">تحميل التطبيق والروابط</div>
-      <div class="settings-card-box">
-        <div class="settings-row" onclick="downloadApp(event)"><span>📦 تحميل تطبيق المنصة (APK)</span> <span>⬇️</span></div>
-        <div class="settings-row" onclick="openTelegramChannel()"><span>✈️ قناة التليجرام الرسمية</span> <span>‹</span></div>
-        <div class="settings-row" onclick="window.open('https://www.youtube.com/@youssef-po1xd', '_blank')"><span>📺 قناة اليوتيوب التعليمية</span> <span>‹</span></div>
-      </div>
-
-      <div class="settings-group-title">الإدارة والتحكم</div>
-      <div class="settings-card-box">
-        <div class="settings-row" onclick="resetAppData()"><span>🔄 إعادة ضبط وتصفير البيانات</span> <span>‹</span></div>
-        <div class="settings-row" onclick="alert('منصة فاهم التعليمية - إصدار الأدمن الخاص بيوسف فرج')"><span>ℹ حول التطبيق</span> <span>‹</span></div>
-      </div>
-
       <div class="logout-row" onclick="logout()">
         🚪 تسجيل الخروج
       </div>
     </div>
   </div>
 
+  <!-- شريط التنقل السفلي -->
   <div class="bottom-nav" id="bottom-navigation" style="display: none;">
     <button class="nav-item active" id="nav-home" onclick="switchTab('sec-home', 'nav-home')"><span>🏠</span> الرئيسية</button>
     <button class="nav-item" id="nav-exams" onclick="switchTab('sec-exams', 'nav-exams')"><span>❓</span> الامتحانات</button>
     <button class="nav-item" id="nav-videos" onclick="switchTab('sec-videos', 'nav-videos')"><span>🎥</span> الفيديوهات</button>
+    <button class="nav-item" id="nav-pdfs" onclick="switchTab('sec-pdfs', 'nav-pdfs')"><span>📁</span> PDF</button>
     <button class="nav-item" id="nav-leaderboard" onclick="switchTab('sec-leaderboard', 'nav-leaderboard')"><span>🏆</span> الترتيب</button>
-    <button class="nav-item" id="nav-pdfs" onclick="switchTab('sec-pdfs', 'nav-pdfs')"><span>📁</span> ملفات PDF</button>
     <button class="nav-item" id="nav-settings" onclick="switchTab('sec-settings', 'nav-settings')"><span>⚙️</span> الإعدادات</button>
   </div>
 
+  <!-- نافذة منبثقة للامتحانات والتقارير والطلاب -->
   <div id="exam-modal">
     <div class="modal-box">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <h3 id="modal-title" style="color: #0284c7; font-size: 16px;">عنوان الامتحان</h3>
+        <h3 id="modal-title" style="color: #0284c7; font-size: 16px;">نافذة المنصة</h3>
         <div id="exam-global-timer" style="background: #fee2e2; color: #ef4444; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; display: none;"></div>
       </div>
       <div id="modal-questions-container" style="margin-bottom: 15px;"></div>
-      <button class="btn-main" id="submit-exam-btn" onclick="submitExam()" style="width: 100%; padding: 10px;">تسليم الإجابات ✅</button>
+      <button class="btn-main" id="submit-exam-btn" onclick="submitExam()" style="width: 100%; padding: 10px; display:none;">تسليم الإجابات ✅</button>
       <button class="btn-main" onclick="closeExam()" style="background: #ef4444; width: 100%; margin-top: 8px;">إغلاق ✕</button>
     </div>
   </div>
@@ -664,68 +632,58 @@
     const JSONBIN_MASTER_KEY = "$2a$10$NqkCGC1GAztpqUH.Y3vKo.3Cfcd3cwymvds9xtzwhMDjImwkFl0.";
     const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
 
+    const ADMIN_EMAIL = "y01878309@gmail.com";
+    const DEFAULT_PASS = "goks123";
+
     let activeQuestions = [];
     let currentExamId = null;
     let globalExamTimerInterval = null;
-    let questionTimersIntervals = [];
-
-    const ADMIN_EMAIL = "y01878309@gmail.com";
-    const DEFAULT_PASS = "goks123";
 
     let appData = {
       exams: [],
       videos: [],
       pdfs: [],
       leaderboard: [],
-      reports: [] // سجل التقارير والنشاط
+      reports: [],
+      registeredUsers: [],
+      announcementText: "📢 أهلاً بكم في منصة فاهم التعليمية - بإشراف أ/ يوسف فرج | تابع أحدث الامتحانات والواجبات والتنبيهات فور نزولها!"
     };
 
-    let statsData = { exams: '0', rank: '1' };
+    let tempEmailForLogin = "";
 
     function startVoiceInput(targetId) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) {
-        alert('متصفحك لا يدعم خاصية الكتابة بالصوت.');
-        return;
-      }
+      if (!SpeechRecognition) return;
       const recognition = new SpeechRecognition();
       recognition.lang = 'ar-EG';
       recognition.start();
-      recognition.onresult = function(event) {
-        document.getElementById(targetId).value = event.results[0][0].transcript;
-      };
+      recognition.onresult = function(e) { document.getElementById(targetId).value = e.results[0][0].transcript; };
     }
 
-    // رصد محاولات النسخ أو اللصق (Anti-Cheat Logger)
+    document.addEventListener("visibilitychange", function() {
+      if (document.hidden && document.getElementById('exam-modal').style.display === 'flex') {
+        logCheat("محاولة مغادرة التبويب أثناء الامتحان ⚠️");
+      }
+    });
+
     function logCheat(actionType) {
       const email = localStorage.getItem('fahem_email');
       if(!email || email === ADMIN_EMAIL) return;
-      
-      let nowTime = new Date().toLocaleString('ar-EG');
       let reportLog = JSON.parse(localStorage.getItem('fahem_cheat_reports')) || [];
-      reportLog.push({
-        email: email,
-        phone: localStorage.getItem('phone_' + email) || 'غير متاح',
-        action: `محاولة ${actionType}`,
-        time: nowTime
-      });
+      reportLog.push({ email: email, action: actionType, time: new Date().toLocaleString('ar-EG') });
       localStorage.setItem('fahem_cheat_reports', JSON.stringify(reportLog));
     }
 
     window.onload = function() {
       const savedEmail = localStorage.getItem('fahem_email');
-      if (savedEmail) {
-        setupSession(savedEmail);
-      }
+      if (savedEmail) { setupSession(savedEmail); }
       generateQuestionFields();
       fetchDataFromJSONBin();
     };
 
     async function fetchDataFromJSONBin() {
       try {
-        const res = await fetch(JSONBIN_URL + '/latest', {
-          headers: { 'X-Master-Key': JSONBIN_MASTER_KEY }
-        });
+        const res = await fetch(JSONBIN_URL + '/latest', { headers: { 'X-Master-Key': JSONBIN_MASTER_KEY } });
         if (res.ok) {
           const json = await res.json();
           if (json && json.record) {
@@ -735,37 +693,36 @@
             if(!appData.pdfs) appData.pdfs = [];
             if(!appData.leaderboard) appData.leaderboard = [];
             if(!appData.reports) appData.reports = [];
+            if(!appData.registeredUsers) appData.registeredUsers = [];
+            if(appData.announcementText) {
+              document.getElementById('header-announcement-text').innerText = appData.announcementText;
+            }
           }
         }
-      } catch (err) {
-        console.error('خطأ في جلب البيانات:', err);
-      }
+      } catch (err) {}
       renderAll();
     }
 
     async function saveDatatoJSONBin() {
       try {
-        const res = await fetch(JSONBIN_URL, {
+        await fetch(JSONBIN_URL, {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Master-Key': JSONBIN_MASTER_KEY,
-            'X-Bin-Versioning': 'false'
-          },
+          headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_MASTER_KEY, 'X-Bin-Versioning': 'false' },
           body: JSON.stringify(appData)
         });
-        return res.ok;
-      } catch (err) {
-        return false;
-      }
+      } catch (err) {}
     }
 
-    function renderAll() {
-      renderExams();
-      renderVideos();
-      renderPdfs();
-      renderLeaderboards();
-      renderStats();
+    async function updateAnnouncement() {
+      const newText = document.getElementById('admin-announcement-input').value.trim();
+      if(!newText) { alert('اكتب نص التنبيه أولاً'); return; }
+
+      await fetchDataFromJSONBin();
+      appData.announcementText = newText;
+      await saveDatatoJSONBin();
+      document.getElementById('header-announcement-text').innerText = newText;
+      document.getElementById('admin-announcement-input').value = '';
+      alert('تم نشر التنبيه بنجاح في شريط المنصة! 🚀');
     }
 
     function switchAuthPane(paneId) {
@@ -773,43 +730,42 @@
       document.getElementById(paneId).classList.add('active');
     }
 
-    function switchTab(sectionId, navId) {
-      document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-section'));
-      document.getElementById(sectionId).classList.add('active-section');
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      document.getElementById(navId).classList.add('active');
+    function proceedToPhoneStep() {
+      const email = document.getElementById('login-email').value.trim();
+      const pass = document.getElementById('user-pass').value.trim();
+      if(!email) { alert('أدخل البريد الإلكتروني'); return; }
+      let userStoredPass = localStorage.getItem('pass_' + email) || DEFAULT_PASS;
+      if(pass !== userStoredPass) { alert('كلمة المرور غير صحيحة! (الافتراضية: goks123)'); return; }
+
+      tempEmailForLogin = email;
+      document.getElementById('pane-login').classList.remove('active');
+      document.getElementById('pane-phone').classList.add('active');
     }
 
-    async function customLogin() {
-      const emailInput = document.getElementById('login-email').value.trim();
-      const phoneInput = document.getElementById('user-phone').value.trim();
-      const pass = document.getElementById('user-pass').value.trim();
+    async function completeLoginWithPhone() {
+      const phone = document.getElementById('user-phone').value.trim();
+      if(!phone) { alert('أدخل رقم الهاتف أو اضغط تخطي'); return; }
+      localStorage.setItem('phone_' + tempEmailForLogin, phone);
+      finishLoginProcess(tempEmailForLogin);
+    }
 
-      if (!emailInput || !phoneInput) {
-        alert('الرجاء إدخال البريد الإلكتروني ورقم الهاتف');
-        return;
+    function skipPhoneStep() {
+      finishLoginProcess(tempEmailForLogin);
+    }
+
+    async function finishLoginProcess(email) {
+      localStorage.setItem('fahem_email', email);
+      await fetchDataFromJSONBin();
+      let exists = appData.registeredUsers.some(u => u.email === email);
+      if(!exists) {
+        appData.registeredUsers.push({
+          email: email,
+          phone: localStorage.getItem('phone_' + email) || 'غير متاح',
+          joinTime: new Date().toLocaleString('ar-EG')
+        });
+        await saveDatatoJSONBin();
       }
-
-      let userStoredPass = localStorage.getItem('pass_' + emailInput) || DEFAULT_PASS;
-      if(pass !== userStoredPass) {
-        alert('كلمة المرور غير صحيحة! (الافتراضية: goks123)');
-        return;
-      }
-      
-      localStorage.setItem('fahem_email', emailInput);
-      localStorage.setItem('phone_' + emailInput, phoneInput);
-      
-      // تسجيل وقت الدخول في التقارير
-      let nowTime = new Date().toLocaleString('ar-EG');
-      appData.reports.push({
-        email: emailInput,
-        phone: phoneInput,
-        action: 'تسجيل الدخول للمنصة',
-        time: nowTime
-      });
-      await saveDatatoJSONBin();
-
-      setupSession(emailInput);
+      setupSession(email);
     }
 
     function setupSession(email) {
@@ -818,38 +774,22 @@
       document.getElementById('bottom-navigation').style.display = 'flex';
 
       const phone = localStorage.getItem('phone_' + email) || 'غير متوفر';
-      document.getElementById('profile-email-display').innerText = email;
+      document.getElementById('profile-email-display').innerText = `البريد: ${email}`;
       document.getElementById('profile-phone-display').innerText = `الهاتف: ${phone}`;
-      document.getElementById('welcome-user-name').innerText = `👋 مرحباً، ${email === ADMIN_EMAIL ? 'يوسف فرج' : email}`;
-      document.getElementById('top-bar-user-status').innerText = email === ADMIN_EMAIL ? 'أدمن (يوسف فرج)' : email;
-      
+      document.getElementById('welcome-user-name').innerText = `👋 مرحباً، ${email === ADMIN_EMAIL ? 'يوسف فرج (الأدمن)' : email}`;
+
       if(email === ADMIN_EMAIL) {
         document.getElementById('admin-panel-box').style.display = 'block';
         document.getElementById('role-badge').style.display = 'block';
-      } else {
-        document.getElementById('admin-panel-box').style.display = 'none';
-        document.getElementById('role-badge').style.display = 'none';
       }
-      renderStats();
+      renderAll();
     }
 
-    function logout() {
-      localStorage.removeItem('fahem_email');
-      location.reload();
-    }
+    function logout() { localStorage.clear(); location.reload(); }
 
     function downloadApp(e) {
       if(e) e.preventDefault();
       alert('تم بدء تحميل تطبيق المنصة (APK) بنجاح! 📦');
-    }
-
-    function openTelegramChannel() {
-      window.open('https://t.me/farag1farag1', '_blank');
-    }
-
-    function toggleNotifications(checkbox) {
-      localStorage.setItem('notif_' + localStorage.getItem('fahem_email'), checkbox.checked);
-      alert(checkbox.checked ? 'تم تفعيل الإشعارات بنجاح' : 'تم إيقاف الإشعارات');
     }
 
     function generateQuestionFields() {
@@ -862,26 +802,23 @@
           <div style="background: #ffffff; padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #cbd5e1;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
               <span style="font-size: 11px; font-weight: bold; color: #0284c7;">السؤال رقم (${i})</span>
-              <div style="display: flex; gap: 4px;">
-                <input type="number" id="q_time_${i}" class="auth-input" placeholder="وقت السؤال (ثواني)..." style="width: 130px; padding: 4px; background: #f8fafc; color: #1e293b; font-size: 10px; margin-bottom: 0;">
-                <select id="q_type_${i}" class="auth-input" style="width: 100px; padding: 4px; background: #f8fafc; color: #1e293b; font-size: 11px; margin-bottom: 0;" onchange="toggleQuestionTypeFields(${i})">
-                  <option value="mcq">اختيار</option>
-                  <option value="essay">مقالي</option>
-                </select>
-              </div>
+              <select id="q_type_${i}" class="auth-input" style="width: 100px; padding: 4px; background: #f8fafc; color: #1e293b; font-size: 11px; margin-bottom: 0;" onchange="toggleQuestionTypeFields(${i})">
+                <option value="mcq">اختيار</option>
+                <option value="essay">مقالي</option>
+              </select>
             </div>
             
             <div class="input-wrapper" style="margin-top: 4px;">
-              <input type="text" id="q_text_${i}" class="auth-input" placeholder="اكتب نص السؤال هنا..." style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
+              <input type="text" id="q_text_${i}" class="auth-input" placeholder="نص السؤال..." style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
               <button type="button" class="voice-btn" onclick="startVoiceInput('q_text_${i}')">🎤</button>
             </div>
 
             <div id="mcq_box_${i}">
-              <div class="input-wrapper"><input type="text" id="q_opt1_${i}" class="auth-input" placeholder="الاختيار (أ)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;"><button type="button" class="voice-btn" onclick="startVoiceInput('q_opt1_${i}')">🎤</button></div>
-              <div class="input-wrapper"><input type="text" id="q_opt2_${i}" class="auth-input" placeholder="الاختيار (ب)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;"><button type="button" class="voice-btn" onclick="startVoiceInput('q_opt2_${i}')">🎤</button></div>
-              <div class="input-wrapper"><input type="text" id="q_opt3_${i}" class="auth-input" placeholder="الاختيار (جـ)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;"><button type="button" class="voice-btn" onclick="startVoiceInput('q_opt3_${i}')">🎤</button></div>
-              <div class="input-wrapper"><input type="text" id="q_opt4_${i}" class="auth-input" placeholder="الاختيار (د)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;"><button type="button" class="voice-btn" onclick="startVoiceInput('q_opt4_${i}')">🎤</button></div>
-              <div class="input-wrapper"><input type="text" id="q_ans_${i}" class="auth-input" placeholder="الإجابة الصحيحة بالضبط..." style="background: #f0fdf4; border-color: #86efac; color: #166534; margin-bottom: 0;"><button type="button" class="voice-btn" onclick="startVoiceInput('q_ans_${i}')">🎤</button></div>
+              <div class="input-wrapper"><input type="text" id="q_opt1_${i}" class="auth-input" placeholder="الاختيار (أ)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;"></div>
+              <div class="input-wrapper"><input type="text" id="q_opt2_${i}" class="auth-input" placeholder="الاختيار (ب)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;"></div>
+              <div class="input-wrapper"><input type="text" id="q_opt3_${i}" class="auth-input" placeholder="الاختيار (ج)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;"></div>
+              <div class="input-wrapper"><input type="text" id="q_opt4_${i}" class="auth-input" placeholder="الاختيار (د)" style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;"></div>
+              <div class="input-wrapper"><input type="text" id="q_ans_${i}" class="auth-input" placeholder="الإجابة الصحيحة بالضبط..." style="background: #f0fdf4; color: #166534; margin-bottom: 0;"></div>
             </div>
             <div id="essay_box_${i}" style="display: none; margin-top: 4px;">
               <textarea id="q_model_ans_${i}" class="auth-input" placeholder="الإجابة النموذجية..." style="background: #f0fdf4; color: #166534; height: 50px; margin-bottom: 0;"></textarea>
@@ -897,149 +834,128 @@
       document.getElementById(`essay_box_${i}`).style.display = typeVal === 'essay' ? 'block' : 'none';
     }
 
-    // إضافة الامتحان مع دعم الجدولة الزمنية (تحديد وقت النشر)
     async function addExam() {
       const title = document.getElementById('new-exam-title').value.trim();
-      const totalTimeMin = parseInt(document.getElementById('new-exam-total-time').value.trim()) || 0;
+      const totalTimeMin = parseInt(document.getElementById('new-exam-total-time').value.trim()) || 10;
       const countVal = parseInt(document.getElementById('new-exam-count').value.trim()) || 1;
-      const publishTimeVal = document.getElementById('new-exam-publish-time').value; // وقت النشر المجدول
-      
-      if(!title) { alert('الرجاء كتابة عنوان الامتحان'); return; }
+      const mode = document.getElementById('new-exam-mode').value;
+      const publishTimeVal = document.getElementById('new-exam-publish-time').value;
 
-      const btn = document.getElementById('btn-add-exam');
-      btn.innerText = "جاري الجدولة والنشر سحابياً... ⏳";
-      btn.disabled = true;
+      if(!title) { alert('أدخل عنوان الامتحان'); return; }
 
       await fetchDataFromJSONBin();
-
       let questionsArr = [];
       for(let i=1; i<=countVal; i++) {
         let qType = document.getElementById(`q_type_${i}`).value;
         let qText = document.getElementById(`q_text_${i}`).value.trim() || `السؤال (${i})`;
-        let qTimeSec = parseInt(document.getElementById(`q_time_${i}`).value) || 0;
-        
         if(qType === 'essay') {
-          questionsArr.push({ type: 'essay', q: qText, modelAns: document.getElementById(`q_model_ans_${i}`).value.trim() || 'نموذج غير متوفر', timeLimit: qTimeSec });
+          questionsArr.puts?.({ type: 'essay', q: qText, modelAns: document.getElementById(`q_model_ans_${i}`).value.trim() || 'نموذج غير متوفر' });
+          questionsArr.push({ type: 'essay', q: qText, modelAns: document.getElementById(`q_model_ans_${i}`).value.trim() || 'نموذج غير متوفر' });
         } else {
           let o1 = document.getElementById(`q_opt1_${i}`).value.trim() || 'أ';
           let o2 = document.getElementById(`q_opt2_${i}`).value.trim() || 'ب';
           let o3 = document.getElementById(`q_opt3_${i}`).value.trim() || 'ج';
           let o4 = document.getElementById(`q_opt4_${i}`).value.trim() || 'د';
           let ans = document.getElementById(`q_ans_${i}`).value.trim() || o1;
-          questionsArr.push({ type: 'mcq', q: qText, o1: o1, o2: o2, o3: o3, o4: o4, ans: ans, timeLimit: qTimeSec });
+          questionsArr.push({ type: 'mcq', q: qText, o1: o1, o2: o2, o3: o3, o4: o4, ans: ans });
         }
       }
 
-      const newExamObj = {
+      appData.exams.push({
         id: 'exam_' + Date.now(),
         title: title,
         totalTime: totalTimeMin * 60,
+        mode: mode,
         questions: questionsArr,
-        publishTime: publishTimeVal ? new Date(publishTimeVal).getTime() : Date.now(), // وقت الجدولة
-        info: `عدد الأسئلة: ${countVal}`
-      };
+        publishTime: publishTimeVal ? new Date(publishTimeVal).getTime() : Date.now(),
+        info: `الوقت: ${totalTimeMin} د | عدد الأسئلة: ${countVal}`
+      });
 
-      appData.exams.push(newExamObj);
-      const success = await saveDatatoJSONBin();
+      await saveDatatoJSONBin();
+      renderAll();
+      alert('تم إضافة وجدولة الامتحان بنجاح سحابياً! ⏰');
+    }
 
-      btn.innerText = "إضافة وجدولة الامتحان سحابياً 📝";
-      btn.disabled = false;
+    async function addVideo() {
+      const title = document.getElementById('new-video-title').value.trim();
+      let link = document.getElementById('new-video-link').value.trim();
+      if(!title || !link) { alert('أدخل اسم ورابط الفيديو'); return; }
 
-      if(success) {
-        document.getElementById('new-exam-title').value = '';
-        document.getElementById('new-exam-total-time').value = '';
-        document.getElementById('new-exam-count').value = '1';
-        document.getElementById('new-exam-publish-time').value = '';
-        generateQuestionFields();
-        renderAll();
-        alert('تم جدولة ونشر الامتحان بنجاح سحابياً! ⏰✅');
-      } else {
-        alert('حدث خطأ أثناء الحفظ بالسيرفر.');
-      }
+      await fetchDataFromJSONBin();
+      let embedLink = link.includes('watch?v=') ? link.replace('watch?v=', 'embed/') : link;
+      appData.videos.push({ id: 'vid_' + Date.now(), title: title, content: embedLink, info: 'فيديو تعليمي' });
+      await saveDatatoJSONBin();
+      renderAll();
+      alert('تم إضافة الفيديو بنجاح! 🎥');
+    }
+
+    async function addPdfLink() {
+      const title = document.getElementById('new-pdf-title').value.trim();
+      let link = document.getElementById('new-pdf-link').value.trim();
+      if(!title || !link) { alert('أدخل عنوان ورابط ملف الـ PDF'); return; }
+
+      await fetchDataFromJSONBin();
+      appData.pdfs.push({ id: 'pdf_' + Date.now(), title: title, link: link, info: 'ملف PDF' });
+      await saveDatatoJSONBin();
+      renderAll();
+      alert('تم إضافة ملف الـ PDF بنجاح! 📁');
+    }
+
+    function renderAll() {
+      renderExams();
+      renderVideos();
+      renderPdfs();
+      renderLeaderboards();
+      renderStats();
+    }
+
+    function switchTab(sectionId, navId) {
+      document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-section'));
+      document.getElementById(sectionId).classList.add('active-section');
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById(navId).classList.add('active');
     }
 
     function renderExams() {
       const container = document.getElementById('exams-container');
       if(!container) return;
       container.innerHTML = '';
-      const currentEmail = localStorage.getItem('fahem_email') || 'guest';
-      let finishedExams = JSON.parse(localStorage.getItem('finished_exams_' + currentEmail)) || [];
+      const email = localStorage.getItem('fahem_email');
       const currentTime = Date.now();
 
       if(!appData.exams || appData.exams.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد امتحانات متاحة حالياً</p>';
+        container.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لا توجد امتحانات متاحة حالياً</p>';
         return;
       }
 
-      let activeExamsCount = 0;
       appData.exams.forEach(ex => {
         let isPublished = !ex.publishTime || currentTime >= ex.publishTime;
+        if(!isPublished && email !== ADMIN_EMAIL) return;
 
-        // إذا لم يحن موعد النشر بعد، يظهر فقط للأدمن مع تنبيه بالموعد
-        if(!isPublished && currentEmail !== ADMIN_EMAIL) return;
-
-        activeExamsCount++;
-        let isDone = finishedExams.includes(ex.id);
-        let qData = ex.questions || [];
-
-        let actionBtn = '';
-        let subtitleText = ex.info;
-
-        if(!isPublished && currentEmail === ADMIN_EMAIL) {
-          let pubDateStr = new Date(ex.publishTime).toLocaleString('ar-EG');
-          subtitleText += ` | ⏳ مجدول للنشر في: ${pubDateStr}`;
-          actionBtn = `<span style="font-size:11px; color:#f59e0b; font-weight:bold;">قيد الجدولة ⏰</span>`;
-        } else if(isDone) {
-          subtitleText += ` - (تم اجتازه)`;
-          actionBtn = `<button class="btn-main" onclick='viewExamResult("${ex.id}", "${ex.title}", ${JSON.stringify(qData)})' style="background:#059669;">عرض النتيجة 📋</button>`;
-        } else {
-          subtitleText += ` | متاح الآن`;
-          actionBtn = `<button class="btn-main" onclick='startExam("${ex.id}", "${ex.title}", ${JSON.stringify(qData)}, ${ex.totalTime || 0})'>بدء 📝</button>`;
-        }
+        let subtitleText = isPublished ? ex.info : `${ex.info} (⏰ مجدول للنشر لاحقاً)`;
+        let actionBtn = isPublished ? `<button class="btn-main" onclick='startExam("${ex.id}", "${ex.title}", ${JSON.stringify(ex.questions || [])}, ${ex.totalTime || 0}, "${ex.mode}")'>بدء الامتحان 📝</button>` : `<span style="color:#f59e0b; font-size:11px;">قيد الجدولة</span>`;
 
         container.innerHTML += `
           <div class="card-item">
             <div class="card-row">
-              <div class="card-info">
-                <div class="card-title">${ex.title}</div>
-                <div class="card-subtitle">${subtitleText}</div>
-              </div>
-              <div class="btn-action-group">
-                ${actionBtn}
-              </div>
+              <div class="card-info"><div class="card-title">${ex.title}</div><div class="card-subtitle">${subtitleText}</div></div>
+              <div>${actionBtn}</div>
             </div>
           </div>
         `;
       });
-
-      if(activeExamsCount === 0) {
-        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد امتحانات متاحة في الوقت الحالي (بعضها مجدول لوقت لاحق)</p>';
-      }
     }
 
-    function startExam(id, title, questions, totalTimeSeconds) {
+    function startExam(id, title, questions, totalTimeSeconds, mode) {
       currentExamId = id;
       activeQuestions = questions;
       document.getElementById('modal-title').innerText = title;
       document.getElementById('submit-exam-btn').style.display = 'block';
+
       let container = document.getElementById('modal-questions-container');
       container.innerHTML = '';
 
-      // تسجيل وقت فتح الامتحان للطالب في التقارير
-      const email = localStorage.getItem('fahem_email');
-      const phone = localStorage.getItem('phone_' + email);
-      appData.reports.push({
-        email: email,
-        phone: phone,
-        action: `بدء امتحان: ${title}`,
-        time: new Date().toLocaleString('ar-EG')
-      });
-      saveDatatoJSONBin();
-
       if(globalExamTimerInterval) clearInterval(globalExamTimerInterval);
-      questionTimersIntervals.forEach(t => clearInterval(t));
-      questionTimersIntervals = [];
-
       let timerBox = document.getElementById('exam-global-timer');
       if(totalTimeSeconds > 0) {
         timerBox.style.display = 'block';
@@ -1047,11 +963,11 @@
         globalExamTimerInterval = setInterval(() => {
           let mins = Math.floor(timeLeft / 60);
           let secs = timeLeft % 60;
-          timerBox.innerText = `الوقت الكلي: ${mins}:${secs < 10 ? '0' : ''}${secs}`;
+          timerBox.innerText = `الوقت: ${mins}:${secs < 10 ? '0' : ''}${secs}`;
           timeLeft--;
           if(timeLeft < 0) {
             clearInterval(globalExamTimerInterval);
-            alert('انتهى الوقت الكلي للامتحان!');
+            alert('انتهى الوقت!');
             submitExam();
           }
         }, 1000);
@@ -1059,200 +975,138 @@
         timerBox.style.display = 'none';
       }
 
+      if(!questions || questions.length === 0) {
+        container.innerHTML = `<p>لا توجد أسئلة مضافة لهذا الامتحان.</p>`;
+        return;
+      }
+
       questions.forEach((q, i) => {
-        let qTimerHtml = q.timeLimit > 0 ? `<span id="q_timer_disp_${i}" style="color: #ef4444; font-weight: bold; font-size: 11px; float: left;">الوقت: ${q.timeLimit} ث</span>` : '';
-        
-        if (q.type === 'essay') {
+        if(q.type === 'essay') {
           container.innerHTML += `
-            <div id="q_card_box_${i}" style="background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 8px;">
-              <div style="font-size: 13px; font-weight: bold; margin-bottom: 5px;">(${i+1}) ${q.q} ${qTimerHtml}</div>
-              <textarea id="exam_q_input_${i}" class="auth-input" placeholder="اكتب إجابتك المقالية..." style="background: white; color: #1e293b; height: 70px;"></textarea>
+            <div style="background:#f8fafc; padding:10px; border-radius:8px; margin-bottom:8px; text-align:right;">
+              <div style="font-size:13px; font-weight:bold; margin-bottom:5px;">(${i+1}) ${q.q}</div>
+              <textarea id="exam_q_input_${i}" class="auth-input" placeholder="اكتب إجابتك..." style="background:white; color:#1e293b; height:70px;"></textarea>
             </div>
           `;
         } else {
           container.innerHTML += `
-            <div id="q_card_box_${i}" style="background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 8px;">
-              <div style="font-size: 13px; font-weight: bold; margin-bottom: 5px;">(${i+1}) ${q.q} ${qTimerHtml}</div>
-              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o1}"> ${q.o1}</label>
-              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o2}"> ${q.o2}</label>
-              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o3}"> ${q.o3}</label>
-              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o4}"> ${q.o4}</label>
+            <div style="background:#f8fafc; padding:10px; border-radius:8px; margin-bottom:8px; text-align:right;">
+              <div style="font-size:13px; font-weight:bold; margin-bottom:5px;">(${i+1}) ${q.q}</div>
+              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o1}" onchange="checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o1}</label>
+              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o2}" onchange="checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o2}</label>
+              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o3}" onchange="checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o3}</label>
+              <label style="display:block; font-size:12px; margin-bottom:3px;"><input type="radio" name="q_${i}" value="${q.o4}" onchange="checkPracticeMode(this, '${q.ans}', '${mode}')"> ${q.o4}</label>
+              <div id="practice_fb_${i}" style="font-size:11px; font-weight:bold; margin-top:4px;"></div>
             </div>
           `;
         }
       });
+
       document.getElementById('exam-modal').style.display = 'flex';
+    }
+
+    function checkPracticeMode(el, correctAns, mode) {
+      if(mode === 'practice') {
+        let parentBox = el.closest('div');
+        let fb = parentBox.querySelector('[id^="practice_fb_"]');
+        if(el.value.trim() === correctAns.trim()) {
+          fb.style.color = '#059669'; fb.innerText = 'إجابة صحيحة ✓';
+        } else {
+          fb.style.color = '#ef4444'; fb.innerText = `خطأ ✕ - الإجابة الصحيحة: (${correctAns})`;
+        }
+      }
     }
 
     function closeExam() {
       if(globalExamTimerInterval) clearInterval(globalExamTimerInterval);
-      questionTimersIntervals.forEach(t => clearInterval(t));
       document.getElementById('exam-modal').style.display = 'none';
     }
 
     async function submitExam() {
       if(globalExamTimerInterval) clearInterval(globalExamTimerInterval);
-      questionTimersIntervals.forEach(t => clearInterval(t));
-
       let score = 0;
-      let mcqTotal = 0;
-      let studentAnswers = {};
+      let total = activeQuestions.length;
 
       activeQuestions.forEach((q, i) => {
         if(q.type !== 'essay') {
-          mcqTotal++;
           let sel = document.querySelector(`input[name="q_${i}"]:checked`);
-          let userAns = sel ? sel.value.trim() : "لم يجب";
-          studentAnswers[i] = userAns;
-          if(sel && userAns === q.ans.trim()) score++;
-        } else {
-          let essayTextEl = document.getElementById(`exam_q_input_${i}`);
-          studentAnswers[i] = essayTextEl ? essayTextEl.value.trim() : "لم يجب";
+          if(sel && sel.value.trim() === q.ans.trim()) score++;
         }
       });
 
-      const currentEmail = localStorage.getItem('fahem_email') || 'guest';
-      let finishedExams = JSON.parse(localStorage.getItem('finished_exams_' + currentEmail)) || [];
-      if(!finishedExams.includes(currentExamId)) {
-        finishedExams.push(currentExamId);
-        localStorage.setItem('finished_exams_' + currentEmail, JSON.stringify(finishedExams));
-      }
-
-      let totalMax = mcqTotal > 0 ? mcqTotal : activeQuestions.length;
-      let percentVal = totalMax > 0 ? ((score / totalMax) * 100).toFixed(1) : '100';
-
-      // تسجيل تسليم الامتحان في التقارير
-      appData.reports.push({
-        email: currentEmail,
-        phone: localStorage.getItem('phone_' + currentEmail),
-        action: `تسليم امتحان (درجة: ${score}/${totalMax} - نسبة: ${percentVal}%)`,
-        time: new Date().toLocaleString('ar-EG')
-      });
+      let percentVal = total > 0 ? ((score / total) * 100).toFixed(1) : '100';
+      const email = localStorage.getItem('fahem_email');
 
       await fetchDataFromJSONBin();
       if(!appData.leaderboard) appData.leaderboard = [];
-      appData.leaderboard.push({
-        studentName: currentEmail === ADMIN_EMAIL ? 'يوسف فرج (الأدمن)' : currentEmail,
-        score: score,
-        percentage: percentVal
-      });
+      appData.leaderboard.push({ studentName: email, score: score, percentage: percentVal });
       appData.leaderboard.sort((a, b) => parseFloat(b.percentage) - parseFloat(a.percentage));
       await saveDatatoJSONBin();
 
       renderAll();
-      viewExamResult(currentExamId, document.getElementById('modal-title').innerText, activeQuestions);
+      showCertificate(email, percentVal + '%');
     }
 
-    // عرض تقارير الطلاب والنسخ واللصق للأدمن
-    function showStudentReports() {
-      let cheatLogs = JSON.parse(localStorage.getItem('fahem_cheat_reports')) || [];
-      let allReports = [...(appData.reports || []), ...cheatLogs];
-
+    function showCertificate(name, scorePercent) {
       let container = document.getElementById('modal-questions-container');
-      document.getElementById('modal-title').innerText = "📊 تقارير الطلاب وسجل الأنشطة والأمان";
-      document.getElementById('exam-global-timer').style.display = 'none';
+      document.getElementById('submit-exam-btn').style.display = 'none';
+      container.innerHTML = `
+        <div class="certificate-card">
+          <div style="font-size:30px;">🎓</div>
+          <h2 style="font-size:18px; margin-bottom:5px;">شهادة تقدير وتفوق</h2>
+          <p style="font-size:12px;">تمنح لمنصة **فاهم التعليمية** للطالب:</p>
+          <h3 style="color:#0284c7; margin:10px 0; font-size:16px;">${name}</h3>
+          <p style="font-size:12px;">لاجتياز الامتحان بنسبة: <b>${scorePercent}</b></p>
+          <div style="margin-top:15px; font-size:10px; color:#92400e;">إشراف: أ/ يوسف فرج 🛡️</div>
+        </div>
+      `;
+    }
+
+    function showRegisteredStudentsModal() {
+      let container = document.getElementById('modal-questions-container');
+      document.getElementById('modal-title').innerText = "👥 قائمة جميع الطلاب المسجلين";
       document.getElementById('submit-exam-btn').style.display = 'none';
 
-      let html = `<div style="font-size:12px; color:#475569; margin-bottom:10px;">إجمالي التقارير المسجلة: ${allReports.length}</div>`;
-      
-      if(allReports.length === 0) {
-        html += `<p style="text-align:center; color:#64748b; padding:20px;">لا توجد تقارير أو أنشطة مسجلة حتى الآن.</p>`;
+      let html = `<div style="font-size:12px; margin-bottom:10px; font-weight:bold;">إجمالي الطلاب: ${appData.registeredUsers.length}</div>`;
+      if(appData.registeredUsers.length === 0) {
+        html += `<p style="text-align:center; color:#64748b;">لا يوجد طلاب مسجلين حتى الآن.</p>`;
       } else {
-        allReports.reverse().forEach(rep => {
-          let badgeColor = rep.action.includes('نسخ') || rep.action.includes('لصق') ? '#ef4444' : '#0284c7';
+        appData.registeredUsers.forEach(u => {
           html += `
-            <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:10px; margin-bottom:8px; text-align:right;">
-              <div style="font-size:12px; font-weight:bold; color:#0f172a;">👤 ${rep.email} | 📞 ${rep.phone || 'غير متاح'}</div>
-              <div style="font-size:12px; color:${badgeColor}; font-weight:bold; margin-top:2px;">⚡ النشاط: ${rep.action}</div>
-              <div style="font-size:10px; color:#64748b; margin-top:2px;">🕒 الوقت: ${rep.time}</div>
+            <div style="background:#f8fafc; border:1px solid #cbd5e1; padding:8px; border-radius:8px; margin-bottom:6px; text-align:right;">
+              <div style="font-size:12px; font-weight:bold; color:#0f172a;">👤 ${u.email}</div>
+              <div style="font-size:11px; color:#475569;">📞 الهاتف: ${u.phone}</div>
+              <div style="font-size:10px; color:#94a3b8;">🕒 وقت الانضمام: ${u.joinTime}</div>
             </div>
           `;
         });
       }
-
       container.innerHTML = html;
       document.getElementById('exam-modal').style.display = 'flex';
     }
 
-    function renderLeaderboards() {
-      const homeBox = document.getElementById('home-leaderboard-box');
-      const fullBox = document.getElementById('full-leaderboard-box');
-      
-      if(!appData.leaderboard || appData.leaderboard.length === 0) {
-        const emptyMsg = '<div style="text-align:center; color:#64748b; font-size:12px; padding:10px;">لا توجد نتائج مسجلة حتى الآن</div>';
-        if(homeBox) homeBox.innerHTML = emptyMsg;
-        if(fullBox) fullBox.innerHTML = emptyMsg;
-        return;
-      }
-
-      let htmlContent = '';
-      appData.leaderboard.forEach((student, idx) => {
-        let rankClass = idx === 0 ? 'rank-1' : (idx === 1 ? 'rank-2' : (idx === 2 ? 'rank-3' : ''));
-        let medalEmoji = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `#${idx+1}`));
-        
-        htmlContent += `
-          <div class="leaderboard-item">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <div class="leaderboard-rank ${rankClass}">${medalEmoji}</div>
-              <div>
-                <div style="font-size: 13px; font-weight: bold; color: #0f172a;">${student.studentName}</div>
-                <div style="font-size: 11px; color: #64748b;">الدرجة: ${student.score}</div>
-              </div>
-            </div>
-            <div style="font-size: 14px; font-weight: bold; color: #0284c7;">${student.percentage}%</div>
-          </div>
-        `;
-      });
-
-      if(homeBox) homeBox.innerHTML = htmlContent;
-      if(fullBox) fullBox.innerHTML = htmlContent;
-    }
-
-    function viewExamResult(examId, title, questions) {
-      const currentEmail = localStorage.getItem('fahem_email') || 'guest';
-      let userResultsMap = JSON.parse(localStorage.getItem('exam_results_detail_' + currentEmail)) || {};
-      let res = userResultsMap[examId] || { score: 0, total: questions.length, answers: {}, percentage: '0' };
-      
+    function showStudentReports() {
+      let cheatLogs = JSON.parse(localStorage.getItem('fahem_cheat_reports')) || [];
       let container = document.getElementById('modal-questions-container');
-      document.getElementById('modal-title').innerText = `نتيجة امتحان: ${title}`;
-      document.getElementById('exam-global-timer').style.display = 'none';
+      document.getElementById('modal-title').innerText = "📋 تقارير الغش والأمان";
       document.getElementById('submit-exam-btn').style.display = 'none';
-      
-      let reviewHtml = `
-        <div class="result-summary-card">
-          <div style="font-size: 40px; margin-bottom: 5px;">🎉</div>
-          <h3 style="color: #059669; font-size: 18px; margin-bottom: 10px;">تم التصحيح بنجاح!</h3>
-          <div style="display: flex; justify-content: space-around; margin: 15px 0;">
-            <div><div style="font-size: 18px; font-weight: bold; color: #0284c7;">${res.percentage}%</div><div style="font-size: 11px; color: #64748b;">النسبة</div></div>
-            <div><div style="font-size: 18px; font-weight: bold; color: #0f172a;">${res.total}</div><div style="font-size: 11px; color: #64748b;">الإجمالي</div></div>
-            <div><div style="font-size: 18px; font-weight: bold; color: #4f46e5;">${res.score}</div><div style="font-size: 11px; color: #64748b;">المحصل</div></div>
-          </div>
-        </div>
-      `;
-      container.innerHTML = reviewHtml;
+
+      let html = `<div style="font-size:12px; margin-bottom:10px;">إجمالي المخالفات المرصودة: ${cheatLogs.length}</div>`;
+      if(cheatLogs.length === 0) {
+        html += `<p style="text-align:center; color:#64748b;">لا توجد مخالفات مسجلة.</p>`;
+      } else {
+        cheatLogs.reverse().forEach(rep => {
+          html += `
+            <div style="background:#f8fafc; border:1px solid #fee2e2; padding:8px; border-radius:8px; margin-bottom:6px; text-align:right;">
+              <div style="font-size:12px; font-weight:bold; color:#ef4444;">👤 البريد: ${rep.email}</div>
+              <div style="font-size:11px; color:#475569;">⚡ النشاط: ${rep.action}</div>
+              <div style="font-size:10px; color:#94a3b8;">🕒 الوقت: ${rep.time}</div>
+            </div>
+          `;
+        });
+      }
+      container.innerHTML = html;
       document.getElementById('exam-modal').style.display = 'flex';
-    }
-
-    async function addVideo() {
-      const title = document.getElementById('new-video-title').value.trim();
-      let link = document.getElementById('new-video-link').value.trim();
-      if(!title || !link) { alert('الرجاء إدخال اسم ورابط الفيديو'); return; }
-
-      await fetchDataFromJSONBin();
-      let embedLink = link.includes('watch?v=') ? link.replace('watch?v=', 'embed/') : link;
-
-      appData.videos.push({
-        id: 'vid_' + Date.now(),
-        title: title,
-        content: embedLink,
-        info: 'فيديو تعليمي'
-      });
-
-      await saveDatatoJSONBin();
-      renderAll();
-      document.getElementById('new-video-title').value = '';
-      document.getElementById('new-video-link').value = '';
-      alert('تم إضافة الفيديو بنجاح! 🎥');
     }
 
     function renderVideos() {
@@ -1260,35 +1114,21 @@
       if(!container) return;
       container.innerHTML = '';
       const statVids = document.getElementById('stat-videos-count');
-      if(statVids && appData.videos) statVids.innerText = appData.videos.length;
+      if(statVids) statVids.innerText = appData.videos.length;
 
       if(!appData.videos || appData.videos.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد فيديوهات متاحة</p>';
+        container.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لا توجد فيديوهات متاحة</p>';
         return;
       }
 
-      appData.videos.forEach(vid => {
+      appData.videos.forEach(v => {
         container.innerHTML += `
           <div class="card-item">
-            <div class="card-row">
-              <div class="card-info"><div class="card-title">${vid.title}</div><div class="card-subtitle">${vid.info}</div></div>
-            </div>
-            <div class="media-preview-container"><iframe src="${vid.content}" allowfullscreen></iframe></div>
+            <div class="card-row"><div class="card-title">${v.title}</div></div>
+            <div class="media-preview-container"><iframe src="${v.content}" allowfullscreen></iframe></div>
           </div>
         `;
       });
-    }
-
-    async function addPdfLink() {
-      const title = document.getElementById('new-pdf-title').value.trim();
-      let link = document.getElementById('new-pdf-link').value.trim();
-      if(!title) { alert('أدخل عنوان ملف الـ PDF'); return; }
-
-      await fetchDataFromJSONBin();
-      appData.pdfs.push({ id: 'pdf_' + Date.now(), title: title, link: link || '#', info: 'ملف PDF' });
-      await saveDatatoJSONBin();
-      renderAll();
-      alert('تم إضافة ملف الـ PDF بنجاح! 📁');
     }
 
     function renderPdfs() {
@@ -1297,39 +1137,55 @@
       container.innerHTML = '';
 
       if(!appData.pdfs || appData.pdfs.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:13px; padding:20px;">لا توجد ملفات</p>';
+        container.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لا توجد ملفات PDF</p>';
         return;
       }
 
-      appData.pdfs.forEach(pdf => {
+      appData.pdfs.forEach(p => {
         container.innerHTML += `
           <div class="card-item">
             <div class="card-row">
-              <div class="card-info"><div class="card-title">${pdf.title}</div><div class="card-subtitle">${pdf.info}</div></div>
-              <div class="btn-action-group"><a class="btn-custom-open" href="${pdf.link}" target="_blank">فتح 📄</a></div>
+              <div class="card-info"><div class="card-title">${p.title}</div><div class="card-subtitle">${p.info}</div></div>
+              <div><a class="btn-custom-open" href="${p.link}" target="_blank">فتح 📄</a></div>
             </div>
           </div>
         `;
       });
     }
 
-    function updateStats() {
-      renderStats();
-      alert('تم التحديث بنجاح! 📊');
+    function renderLeaderboards() {
+      const homeBox = document.getElementById('home-leaderboard-box');
+      const fullBox = document.getElementById('full-leaderboard-box');
+      if(!appData.leaderboard || appData.leaderboard.length === 0) {
+        const msg = '<div style="text-align:center; color:#64748b; font-size:12px; padding:10px;">لا توجد نتائج مسجلة</div>';
+        if(homeBox) homeBox.innerHTML = msg;
+        if(fullBox) fullBox.innerHTML = msg;
+        return;
+      }
+
+      let html = '';
+      appData.leaderboard.forEach((st, idx) => {
+        let rankClass = idx === 0 ? 'rank-1' : (idx === 1 ? 'rank-2' : (idx === 2 ? 'rank-3' : ''));
+        let medalEmoji = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `#${idx+1}`));
+        html += `
+          <div class="leaderboard-item">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="leaderboard-rank ${rankClass}">${medalEmoji}</div>
+              <div style="font-size:13px; font-weight:bold; color:#0f172a;">${st.studentName}</div>
+            </div>
+            <div style="font-size:14px; font-weight:bold; color:#0284c7;">${st.percentage}%</div>
+          </div>
+        `;
+      });
+      if(homeBox) homeBox.innerHTML = html;
+      if(fullBox) fullBox.innerHTML = html;
     }
 
     function renderStats() {
       const statExams = document.getElementById('stat-exams-display');
-      const statRank = document.getElementById('stat-rank-display');
+      const statStudents = document.getElementById('stat-students-count');
       if(statExams && appData.exams) statExams.innerText = appData.exams.length;
-      if(statRank) statRank.innerText = statsData.rank;
-    }
-
-    function resetAppData() {
-      if(confirm('تصفير كافة البيانات؟')) {
-        localStorage.clear();
-        location.reload();
-      }
+      if(statStudents && appData.registeredUsers) statStudents.innerText = appData.registeredUsers.length;
     }
   </script>
 </body>
