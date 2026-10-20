@@ -19,7 +19,6 @@
       padding-bottom: 90px;
     }
 
-    /* شريط التنبيهات والإعلانات المتحرك */
     .announcement-bar {
       width: 100%;
       background: #38bdf8;
@@ -349,18 +348,9 @@
     }
     .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-    .settings-group-title {
-      font-size: 12px; color: #64748b; margin: 15px 5px 8px 5px;
-      text-align: right; font-weight: bold;
-    }
     .settings-card-box {
       background: white; border-radius: 16px; overflow: hidden;
       border: 1px solid #f1f5f9; box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-    }
-    .settings-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 15px; border-bottom: 1px solid #f8fafc; font-size: 13px;
-      font-weight: 600; color: #334155; cursor: pointer;
     }
     .logout-row {
       background: white; border: 1px solid #fee2e2; border-radius: 16px;
@@ -395,10 +385,6 @@
     .modal-box {
       background: white; border-radius: 20px; width: 100%; max-width: 420px; max-height: 85vh; overflow-y: auto; padding: 20px;
     }
-    .result-summary-card {
-      background: white; border-radius: 20px; padding: 20px; text-align: center; margin-bottom: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #f1f5f9;
-    }
     .certificate-card {
       background: linear-gradient(135deg, #fffbeb, #fef3c7);
       border: 3px double #f59e0b; border-radius: 16px; padding: 20px; text-align: center; color: #78350f;
@@ -428,7 +414,6 @@
 </head>
 <body oncopy="logCheat('نسخ')" onpaste="logCheat('لصق')">
 
-  <!-- شريط الإعلانات والتنبيهات المتحرك -->
   <div class="announcement-bar">
     <div class="announcement-text" id="header-announcement-text">
       📢 أهلاً بكم في منصة فاهم التعليمية - بإشراف أ/ يوسف فرج | تابع أحدث الامتحانات والواجبات والتنبيهات فور نزولها!
@@ -462,7 +447,7 @@
           <input type="email" id="login-email" class="auth-input" placeholder="البريد الإلكتروني (Gmail)">
           <button type="button" class="voice-btn" onclick="startVoiceInput('login-email')">🎤</button>
         </div>
-        <input type="password" id="user-pass" class="auth-input" placeholder="كلمة المرور (الافتراضية: goks123)" style="padding-left: 12px;">
+        <input type="password" id="user-pass" class="auth-input" placeholder="كلمة المرور" style="padding-left: 12px; margin-bottom: 12px;">
         <button class="auth-btn" onclick="proceedToPhoneStep()">التالي ➔</button>
         <div class="text-link-auth" onclick="switchAuthPane('pane-forgot')">نسيت كلمة المرور؟</div>
       </div>
@@ -481,17 +466,30 @@
         <button class="auth-btn" onclick="skipPhoneStep()" style="background: #475569; margin-top: 8px;">تخطي هذه الخطوة ⏭️</button>
       </div>
 
-      <!-- استعادة كلمة المرور -->
+      <!-- شاشة نسيت كلمة المرور (طلب الكود من المشرف) -->
       <div id="pane-forgot" class="auth-screen-pane">
         <button class="back-btn" onclick="switchAuthPane('pane-login')">‹</button>
         <div style="font-size: 40px; margin-bottom: 10px; margin-top: 15px;">🔒</div>
         <h2 style="margin-bottom: 5px; font-size: 18px;">نسيت كلمة المرور؟</h2>
-        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 20px;">أدخل بريدك الإلكتروني لإعادة التعيين.</p>
+        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 20px;">أدخل بريدك الإلكتروني واضغط لطلب كود التحقق من المعلم.</p>
         <div class="input-wrapper">
           <input type="email" id="forgot-email" class="auth-input" placeholder="البريد الإلكتروني">
           <button type="button" class="voice-btn" onclick="startVoiceInput('forgot-email')">🎤</button>
         </div>
-        <button class="auth-btn" onclick="alert('تم إرسال رمز التحقق لبريدك الإلكتروني!')">إرسال رمز التحقق ✉️</button>
+        <button class="auth-btn" onclick="sendCodeToTeacher()">إرسال الطلب إلى المعلم 📱</button>
+      </div>
+
+      <!-- شاشة إدخال الكود وتغيير كلمة المرور الجديدة -->
+      <div id="pane-reset" class="auth-screen-pane">
+        <button class="back-btn" onclick="switchAuthPane('pane-forgot')">‹</button>
+        <div style="font-size: 40px; margin-bottom: 10px; margin-top: 15px;">🔑</div>
+        <h2 style="margin-bottom: 5px; font-size: 18px;">تغيير كلمة المرور</h2>
+        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 15px;">أدخل الكود الذي استلمته من المعلم وكلمة المرور الجديدة.</p>
+        
+        <input type="text" id="reset-code-input" class="auth-input" placeholder="أدخل كود التحقق (من المعلم)" style="text-align: center; font-weight: bold; margin-bottom: 8px; padding-left:12px;">
+        <input type="password" id="new-pass-input" class="auth-input" placeholder="كلمة المرور الجديدة" style="padding-left: 12px; margin-bottom: 8px;">
+        <input type="password" id="confirm-pass-input" class="auth-input" placeholder="تأكيد كلمة المرور الجديدة" style="padding-left: 12px; margin-bottom: 12px;">
+        <button class="auth-btn" onclick="confirmPasswordReset()">حفظ كلمة المرور الجديدة ✅</button>
       </div>
 
     </div>
@@ -506,18 +504,18 @@
       <div class="admin-badge-top" id="role-badge" style="display:none;">أدمن (يوسف فرج)</div>
     </div>
 
-    <!-- لوحة تحكم الأدمن (شاملة الإعلانات والطلاب والرفع والامتحانات) -->
+    <!-- لوحة تحكم الأدمن -->
     <div id="admin-panel-box">
       <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 10px;">⚙ لوحة تحكم الأدمن (يوسف فرج)</div>
       
-      <!-- إدخال التنبيهات ونشرها في الشريط المتحرك -->
+      <!-- نشر التنبيهات -->
       <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1;">
         <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">📢 نشر تنبيه / واجب / امتحان جديد في الشريط المتحرك:</div>
         <input type="text" id="admin-announcement-input" class="auth-input" placeholder="اكتب التنبيه هنا..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; font-size: 12px;">
         <button class="btn-main" onclick="updateAnnouncement()" style="width: 100%; background: #059669;">تحديث ونشر التنبيه سحابياً 🚀</button>
       </div>
 
-      <!-- إدارة الامتحانات -->
+      <!-- إضافة امتحان -->
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد (مع جدولة الوقت):</div>
       <input type="text" id="new-exam-title" class="auth-input" placeholder="عنوان الامتحان..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
       
@@ -536,24 +534,23 @@
       <div id="dynamic-questions-builder" style="margin-bottom: 10px;"></div>
       <button class="btn-main" id="btn-add-exam" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة وجدولة الامتحان سحابياً 📝</button>
 
-      <!-- إضافة فيديوهات الشرح -->
+      <!-- إضافة فيديوهات -->
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة فيديو شرح للمنصة:</div>
       <input type="text" id="new-video-title" class="auth-input" placeholder="اسم الفيديو..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
       <input type="text" id="new-video-link" class="auth-input" placeholder="رابط يوتيوب أو تليجرام..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
       <button class="btn-main" onclick="addVideo()" style="width: 100%; margin-bottom: 10px; background: #0284c7;">إضافة الفيديو للمنصة 🎥</button>
 
-      <!-- إضافة ملفات PDF -->
+      <!-- إضافة PDF -->
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة ملف PDF أو مذكرة:</div>
       <input type="text" id="new-pdf-title" class="auth-input" placeholder="عنوان المذكرة..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
       <input type="text" id="new-pdf-link" class="auth-input" placeholder="رابط الـ PDF (https://...)" style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
       <button class="btn-main" onclick="addPdfLink()" style="width: 100%; margin-bottom: 10px; background: #7c3aed;">إضافة ملف الـ PDF 📁</button>
 
-      <!-- أزرار عرض الطلاب والتقارير -->
+      <!-- الطلاب والتقارير -->
       <button class="btn-main" onclick="showRegisteredStudentsModal()" style="width: 100%; background: #059669; margin-bottom: 6px;">👥 عرض جميع الطلاب المسجلين على المنصة</button>
       <button class="btn-main" onclick="showStudentReports()" style="width: 100%; background: #4f46e5; margin-bottom: 6px;">📋 تقارير الغش ومحاولات النسخ</button>
     </div>
 
-    <!-- الأقسام الرئيسية للعرض -->
     <div id="sec-home" class="content-section active-section">
       <div class="stats-grid">
         <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-value">100%</div><div class="stat-label">الحضور</div></div>
@@ -604,7 +601,6 @@
     </div>
   </div>
 
-  <!-- شريط التنقل السفلي -->
   <div class="bottom-nav" id="bottom-navigation" style="display: none;">
     <button class="nav-item active" id="nav-home" onclick="switchTab('sec-home', 'nav-home')"><span>🏠</span> الرئيسية</button>
     <button class="nav-item" id="nav-exams" onclick="switchTab('sec-exams', 'nav-exams')"><span>❓</span> الامتحانات</button>
@@ -614,7 +610,6 @@
     <button class="nav-item" id="nav-settings" onclick="switchTab('sec-settings', 'nav-settings')"><span>⚙️</span> الإعدادات</button>
   </div>
 
-  <!-- نافذة منبثقة للامتحانات والتقارير والطلاب -->
   <div id="exam-modal">
     <div class="modal-box">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
@@ -633,7 +628,7 @@
     const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
 
     const ADMIN_EMAIL = "y01878309@gmail.com";
-    const DEFAULT_PASS = "goks123";
+    const VALID_CODES = ["74", "20"]; // أكواد إعادة التعيين المعتمدة
 
     let activeQuestions = [];
     let currentExamId = null;
@@ -650,6 +645,7 @@
     };
 
     let tempEmailForLogin = "";
+    let resetEmailTarget = "";
 
     function startVoiceInput(targetId) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -733,11 +729,16 @@
     function proceedToPhoneStep() {
       const email = document.getElementById('login-email').value.trim();
       const pass = document.getElementById('user-pass').value.trim();
-      if(!email) { alert('أدخل البريد الإلكتروني'); return; }
-      let userStoredPass = localStorage.getItem('pass_' + email) || DEFAULT_PASS;
-      if(pass !== userStoredPass) { alert('كلمة المرور غير صحيحة! (الافتراضية: goks123)'); return; }
+      if(!email || !pass) { alert('أدخل البريد الإلكتروني وكلمة المرور'); return; }
+      
+      let userStoredPass = localStorage.getItem('pass_' + email);
+      if(userStoredPass && pass !== userStoredPass) {
+        alert('كلمة المرور غير صحيحة!');
+        return;
+      }
 
       tempEmailForLogin = email;
+      localStorage.setItem('pass_' + email, pass);
       document.getElementById('pane-login').classList.remove('active');
       document.getElementById('pane-phone').classList.add('active');
     }
@@ -766,6 +767,45 @@
         await saveDatatoJSONBin();
       }
       setupSession(email);
+    }
+
+    // إرسال الطلب للمعلم على الواتساب وفتح شاشة تعيين الكود
+    function sendCodeToTeacher() {
+      const email = document.getElementById('forgot-email').value.trim();
+      if(!email) { alert('الرجاء إدخال البريد الإلكتروني أولاً'); return; }
+
+      resetEmailTarget = email;
+      const msg = encodeURIComponent(`السلام عليكم، أريد كود إعادة تعيين كلمة المرور لحسابي: ${email}`);
+      window.open(`https://wa.me/201039914421?text=${msg}`, '_blank');
+
+      switchAuthPane('pane-reset');
+    }
+
+    // تأكيد الكود وتغيير كلمة المرور
+    function confirmPasswordReset() {
+      const code = document.getElementById('reset-code-input').value.trim();
+      const newPass = document.getElementById('new-pass-input').value.trim();
+      const confirmPass = document.getElementById('confirm-pass-input').value.trim();
+
+      if(!code || !newPass || !confirmPass) {
+        alert('الرجاء ملء جميع الحقول'); return;
+      }
+
+      if(!VALID_CODES.includes(code)) {
+        alert('كود التحقق غير صحيح! يرجى طلب الكود من المشرف.'); return;
+      }
+
+      if(newPass !== confirmPass) {
+        alert('كلمتا المرور غير متطابقتين!'); return;
+      }
+
+      localStorage.setItem('pass_' + resetEmailTarget, newPass);
+      alert('تم تغيير كلمة المرور بنجاح! يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة.');
+      
+      document.getElementById('reset-code-input').value = '';
+      document.getElementById('new-pass-input').value = '';
+      document.getElementById('confirm-pass-input').value = '';
+      switchAuthPane('pane-login');
     }
 
     function setupSession(email) {
@@ -849,7 +889,6 @@
         let qType = document.getElementById(`q_type_${i}`).value;
         let qText = document.getElementById(`q_text_${i}`).value.trim() || `السؤال (${i})`;
         if(qType === 'essay') {
-          questionsArr.puts?.({ type: 'essay', q: qText, modelAns: document.getElementById(`q_model_ans_${i}`).value.trim() || 'نموذج غير متوفر' });
           questionsArr.push({ type: 'essay', q: qText, modelAns: document.getElementById(`q_model_ans_${i}`).value.trim() || 'نموذج غير متوفر' });
         } else {
           let o1 = document.getElementById(`q_opt1_${i}`).value.trim() || 'أ';
@@ -976,7 +1015,7 @@
       }
 
       if(!questions || questions.length === 0) {
-        container.innerHTML = `<p>لا توجد أسئلة مضافة لهذا الامتحان.</p>`;
+        container.innerHTML = `<p style="text-align:center;">لا توجد أسئلة مضافة لهذا الامتحان.</p>`;
         return;
       }
 
@@ -1054,7 +1093,7 @@
         <div class="certificate-card">
           <div style="font-size:30px;">🎓</div>
           <h2 style="font-size:18px; margin-bottom:5px;">شهادة تقدير وتفوق</h2>
-          <p style="font-size:12px;">تمنح لمنصة **فاهم التعليمية** للطالب:</p>
+          <p style="font-size:12px;">تمنح من منصة **فاهم التعليمية** للطالب:</p>
           <h3 style="color:#0284c7; margin:10px 0; font-size:16px;">${name}</h3>
           <p style="font-size:12px;">لاجتياز الامتحان بنسبة: <b>${scorePercent}</b></p>
           <div style="margin-top:15px; font-size:10px; color:#92400e;">إشراف: أ/ يوسف فرج 🛡️</div>
