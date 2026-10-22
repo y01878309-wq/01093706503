@@ -7,6 +7,14 @@
   <meta name="description" content="منصة فاهم التعليمية - منصة يوسف فرج التعليمية للمناهج والامتحانات والفيديوهات والشروحات الدراسية.">
   <title>منصة فاهم التعليمية - يوسف فرج</title>
   
+  <!-- استدعاء مكتبة EmailJS برمجياً -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script type="text/javascript">
+    (function() {
+      emailjs.init("B3TSATTYUhbMbkIAX"); // تهيئة المفتاح العام لـ EmailJS
+    })();
+  </script>
+
   <style>
     * { 
       box-sizing: border-box; 
@@ -581,20 +589,20 @@
         <button class="back-btn" onclick="switchAuthPane('pane-login')">‹</button>
         <div style="font-size: 40px; margin-bottom: 10px; margin-top: 15px;">🔒</div>
         <h2 style="margin-bottom: 5px; font-size: 18px;">نسيت كلمة المرور؟</h2>
-        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 20px;">أدخل بريدك الإلكتروني واضغط لطلب كود التحقق من المعلم.</p>
+        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 20px;">أدخل بريدك الإلكتروني لإرسال كود التحقق (OTP) أوتوماتيكياً عبر الإيميل.</p>
         <div class="input-wrapper">
           <input type="email" id="forgot-email" class="auth-input" placeholder="البريد الإلكتروني">
           <button type="button" class="voice-btn" onclick="startVoiceInput('forgot-email')">🎤</button>
         </div>
-        <button class="auth-btn" onclick="sendCodeToTeacher()">إرسال الطلب إلى المعلم 📱</button>
+        <button class="auth-btn" onclick="sendCodeToTeacher()">إرسال كود التحقق بالإيميل ✉️</button>
       </div>
 
       <div id="pane-reset" class="auth-screen-pane">
         <button class="back-btn" onclick="switchAuthPane('pane-forgot')">‹</button>
         <div style="font-size: 40px; margin-bottom: 10px; margin-top: 15px;">🔑</div>
         <h2 style="margin-bottom: 5px; font-size: 18px;">تغيير كلمة المرور</h2>
-        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 15px;">أدخل الكود الذي استلمته من المعلم وكلمة المرور الجديدة.</p>
-        <input type="text" id="reset-code-input" class="auth-input" placeholder="أدخل كود التحقق (من المعلم)" style="text-align: center; font-weight: bold; margin-bottom: 8px; padding-left:12px;">
+        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 15px;">أدخل الكود الذي استلمته في بريدك الإلكتروني وكلمة المرور الجديدة.</p>
+        <input type="text" id="reset-code-input" class="auth-input" placeholder="أدخل كود التحقق (OTP)" style="text-align: center; font-weight: bold; margin-bottom: 8px; padding-left:12px;">
         <input type="password" id="new-pass-input" class="auth-input" placeholder="كلمة المرور الجديدة" style="padding-left: 12px; margin-bottom: 8px;">
         <input type="password" id="confirm-pass-input" class="auth-input" placeholder="تأكيد كلمة المرور الجديدة" style="padding-left: 12px; margin-bottom: 12px;">
         <button class="auth-btn" onclick="confirmPasswordReset()">حفظ كلمة المرور الجديدة ✅</button>
@@ -899,7 +907,6 @@
 
   <script>
     const ADMIN_EMAIL = "y01878309@gmail.com";
-    const VALID_CODES = ["74", "20"];
 
     let activeQuestions = [];
     let currentExamId = null;
@@ -925,6 +932,7 @@
 
     let tempEmailForLogin = "";
     let resetEmailTarget = "";
+    let generatedOtpCode = ""; // لتخزين كود التحقق المرسل
 
     function startVoiceInput(targetId) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1171,14 +1179,35 @@
       setupSession(email);
     }
 
+    /* 📧 دالة إرسال كود التحقق أوتوماتيكياً عبر الإيميل باستخدام EmailJS */
     function sendCodeToTeacher() {
       const email = document.getElementById('forgot-email').value.trim();
       if(!email) { alert('الرجاء إدخال البريد الإلكتروني أولاً'); return; }
 
       resetEmailTarget = email;
-      const msg = encodeURIComponent(`السلام عليكم، أريد كود إعادة تعيين كلمة المرور لحسابي: ${email}`);
-      window.open(`https://wa.me/201039914421?text=${msg}`, '_blank');
-      switchAuthPane('pane-reset');
+      
+      // توليد كود عشوائي مكون من 6 أرقام للأمان
+      generatedOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+      const templateParams = {
+        email: email,
+        passcode: generatedOtpCode
+      };
+
+      const serviceID = "service_1f0ykq7";
+      const templateID = "template_jhcysjh";
+
+      alert('جاري إرسال كود التحقق إلى بريدك الإلكتروني، يرجى الانتظار...');
+
+      emailjs.send(serviceID, templateID, templateParams)
+        .then(function(response) {
+            console.log('تم الإرسال بنجاح!', response.status, response.text);
+            alert('✅ تم إرسال كود التحقق إلى بريدك الإلكتروني بنجاح!');
+            switchAuthPane('pane-reset');
+        }, function(error) {
+            console.log('فشل الإرسال...', error);
+            alert('حدث خطأ أثناء إرسال البريد، يرجى التأكد من البريد الإلكتروني والمحاولة مرة أخرى.');
+        });
     }
 
     function confirmPasswordReset() {
@@ -1187,11 +1216,11 @@
       const confirmPass = document.getElementById('confirm-pass-input').value.trim();
 
       if(!code || !newPass || !confirmPass) { alert('الرجاء ملء جميع الحقول'); return; }
-      if(!VALID_CODES.includes(code)) { alert('كود التحقق غير صحيح!'); return; }
+      if(code !== generatedOtpCode) { alert('كود التحقق غير صحيح!'); return; }
       if(newPass !== confirmPass) { alert('كلمتا المرور غير متطابقتين!'); return; }
 
       localStorage.setItem('pass_' + resetEmailTarget, newPass);
-      alert('تم تغيير كلمة المرور بنجاح!');
+      alert('تم تغيير كلمة المرور بنجاح! 🎉');
       switchAuthPane('pane-login');
     }
 
