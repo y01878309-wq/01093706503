@@ -350,14 +350,93 @@
       object-fit: contain;
     }
 
-    .settings-card-box {
-      background: white; border-radius: 16px; overflow: hidden;
-      border: 1px solid #f1f5f9; box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    /* 🎨 تصميم قسم الإعدادات المطابق للصور تماماً */
+    .settings-container {
+      width: 100%;
+      text-align: right;
     }
-    .logout-row {
-      background: white; border: 1px solid #fee2e2; border-radius: 16px;
-      color: #ef4444; text-align: center; padding: 15px; font-weight: bold;
-      margin-top: 20px; cursor: pointer; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.05);
+    .settings-user-card {
+      background: linear-gradient(135deg, #3b28cc, #4f46e5);
+      border-radius: 20px;
+      padding: 22px 20px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      box-shadow: 0 8px 20px rgba(59, 40, 204, 0.25);
+    }
+    .settings-avatar-circle {
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: bold;
+    }
+    .settings-group-title {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .settings-card-group {
+      background: #ffffff;
+      border-radius: 18px;
+      border: 1px solid #e2e8f0;
+      overflow: hidden;
+      margin-bottom: 22px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    }
+    .settings-row-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 18px;
+      border-bottom: 1px solid #f1f5f9;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .settings-row-item:last-child {
+      border-bottom: none;
+    }
+    .settings-row-item:active {
+      background: #f8fafc;
+    }
+    .settings-row-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #1e293b;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .settings-row-icon {
+      font-size: 18px;
+      color: #334155;
+    }
+    .settings-arrow {
+      color: #94a3b8;
+      font-size: 14px;
+    }
+    .settings-logout-btn {
+      width: 100%;
+      border: 1.5px solid #ef4444;
+      background: #ffffff;
+      color: #ef4444;
+      padding: 14px;
+      border-radius: 16px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
     }
 
     .bottom-nav {
@@ -522,6 +601,14 @@
       <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 10px;">⚙ لوحة تحكم الأدمن (يوسف فرج)</div>
 
       <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1;">
+        <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">➕ إضافة حساب طالب جديد يدوياً (الجميل):</div>
+        <input type="email" id="admin-manual-email" class="auth-input" placeholder="البريد الإلكتروني (Gmail)..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; font-size: 12px; padding-left:12px;">
+        <input type="text" id="admin-manual-name" class="auth-input" placeholder="اسم الطالب..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; font-size: 12px; padding-left:12px;">
+        <input type="tel" id="admin-manual-phone" class="auth-input" placeholder="رقم الهاتف (اختياري)..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; font-size: 12px; padding-left:12px;">
+        <button class="btn-main" onclick="adminAddUserManual()" style="width: 100%; background: #0284c7;">تسجيل وإضافة الطالب سحابياً 👤✅</button>
+      </div>
+
+      <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1;">
         <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">📢 نشر تنبيه جديد في الشريط المتحرك:</div>
         <input type="text" id="admin-announcement-input" class="auth-input" placeholder="اكتب التنبيه هنا..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; font-size: 12px;">
         <button class="btn-main" onclick="updateAnnouncement()" style="width: 100%; background: #059669;">تحديث ونشر التنبيه سحابياً 🚀</button>
@@ -539,8 +626,11 @@
         </select>
       </div>
 
-      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">وقت نشر الامتحان للطلاب:</div>
+      <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">⏰ موعد بداية فتح الامتحان للطلاب:</div>
       <input type="datetime-local" id="new-exam-publish-time" class="auth-input" style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
+
+      <div style="font-size: 11px; font-weight: bold; color: #ef4444; margin-bottom: 4px;">🛑 موعد انتهاء وقفل الامتحان نهائياً:</div>
+      <input type="datetime-local" id="new-exam-end-time" class="auth-input" style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
       
       <div id="dynamic-questions-builder" style="margin-bottom: 10px;"></div>
       <button class="btn-main" id="btn-add-exam" onclick="addExam()" style="width: 100%; margin-bottom: 10px;">إضافة وجدولة الامتحان سحابياً 📝</button>
@@ -586,7 +676,6 @@
       <div class="card-item" id="home-leaderboard-box"></div>
     </div>
 
-    <!-- قسم الامتحانات المحدث بتبويبي القادمة والتسليمات -->
     <div id="sec-exams" class="content-section">
       <div class="exams-tabs-header">
         <button class="exam-tab-btn active" id="btn-tab-upcoming" onclick="switchExamTab('upcoming')">القادمة</button>
@@ -617,26 +706,66 @@
       <div class="card-item" id="full-leaderboard-box"></div>
     </div>
 
+    <!-- 🎨 قسم الإعدادات المطابق للصور المرسلة تماماً -->
     <div id="sec-settings" class="content-section">
-      <div class="settings-card-box" style="background: white; border-radius: 16px; overflow: hidden; margin-bottom: 15px;">
-        <div style="background: linear-gradient(135deg, #4f46e5, #6366f1); color: white; padding: 20px; display: flex; align-items: center; gap: 15px;">
-          <div style="width: 55px; height: 55px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold;" id="profile-avatar-letter">Y</div>
-          <div>
-            <div style="font-size: 16px; font-weight: bold;" id="profile-name-header">Youssef Farag</div>
-            <div style="font-size: 12px; opacity: 0.85; margin-top: 2px;" id="profile-email-display">farag.17657@gmail.com</div>
+      <div class="settings-container">
+        <h2 style="font-size: 20px; font-weight: bold; margin-bottom: 18px; text-align: center;">الإعدادات</h2>
+
+        <!-- البطاقة العلوية للمستخدم -->
+        <div class="settings-user-card">
+          <div style="text-align: right;">
+            <div style="font-size: 18px; font-weight: bold;" id="profile-name-header">Youssef Farag</div>
+            <div style="font-size: 13px; opacity: 0.85; margin-top: 4px;" id="profile-email-display">farag.17657@gmail.com</div>
+          </div>
+          <div class="settings-avatar-circle" id="profile-avatar-letter">Y</div>
+        </div>
+
+        <!-- قسم الحساب -->
+        <div class="settings-group-title">الحساب</div>
+        <div class="settings-card-group">
+          <div class="settings-row-item" onclick="openEditProfileModal()">
+            <div class="settings-row-left">
+              <span class="settings-row-icon">👤</span>
+              <span>تعديل الملف الشخصي</span>
+            </div>
+            <span class="settings-arrow">‹</span>
+          </div>
+          <div class="settings-row-item" onclick="openChangePasswordModal()">
+            <div class="settings-row-left">
+              <span class="settings-row-icon">🔒</span>
+              <span>تغيير كلمة المرور</span>
+            </div>
+            <span class="settings-arrow">‹</span>
           </div>
         </div>
-        <div style="padding: 15px;">
-          <div style="font-size: 12px; font-weight: bold; color: #0284c7; margin-bottom: 6px;">تعديل اسمك في المنصة:</div>
-          <div style="display: flex; gap: 6px; margin-bottom: 10px;">
-            <input type="text" id="my-custom-name-input" class="auth-input" placeholder="اكتب اسمك هنا..." style="background: #f8fafc; color: #1e293b; margin-bottom: 0; font-size: 12px; padding: 8px;">
-            <button class="btn-main" onclick="saveMyProfileName()" style="padding: 8px 14px; font-size: 12px;">حفظ الاسم</button>
+
+        <!-- قسم التفضيلات -->
+        <div class="settings-group-title">التفضيلات</div>
+        <div class="settings-card-group">
+          <div class="settings-row-item" onclick="alert('الإشعارات مفعّلة تلقائياً تلقي جميع التنبيهات 🔔')">
+            <div class="settings-row-left">
+              <span class="settings-row-icon">🔔</span>
+              <span>الإشعارات</span>
+            </div>
+            <span class="settings-arrow">‹</span>
           </div>
-          <div style="font-size: 12px; color: #64748b;" id="profile-phone-display">الهاتف: --</div>
+          <div class="settings-row-item" onclick="openLanguageModal()">
+            <div class="settings-row-left">
+              <span class="settings-row-icon">🌐</span>
+              <div>
+                <div>اللغة</div>
+                <div style="font-size: 11px; color: #94a3b8; font-weight: normal;" id="current-lang-text">العربية</div>
+              </div>
+            </div>
+            <span class="settings-arrow">‹</span>
+          </div>
         </div>
-      </div>
-      <div class="logout-row" onclick="logout()">
-        🚪 تسجيل الخروج
+
+        <!-- زر تسجيل الخروج الأحمر -->
+        <button class="settings-logout-btn" onclick="logout()">
+          <span>↳</span>
+          <span>تسجيل الخروج</span>
+        </button>
       </div>
     </div>
   </div>
@@ -650,6 +779,7 @@
     <button class="nav-item" id="nav-settings" onclick="switchTab('sec-settings', 'nav-settings')"><span>⚙️</span> الإعدادات</button>
   </div>
 
+  <!-- النافذة المنبثقة العامة (للامتحانات والتعديلات واللغة) -->
   <div id="exam-modal">
     <div class="modal-box" id="modal-box-inner">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -689,7 +819,6 @@
     window.dbOnValue = onValue;
     window.dbGet = get;
 
-    // استماع لحظي للبيانات من سيرفر Firebase عند حدوث أي تغيير
     onValue(ref(db, 'appData'), (snapshot) => {
       if (snapshot.exists()) {
         window.appData = snapshot.val();
@@ -766,7 +895,6 @@
       recognition.onresult = function(e) { document.getElementById(targetId).value = e.results[0][0].transcript; };
     }
 
-    // 🚫 مراقبة وحظر اللصق (Paste) والمغادرة حتى في المتصفح المخفي
     window.addEventListener('paste', function(e) {
       e.preventDefault();
       alert("⚠️ ممنوع استخدام اللصق (Paste) داخل المنصة!");
@@ -818,7 +946,6 @@
       if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
     }
 
-    // 🧠 المساعد الذكي لتنظيف وتقييم الإجابات
     function normalizeText(txt) {
       if(!txt) return "";
       return txt
@@ -837,7 +964,6 @@
 
       if(cleanStudent === cleanModel) return true;
 
-      // مقارنة قيم الأرقام والرموز
       let studentNums = cleanStudent.match(/\d+(\.\d+)?/g);
       let modelNums = cleanModel.match(/\d+(\.\d+)?/g);
 
@@ -853,6 +979,39 @@
       if (savedEmail) { setupSession(savedEmail); }
       generateQuestionFields();
     };
+
+    async function adminAddUserManual() {
+      const email = document.getElementById('admin-manual-email').value.trim();
+      const name = document.getElementById('admin-manual-name').value.trim();
+      const phone = document.getElementById('admin-manual-phone').value.trim() || 'غير متاح';
+
+      if(!email || !name) { alert('أدخل إيميل الطالب واسمه أولاً!'); return; }
+
+      if(!appData.registeredUsers) appData.registeredUsers = [];
+
+      let userExists = appData.registeredUsers.some(u => u.email === email);
+      if(userExists) {
+        alert('هذا الحساب مسجل بالفعل!');
+        return;
+      }
+
+      appData.registeredUsers.push({
+        email: email,
+        name: name,
+        phone: phone,
+        joinTime: new Date().toLocaleString('ar-EG'),
+        lastActive: 'تمت الإضافة بواسطة الأدمن',
+        loginCount: 0,
+        device: 'غير محدد'
+      });
+
+      if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
+      document.getElementById('admin-manual-email').value = '';
+      document.getElementById('admin-manual-name').value = '';
+      document.getElementById('admin-manual-phone').value = '';
+      alert(`تم إضافة حساب الطالب (${name}) بنجاح إلى السيرفر! 🎉`);
+      renderAll();
+    }
 
     async function updateAnnouncement() {
       const newText = document.getElementById('admin-announcement-input').value.trim();
@@ -888,22 +1047,29 @@
 
       tempEmailForLogin = email;
       localStorage.setItem('pass_' + email, pass);
-      document.getElementById('pane-login').classList.remove('active');
-      document.getElementById('pane-phone').classList.add('active');
+
+      // 🛑 الفحص السحابي لمنع ظهور شاشة رقم التليفون إذا كان مسجلاً مسبقاً!
+      let userObj = (appData.registeredUsers || []).find(u => u.email === email);
+      if(userObj && userObj.phone && userObj.phone !== 'غير متاح') {
+        finishLoginProcess(email);
+      } else {
+        document.getElementById('pane-login').classList.remove('active');
+        document.getElementById('pane-phone').classList.add('active');
+      }
     }
 
     async function completeLoginWithPhone() {
       const phone = document.getElementById('user-phone').value.trim();
       if(!phone) { alert('أدخل رقم الهاتف أو اضغط تخطي'); return; }
-      localStorage.setItem('phone_' + tempEmailForLogin, phone);
-      finishLoginProcess(tempEmailForLogin);
+      finishLoginProcess(tempEmailForLogin, phone);
     }
 
     function skipPhoneStep() {
       finishLoginProcess(tempEmailForLogin);
     }
 
-    async function finishLoginProcess(email) {
+    // 💾 حفظ رقم الهاتف سحابياً في بيانات الطالب
+    async function finishLoginProcess(email, phoneVal = null) {
       if(appData.blockedUsers && appData.blockedUsers.includes(email)) {
         alert('❌ تم حظر حسابك من قبل الأدمن!');
         location.reload();
@@ -921,7 +1087,7 @@
         appData.registeredUsers.push({
           email: email,
           name: email.split('@')[0],
-          phone: localStorage.getItem('phone_' + email) || 'غير متاح',
+          phone: phoneVal || 'غير متاح',
           joinTime: nowTimeStr,
           lastActive: nowTimeStr,
           loginCount: 1,
@@ -931,6 +1097,7 @@
         userObj.lastActive = nowTimeStr;
         userObj.loginCount = (userObj.loginCount || 1) + 1;
         userObj.device = userAgentStr;
+        if(phoneVal) userObj.phone = phoneVal;
         if(!userObj.name) userObj.name = email.split('@')[0];
       }
 
@@ -968,18 +1135,10 @@
       return u && u.name ? u.name : email;
     }
 
-    async function saveMyProfileName() {
-      const email = localStorage.getItem('fahem_email');
-      const newName = document.getElementById('my-custom-name-input').value.trim();
-      if(!newName) { alert('اكتب الاسم الجديد أولاً'); return; }
-
-      let userObj = (appData.registeredUsers || []).find(u => u.email === email);
-      if(userObj) {
-        userObj.name = newName;
-        if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
-        alert('تم تحديث اسمك بنجاح في المنصة! 🎉');
-        setupSession(email);
-      }
+    function getUserPhone(email) {
+      if(!appData.registeredUsers) return 'غير متاح';
+      let u = appData.registeredUsers.find(x => x.email === email);
+      return u && u.phone ? u.phone : 'غير متاح';
     }
 
     function setupSession(email) {
@@ -993,14 +1152,11 @@
       document.getElementById('dashboard-view').style.display = 'block';
       document.getElementById('bottom-navigation').style.display = 'flex';
 
-      const phone = localStorage.getItem('phone_' + email) || 'غير متوفر';
       const currentDisplayName = getUserDisplayName(email);
 
       document.getElementById('profile-email-display').innerText = email;
-      document.getElementById('profile-phone-display').innerText = `الهاتف: ${phone}`;
       document.getElementById('profile-name-header').innerText = currentDisplayName;
       document.getElementById('profile-avatar-letter').innerText = currentDisplayName.charAt(0).toUpperCase();
-      document.getElementById('my-custom-name-input').value = currentDisplayName;
       document.getElementById('welcome-user-name').innerText = `👋 مرحباً، ${email === ADMIN_EMAIL ? 'يوسف فرج (الأدمن)' : currentDisplayName}`;
 
       if(email === ADMIN_EMAIL) {
@@ -1021,6 +1177,145 @@
     function downloadApp(e) {
       if(e) e.preventDefault();
       alert('تم بدء تحميل تطبيق المنصة (APK) بنجاح! 📦');
+    }
+
+    // 🎨 نوافذ تعديل البروفايل وكلمة المرور واللغة من الإعدادات المطابقة للصور
+    function openEditProfileModal() {
+      const email = localStorage.getItem('fahem_email');
+      const name = getUserDisplayName(email);
+      const phone = getUserPhone(email);
+
+      let container = document.getElementById('modal-questions-container');
+      document.getElementById('modal-title').innerText = "تعديل الملف الشخصي";
+      document.getElementById('submit-exam-btn').style.display = 'none';
+
+      container.innerHTML = `
+        <div style="text-align: center; margin-bottom: 20px;">
+          <div class="settings-avatar-circle" style="margin: 0 auto; background: #e0e7ff; color: #4f46e5; width: 70px; height: 70px; font-size: 30px;">
+            ${name.charAt(0).toUpperCase()}
+          </div>
+        </div>
+
+        <div style="text-align: right; margin-bottom: 15px;">
+          <label style="font-size: 11px; color: #64748b; display: block; margin-bottom: 4px;">الاسم الكامل</label>
+          <input type="text" id="edit-name-input" class="auth-input" value="${name}" style="background: #f8fafc; color: #1e293b; padding-left: 12px;">
+        </div>
+
+        <div style="text-align: right; margin-bottom: 15px;">
+          <label style="font-size: 11px; color: #64748b; display: block; margin-bottom: 4px;">البريد الإلكتروني</label>
+          <input type="text" value="${email}" class="auth-input" disabled style="background: #e2e8f0; color: #64748b; padding-left: 12px; cursor: not-allowed;">
+        </div>
+
+        <div style="text-align: right; margin-bottom: 20px;">
+          <label style="font-size: 11px; color: #64748b; display: block; margin-bottom: 4px;">الهاتف</label>
+          <input type="tel" id="edit-phone-input" class="auth-input" value="${phone}" style="background: #f8fafc; color: #1e293b; padding-left: 12px;">
+        </div>
+
+        <button class="btn-main" onclick="saveProfileChanges()" style="width: 100%; background: #3b28cc; padding: 12px; font-size: 14px;">حفظ التغييرات ✅</button>
+      `;
+
+      document.getElementById('exam-modal').style.display = 'flex';
+    }
+
+    async function saveProfileChanges() {
+      const email = localStorage.getItem('fahem_email');
+      const newName = document.getElementById('edit-name-input').value.trim();
+      const newPhone = document.getElementById('edit-phone-input').value.trim();
+
+      let userObj = (appData.registeredUsers || []).find(u => u.email === email);
+      if(userObj) {
+        if(newName) userObj.name = newName;
+        if(newPhone) userObj.phone = newPhone;
+
+        (appData.leaderboard || []).forEach(l => {
+          if(l.studentName === email) l.displayName = newName;
+        });
+
+        if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
+        alert('تم تحديث بيانات ملفك الشخصي بنجاح! 🎉');
+        setupSession(email);
+        closeExam();
+      }
+    }
+
+    function openChangePasswordModal() {
+      let container = document.getElementById('modal-questions-container');
+      document.getElementById('modal-title').innerText = "تغيير كلمة المرور";
+      document.getElementById('submit-exam-btn').style.display = 'none';
+
+      container.innerHTML = `
+        <div style="text-align: center; margin-bottom: 15px;">
+          <div style="font-size: 40px; color: #3b28cc; margin-bottom: 6px;">🔒</div>
+          <p style="font-size: 12px; color: #64748b;">حدث كلمة المرور الخاصة بك</p>
+        </div>
+
+        <div style="text-align: right; margin-bottom: 12px;">
+          <label style="font-size: 11px; color: #64748b; display: block; margin-bottom: 4px;">كلمة المرور الحالية</label>
+          <input type="password" id="current-pass-field" class="auth-input" placeholder="••••••••" style="background: #f8fafc; color: #1e293b; padding-left: 12px;">
+        </div>
+
+        <div style="text-align: right; margin-bottom: 12px;">
+          <label style="font-size: 11px; color: #64748b; display: block; margin-bottom: 4px;">كلمة المرور الجديدة</label>
+          <input type="password" id="new-pass-field" class="auth-input" placeholder="••••••••" style="background: #f8fafc; color: #1e293b; padding-left: 12px;">
+        </div>
+
+        <div style="text-align: right; margin-bottom: 20px;">
+          <label style="font-size: 11px; color: #64748b; display: block; margin-bottom: 4px;">تأكيد كلمة المرور الجديدة</label>
+          <input type="password" id="confirm-pass-field" class="auth-input" placeholder="••••••••" style="background: #f8fafc; color: #1e293b; padding-left: 12px;">
+        </div>
+
+        <button class="btn-main" onclick="submitPasswordChangeFromSettings()" style="width: 100%; background: #3b28cc; padding: 12px; font-size: 14px;">تحديث كلمة المرور ✅</button>
+      `;
+
+      document.getElementById('exam-modal').style.display = 'flex';
+    }
+
+    function submitPasswordChangeFromSettings() {
+      const email = localStorage.getItem('fahem_email');
+      const curPass = document.getElementById('current-pass-field').value.trim();
+      const newPass = document.getElementById('new-pass-field').value.trim();
+      const confPass = document.getElementById('confirm-pass-field').value.trim();
+
+      let storedPass = localStorage.getItem('pass_' + email);
+      if(storedPass && curPass !== storedPass) {
+        alert('كلمة المرور الحالية غير صحيحة!');
+        return;
+      }
+
+      if(!newPass || newPass !== confPass) {
+        alert('كلمتا المرور غير متطابقتين!');
+        return;
+      }
+
+      localStorage.setItem('pass_' + email, newPass);
+      alert('تم تحديث كلمة المرور بنجاح! 🔒');
+      closeExam();
+    }
+
+    function openLanguageModal() {
+      let container = document.getElementById('modal-questions-container');
+      document.getElementById('modal-title').innerText = "اللغة";
+      document.getElementById('submit-exam-btn').style.display = 'none';
+
+      container.innerHTML = `
+        <div style="padding: 10px;">
+          <label style="display: flex; justify-content: space-between; align-items: center; padding: 14px; background: #f8fafc; border-radius: 12px; margin-bottom: 10px; cursor: pointer; border: 1px solid #cbd5e1;">
+            <span style="font-weight: bold; font-size: 14px;">English</span>
+            <input type="radio" name="lang_select" value="en" onchange="setAppLanguage('en')">
+          </label>
+          <label style="display: flex; justify-content: space-between; align-items: center; padding: 14px; background: #f8fafc; border-radius: 12px; cursor: pointer; border: 1px solid #cbd5e1;">
+            <span style="font-weight: bold; font-size: 14px;">العربية</span>
+            <input type="radio" name="lang_select" value="ar" checked onchange="setAppLanguage('ar')">
+          </label>
+        </div>
+      `;
+
+      document.getElementById('exam-modal').style.display = 'flex';
+    }
+
+    function setAppLanguage(lang) {
+      document.getElementById('current-lang-text').innerText = lang === 'en' ? 'English' : 'العربية';
+      closeExam();
     }
 
     function generateQuestionFields() {
@@ -1074,6 +1369,7 @@
       const totalTimeVal = parseInt(document.getElementById('new-exam-total-time').value.trim()) || 10;
       const mode = document.getElementById('new-exam-mode').value;
       const publishTimeVal = document.getElementById('new-exam-publish-time').value;
+      const endTimeVal = document.getElementById('new-exam-end-time').value;
 
       if(!title) { alert('أدخل عنوان الامتحان'); return; }
 
@@ -1103,6 +1399,7 @@
         totalTimeMinutes: totalTimeVal,
         questions: questionsArr,
         publishTime: publishTimeVal ? new Date(publishTimeVal).getTime() : Date.now(),
+        endTime: endTimeVal ? new Date(endTimeVal).getTime() : null,
         info: `عدد الأسئلة: ${countVal} | الوقت الكلي: ${totalTimeVal} دقيقة`
       });
 
@@ -1251,12 +1548,17 @@
       }
 
       (appData.exams || []).forEach(ex => {
-        let isPublished = !ex.publishTime || currentTime >= ex.publishTime;
-        if(!isPublished && email !== ADMIN_EMAIL) return;
+        let isStarted = !ex.publishTime || currentTime >= ex.publishTime;
+        let isEnded = ex.endTime && currentTime > ex.endTime;
+
+        if(!isStarted && email !== ADMIN_EMAIL) return;
 
         let hasAlreadyTaken = (appData.leaderboard || []).some(l => l.studentName === email && l.examTitle === ex.title);
 
-        let subtitleText = isPublished ? `${ex.info}` : `${ex.info} (⏰ مجدول لاحقاً)`;
+        let subtitleText = ex.info;
+        if(!isStarted) subtitleText += ` (⏰ ينطلق في: ${new Date(ex.publishTime).toLocaleTimeString('ar-EG')})`;
+        else if(isEnded) subtitleText += ` (🛑 انتهى موعد الامتحان)`;
+
         let actionBtn = '';
 
         if(email === ADMIN_EMAIL) {
@@ -1268,7 +1570,9 @@
           `;
         } else if(hasAlreadyTaken) {
           actionBtn = `<span style="color:#16a34a; font-size:12px; font-weight:bold;">تم التسليم بنجاح ✓</span>`;
-        } else if(isPublished) {
+        } else if(isEnded) {
+          actionBtn = `<span style="color:#ef4444; font-size:11px; font-weight:bold;">مغلق (انتهى الوقت)</span>`;
+        } else if(isStarted) {
           actionBtn = `<button class="btn-main" onclick='prepareAndStartExam("${ex.id}")'>بدء الامتحان 📝</button>`;
         } else {
           actionBtn = `<span style="color:#f59e0b; font-size:11px;">قيد الجدولة</span>`;
@@ -1289,6 +1593,12 @@
       const email = localStorage.getItem('fahem_email');
       const examObj = (appData.exams || []).find(e => e.id === examId);
       if(!examObj) return;
+
+      const currentTime = Date.now();
+      if(examObj.endTime && currentTime > examObj.endTime && email !== ADMIN_EMAIL) {
+        alert('🛑 عذراً، انتهى الوقت المخصص لهذا الامتحان وتم إغلاقه!');
+        return;
+      }
 
       let hasAlreadyTaken = (appData.leaderboard || []).some(l => l.studentName === email && l.examTitle === examObj.title);
       if(hasAlreadyTaken && email !== ADMIN_EMAIL) {
@@ -1691,7 +2001,6 @@
       });
     }
 
-    // 🏆 تصفية الترتيب ليظهر كل طالب مرة واحدة بأعلى درجة
     function renderLeaderboards() {
       const homeBox = document.getElementById('home-leaderboard-box');
       const fullBox = document.getElementById('full-leaderboard-box');
@@ -1702,7 +2011,6 @@
         return;
       }
 
-      // تصفية وقصر التكرار (Unique per student)
       let uniqueMap = new Map();
       appData.leaderboard.forEach(st => {
         let studentKey = st.studentName;
