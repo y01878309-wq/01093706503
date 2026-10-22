@@ -243,12 +243,30 @@
     .stat-value { font-size: 18px; font-weight: bold; color: #0f172a; }
     .stat-label { font-size: 12px; color: #64748b; margin-top: 4px; }
 
+    .section-header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 20px 0 10px 0;
+    }
+
     .section-header-title {
       font-size: 15px;
       font-weight: bold;
       color: #0f172a;
-      margin: 20px 0 10px 0;
       text-align: right;
+    }
+
+    .btn-admin-manage-rank {
+      background: #f59e0b;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);
     }
 
     .action-grid {
@@ -308,7 +326,6 @@
       text-decoration: none; display: inline-block;
     }
 
-    /* تبويبات الامتحانات */
     .exams-tabs-header {
       display: flex;
       justify-content: center;
@@ -350,7 +367,6 @@
       object-fit: contain;
     }
 
-    /* 🎨 تصميم قسم الإعدادات المطابق للصور تماماً */
     .settings-container {
       width: 100%;
       text-align: right;
@@ -525,7 +541,6 @@
 </head>
 <body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
 
-  <!-- شريط التنبيهات -->
   <div class="announcement-bar">
     <div class="announcement-text" id="header-announcement-text">
       📢 أهلاً بكم في منصة فاهم التعليمية - بإشراف أ/ يوسف فرج | تابع أحدث الامتحانات والواجبات والتنبيهات فور نزولها!
@@ -539,7 +554,7 @@
         <h2 style="margin-bottom: 5px; font-size: 20px;">تسجيل الدخول - منصة فاهم</h2>
         <p style="color: #94a3b8; font-size: 12px; margin-bottom: 20px;">إشراف: أ/ يوسف فرج 🛡️</p>
 
-        <a href="#" class="download-btn" onclick="downloadApp(event)">📦 تحميل تطبيق المنصة (APK)</a>
+        <a href="https://www.mediafire.com/file/xxxx/app.apk/file" class="download-btn" target="_blank">📦 تحميل تطبيق المنصة (APK)</a>
 
         <div class="input-wrapper">
           <input type="email" id="login-email" class="auth-input" placeholder="البريد الإلكتروني (Gmail)">
@@ -552,13 +567,13 @@
 
       <div id="pane-phone" class="auth-screen-pane">
         <div class="login-hero-image-container"><img src="1000514471_2.jpg" alt="يوسف فرج"></div>
-        <h2 style="margin-bottom: 5px; font-size: 18px;">رقم الهاتف (اختياري)</h2>
-        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 20px;">أدخل رقم هاتفك للتواصل أو اضغط تخطي.</p>
+        <h2 style="margin-bottom: 5px; font-size: 18px;">رقم الهاتف</h2>
+        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 20px;">أدخل رقم هاتفك لحفظه بشكل دائم سحابياً.</p>
         <div class="input-wrapper">
           <input type="tel" id="user-phone" class="auth-input" placeholder="رقم الهاتف (011xxxxxxxx)">
           <button type="button" class="voice-btn" onclick="startVoiceInput('user-phone')">🎤</button>
         </div>
-        <button class="auth-btn" onclick="completeLoginWithPhone()">إتمام تسجيل الدخول ✅</button>
+        <button class="auth-btn" onclick="completeLoginWithPhone()">إتمام تسجيل الدخول وحفظ الرقم ✅</button>
         <button class="auth-btn" onclick="skipPhoneStep()" style="background: #475569; margin-top: 8px;">تخطي هذه الخطوة ⏭️</button>
       </div>
 
@@ -601,7 +616,7 @@
       <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 10px;">⚙ لوحة تحكم الأدمن (يوسف فرج)</div>
 
       <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1;">
-        <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">➕ إضافة حساب طالب جديد يدوياً (الجميل):</div>
+        <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">➕ إضافة حساب طالب جديد يدوياً:</div>
         <input type="email" id="admin-manual-email" class="auth-input" placeholder="البريد الإلكتروني (Gmail)..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; font-size: 12px; padding-left:12px;">
         <input type="text" id="admin-manual-name" class="auth-input" placeholder="اسم الطالب..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; font-size: 12px; padding-left:12px;">
         <input type="tel" id="admin-manual-phone" class="auth-input" placeholder="رقم الهاتف (اختياري)..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; font-size: 12px; padding-left:12px;">
@@ -701,17 +716,19 @@
       <div id="pdfs-container"></div>
     </div>
 
+    <!-- 🏆 قسم ترتيب الأوائل المطور بالتحكم اليدوي المباشر للأدمن -->
     <div id="sec-leaderboard" class="content-section">
-      <div class="section-header-title">🏆 ترتيب الأوائل على المنصة</div>
+      <div class="section-header-container">
+        <div class="section-header-title">🏆 ترتيب الأوائل على المنصة</div>
+        <button class="btn-admin-manage-rank" id="admin-rank-manage-btn" style="display:none;" onclick="openManageRankModal()">⚙️ إدارة وترتيب الأوائل يدويًا</button>
+      </div>
       <div class="card-item" id="full-leaderboard-box"></div>
     </div>
 
-    <!-- 🎨 قسم الإعدادات المطابق للصور المرسلة تماماً -->
     <div id="sec-settings" class="content-section">
       <div class="settings-container">
         <h2 style="font-size: 20px; font-weight: bold; margin-bottom: 18px; text-align: center;">الإعدادات</h2>
 
-        <!-- البطاقة العلوية للمستخدم -->
         <div class="settings-user-card">
           <div style="text-align: right;">
             <div style="font-size: 18px; font-weight: bold;" id="profile-name-header">Youssef Farag</div>
@@ -720,7 +737,6 @@
           <div class="settings-avatar-circle" id="profile-avatar-letter">Y</div>
         </div>
 
-        <!-- قسم الحساب -->
         <div class="settings-group-title">الحساب</div>
         <div class="settings-card-group">
           <div class="settings-row-item" onclick="openEditProfileModal()">
@@ -739,10 +755,33 @@
           </div>
         </div>
 
-        <!-- قسم التفضيلات -->
+        <div class="settings-group-title">مواقع التواصل والقنوات</div>
+        <div class="settings-card-group">
+          <div class="settings-row-item" onclick="handleTelegramClick()">
+            <div class="settings-row-left">
+              <span class="settings-row-icon">✈️</span>
+              <div>
+                <div>قناة التليجرام</div>
+                <div style="font-size: 11px; color: #0284c7; font-weight: normal;">انضم لمتابعة المذكرات والإنذارات</div>
+              </div>
+            </div>
+            <span class="settings-arrow">‹</span>
+          </div>
+          <div class="settings-row-item" onclick="handleYoutubeClick()">
+            <div class="settings-row-left">
+              <span class="settings-row-icon">🎥</span>
+              <div>
+                <div>قناة اليوتيوب</div>
+                <div style="font-size: 11px; color: #ef4444; font-weight: normal;">اشترك لمشاهدة الشروحات والمراجعات</div>
+              </div>
+            </div>
+            <span class="settings-arrow">‹</span>
+          </div>
+        </div>
+
         <div class="settings-group-title">التفضيلات</div>
         <div class="settings-card-group">
-          <div class="settings-row-item" onclick="alert('الإشعارات مفعّلة تلقائياً تلقي جميع التنبيهات 🔔')">
+          <div class="settings-row-item" onclick="alert('الإشعارات مفعّلة تلقائياً لتلقي جميع التنبيهات 🔔')">
             <div class="settings-row-left">
               <span class="settings-row-icon">🔔</span>
               <span>الإشعارات</span>
@@ -761,7 +800,6 @@
           </div>
         </div>
 
-        <!-- زر تسجيل الخروج الأحمر -->
         <button class="settings-logout-btn" onclick="logout()">
           <span>↳</span>
           <span>تسجيل الخروج</span>
@@ -779,7 +817,6 @@
     <button class="nav-item" id="nav-settings" onclick="switchTab('sec-settings', 'nav-settings')"><span>⚙️</span> الإعدادات</button>
   </div>
 
-  <!-- النافذة المنبثقة العامة (للامتحانات والتعديلات واللغة) -->
   <div id="exam-modal">
     <div class="modal-box" id="modal-box-inner">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -794,7 +831,6 @@
     </div>
   </div>
 
-  <!-- ربط السيرفر السحابي Firebase مع المنصة -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, onValue, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -829,6 +865,8 @@
         if(!window.appData.reports) window.appData.reports = [];
         if(!window.appData.registeredUsers) window.appData.registeredUsers = [];
         if(!window.appData.blockedUsers) window.appData.blockedUsers = [];
+        if(!window.appData.telegramUrl) window.appData.telegramUrl = "https://t.me/";
+        if(!window.appData.youtubeUrl) window.appData.youtubeUrl = "https://youtube.com/";
 
         let budiExists = window.appData.registeredUsers.some(u => u.email === "Yousefbooooda98@gmail.com");
         if(!budiExists) {
@@ -880,6 +918,8 @@
       reports: [],
       registeredUsers: [],
       blockedUsers: [],
+      telegramUrl: "https://t.me/",
+      youtubeUrl: "https://youtube.com/",
       announcementText: "📢 أهلاً بكم في منصة فاهم التعليمية - بإشراف أ/ يوسف فرج | تابع أحدث الامتحانات والواجبات والتنبيهات فور نزولها!"
     };
 
@@ -980,6 +1020,34 @@
       generateQuestionFields();
     };
 
+    async function handleTelegramClick() {
+      const email = localStorage.getItem('fahem_email');
+      if(email === ADMIN_EMAIL) {
+        let newUrl = prompt("أدخل رابط قناة التليجرام الخاص بك:", appData.telegramUrl || "https://t.me/");
+        if(newUrl) {
+          appData.telegramUrl = newUrl;
+          if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
+          alert("تم حفظ وتحديث رابط التليجرام بنجاح! 🚀");
+        }
+      } else {
+        window.open(appData.telegramUrl || "https://t.me/", "_blank");
+      }
+    }
+
+    async function handleYoutubeClick() {
+      const email = localStorage.getItem('fahem_email');
+      if(email === ADMIN_EMAIL) {
+        let newUrl = prompt("أدخل رابط قناة اليوتيوب الخاص بك:", appData.youtubeUrl || "https://youtube.com/");
+        if(newUrl) {
+          appData.youtubeUrl = newUrl;
+          if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
+          alert("تم حفظ وتحديث رابط اليوتيوب بنجاح! 🚀");
+        }
+      } else {
+        window.open(appData.youtubeUrl || "https://youtube.com/", "_blank");
+      }
+    }
+
     async function adminAddUserManual() {
       const email = document.getElementById('admin-manual-email').value.trim();
       const name = document.getElementById('admin-manual-name').value.trim();
@@ -1048,7 +1116,6 @@
       tempEmailForLogin = email;
       localStorage.setItem('pass_' + email, pass);
 
-      // 🛑 الفحص السحابي لمنع ظهور شاشة رقم التليفون إذا كان مسجلاً مسبقاً!
       let userObj = (appData.registeredUsers || []).find(u => u.email === email);
       if(userObj && userObj.phone && userObj.phone !== 'غير متاح') {
         finishLoginProcess(email);
@@ -1068,7 +1135,6 @@
       finishLoginProcess(tempEmailForLogin);
     }
 
-    // 💾 حفظ رقم الهاتف سحابياً في بيانات الطالب
     async function finishLoginProcess(email, phoneVal = null) {
       if(appData.blockedUsers && appData.blockedUsers.includes(email)) {
         alert('❌ تم حظر حسابك من قبل الأدمن!');
@@ -1163,8 +1229,10 @@
         document.getElementById('admin-panel-box').style.display = 'block';
         document.getElementById('role-badge').style.display = 'block';
         document.getElementById('admin-stats-box').style.display = 'grid';
+        document.getElementById('admin-rank-manage-btn').style.display = 'block';
       } else {
         document.getElementById('admin-stats-box').style.display = 'none';
+        document.getElementById('admin-rank-manage-btn').style.display = 'none';
       }
       renderAll();
     }
@@ -1174,12 +1242,6 @@
       location.reload(); 
     }
 
-    function downloadApp(e) {
-      if(e) e.preventDefault();
-      alert('تم بدء تحميل تطبيق المنصة (APK) بنجاح! 📦');
-    }
-
-    // 🎨 نوافذ تعديل البروفايل وكلمة المرور واللغة من الإعدادات المطابقة للصور
     function openEditProfileModal() {
       const email = localStorage.getItem('fahem_email');
       const name = getUserDisplayName(email);
@@ -1316,6 +1378,101 @@
     function setAppLanguage(lang) {
       document.getElementById('current-lang-text').innerText = lang === 'en' ? 'English' : 'العربية';
       closeExam();
+    }
+
+    /* 🏆 إدارة وترتيب الأوائل يدوياً بواسطة الأدمن */
+    function openManageRankModal() {
+      let container = document.getElementById('modal-questions-container');
+      document.getElementById('modal-title').innerText = "⚙️ إدارة ترتيب الأوائل وتعديله يدويًا";
+      document.getElementById('submit-exam-btn').style.display = 'none';
+
+      let html = `
+        <div style="background:#eff6ff; border:1px solid #cbd5e1; padding:12px; border-radius:12px; margin-bottom:15px; text-align:right;">
+          <div style="font-size:12px; font-weight:bold; color:#0284c7; margin-bottom:6px;">➕ إضافة متصدر جديد يدوياً:</div>
+          <input type="text" id="manual-rank-name" class="auth-input" placeholder="اسم الطالب..." style="background:white; color:#1e293b; margin-bottom:6px; font-size:12px; padding-left:12px;">
+          <input type="number" id="manual-rank-percent" class="auth-input" placeholder="النسبة المئوية (مثال: 100 أو 98.5)..." style="background:white; color:#1e293b; margin-bottom:8px; font-size:12px; padding-left:12px;">
+          <button class="btn-main" onclick="adminAddManualRank()" style="width:100%; background:#f59e0b;">إضافة الطالب إلى لوحة الشرف 🏆</button>
+        </div>
+
+        <div style="font-size:13px; font-weight:bold; color:#0f172a; margin-bottom:8px; text-align:right;">📋 المتصدرين الحاليين (تعديل النسبة أو الحذف):</div>
+      `;
+
+      let leaderboardArr = appData.leaderboard || [];
+
+      if(leaderboardArr.length === 0) {
+        html += `<p style="font-size:12px; color:#64748b; text-align:center;">لا يوجد طلاب في اللوحة حالياً.</p>`;
+      } else {
+        leaderboardArr.forEach((st, idx) => {
+          let name = st.displayName || getUserDisplayName(st.studentName);
+          html += `
+            <div style="background:#f8fafc; border:1px solid #cbd5e1; padding:10px; border-radius:8px; margin-bottom:8px; text-align:right;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <div style="font-size:13px; font-weight:bold; color:#0f172a;">#${idx + 1} ${name}</div>
+                <button class="btn-danger-sm" onclick="adminDeleteRankItem(${idx})">مسح 🗑️</button>
+              </div>
+              <div style="display:flex; gap:6px; align-items:center;">
+                <input type="number" id="admin_edit_percent_${idx}" class="auth-input" value="${st.percentage}" style="background:white; color:#1e293b; font-size:11px; padding:6px; margin-bottom:0; width:100px;">
+                <button class="btn-main" onclick="adminUpdateRankItem(${idx})" style="padding:6px 10px; font-size:11px; background:#0284c7;">حفظ النسبة %</button>
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      container.innerHTML = html;
+      document.getElementById('exam-modal').style.display = 'flex';
+    }
+
+    async function adminAddManualRank() {
+      const name = document.getElementById('manual-rank-name').value.trim();
+      const percent = parseFloat(document.getElementById('manual-rank-percent').value.trim());
+
+      if(!name || isNaN(percent)) { alert('أدخل اسم الطالب والنسبة المئوية بالشكل الصحيح'); return; }
+
+      if(!appData.leaderboard) appData.leaderboard = [];
+
+      appData.leaderboard.push({
+        studentName: name,
+        displayName: name,
+        examTitle: 'إضافة يدوية من المعلم',
+        score: percent,
+        total: 100,
+        percentage: percent.toFixed(1),
+        time: new Date().toLocaleString('ar-EG')
+      });
+
+      appData.leaderboard.sort((a, b) => parseFloat(b.percentage) - parseFloat(a.percentage));
+
+      if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
+      alert(`تم إضافة (${name}) بنجاح إلى الترتيب! 🎉`);
+      renderAll();
+      openManageRankModal();
+    }
+
+    async function adminUpdateRankItem(index) {
+      const newPercent = parseFloat(document.getElementById(`admin_edit_percent_${index}`).value);
+      if(isNaN(newPercent)) { alert('أدخل نسبة مئوية صحيحة'); return; }
+
+      if(appData.leaderboard && appData.leaderboard[index]) {
+        appData.leaderboard[index].percentage = newPercent.toFixed(1);
+        appData.leaderboard.sort((a, b) => parseFloat(b.percentage) - parseFloat(a.percentage));
+        if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
+        alert('تم تعديل النسبة والترتيب بنجاح! ✅');
+        renderAll();
+        openManageRankModal();
+      }
+    }
+
+    async function adminDeleteRankItem(index) {
+      if(!confirm("هل أنت تأكد من مسح هذا الطالب من قائمة الترتيب؟")) return;
+
+      if(appData.leaderboard && appData.leaderboard[index]) {
+        appData.leaderboard.splice(index, 1);
+        if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
+        alert('تم المسح بنجاح! 🗑️');
+        renderAll();
+        openManageRankModal();
+      }
     }
 
     function generateQuestionFields() {
