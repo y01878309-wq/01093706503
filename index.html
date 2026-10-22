@@ -57,6 +57,20 @@
       100% { transform: translateX(100%); }
     }
 
+    /* تنسيق مساحات الإعلانات المخصصة لجوجل أدسنس */
+    .ad-slot-container {
+      width: 100%;
+      max-width: 480px;
+      background: #f1f5f9;
+      border: 2px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      margin: 15px 0;
+      color: #64748b;
+      font-size: 12px;
+    }
+
     #auth-screen-container {
       display: flex;
       flex-direction: column;
@@ -620,6 +634,11 @@
       <div class="admin-badge-top" id="role-badge" style="display:none;">أدمن (يوسف فرج)</div>
     </div>
 
+    <!-- مكان إعلان مخصص تحت الهيدر -->
+    <div class="ad-slot-container">
+      📢 [مكان إعلان جوجل أدسنس الرئيسي - Header Ad Slot]
+    </div>
+
     <!-- لوحة تحكم الأدمن -->
     <div id="admin-panel-box">
       <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 10px;">⚙ لوحة تحكم الأدمن (يوسف فرج)</div>
@@ -694,6 +713,11 @@
         <div class="action-card" onclick="switchTab('sec-exams', 'nav-exams')"><div class="stat-icon">❓</div><div class="stat-label">الامتحانات</div></div>
         <div class="action-card" onclick="switchTab('sec-videos', 'nav-videos')"><div class="stat-icon">🎥</div><div class="stat-label">الفيديوهات</div></div>
         <div class="action-card" onclick="switchTab('sec-leaderboard', 'nav-leaderboard')"><div class="stat-icon">🏆</div><div class="stat-label">الترتيب</div></div>
+      </div>
+
+      <!-- مكان إعلان مخصص في الشاشة الرئيسية -->
+      <div class="ad-slot-container">
+        📢 [مكان إعلان جوجل أدسنس بين الأقسام - In-Feed Ad Slot]
       </div>
 
       <div class="section-header-title">🏆 لوحة شرف المتصدرين</div>
@@ -828,6 +852,40 @@
     </div>
   </div>
 
+  <!-- الفوتر الرسمي وسياسة الخصوصية -->
+  <footer style="width: 100%; max-width: 480px; text-align: center; padding: 20px 10px; font-family: sans-serif; color: #64748b; border-top: 1px solid #e2e8f0; margin-top: 30px;">
+    <p style="font-size: 13px; margin-bottom: 6px;">© 2026 منصة فاهم التعليمية - بإشراف أ/ يوسف فرج</p>
+    <p>
+      <a href="#" onclick="openPolicyModal(); return false;" style="color: #0284c7; text-decoration: none; font-size: 13px; font-weight: bold;">سياسة الخصوصية وشروط الاستخدام</a>
+    </p>
+  </footer>
+
+  <!-- نافذة سياسة الخصوصية المنبثقة (Modal) -->
+  <div id="privacyModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; justify-content: center; align-items: center; padding: 15px;">
+    <div style="background: #fff; width: 100%; max-width: 550px; max-height: 85vh; overflow-y: auto; padding: 22px; border-radius: 18px; direction: rtl; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+      <h2 style="color: #0f172a; border-bottom: 2px solid #0284c7; padding-bottom: 8px; margin-top: 0; font-size: 18px;">سياسة الخصوصية وشروط الاستخدام</h2>
+      
+      <p style="font-size: 13px; color: #334155; margin-top: 10px; line-height: 1.6;">أهلاً بكم في <strong>منصة فاهم التعليمية</strong> بإشراف الأستاذ يوسف فرج. نحن نلتزم بحماية خصوصية مستخدمينا وتوفير بيئة تعليمية آمنة.</p>
+      
+      <h3 style="color: #0284c7; font-size: 14px; margin-top: 15px;">1. المعلومات التي نجمعها</h3>
+      <p style="font-size: 13px; color: #334155; line-height: 1.6;">نجمع معلومات أساسية مثل البريد الإلكتروني والاسم ورقم الهاتف لتوفير تجربة تعليمية مخصصة، ومتابعة درجات الامتحانات وترتيب الطلاب.</p>
+      
+      <h3 style="color: #0284c7; font-size: 14px; margin-top: 15px;">2. الإعلانات وملفات تعريف الارتباط (Cookies)</h3>
+      <p style="font-size: 13px; color: #334155; line-height: 1.6;">تستخدم منصتنا خدمات إعلانية مثل <strong>Google AdSense</strong>. تستخدم هذه الشركات ملفات تعريف الارتباط (Cookies) لعرض إعلانات مخصصة بناءً على زيارات المستخدمين لموقعنا.</p>
+      <p style="font-size: 13px; color: #334155; line-height: 1.6;">يمكن للمستخدمين التحكم في إعدادات الإعلانات أو تعطيل ملفات تعريف الارتباط من خلال إعدادات حساب Google الخاص بهم.</p>
+
+      <h3 style="color: #0284c7; font-size: 14px; margin-top: 15px;">3. شروط الاستخدام</h3>
+      <p style="font-size: 13px; color: #334155; line-height: 1.6;">جميع المحتويات والامتحانات والأسئلة متاحة للأغراض التعليمية الشخصية فقط، ولا يُسمح بإعادة نشرها أو استغلالها تجارياً دون إذن مسبق.</p>
+
+      <h3 style="color: #0284c7; font-size: 14px; margin-top: 15px;">4. التواصل معنا</h3>
+      <p style="font-size: 13px; color: #334155; line-height: 1.6;">لأي استفسارات بخصوص سياسة الخصوصية، يمكنكم التواصل معنا مباشرة عبر وسائل الاتصال المتاحة بالمنصة.</p>
+
+      <div style="text-align: center; margin-top: 20px;">
+        <button onclick="closePolicyModal()" style="background: #0284c7; color: #fff; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold;">إغلاق النافذة ✕</button>
+      </div>
+    </div>
+  </div>
+
   <div class="bottom-nav" id="bottom-navigation" style="display: none;">
     <button class="nav-item active" id="nav-home" onclick="switchTab('sec-home', 'nav-home')"><span>🏠</span> الرئيسية</button>
     <button class="nav-item" id="nav-exams" onclick="switchTab('sec-exams', 'nav-exams')"><span>❓</span> الامتحانات</button>
@@ -945,6 +1003,15 @@
     let tempEmailForLogin = "";
     let resetEmailTarget = "";
     let generatedOtpCode = ""; 
+
+    /* 📱 دوال فتح وغلق نافذة سياسة الخصوصية */
+    function openPolicyModal() {
+      document.getElementById('privacyModal').style.display = 'flex';
+    }
+
+    function closePolicyModal() {
+      document.getElementById('privacyModal').style.display = 'none';
+    }
 
     /* 📱 دالة التواصل مع المعلم مباشرة على الواتساب */
     function contactTeacherWhatsApp() {
