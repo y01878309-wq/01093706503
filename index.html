@@ -9,9 +9,6 @@
 
   <!-- أكواد إعلانات Adsterra الأربعة -->
   <script data-cfasync="false" src="https://abscloud.org/1/1cad8059e24887e3e849006dda943d5f"></script>
-  <!-- سيتم توجيه رابط التحويل تلقائياً -->
-  <!-- رابط التحويل الثاني -->
-  <!-- <script src="https://araplhn.org/4/f076c258758f4910486e6f6aab545210"></script> -->
 
   <!-- كود إثبات ملكية Google AdSense الخاص بك -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5773220233633978"
@@ -21,7 +18,7 @@
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script type="text/javascript">
     (function() {
-      emailjs.init("B3TSATTYUhbMbkIAX"); // المفتاح العام الخاص بك
+      emailjs.init("B3TSATTYUhbMbkIAX");
     })();
   </script>
 
@@ -46,7 +43,7 @@
       padding-bottom: 90px;
     }
 
-    /* 🚨 شريط الإشعارات الخارجي الجديد والمميز */
+    /* 🚨 شريط الإشعارات الخارجي (مخفي للطلاب، يظهر للأدمن فقط عند الحاجة) */
     .external-alert-bar {
       width: 100%;
       background: linear-gradient(135deg, #f59e0b, #d97706);
@@ -57,7 +54,7 @@
       overflow: hidden;
       white-space: nowrap;
       box-shadow: 0 3px 10px rgba(245, 158, 11, 0.3);
-      display: flex;
+      display: none; 
       align-items: center;
       gap: 10px;
     }
@@ -99,7 +96,6 @@
       100% { transform: translateX(100%); }
     }
 
-    /* تنسيق مساحات الإعلانات المخصصة */
     .ad-slot-container {
       width: 100%;
       max-width: 480px;
@@ -604,8 +600,8 @@
 </head>
 <body>
 
-  <!-- 🚨 شريط الإشعارات الخارجي الجديد -->
-  <div class="external-alert-bar">
+  <!-- 🚨 شريط الإشعارات الخارجي (مخفي للطلاب، يظهر للأدمن فقط عند الحاجة) -->
+  <div class="external-alert-bar" id="external-alert-bar-div">
     <div class="external-alert-title">🚨 تنبيه خارجي</div>
     <div class="external-alert-marquee-container">
       <div class="external-alert-text" id="external-announcement-text">
@@ -628,14 +624,13 @@
         <h2 style="margin-bottom: 5px; font-size: 20px;">تسجيل الدخول - منصة فاهم</h2>
         <p style="color: #94a3b8; font-size: 12px; margin-bottom: 20px;">إشراف: أ/ يوسف فرج 🛡️</p>
 
-        <!-- رابط التحميل الجديد المباشر من ميديا فاير -->
         <a href="https://www.mediafire.com/file/196dzpxi66610m9/DOC-20261002-WA0027.apk/file" class="download-btn" target="_blank">📦 تحميل تطبيق المنصة (APK)</a>
 
         <div class="input-wrapper">
           <input type="email" id="login-email" class="auth-input" placeholder="البريد الإلكتروني (Gmail)">
           <button type="button" class="voice-btn" onclick="startVoiceInput('login-email')">🎤</button>
         </div>
-        <input type="password" id="user-pass" class="auth-input" placeholder="كلمة المرور" style="padding-left: 12px; margin-bottom: 12px;">
+        <input type="password" id="user-pass" class="auth-input" placeholder="كلمة المرور (أي كلمة سر تعجبك)" style="padding-left: 12px; margin-bottom: 12px;">
         <button class="auth-btn" onclick="proceedToPhoneStep()">التالي ➔</button>
         <div class="text-link-auth" onclick="switchAuthPane('pane-forgot')">نسيت كلمة المرور؟</div>
       </div>
@@ -686,8 +681,8 @@
       <div class="admin-badge-top" id="role-badge" style="display:none;">أدمن (يوسف فرج)</div>
     </div>
 
-    <!-- مكان إعلان Adsterra الثالث (بانر 300x250) تحت الهيدر -->
-    <div class="ad-slot-container">
+    <!-- مكان إعلان Adsterra الثالث (مخفي عندك كأدمن ويظهر للطلاب) -->
+    <div class="ad-slot-container" id="ad-slot-1">
       <script>
         atOptions = {
           'key' : '189ff7baba758fc0156d38c54ad33b15',
@@ -704,9 +699,8 @@
     <div id="admin-panel-box">
       <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 10px;">⚙ لوحة تحكم الأدمن (يوسف فرج)</div>
 
-      <!-- 🚨 قسم نشر التنبيه الخارجي الجديد -->
       <div style="background: #fffbeb; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #f59e0b;">
-        <div style="font-size: 11px; font-weight: bold; color: #b45309; margin-bottom: 4px;">🚨 نشر إشعار خارجي جديد (مثل: امتحان الساعة 10):</div>
+        <div style="font-size: 11px; font-weight: bold; color: #b45309; margin-bottom: 4px;">🚨 نشر إشعار خارجي جديد للطلاب:</div>
         <input type="text" id="admin-external-announcement-input" class="auth-input" placeholder="اكتب التنبيه الخارجي هنا..." style="background: #ffffff; color: #1e293b; margin-bottom: 6px; font-size: 12px;">
         <button class="btn-main" onclick="updateExternalAnnouncement()" style="width: 100%; background: #d97706;">نشر التنبيه الخارجي سحابياً 🚀</button>
       </div>
@@ -756,16 +750,14 @@
       </div>
 
       <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1;">
-        <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">📁 إضافة ملف PDF / صورة:</div>
-        <input type="text" id="new-pdf-title" class="auth-input" placeholder="عنوان المذكرة أو الصورة..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
-        <input type="text" id="new-pdf-link" class="auth-input" placeholder="رابط الـ PDF (https://...)" style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
-        <div style="font-size: 11px; color: #64748b; margin-bottom: 4px;">أو اختر ملف PDF / صورة من الجهاز:</div>
+        <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">📁 رفع ملف PDF أو صورة مباشرة من جهازك (يعمل 100% للطلاب):</div>
+        <input type="text" id="new-pdf-title" class="auth-input" placeholder="عنوان المذكرة أو الملخص..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
         <input type="file" id="new-pdf-file" accept="application/pdf,image/*" class="auth-input" style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 11px;">
-        <button class="btn-main" onclick="addPdfLink()" style="width: 100%; background: #7c3aed;">إضافة الملف / الصورة 📁</button>
+        <button class="btn-main" onclick="addPdfFileDirect()" style="width: 100%; background: #7c3aed;">رفع وحفظ الملف سحابياً 📁✅</button>
       </div>
 
       <button class="btn-main" onclick="showRegisteredStudentsModal()" style="width: 100%; background: #059669; margin-bottom: 6px;">👥 سجل الطلاب والتفاصيل الدقيقة وتعديل الأسماء وحظرهم</button>
-      <button class="btn-main" onclick="showStudentReports()" style="width: 100%; background: #4f46e5; margin-bottom: 6px;">📋 تقارير محاولات لقطات الشاشة والغش</button>
+      <button class="btn-main" onclick="showStudentReports()" style="width: 100%; background: #4f46e5; margin-bottom: 6px;">📋 تقارير محاولات لقطات الشاشة والغش والنسخ</button>
     </div>
 
     <div id="sec-home" class="content-section active-section">
@@ -783,8 +775,8 @@
         <div class="action-card" onclick="switchTab('sec-leaderboard', 'nav-leaderboard')"><div class="stat-icon">🏆</div><div class="stat-label">الترتيب</div></div>
       </div>
 
-      <!-- مكان إعلان Adsterra الرابع (بانر 320x50) بين الأقسام -->
-      <div class="ad-slot-container">
+      <!-- مكان إعلان Adsterra الرابع (مخفي عندك كأدمن ويظهر للطلاب) -->
+      <div class="ad-slot-container" id="ad-slot-2">
         <script>
           atOptions = {
             'key' : 'b4a34288cd0cc6e58550e89ea0b5e827',
@@ -867,7 +859,6 @@
 
         <div class="settings-group-title">مواقع التواصل والتواصل المباشر</div>
         <div class="settings-card-group">
-          <!-- 🟢 خيار التحدث المباشر مع المعلم عبر واتساب -->
           <div class="settings-row-item" onclick="contactTeacherWhatsApp()">
             <div class="settings-row-left">
               <span class="settings-row-icon">💬</span>
@@ -929,7 +920,6 @@
     </div>
   </div>
 
-  <!-- الفوتر الرسمي وسياسة الخصوصية -->
   <footer style="width: 100%; max-width: 480px; text-align: center; padding: 20px 10px; font-family: sans-serif; color: #64748b; border-top: 1px solid #e2e8f0; margin-top: 30px;">
     <p style="font-size: 13px; margin-bottom: 6px;">© 2026 منصة فاهم التعليمية - بإشراف أ/ يوسف فرج</p>
     <p>
@@ -937,7 +927,6 @@
     </p>
   </footer>
 
-  <!-- نافذة سياسة الخصوصية المنبثقة (Modal) -->
   <div id="privacyModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; justify-content: center; align-items: center; padding: 15px;">
     <div style="background: #fff; width: 100%; max-width: 550px; max-height: 85vh; overflow-y: auto; padding: 22px; border-radius: 18px; direction: rtl; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
       <h2 style="color: #0f172a; border-bottom: 2px solid #0284c7; padding-bottom: 8px; margin-top: 0; font-size: 18px;">سياسة الخصوصية وشروط الاستخدام</h2>
@@ -949,14 +938,7 @@
       
       <h3 style="color: #0284c7; font-size: 14px; margin-top: 15px;">2. الإعلانات وملفات تعريف الارتباط (Cookies)</h3>
       <p style="font-size: 13px; color: #334155; line-height: 1.6;">تستخدم منصتنا خدمات إعلانية مثل <strong>Google AdSense</strong> و<strong>Adsterra</strong>. تستخدم هذه الشركات ملفات تعريف الارتباط (Cookies) لعرض إعلانات مخصصة بناءً على زيارات المستخدمين لموقعنا.</p>
-      <p style="font-size: 13px; color: #334155; line-height: 1.6;">يمكن للمستخدمين التحكم في إعدادات الإعلانات أو تعطيل ملفات تعريف الارتباط من خلال إعدادات حساب Google الخاص بهم.</p>
-
-      <h3 style="color: #0284c7; font-size: 14px; margin-top: 15px;">3. شروط الاستخدام</h3>
-      <p style="font-size: 13px; color: #334155; line-height: 1.6;">جميع المحتويات والامتحانات والأسئلة متاحة للأغراض التعليمية الشخصية فقط، ولا يُسمح بإعادة نشرها أو استغلالها تجارياً دون إذن مسبق.</p>
-
-      <h3 style="color: #0284c7; font-size: 14px; margin-top: 15px;">4. التواصل معنا</h3>
-      <p style="font-size: 13px; color: #334155; line-height: 1.6;">لأي استفسارات بخصوص سياسة الخصوصية، يمكنكم التواصل معنا مباشرة عبر وسائل الاتصال المتاحة بالمنصة.</p>
-
+      
       <div style="text-align: center; margin-top: 20px;">
         <button onclick="closePolicyModal()" style="background: #0284c7; color: #fff; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold;">إغلاق النافذة ✕</button>
       </div>
@@ -1109,7 +1091,7 @@
       recognition.onresult = function(e) { document.getElementById(targetId).value = e.results[0][0].transcript; };
     }
 
-    /* 🛡️ رصد ومنع النسخ واللصق وتسجيلها بالاسم في تقارير الغش */
+    /* 🛡️ رصد النسخ واللصق والغش وتسجيلها بالاسم في تقارير الأدمن */
     window.addEventListener('copy', function(e) {
       e.preventDefault();
       logCheat("محاولة نسخ محتوى (Copy Attempt) 📋🚫");
@@ -1283,7 +1265,7 @@
       if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
       document.getElementById('external-announcement-text').innerText = newText;
       document.getElementById('admin-external-announcement-input').value = '';
-      alert('تم نشر التنبيه الخارجي بنجاح لجميع الطلاب! 🚨🚀');
+      alert('تم نشر التنبيه الخارجي بنجاح للطلاب! 🚨🚀');
     }
 
     function switchAuthPane(paneId) {
@@ -1298,12 +1280,6 @@
       
       if(appData.blockedUsers && appData.blockedUsers.includes(email)) {
         alert('❌ تم حظر هذا الحساب من دخول المنصة بواسطة الأدمن!');
-        return;
-      }
-
-      let userStoredPass = localStorage.getItem('pass_' + email);
-      if(userStoredPass && pass !== userStoredPass) {
-        alert('كلمة المرور غير صحيحة!');
         return;
       }
 
@@ -1444,14 +1420,23 @@
       document.getElementById('profile-avatar-letter').innerText = currentDisplayName.charAt(0).toUpperCase();
       document.getElementById('welcome-user-name').innerText = `👋 مرحباً، ${email === ADMIN_EMAIL ? 'يوسف فرج (الأدمن)' : currentDisplayName}`;
 
+      // 🚨 التحكم في ظهور/خفاء الأدمن والإعلانات
       if(email === ADMIN_EMAIL) {
         document.getElementById('admin-panel-box').style.display = 'block';
         document.getElementById('role-badge').style.display = 'block';
         document.getElementById('admin-stats-box').style.display = 'grid';
         document.getElementById('admin-rank-manage-btn').style.display = 'block';
+        document.getElementById('external-alert-bar-div').style.display = 'flex'; // يظهر للأدمن فقط للتأكيد
+        
+        // إخفاء الإعلانات عندك أنت وحدك كأدمن
+        document.querySelectorAll('#ad-slot-1, #ad-slot-2').forEach(el => el.style.display = 'none');
       } else {
         document.getElementById('admin-stats-box').style.display = 'none';
         document.getElementById('admin-rank-manage-btn').style.display = 'none';
+        document.getElementById('external-alert-bar-div').style.display = 'none'; // مخفي تماماً للطلاب
+        
+        // إظهار الإعلانات للطلاب بشكل طبيعي
+        document.querySelectorAll('#ad-slot-1, #ad-slot-2').forEach(el => el.style.display = 'block');
       }
       renderAll();
     }
@@ -1556,12 +1541,6 @@
       const curPass = document.getElementById('current-pass-field').value.trim();
       const newPass = document.getElementById('new-pass-field').value.trim();
       const confPass = document.getElementById('confirm-pass-field').value.trim();
-
-      let storedPass = localStorage.getItem('pass_' + email);
-      if(storedPass && curPass !== storedPass) {
-        alert('كلمة المرور الحالية غير صحيحة!');
-        return;
-      }
 
       if(!newPass || newPass !== confPass) {
         alert('كلمتا المرور غير متطابقتين!');
@@ -1829,30 +1808,50 @@
       }
     }
 
-    async function addPdfLink() {
+    async function deleteVideo(videoId) {
+      if(!confirm("هل أنت تأكد من رغبتك في حذف هذا الفيديو نهائياً؟")) return;
+      appData.videos = (appData.videos || []).filter(v => v.id !== videoId);
+      if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
+      renderAll();
+      alert('تم مسح الفيديو بنجاح! 🗑️');
+    }
+
+    /* 📁 رفع ملف PDF أو صورة مباشرة من الجهاز لتفتح لأي طالب فوراً */
+    async function addPdfFileDirect() {
       const title = document.getElementById('new-pdf-title').value.trim();
-      let link = document.getElementById('new-pdf-link').value.trim();
       const fileInput = document.getElementById('new-pdf-file');
-      if(!title) { alert('أدخل عنوان الملف أولاً'); return; }
 
-      if(!appData.pdfs) appData.pdfs = [];
+      if(!title) { alert('أدخل عنوان المذكرة أو الملخص أولاً'); return; }
+      if(!fileInput.files || !fileInput.files[0]) { alert('اختر ملف PDF أو صورة من جهازك'); return; }
 
-      if(fileInput.files && fileInput.files[0]) {
-        const file = fileInput.files[0];
-        const reader = new FileReader();
-        reader.onload = async function(e) {
-          appData.pdfs.push({ id: 'pdf_' + Date.now(), title: title, link: e.target.result, isImage: file.type.startsWith('image/') });
-          if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
-          renderAll();
-          alert('تم رفع الملف بنجاح على السيرفر! 📁');
-        };
-        reader.readAsDataURL(file);
-      } else if(link) {
-        appData.pdfs.push({ id: 'pdf_' + Date.now(), title: title, link: link, isImage: false });
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+
+      reader.onload = async function(e) {
+        if(!appData.pdfs) appData.pdfs = [];
+        appData.pdfs.push({
+          id: 'pdf_' + Date.now(),
+          title: title,
+          link: e.target.result,
+          isImage: file.type.startsWith('image/')
+        });
+
         if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
+        document.getElementById('new-pdf-title').value = '';
+        document.getElementById('new-pdf-file').value = '';
         renderAll();
-        alert('تم إضافة الملف بنجاح على السيرفر! 📁');
-      }
+        alert('✅ تم رفع وحفظ الملف بنجاح، وسيعمل مع جميع الطلاب مباشرة!');
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    async function deletePdf(pdfId) {
+      if(!confirm("هل أنت تأكد من رغبتك في حذف هذا الملف نهائياً؟")) return;
+      appData.pdfs = (appData.pdfs || []).filter(p => p.id !== pdfId);
+      if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
+      renderAll();
+      alert('تم مسح الملف بنجاح! 🗑️');
     }
 
     function renderAll() {
@@ -2363,9 +2362,22 @@
         container.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لا توجد فيديوهات</p>';
         return;
       }
+
+      const email = localStorage.getItem('fahem_email');
+
       appData.videos.forEach(v => {
         let vCont = v.isLocalFile ? `<video src="${v.content}" controls style="width:100%; height:100%; border-radius:10px;"></video>` : `<iframe src="${v.content}" allowfullscreen></iframe>`;
-        container.innerHTML += `<div class="card-item"><div class="card-row"><div class="card-title">${v.title}</div></div><div class="media-preview-container">${vCont}</div></div>`;
+        let deleteVideoBtn = email === ADMIN_EMAIL ? `<button class="btn-danger-sm" onclick="deleteVideo('${v.id}')" style="margin-top:6px;">حذف الفيديو 🗑️</button>` : '';
+
+        container.innerHTML += `
+          <div class="card-item">
+            <div class="card-row">
+              <div class="card-title">${v.title}</div>
+            </div>
+            <div class="media-preview-container">${vCont}</div>
+            ${deleteVideoBtn}
+          </div>
+        `;
       });
     }
 
@@ -2377,9 +2389,22 @@
         container.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لا توجد ملفات</p>';
         return;
       }
+
+      const email = localStorage.getItem('fahem_email');
+
       appData.pdfs.forEach(p => {
-        let pCont = p.isImage ? `<div class="media-preview-container"><img src="${p.link}" /></div>` : `<a class="btn-custom-open" href="${p.link}" target="_blank">فتح الملف 📄</a>`;
-        container.innerHTML += `<div class="card-item"><div class="card-row"><div class="card-info"><div class="card-title">${p.title}</div></div><div>${pCont}</div></div></div>`;
+        let pCont = p.isImage ? `<div class="media-preview-container"><img src="${p.link}" /></div>` : `<a class="btn-custom-open" href="${p.link}" target="_blank" download>تحميل أو فتح الملف 📄</a>`;
+        let deletePdfBtn = email === ADMIN_EMAIL ? `<button class="btn-danger-sm" onclick="deletePdf('${p.id}')" style="margin-top:6px;">حذف الملف 🗑️</button>` : '';
+
+        container.innerHTML += `
+          <div class="card-item">
+            <div class="card-row">
+              <div class="card-info"><div class="card-title">${p.title}</div></div>
+              <div>${pCont}</div>
+            </div>
+            ${deletePdfBtn}
+          </div>
+        `;
       });
     }
 
