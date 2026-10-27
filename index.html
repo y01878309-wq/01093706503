@@ -7,6 +7,12 @@
   <meta name="description" content="منصة فاهم التعليمية - منصة يوسف فرج التعليمية للمناهج والامتحانات والفيديوهات والشروحات الدراسية.">
   <title>منصة فاهم التعليمية - يوسف فرج</title>
 
+  <!-- أكواد إعلانات Adsterra الأربعة -->
+  <script data-cfasync="false" src="https://abscloud.org/1/1cad8059e24887e3e849006dda943d5f"></script>
+  <!-- سيتم توجيه رابط التحويل تلقائياً -->
+  <!-- رابط التحويل الثاني -->
+  <!-- <script src="https://araplhn.org/4/f076c258758f4910486e6f6aab545210"></script> -->
+
   <!-- كود إثبات ملكية Google AdSense الخاص بك -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5773220233633978"
      crossorigin="anonymous"></script>
@@ -40,7 +46,39 @@
       padding-bottom: 90px;
     }
 
-    /* شريط التنبيهات */
+    /* 🚨 شريط الإشعارات الخارجي الجديد والمميز */
+    .external-alert-bar {
+      width: 100%;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: bold;
+      padding: 10px 12px;
+      overflow: hidden;
+      white-space: nowrap;
+      box-shadow: 0 3px 10px rgba(245, 158, 11, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .external-alert-title {
+      background: #78350f;
+      color: #fef3c7;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+    .external-alert-marquee-container {
+      overflow: hidden;
+      width: 100%;
+    }
+    .external-alert-text {
+      display: inline-block;
+      animation: marquee 20s linear infinite;
+    }
+
+    /* شريط التنبيهات الأساسي للمنصة */
     .announcement-bar {
       width: 100%;
       background: #38bdf8;
@@ -61,18 +99,17 @@
       100% { transform: translateX(100%); }
     }
 
-    /* تنسيق مساحات الإعلانات المخصصة لجوجل أدسنس */
+    /* تنسيق مساحات الإعلانات المخصصة */
     .ad-slot-container {
       width: 100%;
       max-width: 480px;
-      background: #f1f5f9;
-      border: 2px dashed #cbd5e1;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
       border-radius: 12px;
-      padding: 15px;
+      padding: 10px;
       text-align: center;
       margin: 15px 0;
-      color: #64748b;
-      font-size: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
     }
 
     #auth-screen-container {
@@ -565,8 +602,19 @@
     .btn-details { background: #0284c7; color: white; border: none; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; margin-left: 4px; }
   </style>
 </head>
-<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
+<body>
 
+  <!-- 🚨 شريط الإشعارات الخارجي الجديد -->
+  <div class="external-alert-bar">
+    <div class="external-alert-title">🚨 تنبيه خارجي</div>
+    <div class="external-alert-marquee-container">
+      <div class="external-alert-text" id="external-announcement-text">
+        📢 تنبيه هام: يوجد امتحان الساعة 10 مساءً اليوم - يرجى الاستعداد جيداً ومراجعة الدروس!
+      </div>
+    </div>
+  </div>
+
+  <!-- شريط التنبيهات الأساسي للمنصة -->
   <div class="announcement-bar">
     <div class="announcement-text" id="header-announcement-text">
       📢 أهلاً بكم في منصة فاهم التعليمية - بإشراف أ/ يوسف فرج | تابع أحدث الامتحانات والواجبات والتنبيهات فور نزولها!
@@ -638,14 +686,30 @@
       <div class="admin-badge-top" id="role-badge" style="display:none;">أدمن (يوسف فرج)</div>
     </div>
 
-    <!-- مكان إعلان مخصص تحت الهيدر -->
+    <!-- مكان إعلان Adsterra الثالث (بانر 300x250) تحت الهيدر -->
     <div class="ad-slot-container">
-      📢 [مكان إعلان جوجل أدسنس الرئيسي - Header Ad Slot]
+      <script>
+        atOptions = {
+          'key' : '189ff7baba758fc0156d38c54ad33b15',
+          'format' : 'iframe',
+          'height' : 250,
+          'width' : 300,
+          'params' : {}
+        };
+      </script>
+      <script src="https://bauval.org/22/189ff7baba758fc0156d38c54ad33b15"></script>
     </div>
 
     <!-- لوحة تحكم الأدمن -->
     <div id="admin-panel-box">
       <div style="font-size: 13px; font-weight: bold; color: #0284c7; margin-bottom: 10px;">⚙ لوحة تحكم الأدمن (يوسف فرج)</div>
+
+      <!-- 🚨 قسم نشر التنبيه الخارجي الجديد -->
+      <div style="background: #fffbeb; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #f59e0b;">
+        <div style="font-size: 11px; font-weight: bold; color: #b45309; margin-bottom: 4px;">🚨 نشر إشعار خارجي جديد (مثل: امتحان الساعة 10):</div>
+        <input type="text" id="admin-external-announcement-input" class="auth-input" placeholder="اكتب التنبيه الخارجي هنا..." style="background: #ffffff; color: #1e293b; margin-bottom: 6px; font-size: 12px;">
+        <button class="btn-main" onclick="updateExternalAnnouncement()" style="width: 100%; background: #d97706;">نشر التنبيه الخارجي سحابياً 🚀</button>
+      </div>
 
       <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1;">
         <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">➕ إضافة حساب طالب جديد يدوياً:</div>
@@ -719,9 +783,18 @@
         <div class="action-card" onclick="switchTab('sec-leaderboard', 'nav-leaderboard')"><div class="stat-icon">🏆</div><div class="stat-label">الترتيب</div></div>
       </div>
 
-      <!-- مكان إعلان مخصص في الشاشة الرئيسية -->
+      <!-- مكان إعلان Adsterra الرابع (بانر 320x50) بين الأقسام -->
       <div class="ad-slot-container">
-        📢 [مكان إعلان جوجل أدسنس بين الأقسام - In-Feed Ad Slot]
+        <script>
+          atOptions = {
+            'key' : 'b4a34288cd0cc6e58550e89ea0b5e827',
+            'format' : 'iframe',
+            'height' : 50,
+            'width' : 320,
+            'params' : {}
+          };
+        </script>
+        <script src="https://bauval.org/22/b4a34288cd0cc6e58550e89ea0b5e827"></script>
       </div>
 
       <div class="section-header-title">🏆 لوحة شرف المتصدرين</div>
@@ -875,7 +948,7 @@
       <p style="font-size: 13px; color: #334155; line-height: 1.6;">نجمع معلومات أساسية مثل البريد الإلكتروني والاسم ورقم الهاتف لتوفير تجربة تعليمية مخصصة، ومتابعة درجات الامتحانات وترتيب الطلاب.</p>
       
       <h3 style="color: #0284c7; font-size: 14px; margin-top: 15px;">2. الإعلانات وملفات تعريف الارتباط (Cookies)</h3>
-      <p style="font-size: 13px; color: #334155; line-height: 1.6;">تستخدم منصتنا خدمات إعلانية مثل <strong>Google AdSense</strong>. تستخدم هذه الشركات ملفات تعريف الارتباط (Cookies) لعرض إعلانات مخصصة بناءً على زيارات المستخدمين لموقعنا.</p>
+      <p style="font-size: 13px; color: #334155; line-height: 1.6;">تستخدم منصتنا خدمات إعلانية مثل <strong>Google AdSense</strong> و<strong>Adsterra</strong>. تستخدم هذه الشركات ملفات تعريف الارتباط (Cookies) لعرض إعلانات مخصصة بناءً على زيارات المستخدمين لموقعنا.</p>
       <p style="font-size: 13px; color: #334155; line-height: 1.6;">يمكن للمستخدمين التحكم في إعدادات الإعلانات أو تعطيل ملفات تعريف الارتباط من خلال إعدادات حساب Google الخاص بهم.</p>
 
       <h3 style="color: #0284c7; font-size: 14px; margin-top: 15px;">3. شروط الاستخدام</h3>
@@ -949,6 +1022,7 @@
         if(!window.appData.blockedUsers) window.appData.blockedUsers = [];
         if(!window.appData.telegramUrl) window.appData.telegramUrl = "https://t.me/";
         if(!window.appData.youtubeUrl) window.appData.youtubeUrl = "https://youtube.com/";
+        if(!window.appData.externalAnnouncement) window.appData.externalAnnouncement = "📢 تنبيه هام: يوجد امتحان الساعة 10 مساءً اليوم - يرجى الاستعداد جيداً!";
 
         let budiExists = window.appData.registeredUsers.some(u => u.email === "Yousefbooooda98@gmail.com");
         if(!budiExists) {
@@ -965,6 +1039,9 @@
 
         if(window.appData.announcementText) {
           document.getElementById('header-announcement-text').innerText = window.appData.announcementText;
+        }
+        if(window.appData.externalAnnouncement) {
+          document.getElementById('external-announcement-text').innerText = window.appData.externalAnnouncement;
         }
         renderAll();
       }
@@ -1001,14 +1078,14 @@
       blockedUsers: [],
       telegramUrl: "https://t.me/",
       youtubeUrl: "https://youtube.com/",
-      announcementText: "📢 أهلاً بكم في منصة فاهم التعليمية - بإشراف أ/ يوسف فرج | تابع أحدث الامتحانات والواجبات والتنبيهات فور نزولها!"
+      announcementText: "📢 أهلاً بكم في منصة فاهم التعليمية - بإشراف أ/ يوسف فرج | تابع أحدث الامتحانات والواجبات والتنبيهات فور نزولها!",
+      externalAnnouncement: "📢 تنبيه هام: يوجد امتحان الساعة 10 مساءً اليوم - يرجى الاستعداد جيداً ومراجعة الدروس!"
     };
 
     let tempEmailForLogin = "";
     let resetEmailTarget = "";
     let generatedOtpCode = ""; 
 
-    /* 📱 دوال فتح وغلق نافذة سياسة الخصوصية */
     function openPolicyModal() {
       document.getElementById('privacyModal').style.display = 'flex';
     }
@@ -1017,7 +1094,6 @@
       document.getElementById('privacyModal').style.display = 'none';
     }
 
-    /* 📱 دالة التواصل مع المعلم مباشرة على الواتساب */
     function contactTeacherWhatsApp() {
       const email = localStorage.getItem('fahem_email') || "طالب بالمنصة";
       const message = encodeURIComponent(`السلام عليكم أ/ يوسف فرج، أنا الطالب (${email}) وأريد الاستفسار عن شيء في المنصة.`);
@@ -1033,10 +1109,17 @@
       recognition.onresult = function(e) { document.getElementById(targetId).value = e.results[0][0].transcript; };
     }
 
+    /* 🛡️ رصد ومنع النسخ واللصق وتسجيلها بالاسم في تقارير الغش */
+    window.addEventListener('copy', function(e) {
+      e.preventDefault();
+      logCheat("محاولة نسخ محتوى (Copy Attempt) 📋🚫");
+      alert("⚠️ ممنوع نسخ المحتوى من المنصة!");
+    }, true);
+
     window.addEventListener('paste', function(e) {
       e.preventDefault();
+      logCheat("محاولة لصق محتوى (Paste Attempt) 📋🚫");
       alert("⚠️ ممنوع استخدام اللصق (Paste) داخل المنصة!");
-      logCheat("محاولة استخدام اللصق (Paste Attempt) 📋🚫");
     }, true);
 
     window.addEventListener("blur", function() {
@@ -1075,9 +1158,11 @@
       const email = localStorage.getItem('fahem_email');
       if(!email || email === ADMIN_EMAIL) return;
 
+      const studentName = getUserDisplayName(email);
       if(!appData.reports) appData.reports = [];
       appData.reports.push({
         email: email,
+        name: studentName,
         action: actionType,
         time: new Date().toLocaleString('ar-EG')
       });
@@ -1190,6 +1275,17 @@
       alert('تم نشر التنبيه بنجاح في شريط المنصة! 🚀');
     }
 
+    async function updateExternalAnnouncement() {
+      const newText = document.getElementById('admin-external-announcement-input').value.trim();
+      if(!newText) { alert('اكتب نص التنبيه الخارجي أولاً'); return; }
+
+      appData.externalAnnouncement = newText;
+      if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
+      document.getElementById('external-announcement-text').innerText = newText;
+      document.getElementById('admin-external-announcement-input').value = '';
+      alert('تم نشر التنبيه الخارجي بنجاح لجميع الطلاب! 🚨🚀');
+    }
+
     function switchAuthPane(paneId) {
       document.querySelectorAll('.auth-screen-pane').forEach(p => p.classList.remove('active'));
       document.getElementById(paneId).classList.add('active');
@@ -1269,7 +1365,6 @@
       setupSession(email);
     }
 
-    /* 📧 دالة إرسال كود التحقق الشاملة */
     function sendCodeToTeacher() {
       const email = document.getElementById('forgot-email').value.trim();
       if(!email) { alert('الرجاء إدخال البريد الإلكتروني أولاً'); return; }
@@ -1504,7 +1599,6 @@
       closeExam();
     }
 
-    /* 🏆 إدارة وترتيب الأوائل يدوياً بواسطة الأدمن */
     function openManageRankModal() {
       let container = document.getElementById('modal-questions-container');
       document.getElementById('modal-title').innerText = "⚙️ إدارة ترتيب الأوائل وتعديله يدويًا";
@@ -2236,15 +2330,22 @@
 
     function showStudentReports() {
       let container = document.getElementById('modal-questions-container');
-      document.getElementById('modal-title').innerText = "📋 تقارير لقطات الشاشة والغش";
+      document.getElementById('modal-title').innerText = "📋 تقارير لقطات الشاشة والغش والنسخ";
       document.getElementById('submit-exam-btn').style.display = 'none';
       let reportsList = appData.reports || [];
-      let html = `<div style="font-size:12px; margin-bottom:10px; font-weight:bold;">المخالفات: ${reportsList.length}</div>`;
+      let html = `<div style="font-size:12px; margin-bottom:10px; font-weight:bold;">إجمالي المخالفات: ${reportsList.length}</div>`;
       if(reportsList.length === 0) {
         html += `<p style="text-align:center; color:#64748b;">لا توجد مخالفات مسجلة.</p>`;
       } else {
         reportsList.slice().reverse().forEach(rep => {
-          html += `<div style="background:#f8fafc; border:1px solid #fee2e2; padding:8px; border-radius:8px; margin-bottom:6px; text-align:right;"><div style="font-size:12px; font-weight:bold; color:#ef4444;">${rep.email}</div><div style="font-size:11px;">${rep.action}</div><div style="font-size:10px; color:#94a3b8;">${rep.time}</div></div>`;
+          html += `
+            <div style="background:#f8fafc; border:1px solid #fee2e2; padding:10px; border-radius:8px; margin-bottom:8px; text-align:right;">
+              <div style="font-size:13px; font-weight:bold; color:#1e293b;">👤 الطالب: ${rep.name || rep.email}</div>
+              <div style="font-size:11px; color:#64748b;">📧 الإيميل: ${rep.email}</div>
+              <div style="font-size:12px; font-weight:bold; color:#ef4444; margin-top:4px;">🚨 المخالفة: ${rep.action}</div>
+              <div style="font-size:10px; color:#94a3b8; margin-top:2px;">⏰ الوقت: ${rep.time}</div>
+            </div>
+          `;
         });
       }
       container.innerHTML = html;
