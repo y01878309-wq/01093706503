@@ -697,7 +697,7 @@
       <div class="admin-badge-top" id="role-badge" style="display:none;">أدمن (يوسف فرج)</div>
     </div>
 
-    <!-- مكان إعلان Adsterra الثالث -->
+    <!-- مكان إعلان Adsterra الثالث (مخفي للأدمن) -->
     <div class="ad-slot-container" id="ad-slot-1">
       <script>
         atOptions = {
@@ -743,10 +743,10 @@
         <button class="btn-main" onclick="updateAnnouncement()" style="width: 100%; background: #059669;">تحديث ونشر التنبيه سحابياً 🚀</button>
       </div>
       
-      <!-- ✨ إضافة الذكاء الاصطناعي لبنك أسئلة الكتاب المدرسى الحقيقية -->
+      <!-- ✨ توليد أسئلة حقيقية حسب المادة أو الدرس -->
       <div style="background: #e0f2fe; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #7dd3fc;">
-        <div style="font-size: 11px; font-weight: bold; color: #0369a1; margin-bottom: 4px;">🪄 توليد أسئلة حقيقية من الكتاب المدرسي (بدون تكرار):</div>
-        <input type="text" id="auto-lesson-name" class="auth-input" placeholder="اكتب اسم الدرس أو المادة (مثال: فيزياء - قانون فاراداي)..." style="background: white; color: #1e293b; margin-bottom: 6px; font-size: 11px;">
+        <div style="font-size: 11px; font-weight: bold; color: #0369a1; margin-bottom: 4px;">🪄 توليد أسئلة حقيقية من الكتاب المدرسي (حسب المادة):</div>
+        <input type="text" id="auto-lesson-name" class="auth-input" placeholder="اكتب اسم الدرس أو المادة (مثال: أحياء، فيزياء، حديث، كيمياء)..." style="background: white; color: #1e293b; margin-bottom: 6px; font-size: 11px;">
         <div style="display: flex; gap: 6px; margin-bottom: 6px;">
           <input type="number" id="auto-mcq-count" class="auth-input" placeholder="عدد اختر" value="3" style="background: white; color: #1e293b; font-size: 11px; margin-bottom:0;">
           <input type="number" id="auto-essay-count" class="auth-input" placeholder="عدد المقالي" value="1" style="background: white; color: #1e293b; font-size: 11px; margin-bottom:0;">
@@ -811,7 +811,7 @@
         <div class="action-card" onclick="switchTab('sec-community', 'nav-community')"><div class="stat-icon">💬</div><div class="stat-label">الجروب الجماعي</div></div>
       </div>
 
-      <!-- مكان إعلان Adsterra الرابع -->
+      <!-- مكان إعلان Adsterra الرابع (مخفي للأدمن) -->
       <div class="ad-slot-container" id="ad-slot-2">
         <script>
           atOptions = {
@@ -1943,7 +1943,7 @@
       }
     }
 
-    /* ✨ بنك الأسئلة الشامل للمواد المختلفة (أحياء، فيزياء، كيمياء، وغيرها) */
+    /* ✨ بنك الأسئلة الشامل للمواد المختلفة (أحياء، فيزياء، حديث، وغيرها) */
     const textbookBankMCQ = {
       "أحياء": [
         { q: "كم عدد عظام الهيكل العذري المحوري في الإنسان؟", o1: "80 عظَمة", o2: "126 عظَمة", o3: "206 عظام", o4: "60 عظَمة", ans: "80 عظَمة" },
@@ -1953,6 +1953,10 @@
       "فيزياء": [
         { q: "ما هي وحدة قياس الفيض المغناطيسي؟", o1: "الويبر (Weber)", o2: "التسلا (Tesla)", o3: "الفولت (Volt)", o4: "الأمبير (Ampere)", ans: "الويبر (Weber)" },
         { q: "قانون فاراداي للحث الكهرومغناطيسي ينص على أن قوة الدفع الكهربية المستحثة تتناسب طردياً مع:", o1: "معدل تغير الفيض المغناطيسي", o2: "المقاومة الكلية للدائرة", o3: "شدة التيار الاصلي", o4: "سعة البطارية", ans: "معدل تغير الفيض المغناطيسي" }
+      ],
+      "حديث": [
+        { q: "ما هو تعريف الحديث الصحيح اصطلاحاً؟", o1: "ما اتصل إسناده بنقل العدل الضابط عن مثله إلى منتهاه", o2: "ما نزل عن درجة الصحيح لعلة خفيفة", o3: "ما أضيف إلى النبي صلى الله عليه وسلم قولاً فقط", o4: "ما رواه مجهول الحال", ans: "ما اتصل إسناده بنقل العدل الضابط عن مثله إلى منتهاه" },
+        { q: "أي من الكتب التالية يُعتبر أصح الكتب بعد القرآن الكريم؟", o1: "صحيح البخاري", o2: "سنن الترمذي", o3: "موطأ مالك", o4: "مسند أحمد", ans: "صحيح البخاري" }
       ],
       "عام": [
         { q: "أي مما يلي يعتبر مصدراً أساسياً للطاقة المتجددة؟", o1: "الفحم الحجري", o2: "النفط الخام", o3: "الطاقة الشمسية", o4: "الغاز الطبيعي", ans: "الطاقة الشمسية" },
@@ -1976,8 +1980,10 @@
       generateQuestionFields();
 
       let targetCategory = "عام";
-      if(lessonName.toLowerCase().includes("أحياء") || lessonName.toLowerCase().includes("دعامة")) targetCategory = "أحياء";
-      else if(lessonName.toLowerCase().includes("فيزياء") || lessonName.toLowerCase().includes("حث")) targetCategory = "فيزياء";
+      let lowerName = lessonName.toLowerCase();
+      if(lowerName.includes("أحياء") || lowerName.includes("دعامة")) targetCategory = "أحياء";
+      else if(lowerName.includes("فيزياء") || lowerName.includes("حث")) targetCategory = "فيزياء";
+      else if(lowerName.includes("حديث") || lowerName.includes("سنة")) targetCategory = "حديث";
 
       let bankList = textbookBankMCQ[targetCategory] || textbookBankMCQ["عام"];
       let shuffledMCQ = [...bankList].sort(() => 0.5 - Math.random());
@@ -2096,7 +2102,8 @@
           let o3 = document.getElementById(`q_opt3_${i}`).value.trim() || 'ج';
           let o4 = document.getElementById(`q_opt4_${i}`).value.trim() || 'د';
           let ans = document.getElementById(`q_ans_${i}`).value.trim() || o1;
-          questionsArr.push({ type: 'mcq', q: qText, timeSec: qSec, o1: o1, o2: o2, o3: o3, o4: o4, ans: ans });
+          // حفظ المفاتيح المزدوجة لضمان الظهور 100% بدون أي أخطاء
+          questionsArr.push({ type: 'mcq', q: qText, questionText: qText, timeSec: qSec, o1: o1, option1: o1, o2: o2, option2: o2, o3: o3, option3: o3, o4: o4, option4: o4, ans: ans, correctAnswer: ans });
         }
       }
 
@@ -2345,7 +2352,7 @@
       showQuestionAt(0);
     }
 
-    /* ✨ العرض المستقل لكل سؤال في صفحة وحدها وجمع الدرجات في النهاية */
+    /* ✨ عرض السؤال بضمان كامل ومفاتيح مرنة لظهور النص والاختيارات 100% */
     function showQuestionAt(qIndex) {
       currentQuestionIndex = qIndex;
       isInsideExam = true;
@@ -2381,7 +2388,9 @@
       }, 1000);
 
       let savedAns = studentExamAnswers[currentQuestionIndex] || '';
-      let questionTextValue = q.q || q.questionText || `سؤال رقم (${currentQuestionIndex + 1})`;
+      
+      // جلب نص السؤال بأمان تام لضمان عدم ظهوره فارغاً أبداً
+      let questionTextValue = q.q || q.questionText || q.text || `سؤال رقم (${currentQuestionIndex + 1})`;
 
       if(q.type === 'essay') {
         container.innerHTML = `
@@ -2391,10 +2400,10 @@
           </div>
         `;
       } else {
-        let opt1 = q.o1 || q.option1 || 'أ';
-        let opt2 = q.o2 || q.option2 || 'ب';
-        let opt3 = q.o3 || q.option3 || 'ج';
-        let opt4 = q.o4 || q.option4 || 'د';
+        let opt1 = q.o1 || q.option1 || q.opt1 || 'أ';
+        let opt2 = q.o2 || q.option2 || q.opt2 || 'ب';
+        let opt3 = q.o3 || q.option3 || q.opt3 || 'ج';
+        let opt4 = q.o4 || q.option4 || q.opt4 || 'د';
         let correctAns = q.ans || q.correctAnswer || opt1;
 
         container.innerHTML = `
