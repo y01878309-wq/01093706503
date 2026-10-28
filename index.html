@@ -2375,8 +2375,15 @@
 
       let submitBtn = document.getElementById('submit-exam-btn');
       submitBtn.style.display = 'block';
-      submitBtn.innerText = currentQuestionIndex === activeQuestions.length - 1 ? 'تسليم الامتحان ✅' : 'السؤال التالي ➔';
-      submitBtn.onclick = function() { nextQuestion(); };
+
+      // 🛠️ التعديل الدقيق: ربط الزرار حسب السؤال الحالي بدقة تامة لعدم إغلاق النافذة خطأ
+      if (currentQuestionIndex === activeQuestions.length - 1) {
+        submitBtn.innerText = 'تسليم الامتحان ✅';
+        submitBtn.onclick = function() { submitExam(); };
+      } else {
+        submitBtn.innerText = 'السؤال التالي ➔';
+        submitBtn.onclick = function() { nextQuestion(); };
+      }
 
       document.getElementById('exam-modal').style.display = 'flex';
     }
