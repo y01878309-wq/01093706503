@@ -543,7 +543,6 @@
       filter: blur(25px) !important;
     }
 
-    /* 🛡️ إصلاح مشكلة إخفاء محتوى الأسئلة تماماً في الموبايل وتأقلم الكيبورد */
     .modal-box {
       background: white; 
       border-radius: 24px; 
@@ -559,8 +558,8 @@
     
     #modal-questions-container {
       flex: 1;
-      overflow-y: auto; /* السماح بالتمرير الداخلي للأسئلة بمرونة */
-      max-height: 52vh; /* ضمان ظهور المحتوى بالكامل وعدم اختفائه */
+      overflow-y: auto;
+      max-height: 52vh;
       margin-bottom: 10px;
       padding-left: 4px;
       padding-right: 4px;
@@ -617,7 +616,7 @@
 </head>
 <body>
 
-  <!-- 🚨 شريط الإشعارات الخارجي (مخفي للطلاب، يظهر للأدمن فقط عند الحاجة) -->
+  <!-- 🚨 شريط الإشعارات الخارجي -->
   <div class="external-alert-bar" id="external-alert-bar-div">
     <div class="external-alert-title">🚨 تنبيه خارجي</div>
     <div class="external-alert-marquee-container">
@@ -647,7 +646,7 @@
           <input type="email" id="login-email" class="auth-input" placeholder="البريد الإلكتروني (Gmail)">
           <button type="button" class="voice-btn" onclick="startVoiceInput('login-email')">🎤</button>
         </div>
-        <input type="password" id="user-pass" class="auth-input" placeholder="كلمة المرور (أي كلمة سر تعجبك)" style="padding-left: 12px; margin-bottom: 12px;">
+        <input type="password" id="user-pass" class="auth-input" placeholder="كلمة المرور 🔒" style="padding-left: 12px; margin-bottom: 12px;">
         <button class="auth-btn" onclick="proceedToPhoneStep()">التالي ➔</button>
         <div class="text-link-auth" onclick="switchAuthPane('pane-forgot')">نسيت كلمة المرور؟</div>
       </div>
@@ -693,12 +692,12 @@
     <div class="app-header">
       <div>
         <div class="greeting-text" id="welcome-user-name">👋 مرحباً بك</div>
-        <div class="date-text" id="current-date-box">الثلاثاء، أكتوبر 20</div>
+        <div class="date-text" id="current-date-box">الأربعاء، أكتوبر 28</div>
       </div>
       <div class="admin-badge-top" id="role-badge" style="display:none;">أدمن (يوسف فرج)</div>
     </div>
 
-    <!-- مكان إعلان Adsterra الثالث (مخفي عندك كأدمن ويظهر للطلاب) -->
+    <!-- مكان إعلان Adsterra الثالث -->
     <div class="ad-slot-container" id="ad-slot-1">
       <script>
         atOptions = {
@@ -720,6 +719,14 @@
         <div style="font-size: 11px; font-weight: bold; color: #b45309; margin-bottom: 4px;">🚨 نشر إشعار خارجي جديد للطلاب:</div>
         <input type="text" id="admin-external-announcement-input" class="auth-input" placeholder="اكتب التنبيه الخارجي هنا..." style="background: #ffffff; color: #1e293b; margin-bottom: 6px; font-size: 12px;">
         <button class="btn-main" onclick="updateExternalAnnouncement()" style="width: 100%; background: #d97706;">نشر التنبيه الخارجي سحابياً 🚀</button>
+      </div>
+
+      <!-- 📝 إضافة واجب منزلي جديد -->
+      <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1;">
+        <div style="font-size: 11px; font-weight: bold; color: #8b5cf6; margin-bottom: 4px;">📝 نشر واجب منزلي جديد للطلاب:</div>
+        <input type="text" id="new-hw-title" class="auth-input" placeholder="عنوان الواجب..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; font-size: 12px; padding-left:12px;">
+        <textarea id="new-hw-desc" class="auth-input" placeholder="تفاصيل وأسئلة الواجب..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; font-size: 12px; height:60px;"></textarea>
+        <button class="btn-main" onclick="addNewHomework()" style="width: 100%; background: #8b5cf6;">نشر الواجب سحابياً 📝🚀</button>
       </div>
 
       <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1;">
@@ -773,6 +780,7 @@
         <button class="btn-main" onclick="addPdfFileDirect()" style="width: 100%; background: #7c3aed;">رفع وحفظ الملف سحابياً 📁✅</button>
       </div>
 
+      <button class="btn-main" onclick="showHomeworkSubmissionsModal()" style="width: 100%; background: #8b5cf6; margin-bottom: 6px;">📥 مراجعة إجابات الواجبات المرفوعة من الطلاب</button>
       <button class="btn-main" onclick="showRegisteredStudentsModal()" style="width: 100%; background: #059669; margin-bottom: 6px;">👥 سجل الطلاب والتفاصيل الدقيقة وتعديل الأسماء وحظرهم</button>
       <button class="btn-main" onclick="showStudentReports()" style="width: 100%; background: #4f46e5; margin-bottom: 6px;">📋 تقارير محاولات لقطات الشاشة والغش والنسخ</button>
     </div>
@@ -788,11 +796,11 @@
       <div class="section-header-title">إجراءات سريعة</div>
       <div class="action-grid">
         <div class="action-card" onclick="switchTab('sec-exams', 'nav-exams')"><div class="stat-icon">❓</div><div class="stat-label">الامتحانات</div></div>
-        <div class="action-card" onclick="switchTab('sec-videos', 'nav-videos')"><div class="stat-icon">🎥</div><div class="stat-label">الفيديوهات</div></div>
-        <div class="action-card" onclick="switchTab('sec-leaderboard', 'nav-leaderboard')"><div class="stat-icon">🏆</div><div class="stat-label">الترتيب</div></div>
+        <div class="action-card" onclick="switchTab('sec-homeworks', 'nav-homeworks')"><div class="stat-icon">📝</div><div class="stat-label">الواجبات</div></div>
+        <div class="action-card" onclick="switchTab('sec-community', 'nav-community')"><div class="stat-icon">💬</div><div class="stat-label">الجروب الجماعي</div></div>
       </div>
 
-      <!-- مكان إعلان Adsterra الرابع (مخفي عندك كأدمن ويظهر للطلاب) -->
+      <!-- مكان إعلان Adsterra الرابع -->
       <div class="ad-slot-container" id="ad-slot-2">
         <script>
           atOptions = {
@@ -825,6 +833,27 @@
       </div>
     </div>
 
+    <!-- 📝 قسم الواجبات المنزلية -->
+    <div id="sec-homeworks" class="content-section">
+      <div class="section-header-title">الواجبات المنزلية المطلوبة</div>
+      <div id="homeworks-container"></div>
+    </div>
+
+    <!-- 💬 قسم الجروب الجماعي التلقائي داخل المنصة -->
+    <div id="sec-community" class="content-section">
+      <div class="section-header-title">💬 جروب منصة فاهم الجماعي (مفتوح للجميع)</div>
+      <div class="card-item" style="padding: 12px;">
+        <div style="font-size: 12px; color: #64748b; margin-bottom: 10px; text-align: right;">شارك أصدقائك الأسئلة والمناقشات الدراسية بحرية!</div>
+        
+        <div id="community-messages-box" style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; height: 320px; overflow-y: auto; padding: 10px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px;"></div>
+
+        <div style="display: flex; gap: 6px;">
+          <input type="text" id="community-input" class="auth-input" placeholder="اكتب رسالتك في الجروب الجماعي..." style="background: white; color: #1e293b; margin-bottom: 0; font-size: 13px; padding-left: 12px;">
+          <button class="btn-main" onclick="sendCommunityMessage()" style="background: #0284c7; padding: 0 16px; font-size: 13px;">إرسال ✈️</button>
+        </div>
+      </div>
+    </div>
+
     <div id="sec-videos" class="content-section">
       <div class="section-header-title">فيديوهات الشرح التعليمية</div>
       <div id="videos-container"></div>
@@ -835,7 +864,6 @@
       <div id="pdfs-container"></div>
     </div>
 
-    <!-- 🏆 قسم ترتيب الأوائل المطور بالتحكم اليدوي المباشر للأدمن -->
     <div id="sec-leaderboard" class="content-section">
       <div class="section-header-container">
         <div class="section-header-title">🏆 ترتيب الأوائل على المنصة</div>
@@ -910,10 +938,10 @@
 
         <div class="settings-group-title">التفضيلات</div>
         <div class="settings-card-group">
-          <div class="settings-row-item" onclick="alert('الإشعارات مفعّلة تلقائياً لتلقي جميع التنبيهات 🔔')">
+          <div class="settings-row-item" onclick="requestNotificationPermission()">
             <div class="settings-row-left">
               <span class="settings-row-icon">🔔</span>
-              <span>الإشعارات</span>
+              <span>تفعيل الإشعارات الفورية (Push)</span>
             </div>
             <span class="settings-arrow">‹</span>
           </div>
@@ -947,15 +975,7 @@
   <div id="privacyModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; justify-content: center; align-items: center; padding: 15px;">
     <div style="background: #fff; width: 100%; max-width: 550px; max-height: 85vh; overflow-y: auto; padding: 22px; border-radius: 18px; direction: rtl; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
       <h2 style="color: #0f172a; border-bottom: 2px solid #0284c7; padding-bottom: 8px; margin-top: 0; font-size: 18px;">سياسة الخصوصية وشروط الاستخدام</h2>
-      
       <p style="font-size: 13px; color: #334155; margin-top: 10px; line-height: 1.6;">أهلاً بكم في <strong>منصة فاهم التعليمية</strong> بإشراف الأستاذ يوسف فرج. نحن نلتزم بحماية خصوصية مستخدمينا وتوفير بيئة تعليمية آمنة.</p>
-      
-      <h3 style="color: #0284c7; font-size: 14px; margin-top: 15px;">1. المعلومات التي نجمعها</h3>
-      <p style="font-size: 13px; color: #334155; line-height: 1.6;">نجمع معلومات أساسية مثل البريد الإلكتروني والاسم ورقم الهاتف لتوفير تجربة تعليمية مخصصة، ومتابعة درجات الامتحانات وترتيب الطلاب.</p>
-      
-      <h3 style="color: #0284c7; font-size: 14px; margin-top: 15px;">2. الإعلانات وملفات تعريف الارتباط (Cookies)</h3>
-      <p style="font-size: 13px; color: #334155; line-height: 1.6;">تستخدم منصتنا خدمات إعلانية مثل <strong>Google AdSense</strong> و<strong>Adsterra</strong>. تستخدم هذه الشركات ملفات تعريف الارتباط (Cookies) لعرض إعلانات مخصصة بناءً على زيارات المستخدمين لموقعنا.</p>
-      
       <div style="text-align: center; margin-top: 20px;">
         <button onclick="closePolicyModal()" style="background: #0284c7; color: #fff; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold;">إغلاق النافذة ✕</button>
       </div>
@@ -965,8 +985,10 @@
   <div class="bottom-nav" id="bottom-navigation" style="display: none;">
     <button class="nav-item active" id="nav-home" onclick="switchTab('sec-home', 'nav-home')"><span>🏠</span> الرئيسية</button>
     <button class="nav-item" id="nav-exams" onclick="switchTab('sec-exams', 'nav-exams')"><span>❓</span> الامتحانات</button>
+    <button class="nav-item" id="nav-homeworks" onclick="switchTab('sec-homeworks', 'nav-homeworks')"><span>📝</span> الواجبات</button>
+    <button class="nav-item" id="nav-community" onclick="switchTab('sec-community', 'nav-community')"><span>💬</span> الجروب</button>
     <button class="nav-item" id="nav-videos" onclick="switchTab('sec-videos', 'nav-videos')"><span>🎥</span> الفيديوهات</button>
-    <button class="nav-item" id="nav-pdfs" onclick="switchTab('sec-pdfs', 'nav-pdfs')"><span>📁</span> PDF/صور</button>
+    <button class="nav-item" id="nav-pdfs" onclick="switchTab('sec-pdfs', 'nav-pdfs')"><span>📁</span> PDF</button>
     <button class="nav-item" id="nav-leaderboard" onclick="switchTab('sec-leaderboard', 'nav-leaderboard')"><span>🏆</span> الترتيب</button>
     <button class="nav-item" id="nav-settings" onclick="switchTab('sec-settings', 'nav-settings')"><span>⚙️</span> الإعدادات</button>
   </div>
@@ -1013,6 +1035,9 @@
       if (snapshot.exists()) {
         window.appData = snapshot.val();
         if(!window.appData.exams) window.appData.exams = [];
+        if(!window.appData.homeworks) window.appData.homeworks = [];
+        if(!window.appData.homeworkSubmissions) window.appData.homeworkSubmissions = [];
+        if(!window.appData.communityMessages) window.appData.communityMessages = [];
         if(!window.appData.videos) window.appData.videos = [];
         if(!window.appData.pdfs) window.appData.pdfs = [];
         if(!window.appData.leaderboard) window.appData.leaderboard = [];
@@ -1021,20 +1046,6 @@
         if(!window.appData.blockedUsers) window.appData.blockedUsers = [];
         if(!window.appData.telegramUrl) window.appData.telegramUrl = "https://t.me/";
         if(!window.appData.youtubeUrl) window.appData.youtubeUrl = "https://youtube.com/";
-        if(!window.appData.externalAnnouncement) window.appData.externalAnnouncement = "📢 تنبيه هام: يوجد امتحان الساعة 10 مساءً اليوم - يرجى الاستعداد جيداً!";
-
-        let budiExists = window.appData.registeredUsers.some(u => u.email === "Yousefbooooda98@gmail.com");
-        if(!budiExists) {
-          window.appData.registeredUsers.push({
-            email: "Yousefbooooda98@gmail.com",
-            name: "Yousef Booda",
-            phone: "غير متاح",
-            joinTime: new Date().toLocaleString('ar-EG'),
-            lastActive: new Date().toLocaleString('ar-EG'),
-            loginCount: 1,
-            device: "📱 موبايل"
-          });
-        }
 
         if(window.appData.announcementText) {
           document.getElementById('header-announcement-text').innerText = window.appData.announcementText;
@@ -1069,6 +1080,9 @@
 
     window.appData = {
       exams: [],
+      homeworks: [],
+      homeworkSubmissions: [],
+      communityMessages: [],
       videos: [],
       pdfs: [],
       leaderboard: [],
@@ -1085,13 +1099,27 @@
     let resetEmailTarget = "";
     let generatedOtpCode = ""; 
 
-    function openPolicyModal() {
-      document.getElementById('privacyModal').style.display = 'flex';
+    function requestNotificationPermission() {
+      if ('Notification' in window) {
+        Notification.requestPermission().then(permission => {
+          if (permission === 'granted') {
+            alert('✅ تم تفعيل الإشعارات الفورية بنجاح!');
+            sendPushNotification('منصة فاهم التعليمية', 'الإشعارات تعمل بكفاءة 🔔');
+          } else {
+            alert('⚠️ لم يتم السماح بالإشعارات في متصفحك.');
+          }
+        });
+      }
     }
 
-    function closePolicyModal() {
-      document.getElementById('privacyModal').style.display = 'none';
+    function sendPushNotification(title, body) {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification(title, { body: body, icon: '1000514471_2.jpg' });
+      }
     }
+
+    function openPolicyModal() { document.getElementById('privacyModal').style.display = 'flex'; }
+    function closePolicyModal() { document.getElementById('privacyModal').style.display = 'none'; }
 
     function contactTeacherWhatsApp() {
       const email = localStorage.getItem('fahem_email') || "طالب بالمنصة";
@@ -1108,7 +1136,7 @@
       recognition.onresult = function(e) { document.getElementById(targetId).value = e.results[0][0].transcript; };
     }
 
-    /* 🛡️ رصد النسخ واللصق والغش وتسجيلها بالاسم في تقارير الأدمن */
+    /* 🛡️ رصد النسخ واللصق والغش */
     window.addEventListener('copy', function(e) {
       e.preventDefault();
       logCheat("محاولة نسخ محتوى (Copy Attempt) 📋🚫");
@@ -1168,32 +1196,280 @@
       if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
     }
 
-    function normalizeText(txt) {
-      if(!txt) return "";
-      return txt
-        .replace(/\\text\{.*?\}/g, '')
-        .replace(/\\mathbf\{.*?\}/g, '')
-        .replace(/\\cdot/g, '*')
-        .replace(/\\rightarrow/g, '->')
-        .replace(/[\{\}\\\$\*\s\t\r\n]/g, '')
-        .toLowerCase();
-    }
-
-    function evaluateSmartAnswer(studentAns, modelAns) {
-      if(!studentAns) return false;
-      let cleanStudent = normalizeText(studentAns);
-      let cleanModel = normalizeText(modelAns);
-
-      if(cleanStudent === cleanModel) return true;
-
-      let studentNums = cleanStudent.match(/\d+(\.\d+)?/g);
-      let modelNums = cleanModel.match(/\d+(\.\d+)?/g);
-
-      if(studentNums && modelNums && studentNums.join(',') === modelNums.join(',')) {
-        return true;
+    async function proceedToPhoneStep() {
+      const email = document.getElementById('login-email').value.trim();
+      const pass = document.getElementById('user-pass').value.trim();
+      if(!email || !pass) { alert('أدخل البريد الإلكتروني وكلمة المرور'); return; }
+      
+      if(appData.blockedUsers && appData.blockedUsers.includes(email)) {
+        alert('❌ تم حظر هذا الحساب من دخول المنصة بواسطة الأدمن!');
+        return;
       }
 
-      return false;
+      tempEmailForLogin = email;
+      localStorage.setItem('pass_' + email, pass);
+
+      let userObj = (appData.registeredUsers || []).find(u => u.email === email);
+      if(userObj && userObj.phone && userObj.phone !== 'غير متاح') {
+        finishLoginProcess(email);
+      } else {
+        document.getElementById('pane-login').classList.remove('active');
+        document.getElementById('pane-phone').classList.add('active');
+      }
+    }
+
+    async function completeLoginWithPhone() {
+      const phone = document.getElementById('user-phone').value.trim();
+      if(!phone) { alert('أدخل رقم الهاتف أو اضغط تخطي'); return; }
+      finishLoginProcess(tempEmailForLogin, phone);
+    }
+
+    function skipPhoneStep() { finishLoginProcess(tempEmailForLogin); }
+
+    async function finishLoginProcess(email, phoneVal = null) {
+      if(appData.blockedUsers && appData.blockedUsers.includes(email)) {
+        alert('❌ تم حظر حسابك من قبل الأدمن!');
+        location.reload();
+        return;
+      }
+
+      localStorage.setItem('fahem_email', email);
+      
+      let userObj = (appData.registeredUsers || []).find(u => u.email === email);
+      const userAgentStr = navigator.userAgent.includes("Mobile") ? "📱 موبايل" : "💻 كمبيوتر/لاب";
+      const nowTimeStr = new Date().toLocaleString('ar-EG');
+
+      if(!userObj) {
+        if(!appData.registeredUsers) appData.registeredUsers = [];
+        appData.registeredUsers.push({
+          email: email,
+          name: email.split('@')[0],
+          phone: phoneVal || 'غير متاح',
+          joinTime: nowTimeStr,
+          lastActive: nowTimeStr,
+          loginCount: 1,
+          device: userAgentStr
+        });
+      } else {
+        userObj.lastActive = nowTimeStr;
+        userObj.loginCount = (userObj.loginCount || 1) + 1;
+        userObj.device = userAgentStr;
+        if(phoneVal) userObj.phone = phoneVal;
+        if(!userObj.name) userObj.name = email.split('@')[0];
+      }
+
+      if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
+      setupSession(email);
+    }
+
+    /* 💬 إدارة الجروب الجماعي التلقائي */
+    async function sendCommunityMessage() {
+      const email = localStorage.getItem('fahem_email');
+      const textInput = document.getElementById('community-input');
+      const text = textInput.value.trim();
+
+      if(!text) return;
+
+      if(!appData.communityMessages) appData.communityMessages = [];
+      const senderName = getUserDisplayName(email);
+
+      appData.communityMessages.push({
+        senderEmail: email,
+        senderName: senderName,
+        text: text,
+        time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+      });
+
+      if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
+      textInput.value = '';
+      renderCommunityMessages();
+      sendPushNotification('رسالة جديدة في الجروب الجماعي 💬', `${senderName}: ${text}`);
+    }
+
+    function renderCommunityMessages() {
+      const container = document.getElementById('community-messages-box');
+      if(!container) return;
+      container.innerHTML = '';
+
+      const msgs = appData.communityMessages || [];
+      if(msgs.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:12px; margin-top:20px;">لا توجد رسائل في الجروب بعد. كن أول من يبدأ المحادثة! 💬</p>';
+        return;
+      }
+
+      const email = localStorage.getItem('fahem_email');
+
+      msgs.forEach(m => {
+        let isMe = m.senderEmail === email;
+        let alignStyle = isMe ? 'align-self: flex-end; background: #e0f2fe; border-color: #38bdf8;' : 'align-self: flex-start; background: white; border-color: #cbd5e1;';
+        
+        container.innerHTML += `
+          <div style="${alignStyle} border: 1px solid; border-radius: 12px; padding: 8px 12px; max-width: 85%; text-align: right;">
+            <div style="font-size: 11px; font-weight: bold; color: #0284c7; margin-bottom: 2px;">${m.senderName} ${m.senderEmail === ADMIN_EMAIL ? '👑' : ''}</div>
+            <div style="font-size: 13px; color: #1e293b; word-break: break-word;">${m.text}</div>
+            <div style="font-size: 9px; color: #94a3b8; text-align: left; margin-top: 2px;">${m.time}</div>
+          </div>
+        `;
+      });
+      container.scrollTop = container.scrollHeight;
+    }
+
+    /* 📝 الواجبات المنزليّة */
+    async function addNewHomework() {
+      const title = document.getElementById('new-hw-title').value.trim();
+      const desc = document.getElementById('new-hw-desc').value.trim();
+
+      if(!title || !desc) { alert('أدخل عنوان الواجب وتفاصيله أولاً!'); return; }
+
+      if(!appData.homeworks) appData.homeworks = [];
+      appData.homeworks.push({
+        id: 'hw_' + Date.now(),
+        title: title,
+        desc: desc,
+        date: new Date().toLocaleString('ar-EG')
+      });
+
+      if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
+      document.getElementById('new-hw-title').value = '';
+      document.getElementById('new-hw-desc').value = '';
+      renderHomeworks();
+      sendPushNotification('واجب منزلي جديد 📝', `نشر الأستاذ يوسف فرج واجباً جديداً: (${title})`);
+      alert('تم نشر الواجب وإرسال التنبيه للطلاب بنجاح! 📝🚀');
+    }
+
+    function renderHomeworks() {
+      const container = document.getElementById('homeworks-container');
+      if(!container) return;
+      container.innerHTML = '';
+
+      const email = localStorage.getItem('fahem_email');
+
+      if(!appData.homeworks || appData.homeworks.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">لا توجد واجبات منزلية حالياً</p>';
+        return;
+      }
+
+      appData.homeworks.forEach(hw => {
+        let hasSubmitted = (appData.homeworkSubmissions || []).some(s => s.hwId === hw.id && s.studentEmail === email);
+        let actionBtn = hasSubmitted ? 
+          `<span style="color:#16a34a; font-weight:bold; font-size:12px;">تم تسليم الواجب ✓</span>` : 
+          `<button class="btn-main" onclick="openSubmitHomeworkModal('${hw.id}', '${hw.title}')" style="background:#8b5cf6;">حل وتسليم الواجب 📝</button>`;
+
+        let deleteBtn = email === ADMIN_EMAIL ? `<button class="btn-danger-sm" onclick="deleteHomework('${hw.id}')">حذف 🗑️</button>` : '';
+
+        container.innerHTML += `
+          <div class="card-item">
+            <div class="card-row">
+              <div class="card-info">
+                <div class="card-title">📝 ${hw.title}</div>
+                <div class="card-subtitle" style="margin-top:6px; color:#334155; line-height:1.4;">${hw.desc}</div>
+                <div style="font-size:10px; color:#94a3b8; margin-top:4px;">تاريخ النشر: ${hw.date}</div>
+              </div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+              ${deleteBtn}
+              ${actionBtn}
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function openSubmitHomeworkModal(hwId, hwTitle) {
+      let container = document.getElementById('modal-questions-container');
+      document.getElementById('modal-title').innerText = `حل وتسليم واجب: ${hwTitle}`;
+      document.getElementById('submit-exam-btn').style.display = 'none';
+
+      container.innerHTML = `
+        <div style="text-align:right;">
+          <label style="font-size:12px; font-weight:bold; color:#0f172a; display:block; margin-bottom:6px;">اكتب إجابتك أو أي ملاحظة هنا (كتابة حرة ومفتوحة):</label>
+          <textarea id="hw-answer-text" class="auth-input" placeholder="اكتب إجابتك الشاملة هنا..." style="background:#f8fafc; color:#1e293b; height:100px; font-size:13px; margin-bottom:12px;"></textarea>
+
+          <label style="font-size:12px; font-weight:bold; color:#0f172a; display:block; margin-bottom:6px;">أو ارفع/صور صورة حل الواجب من الكشكول 📸:</label>
+          <input type="file" id="hw-answer-image" accept="image/*" capture="environment" class="auth-input" style="background:#f8fafc; color:#1e293b; font-size:11px; margin-bottom:15px;">
+
+          <button class="btn-main" onclick="submitHomeworkAnswer('${hwId}', '${hwTitle}')" style="width:100%; background:#8b5cf6; padding:12px; font-size:14px;">إرسال وتسليم الواجب للمعلم ✅</button>
+        </div>
+      `;
+
+      document.getElementById('exam-modal').style.display = 'flex';
+    }
+
+    async function submitHomeworkAnswer(hwId, hwTitle) {
+      const email = localStorage.getItem('fahem_email');
+      const textAns = document.getElementById('hw-answer-text').value.trim();
+      const imgInput = document.getElementById('hw-answer-image');
+
+      if(!textAns && (!imgInput.files || !imgInput.files[0])) {
+        alert('يرجى إما كتابة الإجابة أو تصوير صورة الحل في الكشكول!');
+        return;
+      }
+
+      if(imgInput.files && imgInput.files[0]) {
+        const file = imgInput.files[0];
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+          saveHomeworkSubmissionObj(hwId, hwTitle, email, textAns, e.target.result);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        await saveHomeworkSubmissionObj(hwId, hwTitle, email, textAns, null);
+      }
+    }
+
+    async function saveHomeworkSubmissionObj(hwId, hwTitle, email, textAns, imgData) {
+      if(!appData.homeworkSubmissions) appData.homeworkSubmissions = [];
+      appData.homeworkSubmissions.push({
+        hwId: hwId,
+        hwTitle: hwTitle,
+        studentEmail: email,
+        studentName: getUserDisplayName(email),
+        textAnswer: textAns || 'لا توجد ملاحظة مكتوبة',
+        imageAnswer: imgData,
+        time: new Date().toLocaleString('ar-EG')
+      });
+
+      if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
+      alert('تم تسليم وإرسال الواجب بنجاح للأستاذ يوسف فرج! 🎉');
+      closeExam();
+      renderHomeworks();
+    }
+
+    function showHomeworkSubmissionsModal() {
+      let container = document.getElementById('modal-questions-container');
+      document.getElementById('modal-title').innerText = "📥 إجابات وتسليمات الواجبات من الطلاب";
+      document.getElementById('submit-exam-btn').style.display = 'none';
+
+      let subs = appData.homeworkSubmissions || [];
+      let html = `<div style="font-size:12px; font-weight:bold; margin-bottom:10px;">إجمالي الحلول المرفوعة: ${subs.length}</div>`;
+
+      if(subs.length === 0) {
+        html += `<p style="text-align:center; color:#64748b;">لا توجد تسليمات حتى الآن.</p>`;
+      } else {
+        subs.slice().reverse().forEach(s => {
+          let imgPreview = s.imageAnswer ? `<div style="margin-top:8px;"><img src="${s.imageAnswer}" style="max-width:100%; max-height:200px; border-radius:8px; border:1px solid #cbd5e1;" /></div>` : '';
+          html += `
+            <div style="background:#f8fafc; border:1px solid #cbd5e1; padding:10px; border-radius:10px; margin-bottom:10px; text-align:right;">
+              <div style="font-size:13px; font-weight:bold; color:#0f172a;">👤 ${s.studentName} (${s.studentEmail})</div>
+              <div style="font-size:11px; color:#8b5cf6; font-weight:bold; margin-top:2px;">📝 واجب: ${s.hwTitle}</div>
+              <div style="font-size:12px; color:#1e293b; background:white; padding:8px; border-radius:6px; margin-top:6px; border:1px solid #e2e8f0;">${s.textAnswer}</div>
+              ${imgPreview}
+              <div style="font-size:10px; color:#94a3b8; margin-top:4px;">⏰ موعد التسليم: ${s.time}</div>
+            </div>
+          `;
+        });
+      }
+
+      container.innerHTML = html;
+      document.getElementById('exam-modal').style.display = 'flex';
+    }
+
+    async function deleteHomework(hwId) {
+      if(!confirm('هل أنت تأكد من حذف هذا الواجب المنزلي؟')) return;
+      appData.homeworks = (appData.homeworks || []).filter(h => h.id !== hwId);
+      if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
+      renderHomeworks();
+      alert('تم مسح الواجب بنجاح! 🗑️');
     }
 
     window.onload = function() {
@@ -1290,74 +1566,6 @@
       document.getElementById(paneId).classList.add('active');
     }
 
-    async function proceedToPhoneStep() {
-      const email = document.getElementById('login-email').value.trim();
-      const pass = document.getElementById('user-pass').value.trim();
-      if(!email || !pass) { alert('أدخل البريد الإلكتروني وكلمة المرور'); return; }
-      
-      if(appData.blockedUsers && appData.blockedUsers.includes(email)) {
-        alert('❌ تم حظر هذا الحساب من دخول المنصة بواسطة الأدمن!');
-        return;
-      }
-
-      tempEmailForLogin = email;
-      localStorage.setItem('pass_' + email, pass);
-
-      let userObj = (appData.registeredUsers || []).find(u => u.email === email);
-      if(userObj && userObj.phone && userObj.phone !== 'غير متاح') {
-        finishLoginProcess(email);
-      } else {
-        document.getElementById('pane-login').classList.remove('active');
-        document.getElementById('pane-phone').classList.add('active');
-      }
-    }
-
-    async function completeLoginWithPhone() {
-      const phone = document.getElementById('user-phone').value.trim();
-      if(!phone) { alert('أدخل رقم الهاتف أو اضغط تخطي'); return; }
-      finishLoginProcess(tempEmailForLogin, phone);
-    }
-
-    function skipPhoneStep() {
-      finishLoginProcess(tempEmailForLogin);
-    }
-
-    async function finishLoginProcess(email, phoneVal = null) {
-      if(appData.blockedUsers && appData.blockedUsers.includes(email)) {
-        alert('❌ تم حظر حسابك من قبل الأدمن!');
-        location.reload();
-        return;
-      }
-
-      localStorage.setItem('fahem_email', email);
-      
-      let userObj = (appData.registeredUsers || []).find(u => u.email === email);
-      const userAgentStr = navigator.userAgent.includes("Mobile") ? "📱 موبايل" : "💻 كمبيوتر/لاب";
-      const nowTimeStr = new Date().toLocaleString('ar-EG');
-
-      if(!userObj) {
-        if(!appData.registeredUsers) appData.registeredUsers = [];
-        appData.registeredUsers.push({
-          email: email,
-          name: email.split('@')[0],
-          phone: phoneVal || 'غير متاح',
-          joinTime: nowTimeStr,
-          lastActive: nowTimeStr,
-          loginCount: 1,
-          device: userAgentStr
-        });
-      } else {
-        userObj.lastActive = nowTimeStr;
-        userObj.loginCount = (userObj.loginCount || 1) + 1;
-        userObj.device = userAgentStr;
-        if(phoneVal) userObj.phone = phoneVal;
-        if(!userObj.name) userObj.name = email.split('@')[0];
-      }
-
-      if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
-      setupSession(email);
-    }
-
     function sendCodeToTeacher() {
       const email = document.getElementById('forgot-email').value.trim();
       if(!email) { alert('الرجاء إدخال البريد الإلكتروني أولاً'); return; }
@@ -1378,11 +1586,9 @@
 
       emailjs.send("service_1f0ykq7", "template_jhcysjh", templateParams)
         .then(function(response) {
-            console.log('تم الإرسال بنجاح!', response.status, response.text);
             alert('✅ تم إرسال كود التحقق إلى بريدك الإلكتروني بنجاح!');
             switchAuthPane('pane-reset');
         }, function(error) {
-            console.error('EmailJS Error:', error);
             alert('تعذر وصول الرسالة عبر الخادم تلقائياً. للانتقال المباشر وتجربة تغيير كلمة المرور سيتم تحويلك فوراً.');
             switchAuthPane('pane-reset');
         });
@@ -1437,22 +1643,17 @@
       document.getElementById('profile-avatar-letter').innerText = currentDisplayName.charAt(0).toUpperCase();
       document.getElementById('welcome-user-name').innerText = `👋 مرحباً، ${email === ADMIN_EMAIL ? 'يوسف فرج (الأدمن)' : currentDisplayName}`;
 
-      // 🚨 التحكم في ظهور/خفاء الأدمن والإعلانات
       if(email === ADMIN_EMAIL) {
         document.getElementById('admin-panel-box').style.display = 'block';
         document.getElementById('role-badge').style.display = 'block';
         document.getElementById('admin-stats-box').style.display = 'grid';
         document.getElementById('admin-rank-manage-btn').style.display = 'block';
-        document.getElementById('external-alert-bar-div').style.display = 'flex'; // يظهر للأدمن فقط للتأكيد
-        
-        // إخفاء الإعلانات عندك أنت وحدك كأدمن
+        document.getElementById('external-alert-bar-div').style.display = 'flex';
         document.querySelectorAll('#ad-slot-1, #ad-slot-2').forEach(el => el.style.display = 'none');
       } else {
         document.getElementById('admin-stats-box').style.display = 'none';
         document.getElementById('admin-rank-manage-btn').style.display = 'none';
-        document.getElementById('external-alert-bar-div').style.display = 'none'; // مخفي تماماً للطلاب
-        
-        // إظهار الإعلانات للطلاب بشكل طبيعي
+        document.getElementById('external-alert-bar-div').style.display = 'none';
         document.querySelectorAll('#ad-slot-1, #ad-slot-2').forEach(el => el.style.display = 'block');
       }
       renderAll();
@@ -1555,7 +1756,6 @@
 
     function submitPasswordChangeFromSettings() {
       const email = localStorage.getItem('fahem_email');
-      const curPass = document.getElementById('current-pass-field').value.trim();
       const newPass = document.getElementById('new-pass-field').value.trim();
       const confPass = document.getElementById('confirm-pass-field').value.trim();
 
@@ -1732,22 +1932,21 @@
     function autoFillQuestionAnswer(i) {
       const qText = document.getElementById(`q_text_${i}`).value.trim();
       if(!qText) {
-        alert('⚠️ اكتب نص السؤال أولاً لكي أتمكن من استخراج وتوليد الإجابة تلقائياً!');
+        alert('⚠️ اكتب نص السؤال أولاً!');
         return;
       }
 
       let qType = document.getElementById(`q_type_${i}`).value;
-      
       if(qType === 'mcq') {
         document.getElementById(`q_opt1_${i}`).value = "الخيار الأول";
         document.getElementById(`q_opt2_${i}`).value = "الخيار الثاني";
         document.getElementById(`q_opt3_${i}`).value = "الخيار الثالث";
         document.getElementById(`q_opt4_${i}`).value = "الخيار الرابع";
         document.getElementById(`q_ans_${i}`).value = "الخيار الأول";
-        alert('✨ تم توليد خيارات افتراضية والإجابة الصحيحة تلقائياً بنجاح! يمكنك تعديلها كما تشاء.');
+        alert('✨ تم توليد الخيارات والإجابة بنجاح!');
       } else {
-        document.getElementById(`q_model_ans_${i}`).value = `الإجابة النموذجية للسؤال (${qText}) هي الشرح بالتفصيل طبقاً للمنهج الدراسي.`;
-        alert('✨ تم توليد الإجابة النموذجية للمقالي تلقائياً بنجاح!');
+        document.getElementById(`q_model_ans_${i}`).value = `الإجابة النموذجية للسؤال (${qText}) الشرح بالتفصيل.`;
+        alert('✨ تم توليد الإجابة بنجاح!');
       }
     }
 
@@ -1799,12 +1998,12 @@
 
       if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
       renderAll();
-      alert('تم إضافة وجدولة الامتحان بنجاح على السيرفر! ⏰');
+      sendPushNotification('امتحان جديد 📝', `نشر الأستاذ يوسف فرج امتحاناً جديداً: (${title})`);
+      alert('تم إضافة وجدولة الامتحان وإرسال الإشعارات بنجاح! ⏰🚀');
     }
 
     async function deleteExam(examId) {
       if(!confirm("هل أنت تأكد من رغبتك في حذف هذا الامتحان نهائياً؟")) return;
-      
       appData.exams = (appData.exams || []).filter(ex => ex.id !== examId);
       if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
       renderAll();
@@ -1895,6 +2094,8 @@
 
     function renderAll() {
       renderExams();
+      renderHomeworks();
+      renderCommunityMessages();
       renderVideos();
       renderPdfs();
       renderLeaderboards();
@@ -2092,9 +2293,7 @@
       document.getElementById('exam-modal').style.display = 'flex';
     }
 
-    function saveStudentAnswer(qIdx, val) {
-      studentExamAnswers[qIdx] = val;
-    }
+    function saveStudentAnswer(qIdx, val) { studentExamAnswers[qIdx] = val; }
 
     function checkPracticeMode(el, correctAns, mode) {
       if(mode === 'practice') {
@@ -2486,6 +2685,16 @@
       const statStudents = document.getElementById('stat-students-count');
       if(statExams && appData.exams) statExams.innerText = appData.exams.length;
       if(statStudents && appData.registeredUsers) statStudents.innerText = appData.registeredUsers.length;
+    }
+
+    function normalizeText(txt) {
+      if(!txt) return "";
+      return txt.replace(/[\{\}\\\$\*\s\t\r\n]/g, '').toLowerCase();
+    }
+
+    function evaluateSmartAnswer(studentAns, modelAns) {
+      if(!studentAns) return false;
+      return normalizeText(studentAns) === normalizeText(modelAns);
     }
   </script>
 </body>
