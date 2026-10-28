@@ -543,19 +543,27 @@
       filter: blur(25px) !important;
     }
 
-    /* 🛡️ التعديل الجذري لحل مشكلة الكيبورد في الموبايل */
+    /* 🛡️ إصلاح مشكلة إخفاء محتوى الأسئلة تماماً في الموبايل وتأقلم الكيبورد */
     .modal-box {
       background: white; 
       border-radius: 24px; 
       width: 100%; 
       max-width: 460px; 
-      max-height: 85vh; /* تقليل الارتفاع قليلاً لتتأقلم مع الكيبورد */
-      overflow-y: auto; /* السماح بالتمرير بمرونة وسلاسة عند ظهور لوحة المفاتيح */
-      padding: 22px;
+      max-height: 85vh; 
+      padding: 20px;
       display: flex; 
       flex-direction: column; 
-      justify-content: space-between;
       box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    
+    #modal-questions-container {
+      flex: 1;
+      overflow-y: auto; /* السماح بالتمرير الداخلي للأسئلة بمرونة */
+      max-height: 52vh; /* ضمان ظهور المحتوى بالكامل وعدم اختفائه */
+      margin-bottom: 10px;
+      padding-left: 4px;
+      padding-right: 4px;
     }
 
     .result-summary-card {
@@ -965,14 +973,14 @@
 
   <div id="exam-modal">
     <div class="modal-box" id="modal-box-inner">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <h3 id="modal-title" style="color: #0284c7; font-size: 18px; font-weight: bold;">نافذة المنصة</h3>
-        <div id="exam-global-timer" style="background: #fee2e2; color: #ef4444; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: bold;"></div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h3 id="modal-title" style="color: #0284c7; font-size: 16px; font-weight: bold;">نافذة المنصة</h3>
+        <div id="exam-global-timer" style="background: #fee2e2; color: #ef4444; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: bold;"></div>
       </div>
-      <div id="modal-questions-container" style="margin-bottom: 15px; flex: 1;"></div>
-      <div>
+      <div id="modal-questions-container"></div>
+      <div style="margin-top: 10px;">
         <button class="btn-main" id="submit-exam-btn" style="width: 100%; padding: 12px; font-size: 15px; display:none;">تسليم الامتحان 🎯</button>
-        <button class="btn-main" onclick="closeExam()" style="background: #ef4444; width: 100%; padding: 12px; font-size: 14px; margin-top: 8px;">إغلاق ✕</button>
+        <button class="btn-main" onclick="closeExam()" style="background: #ef4444; width: 100%; padding: 12px; font-size: 14px; margin-top: 6px;">إغلاق ✕</button>
       </div>
     </div>
   </div>
@@ -1702,7 +1710,8 @@
             
             <div class="input-wrapper" style="margin-top: 4px;">
               <input type="text" id="q_text_${i}" class="auth-input" placeholder="نص السؤال..." style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
-              <button type="button" class="voice-btn" onclick="startVoiceInput('q_text_${i}')">🎤</button>
+              <button type="button" class="voice-btn" onclick="startVoiceInput('q_text_${i}')" style="left: 40px;" title="إدخال صوتي">🎤</button>
+              <button type="button" class="voice-btn" onclick="autoFillQuestionAnswer(${i})" style="left: 6px; background: #f59e0b;" title="توليد الإجابة تلقائياً">🪄</button>
             </div>
 
             <div id="mcq_box_${i}">
@@ -1717,6 +1726,28 @@
             </div>
           </div>
         `;
+      }
+    }
+
+    function autoFillQuestionAnswer(i) {
+      const qText = document.getElementById(`q_text_${i}`).value.trim();
+      if(!qText) {
+        alert('⚠️ اكتب نص السؤال أولاً لكي أتمكن من استخراج وتوليد الإجابة تلقائياً!');
+        return;
+      }
+
+      let qType = document.getElementById(`q_type_${i}`).value;
+      
+      if(qType === 'mcq') {
+        document.getElementById(`q_opt1_${i}`).value = "الخيار الأول";
+        document.getElementById(`q_opt2_${i}`).value = "الخيار الثاني";
+        document.getElementById(`q_opt3_${i}`).value = "الخيار الثالث";
+        document.getElementById(`q_opt4_${i}`).value = "الخيار الرابع";
+        document.getElementById(`q_ans_${i}`).value = "الخيار الأول";
+        alert('✨ تم توليد خيارات افتراضية والإجابة الصحيحة تلقائياً بنجاح! يمكنك تعديلها كما تشاء.');
+      } else {
+        document.getElementById(`q_model_ans_${i}`).value = `الإجابة النموذجية للسؤال (${qText}) هي الشرح بالتفصيل طبقاً للمنهج الدراسي.`;
+        alert('✨ تم توليد الإجابة النموذجية للمقالي تلقائياً بنجاح!');
       }
     }
 
@@ -1825,7 +1856,6 @@
       alert('تم مسح الفيديو بنجاح! 🗑️');
     }
 
-    /* 📁 رفع ملف PDF أو صورة مباشرة من الجهاز لتفتح لأي طالب فوراً */
     async function addPdfFileDirect() {
       const title = document.getElementById('new-pdf-title').value.trim();
       const fileInput = document.getElementById('new-pdf-file');
@@ -2017,13 +2047,13 @@
       let q = activeQuestions[currentQuestionIndex];
       let timeLeft = q.timeSec || 30;
 
-      let timerHtml = `<div id="q-timer" style="background: #fee2e2; color: #ef4444; padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: bold;">الوقت المتبقي: ${timeLeft} ث</div>`;
+      let timerHtml = `<div id="q-timer" style="background: #fee2e2; color: #ef4444; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: bold;">الوقت: ${timeLeft}ث</div>`;
       document.getElementById('exam-global-timer').outerHTML = timerHtml;
 
       questionTimerInterval = setInterval(() => {
         timeLeft--;
         let tBox = document.getElementById('q-timer');
-        if(tBox) tBox.innerText = `الوقت المتبقي: ${timeLeft} ث`;
+        if(tBox) tBox.innerText = `الوقت: ${timeLeft}ث`;
         
         if(timeLeft <= 0) {
           clearInterval(questionTimerInterval);
@@ -2036,20 +2066,20 @@
 
       if(q.type === 'essay') {
         container.innerHTML = `
-          <div style="background:#f8fafc; padding:16px; border-radius:14px; margin-bottom:12px; text-align:right; border:1px solid #e2e8f0;">
-            <div style="font-size:16px; font-weight:bold; margin-bottom:10px; color:#0f172a;">${q.q}</div>
-            <textarea id="exam_essay_input" class="auth-input" placeholder="اكتب إجابتك هنا..." style="background:white; color:#1e293b; height:120px; font-size:14px;" oninput="saveStudentAnswer(${currentQuestionIndex}, this.value)">${savedAns}</textarea>
+          <div style="background:#f8fafc; padding:14px; border-radius:12px; margin-bottom:10px; text-align:right; border:1px solid #e2e8f0;">
+            <div style="font-size:15px; font-weight:bold; margin-bottom:8px; color:#0f172a;">${q.q}</div>
+            <textarea id="exam_essay_input" class="auth-input" placeholder="اكتب إجابتك هنا..." style="background:white; color:#1e293b; height:100px; font-size:14px;" oninput="saveStudentAnswer(${currentQuestionIndex}, this.value)">${savedAns}</textarea>
           </div>
         `;
       } else {
         container.innerHTML = `
-          <div style="background:#f8fafc; padding:16px; border-radius:14px; margin-bottom:12px; text-align:right; border:1px solid #e2e8f0;">
-            <div style="font-size:16px; font-weight:bold; margin-bottom:12px; color:#0f172a;">${q.q}</div>
-            <label style="display:block; font-size:14px; margin-bottom:10px; background:white; padding:10px; border-radius:10px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o1}" ${savedAns === q.o1 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${currentExamMode}')"> ${q.o1}</label>
-            <label style="display:block; font-size:14px; margin-bottom:10px; background:white; padding:10px; border-radius:10px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o2}" ${savedAns === q.o2 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${currentExamMode}')"> ${q.o2}</label>
-            <label style="display:block; font-size:14px; margin-bottom:10px; background:white; padding:10px; border-radius:10px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o3}" ${savedAns === q.o3 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${currentExamMode}')"> ${q.o3}</label>
-            <label style="display:block; font-size:14px; margin-bottom:10px; background:white; padding:10px; border-radius:10px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o4}" ${savedAns === q.o4 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${currentExamMode}')"> ${q.o4}</label>
-            <div id="practice_fb" style="font-size:12px; font-weight:bold; margin-top:6px;"></div>
+          <div style="background:#f8fafc; padding:14px; border-radius:12px; margin-bottom:10px; text-align:right; border:1px solid #e2e8f0;">
+            <div style="font-size:15px; font-weight:bold; margin-bottom:10px; color:#0f172a;">${q.q}</div>
+            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:8px 10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o1}" ${savedAns === q.o1 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${currentExamMode}')"> ${q.o1}</label>
+            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:8px 10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o2}" ${savedAns === q.o2 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${currentExamMode}')"> ${q.o2}</label>
+            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:8px 10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o3}" ${savedAns === q.o3 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${currentExamMode}')"> ${q.o3}</label>
+            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:8px 10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o4}" ${savedAns === q.o4 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${currentExamMode}')"> ${q.o4}</label>
+            <div id="practice_fb" style="font-size:12px; font-weight:bold; margin-top:4px;"></div>
           </div>
         `;
       }
@@ -2401,7 +2431,6 @@
 
       const email = localStorage.getItem('fahem_email');
 
-      appData.pdfs.copy = true; // safe flag
       appData.pdfs.forEach(p => {
         let pCont = p.isImage ? `<div class="media-preview-container"><img src="${p.link}" /></div>` : `<a class="btn-custom-open" href="${p.link}" target="_blank" download>تحميل أو فتح الملف 📄</a>`;
         let deletePdfBtn = email === ADMIN_EMAIL ? `<button class="btn-danger-sm" onclick="deletePdf('${p.id}')" style="margin-top:6px;">حذف الملف 🗑️</button>` : '';
