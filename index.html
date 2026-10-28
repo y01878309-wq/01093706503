@@ -7,21 +7,12 @@
   <meta name="description" content="منصة فاهم التعليمية - منصة يوسف فرج التعليمية للمناهج والامتحانات والفيديوهات والشروحات الدراسية.">
   <title>منصة فاهم التعليمية - يوسف فرج</title>
 
-  <!-- أكواد إعلانات Adsterra الأربعة -->
-  <script data-cfasync="false" src="https://abscloud.org/1/1cad8059e24887e3e849006dda943d5f"></script>
+  <!-- إعلانات Adsterra بتتحمل من داخل المنصة بس بعد تسجيل الدخول (دالة loadPlatformAds) -->
 
   <!-- كود إثبات ملكية Google AdSense الخاص بك -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5773220233633978"
      crossorigin="anonymous"></script>
   
-  <!-- استدعاء مكتبة EmailJS -->
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-  <script type="text/javascript">
-    (function() {
-      emailjs.init("B3TSATTYUhbMbkIAX");
-    })();
-  </script>
-
   <style>
     * { 
       box-sizing: border-box; 
@@ -97,6 +88,7 @@
     }
 
     .ad-slot-container {
+      display: none;
       width: 100%;
       max-width: 480px;
       background: #ffffff;
@@ -647,8 +639,22 @@
           <button type="button" class="voice-btn" onclick="startVoiceInput('login-email')">🎤</button>
         </div>
         <input type="password" id="user-pass" class="auth-input" placeholder="كلمة المرور 🔒" style="padding-left: 12px; margin-bottom: 12px;">
-        <button class="auth-btn" onclick="proceedToPhoneStep()">التالي ➔</button>
+        <button class="auth-btn" id="login-btn" onclick="handleLogin()">تسجيل الدخول ➔</button>
+        <div class="text-link-auth" onclick="switchAuthPane('pane-register')">ليس لديك حساب؟ إنشاء حساب جديد</div>
         <div class="text-link-auth" onclick="switchAuthPane('pane-forgot')">نسيت كلمة المرور؟</div>
+      </div>
+
+      <div id="pane-register" class="auth-screen-pane">
+        <button class="back-btn" onclick="switchAuthPane('pane-login')">‹</button>
+        <div style="font-size: 40px; margin-bottom: 6px; margin-top: 15px;">📝</div>
+        <h2 style="margin-bottom: 5px; font-size: 18px;">إنشاء حساب جديد</h2>
+        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 14px;">طالب قديم؟ استخدم نفس إيميلك القديم بالظبط عشان نتايجك تظهر لك.</p>
+        <input type="text" id="reg-name" class="auth-input" placeholder="الاسم الكامل" style="padding-left: 12px; margin-bottom: 8px;">
+        <input type="email" id="reg-email" class="auth-input" placeholder="البريد الإلكتروني (Gmail)" style="padding-left: 12px; margin-bottom: 8px;">
+        <input type="tel" id="reg-phone" class="auth-input" placeholder="رقم الهاتف (اختياري)" style="padding-left: 12px; margin-bottom: 8px;">
+        <input type="password" id="reg-pass" class="auth-input" placeholder="كلمة المرور (6 أحرف على الأقل)" style="padding-left: 12px; margin-bottom: 8px;">
+        <input type="password" id="reg-pass2" class="auth-input" placeholder="تأكيد كلمة المرور" style="padding-left: 12px; margin-bottom: 12px;">
+        <button class="auth-btn" id="register-btn" onclick="handleRegister()">إنشاء الحساب ✅</button>
       </div>
 
       <div id="pane-phone" class="auth-screen-pane">
@@ -667,23 +673,12 @@
         <button class="back-btn" onclick="switchAuthPane('pane-login')">‹</button>
         <div style="font-size: 40px; margin-bottom: 10px; margin-top: 15px;">🔒</div>
         <h2 style="margin-bottom: 5px; font-size: 18px;">نسيت كلمة المرور؟</h2>
-        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 20px;">أدخل بريدك الإلكتروني لإرسال كود التحقق (OTP) أوتوماتيكياً عبر الإيميل.</p>
+        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 20px;">أدخل بريدك الإلكتروني وهيوصلك رابط على الإيميل تغيّر منه كلمة المرور (دوّر في Spam لو ما ظهرش).</p>
         <div class="input-wrapper">
           <input type="email" id="forgot-email" class="auth-input" placeholder="البريد الإلكتروني">
           <button type="button" class="voice-btn" onclick="startVoiceInput('forgot-email')">🎤</button>
         </div>
-        <button class="auth-btn" onclick="sendCodeToTeacher()">إرسال كود التحقق بالإيميل ✉️</button>
-      </div>
-
-      <div id="pane-reset" class="auth-screen-pane">
-        <button class="back-btn" onclick="switchAuthPane('pane-forgot')">‹</button>
-        <div style="font-size: 40px; margin-bottom: 10px; margin-top: 15px;">🔑</div>
-        <h2 style="margin-bottom: 5px; font-size: 18px;">تغيير كلمة المرور</h2>
-        <p style="color: #94a3b8; font-size: 11px; margin-bottom: 15px;">أدخل الكود الذي استلمته في بريدك الإلكتروني وكلمة المرور الجديدة.</p>
-        <input type="text" id="reset-code-input" class="auth-input" placeholder="أدخل كود التحقق (OTP)" style="text-align: center; font-weight: bold; margin-bottom: 8px; padding-left:12px;">
-        <input type="password" id="new-pass-input" class="auth-input" placeholder="كلمة المرور الجديدة" style="padding-left: 12px; margin-bottom: 8px;">
-        <input type="password" id="confirm-pass-input" class="auth-input" placeholder="تأكيد كلمة المرور الجديدة" style="padding-left: 12px; margin-bottom: 12px;">
-        <button class="auth-btn" onclick="confirmPasswordReset()">حفظ كلمة المرور الجديدة ✅</button>
+        <button class="auth-btn" id="forgot-btn" onclick="handleForgotPassword()">إرسال رابط تغيير كلمة المرور ✉️</button>
       </div>
     </div>
   </div>
@@ -698,18 +693,7 @@
     </div>
 
     <!-- مكان إعلان Adsterra الثالث (مخفي للأدمن) -->
-    <div class="ad-slot-container" id="ad-slot-1">
-      <script>
-        atOptions = {
-          'key' : '189ff7baba758fc0156d38c54ad33b15',
-          'format' : 'iframe',
-          'height' : 250,
-          'width' : 300,
-          'params' : {}
-        };
-      </script>
-      <script src="https://bauval.org/22/189ff7baba758fc0156d38c54ad33b15"></script>
-    </div>
+    <div class="ad-slot-container" id="ad-slot-1"></div>
 
     <!-- لوحة تحكم الأدمن -->
     <div id="admin-panel-box">
@@ -743,15 +727,33 @@
         <button class="btn-main" onclick="updateAnnouncement()" style="width: 100%; background: #059669;">تحديث ونشر التنبيه سحابياً 🚀</button>
       </div>
       
-      <!-- ✨ توليد أسئلة حقيقية حسب المادة أو الدرس -->
+      <!-- ✨ مولّد أسئلة بالذكاء الاصطناعي من نص الكتاب (مجاني: تحضير طلب تنسخه لأي AI، ثم تلصق رده هنا) -->
       <div style="background: #e0f2fe; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #7dd3fc;">
-        <div style="font-size: 11px; font-weight: bold; color: #0369a1; margin-bottom: 4px;">🪄 توليد أسئلة حقيقية من الكتاب المدرسي (حسب المادة):</div>
-        <input type="text" id="auto-lesson-name" class="auth-input" placeholder="اكتب اسم الدرس أو المادة (مثال: أحياء، فيزياء، حديث، كيمياء)..." style="background: white; color: #1e293b; margin-bottom: 6px; font-size: 11px;">
-        <div style="display: flex; gap: 6px; margin-bottom: 6px;">
-          <input type="number" id="auto-mcq-count" class="auth-input" placeholder="عدد اختر" value="3" style="background: white; color: #1e293b; font-size: 11px; margin-bottom:0;">
-          <input type="number" id="auto-essay-count" class="auth-input" placeholder="عدد المقالي" value="1" style="background: white; color: #1e293b; font-size: 11px; margin-bottom:0;">
+        <div style="font-size: 11px; font-weight: bold; color: #0369a1; margin-bottom: 4px;">🪄 مولّد أسئلة بالذكاء الاصطناعي (من نص الكتاب فقط):</div>
+        <div style="font-size: 10px; color: #0369a1; margin-bottom: 6px; line-height:1.6;">
+          ١) الصق نص الدرس من الكتاب تحت.<br>
+          ٢) دوس "تجهيز طلب الذكاء الاصطناعي" وانسخه.<br>
+          ٣) الصقه في أي ذكاء اصطناعي (Claude أو ChatGPT)، وهاتي رده.<br>
+          ٤) الصق الرد في الصندوق التاني ودوس "تحويل الرد لأسئلة".
         </div>
-        <button class="btn-main" onclick="generateAutoQuestionsFromLesson()" style="width: 100%; background: #0284c7; font-size: 11px; padding: 6px;">🪄 جلب وتعبئة أسئلة الكتاب المدرسية الحقيقية</button>
+
+        <input type="text" id="ai-lesson-name" class="auth-input" placeholder="اسم الدرس أو المادة (مثال: التوحيد - الصف الأول الثانوي)..." style="background: white; color: #1e293b; margin-bottom: 6px; font-size: 11px;">
+        <input type="text" id="ai-grade-name" class="auth-input" placeholder="الصف الدراسي (اختياري، مثال: الصف الثالث الثانوي)..." style="background: white; color: #1e293b; margin-bottom: 6px; font-size: 11px;">
+        <div style="display: flex; gap: 6px; margin-bottom: 6px;">
+          <input type="number" id="ai-mcq-count" class="auth-input" placeholder="عدد اختر" value="5" style="background: white; color: #1e293b; font-size: 11px; margin-bottom:0;">
+          <input type="number" id="ai-essay-count" class="auth-input" placeholder="عدد المقالي" value="2" style="background: white; color: #1e293b; font-size: 11px; margin-bottom:0;">
+        </div>
+        <textarea id="ai-book-text" class="auth-input" placeholder="الصق هنا نص الدرس من الكتاب المدرسي بالكامل أو الجزء المطلوب الامتحان فيه..." style="background: white; color: #1e293b; height: 90px; font-size: 11px; margin-bottom: 6px;"></textarea>
+
+        <button class="btn-main" onclick="buildAIExamPrompt()" style="width: 100%; background: #0284c7; font-size: 11px; padding: 6px; margin-bottom: 8px;">1️⃣ تجهيز طلب الذكاء الاصطناعي 🪄</button>
+
+        <div id="ai-prompt-box" style="display:none;">
+          <textarea id="ai-prompt-output" class="auth-input" readonly style="background: #f8fafc; color: #1e293b; height: 100px; font-size: 10px; margin-bottom: 6px;"></textarea>
+          <button class="btn-main" onclick="copyAIPrompt()" style="width: 100%; background: #475569; font-size: 11px; padding: 6px; margin-bottom: 10px;">📋 نسخ الطلب</button>
+        </div>
+
+        <textarea id="ai-json-input" class="auth-input" placeholder="الصق هنا رد الذكاء الاصطناعي كامل..." style="background: white; color: #1e293b; height: 90px; font-size: 11px; margin-bottom: 6px;"></textarea>
+        <button class="btn-main" onclick="applyAIGeneratedQuestions()" style="width: 100%; background: #16a34a; font-size: 11px; padding: 6px;">2️⃣ تحويل الرد لأسئلة الامتحان ✅</button>
       </div>
 
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد:</div>
@@ -813,16 +815,6 @@
 
       <!-- مكان إعلان Adsterra الرابع (مخفي للأدمن) -->
       <div class="ad-slot-container" id="ad-slot-2">
-        <script>
-          atOptions = {
-            'key' : 'b4a34288cd0cc6e58550e89ea0b5e827',
-            'format' : 'iframe',
-            'height' : 50,
-            'width' : 320,
-            'params' : {}
-          };
-        </script>
-        <script src="https://bauval.org/22/b4a34288cd0cc6e58550e89ea0b5e827"></script>
       </div>
 
       <div class="section-header-title">🏆 لوحة شرف المتصدرين</div>
@@ -1011,7 +1003,7 @@
     <div class="modal-box" id="modal-box-inner">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
         <h3 id="modal-title" style="color: #0284c7; font-size: 15px; font-weight: bold;">نافذة المنصة</h3>
-        <div id="exam-global-timer" style="background: #fee2e2; color: #ef4444; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: bold;"></div>
+        <div id="exam-global-timer" style="display:none; background: #fee2e2; color: #ef4444; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: bold;"></div>
       </div>
       <div id="modal-questions-container"></div>
       <div style="margin-top: 10px;">
@@ -1023,7 +1015,8 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, update, onValue, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAh0S9vAGN-d1A55LOZ_rvZDWcx4Iwdoz0",
@@ -1045,35 +1038,96 @@
     window.dbOnValue = onValue;
     window.dbGet = get;
 
-    onValue(ref(db, 'appData'), (snapshot) => {
-      if (snapshot.exists()) {
-        window.appData = snapshot.val();
-        if(!window.appData.exams) window.appData.exams = [];
-        if(!window.appData.homeworks) window.appData.homeworks = [];
-        if(!window.appData.homeworkSubmissions) window.appData.homeworkSubmissions = [];
-        if(!window.appData.communityMessages) window.appData.communityMessages = [];
-        if(!window.appData.videos) window.appData.videos = [];
-        if(!window.appData.pdfs) window.appData.pdfs = [];
-        if(!window.appData.leaderboard) window.appData.leaderboard = [];
-        if(!window.appData.reports) window.appData.reports = [];
-        if(!window.appData.registeredUsers) window.appData.registeredUsers = [];
-        if(!window.appData.blockedUsers) window.appData.blockedUsers = [];
-        if(!window.appData.telegramUrl) window.appData.telegramUrl = "https://t.me/";
-        if(!window.appData.youtubeUrl) window.appData.youtubeUrl = "https://youtube.com/";
+    const auth = getAuth(app);
+    const ADMIN_EMAIL_FB = "y01878309@gmail.com";
 
-        if(window.appData.announcementText) {
-          document.getElementById('header-announcement-text').innerText = window.appData.announcementText;
+    /* 🔐 دوال الدخول الآمن (Firebase Authentication) */
+    window.fbSignIn = (email, pass) => signInWithEmailAndPassword(auth, email, pass);
+    window.fbSignUp = (email, pass) => createUserWithEmailAndPassword(auth, email, pass);
+    window.fbResetPassword = (email) => sendPasswordResetEmail(auth, email);
+    window.fbSignOut = () => signOut(auth);
+    window.fbChangePassword = async (currentPass, newPass) => {
+      const u = auth.currentUser;
+      if(!u) throw { code: 'auth/no-current-user' };
+      await reauthenticateWithCredential(u, EmailAuthProvider.credential(u.email, currentPass));
+      await updatePassword(u, newPass);
+    };
+
+    window.appDataLoaded = false;
+    window.waitForAppData = function(timeoutMs = 8000) {
+      return new Promise(resolve => {
+        const t0 = Date.now();
+        (function check() {
+          if(window.appDataLoaded || Date.now() - t0 > timeoutMs) return resolve(window.appDataLoaded);
+          setTimeout(check, 100);
+        })();
+      });
+    };
+
+    let dbListening = false;
+    let sessionAnnounced = false;
+
+    function startAppDataListener(userEmail) {
+      if(dbListening) return;
+      dbListening = true;
+      onValue(ref(db, 'appData'), (snapshot) => {
+        if (snapshot.exists()) {
+          window.appData = snapshot.val();
+          if(!window.appData.exams) window.appData.exams = [];
+          if(!window.appData.homeworks) window.appData.homeworks = [];
+          if(!window.appData.homeworkSubmissions) window.appData.homeworkSubmissions = [];
+          if(!window.appData.communityMessages) window.appData.communityMessages = [];
+          if(!window.appData.videos) window.appData.videos = [];
+          if(!window.appData.pdfs) window.appData.pdfs = [];
+          if(!window.appData.leaderboard) window.appData.leaderboard = [];
+          if(!window.appData.reports) window.appData.reports = [];
+          if(!window.appData.registeredUsers) window.appData.registeredUsers = [];
+          if(!window.appData.blockedUsers) window.appData.blockedUsers = [];
+          if(!window.appData.telegramUrl) window.appData.telegramUrl = "https://t.me/";
+          if(!window.appData.youtubeUrl) window.appData.youtubeUrl = "https://youtube.com/";
+
+          if(window.appData.announcementText) {
+            document.getElementById('header-announcement-text').innerText = window.appData.announcementText;
+          }
+          if(window.appData.externalAnnouncement) {
+            document.getElementById('external-announcement-text').innerText = window.appData.externalAnnouncement;
+          }
+          renderAll();
         }
-        if(window.appData.externalAnnouncement) {
-          document.getElementById('external-announcement-text').innerText = window.appData.externalAnnouncement;
+        window.appDataLoaded = true;
+        // أول مرة تتحمل البيانات والمستخدم مسجل دخول من قبل → ندخله المنصة
+        if(!sessionAnnounced) {
+          sessionAnnounced = true;
+          if(!window.loginInProgress && window.onAuthReady) window.onAuthReady(userEmail);
         }
-        renderAll();
+      }, (err) => {
+        console.error("تعذر قراءة البيانات (تأكد من قواعد Firebase):", err);
+        window.appDataLoaded = true;
+      });
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      if(user) {
+        localStorage.setItem('fahem_email', user.email);
+        startAppDataListener(user.email);
+      } else {
+        localStorage.removeItem('fahem_email');
       }
     });
 
+    /* 💾 الحفظ: الأدمن يحفظ كل شيء، والطالب يحفظ فقط الأقسام المسموحة له (بتطابق قواعد الأمان) */
+    const STUDENT_WRITABLE_KEYS = ['leaderboard', 'communityMessages', 'homeworkSubmissions', 'registeredUsers', 'reports'];
     window.saveDatatoFirebase = async function() {
       try {
-        await set(ref(db, 'appData'), window.appData);
+        const u = auth.currentUser;
+        if(!u) return;
+        if(u.email === ADMIN_EMAIL_FB) {
+          await set(ref(db, 'appData'), window.appData);
+        } else {
+          const payload = {};
+          STUDENT_WRITABLE_KEYS.forEach(k => { payload[k] = window.appData[k] || null; });
+          await update(ref(db, 'appData'), payload);
+        }
       } catch (err) {
         console.error("خطأ في الحفظ السحابي:", err);
       }
@@ -1110,8 +1164,8 @@
     };
 
     let tempEmailForLogin = "";
-    let resetEmailTarget = "";
-    let generatedOtpCode = ""; 
+    let tempNameForLogin = null;
+    window.loginInProgress = false;
 
     function requestNotificationPermission() {
       if ('Notification' in window) {
@@ -1150,14 +1204,16 @@
       recognition.onresult = function(e) { document.getElementById(targetId).value = e.results[0][0].transcript; };
     }
 
-    /* 🛡️ رصد النسخ واللصق والغش */
+    /* 🛡️ رصد النسخ واللصق والغش (الأدمن مستثنى عشان يقدر يستخدم مولّد أسئلة الذكاء الاصطناعي) */
     window.addEventListener('copy', function(e) {
+      if(localStorage.getItem('fahem_email') === ADMIN_EMAIL) return;
       e.preventDefault();
       logCheat("محاولة نسخ محتوى (Copy Attempt) 📋🚫");
       alert("⚠️ ممنوع نسخ المحتوى من المنصة!");
     }, true);
 
     window.addEventListener('paste', function(e) {
+      if(localStorage.getItem('fahem_email') === ADMIN_EMAIL) return;
       e.preventDefault();
       logCheat("محاولة لصق محتوى (Paste Attempt) 📋🚫");
       alert("⚠️ ممنوع استخدام اللصق (Paste) داخل المنصة!");
@@ -1210,39 +1266,117 @@
       if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
     }
 
-    async function proceedToPhoneStep() {
-      const email = document.getElementById('login-email').value.trim();
-      const pass = document.getElementById('user-pass').value.trim();
-      if(!email || !pass) { alert('أدخل البريد الإلكتروني وكلمة المرور'); return; }
-      
+    function authErrMsg(e) {
+      const c = (e && e.code) || '';
+      if(['auth/invalid-credential','auth/wrong-password','auth/user-not-found','auth/invalid-login-credentials'].includes(c)) return '❌ الإيميل أو كلمة المرور غير صحيحة';
+      if(c === 'auth/email-already-in-use') return '⚠️ الإيميل ده مسجل بالفعل. استخدم "تسجيل الدخول"، أو "نسيت كلمة المرور" لو مش فاكرها.';
+      if(c === 'auth/weak-password') return '⚠️ كلمة المرور ضعيفة (لازم 6 أحرف على الأقل)';
+      if(c === 'auth/invalid-email') return '⚠️ صيغة الإيميل غير صحيحة';
+      if(c === 'auth/too-many-requests') return '⏳ محاولات كتير. استنى شوية وجرّب تاني، أو استخدم "نسيت كلمة المرور".';
+      if(c === 'auth/network-request-failed') return '📶 مشكلة في الاتصال بالإنترنت';
+      if(c === 'auth/operation-not-allowed') return '⚙️ لازم الأدمن يفعّل Email/Password من Firebase Authentication';
+      return '❌ حدث خطأ: ' + (c || (e && e.message) || 'غير معروف');
+    }
+
+    function setBtnBusy(id, busy, label) {
+      const b = document.getElementById(id);
+      if(!b) return;
+      b.disabled = busy;
+      if(label) b.innerText = busy ? 'جاري التنفيذ...' : label;
+    }
+
+    /* بعد نجاح الدخول: نتأكد من الحظر ونسأل عن الهاتف لو مش موجود */
+    async function continueAfterAuth(email, phoneVal, nameVal) {
+      await window.waitForAppData();
+
       if(appData.blockedUsers && appData.blockedUsers.includes(email)) {
         alert('❌ تم حظر هذا الحساب من دخول المنصة بواسطة الأدمن!');
+        await window.fbSignOut();
+        location.reload();
         return;
       }
 
       tempEmailForLogin = email;
-      localStorage.setItem('pass_' + email, pass);
+      tempNameForLogin = nameVal || null;
 
       let userObj = (appData.registeredUsers || []).find(u => u.email === email);
-      if(userObj && userObj.phone && userObj.phone !== 'غير متاح') {
-        finishLoginProcess(email);
+      const hasPhone = (userObj && userObj.phone && userObj.phone !== 'غير متاح') || phoneVal;
+      if(hasPhone) {
+        await finishLoginProcess(email, phoneVal, nameVal);
       } else {
+        window.loginInProgress = true;
         document.getElementById('pane-login').classList.remove('active');
+        document.getElementById('pane-register').classList.remove('active');
         document.getElementById('pane-phone').classList.add('active');
       }
+    }
+
+    async function handleLogin() {
+      const email = document.getElementById('login-email').value.trim().toLowerCase();
+      const pass = document.getElementById('user-pass').value;
+      if(!email || !pass) { alert('أدخل البريد الإلكتروني وكلمة المرور'); return; }
+
+      window.loginInProgress = true;
+      setBtnBusy('login-btn', true, 'تسجيل الدخول ➔');
+      try {
+        const cred = await window.fbSignIn(email, pass);
+        await continueAfterAuth(cred.user.email, null, null);
+      } catch(e) {
+        window.loginInProgress = false;
+        alert(authErrMsg(e));
+      }
+      setBtnBusy('login-btn', false, 'تسجيل الدخول ➔');
+    }
+
+    async function handleRegister() {
+      const name = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim().toLowerCase();
+      const phone = document.getElementById('reg-phone').value.trim();
+      const pass = document.getElementById('reg-pass').value;
+      const pass2 = document.getElementById('reg-pass2').value;
+
+      if(!name || !email || !pass) { alert('أدخل الاسم والإيميل وكلمة المرور'); return; }
+      if(pass.length < 6) { alert('كلمة المرور لازم تكون 6 أحرف على الأقل'); return; }
+      if(pass !== pass2) { alert('كلمتا المرور غير متطابقتين!'); return; }
+
+      window.loginInProgress = true;
+      setBtnBusy('register-btn', true, 'إنشاء الحساب ✅');
+      try {
+        const cred = await window.fbSignUp(email, pass);
+        await continueAfterAuth(cred.user.email, phone || null, name);
+      } catch(e) {
+        window.loginInProgress = false;
+        alert(authErrMsg(e));
+      }
+      setBtnBusy('register-btn', false, 'إنشاء الحساب ✅');
+    }
+
+    async function handleForgotPassword() {
+      const email = document.getElementById('forgot-email').value.trim().toLowerCase();
+      if(!email) { alert('الرجاء إدخال البريد الإلكتروني أولاً'); return; }
+      setBtnBusy('forgot-btn', true, 'إرسال رابط تغيير كلمة المرور ✉️');
+      try {
+        await window.fbResetPassword(email);
+        alert('✅ لو الإيميل مسجل عندنا، هيوصلك رابط تغيير كلمة المرور خلال دقايق. دوّر في Spam كمان.');
+        switchAuthPane('pane-login');
+      } catch(e) {
+        alert(authErrMsg(e));
+      }
+      setBtnBusy('forgot-btn', false, 'إرسال رابط تغيير كلمة المرور ✉️');
     }
 
     async function completeLoginWithPhone() {
       const phone = document.getElementById('user-phone').value.trim();
       if(!phone) { alert('أدخل رقم الهاتف أو اضغط تخطي'); return; }
-      finishLoginProcess(tempEmailForLogin, phone);
+      finishLoginProcess(tempEmailForLogin, phone, tempNameForLogin);
     }
 
-    function skipPhoneStep() { finishLoginProcess(tempEmailForLogin); }
+    function skipPhoneStep() { finishLoginProcess(tempEmailForLogin, null, tempNameForLogin); }
 
-    async function finishLoginProcess(email, phoneVal = null) {
+    async function finishLoginProcess(email, phoneVal = null, nameVal = null) {
       if(appData.blockedUsers && appData.blockedUsers.includes(email)) {
         alert('❌ تم حظر حسابك من قبل الأدمن!');
+        await window.fbSignOut();
         location.reload();
         return;
       }
@@ -1257,7 +1391,7 @@
         if(!appData.registeredUsers) appData.registeredUsers = [];
         appData.registeredUsers.push({
           email: email,
-          name: email.split('@')[0],
+          name: nameVal || email.split('@')[0],
           phone: phoneVal || 'غير متاح',
           joinTime: nowTimeStr,
           lastActive: nowTimeStr,
@@ -1620,53 +1754,6 @@
       document.getElementById(paneId).classList.add('active');
     }
 
-    function sendCodeToTeacher() {
-      const email = document.getElementById('forgot-email').value.trim();
-      if(!email) { alert('الرجاء إدخال البريد الإلكتروني أولاً'); return; }
-
-      resetEmailTarget = email;
-      generatedOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
-
-      const templateParams = {
-        email: email,
-        to_email: email,
-        user_email: email,
-        passcode: generatedOtpCode,
-        otp_code: generatedOtpCode,
-        message: generatedOtpCode
-      };
-
-      alert('جاري إرسال كود التحقق إلى بريدك الإلكتروني، يرجى الانتظار...');
-
-      emailjs.send("service_1f0ykq7", "template_jhcysjh", templateParams)
-        .then(function(response) {
-            alert('✅ تم إرسال كود التحقق إلى بريدك الإلكتروني بنجاح!');
-            switchAuthPane('pane-reset');
-        }, function(error) {
-            alert('تعذر وصول الرسالة عبر الخادم تلقائياً. للانتقال المباشر وتجربة تغيير كلمة المرور سيتم تحويلك فوراً.');
-            switchAuthPane('pane-reset');
-        });
-    }
-
-    function confirmPasswordReset() {
-      const code = document.getElementById('reset-code-input').value.trim();
-      const newPass = document.getElementById('new-pass-input').value.trim();
-      const confirmPass = document.getElementById('confirm-pass-input').value.trim();
-
-      if(!code || !newPass || !confirmPass) { alert('الرجاء ملء جميع الحقول'); return; }
-      
-      if(code !== generatedOtpCode && code !== "74" && code !== "20") { 
-        alert('كود التحقق غير صحيح!'); 
-        return; 
-      }
-      
-      if(newPass !== confirmPass) { alert('كلمتا المرور غير متطابقتين!'); return; }
-
-      localStorage.setItem('pass_' + resetEmailTarget, newPass);
-      alert('تم تغيير كلمة المرور بنجاح! 🎉');
-      switchAuthPane('pane-login');
-    }
-
     function getUserDisplayName(email) {
       if(!appData.registeredUsers) return email;
       let u = appData.registeredUsers.find(x => x.email === email);
@@ -1677,6 +1764,46 @@
       if(!appData.registeredUsers) return 'غير متاح';
       let u = appData.registeredUsers.find(x => x.email === email);
       return u && u.phone ? u.phone : 'غير متاح';
+    }
+
+    /* 🛡️ هروب النصوص عشان أي علامة اقتباس أو < > ما تكسرش عرض السؤال */
+    function escHtml(v) {
+      return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    /* 📢 الإعلانات: بتتحمل بعد تسجيل الدخول بس (للطالب العادي، مش الأدمن) ومرة واحدة */
+    let platformAdsLoaded = false;
+    function loadPlatformAds() {
+      if(platformAdsLoaded) return;
+      platformAdsLoaded = true;
+
+      const slots = [
+        { id: 'ad-slot-1', key: '189ff7baba758fc0156d38c54ad33b15', h: 250, w: 300 },
+        { id: 'ad-slot-2', key: 'b4a34288cd0cc6e58550e89ea0b5e827', h: 50,  w: 320 }
+      ];
+
+      // الإعلانات بتستخدم متغير atOptions عام، فنحمّلها واحد ورا التاني
+      const loadNext = (i) => {
+        if(i >= slots.length) { loadSocialAd(); return; }
+        const sl = slots[i];
+        const box = document.getElementById(sl.id);
+        if(!box) { loadNext(i + 1); return; }
+        box.style.display = 'block';
+        window.atOptions = { key: sl.key, format: 'iframe', height: sl.h, width: sl.w, params: {} };
+        const sc = document.createElement('script');
+        sc.src = 'https://bauval.org/22/' + sl.key;
+        sc.onload = sc.onerror = () => setTimeout(() => loadNext(i + 1), 300);
+        box.appendChild(sc);
+      };
+
+      const loadSocialAd = () => {
+        const sc = document.createElement('script');
+        sc.setAttribute('data-cfasync', 'false');
+        sc.src = 'https://abscloud.org/1/1cad8059e24887e3e849006dda943d5f';
+        document.body.appendChild(sc);
+      };
+
+      loadNext(0);
     }
 
     function setupSession(email) {
@@ -1708,14 +1835,15 @@
         document.getElementById('admin-stats-box').style.display = 'none';
         document.getElementById('admin-rank-manage-btn').style.display = 'none';
         document.getElementById('external-alert-bar-div').style.display = 'none';
-        document.querySelectorAll('#ad-slot-1, #ad-slot-2').forEach(el => el.style.display = 'block');
+        loadPlatformAds();
       }
       renderAll();
     }
 
-    function logout() { 
-      localStorage.clear(); 
-      location.reload(); 
+    async function logout() {
+      try { if(window.fbSignOut) await window.fbSignOut(); } catch(e) { console.error(e); }
+      localStorage.clear();
+      location.reload();
     }
 
     function openEditProfileModal() {
@@ -1788,7 +1916,7 @@
         </div>
 
         <div style="text-align: right; margin-bottom: 12px;">
-          <label style="font-size: 11px; color: #64748b; display: block; margin-bottom: 4px;">كلمة المرور الحالية</label>
+          <label style="font-size: 11px; color: #64748b; display: block; margin-bottom: 4px;">كلمة المرور الحالية (مطلوبة للتأكيد)</label>
           <input type="password" id="current-pass-field" class="auth-input" placeholder="••••••••" style="background: #f8fafc; color: #1e293b; padding-left: 12px;">
         </div>
 
@@ -1802,25 +1930,30 @@
           <input type="password" id="confirm-pass-field" class="auth-input" placeholder="••••••••" style="background: #f8fafc; color: #1e293b; padding-left: 12px;">
         </div>
 
-        <button class="btn-main" onclick="submitPasswordChangeFromSettings()" style="width: 100%; background: #3b28cc; padding: 12px; font-size: 14px;">تحديث كلمة المرور ✅</button>
+        <button class="btn-main" id="submit-pass-change-btn" onclick="submitPasswordChangeFromSettings()" style="width: 100%; background: #3b28cc; padding: 12px; font-size: 14px;">تحديث كلمة المرور ✅</button>
       `;
 
       document.getElementById('exam-modal').style.display = 'flex';
     }
 
-    function submitPasswordChangeFromSettings() {
-      const email = localStorage.getItem('fahem_email');
+    async function submitPasswordChangeFromSettings() {
+      const currentPass = document.getElementById('current-pass-field').value;
       const newPass = document.getElementById('new-pass-field').value.trim();
       const confPass = document.getElementById('confirm-pass-field').value.trim();
 
-      if(!newPass || newPass !== confPass) {
-        alert('كلمتا المرور غير متطابقتين!');
-        return;
-      }
+      if(!currentPass) { alert('أدخل كلمة المرور الحالية'); return; }
+      if(!newPass || newPass.length < 6) { alert('كلمة المرور الجديدة لازم تكون 6 أحرف على الأقل'); return; }
+      if(newPass !== confPass) { alert('كلمتا المرور الجديدتان غير متطابقتين!'); return; }
 
-      localStorage.setItem('pass_' + email, newPass);
-      alert('تم تحديث كلمة المرور بنجاح! 🔒');
-      closeExam();
+      setBtnBusy('submit-pass-change-btn', true, 'تحديث كلمة المرور ✅');
+      try {
+        await window.fbChangePassword(currentPass, newPass);
+        alert('تم تحديث كلمة المرور بنجاح! 🔒');
+        closeExam();
+      } catch(e) {
+        alert(authErrMsg(e));
+      }
+      setBtnBusy('submit-pass-change-btn', false, 'تحديث كلمة المرور ✅');
     }
 
     function openLanguageModal() {
@@ -1969,48 +2102,104 @@
       { q: "ما هي النتائج المترتبة على: غياب إنزيم الكولين استريز من الشباك العصبية العضلية؟", modelAns: "تظل العضلة في حالة انقباض مستمر ولا ترتخي مما يؤدي إلى حدوث إجهاد وتشنج عضلي." }
     ];
 
-    function generateAutoQuestionsFromLesson() {
-      const lessonName = document.getElementById('auto-lesson-name').value.trim() || "عام";
-      const mcqCount = parseInt(document.getElementById('auto-mcq-count').value) || 3;
-      const essayCount = parseInt(document.getElementById('auto-essay-count').value) || 1;
+    /* 🪄 مولّد الأسئلة بالذكاء الاصطناعي: تجهيز الطلب فقط (مجاني، بدون أي مفتاح API) */
+    function buildAIExamPrompt() {
+      const lesson = document.getElementById('ai-lesson-name').value.trim();
+      const grade = document.getElementById('ai-grade-name').value.trim();
+      const mcqCount = parseInt(document.getElementById('ai-mcq-count').value) || 0;
+      const essayCount = parseInt(document.getElementById('ai-essay-count').value) || 0;
+      const bookText = document.getElementById('ai-book-text').value.trim();
 
-      document.getElementById('new-exam-title').value = `امتحان (${lessonName})`;
-      const totalCount = mcqCount + essayCount;
-      document.getElementById('new-exam-count').value = totalCount;
+      if(!bookText || bookText.length < 40) { alert('الصق نص الدرس من الكتاب أولاً (نص كافي، مش جملة واحدة).'); return; }
+      if(mcqCount + essayCount < 1) { alert('حدد عدد أسئلة الاختيار و/أو المقالي.'); return; }
+
+      const prompt =
+`أنت معلم خبير. مهمتك تجهيز أسئلة امتحان بناءً على نص الكتاب المدرسي المرفق أسفل فقط، بدون أي معلومة من عندك أو من الإنترنت.
+
+المادة/الدرس: ${lesson || "غير محدد"}
+الصف الدراسي: ${grade || "غير محدد"}
+المطلوب: ${mcqCount} سؤال اختيار من متعدد (4 اختيارات) و ${essayCount} سؤال مقالي.
+
+شروط إلزامية:
+- كل سؤال وكل إجابة (صحيحة أو مقالية) لازم تُستخرج حرفياً من معاني النص المرفق فقط.
+- لو النص غير كافٍ لعدد الأسئلة المطلوب، قلّل العدد بدل ما تخترع معلومة مش موجودة في النص.
+- الأسئلة باللغة العربية الفصحى وواضحة.
+- رجّع الناتج بصيغة JSON فقط، بدون أي شرح أو نص قبله أو بعده، بالشكل التالي بالضبط:
+
+[
+  { "type": "mcq", "q": "نص السؤال", "o1": "اختيار أ", "o2": "اختيار ب", "o3": "اختيار ج", "o4": "اختيار د", "ans": "نفس نص الاختيار الصحيح بالضبط" },
+  { "type": "essay", "q": "نص السؤال المقالي", "modelAns": "الإجابة النموذجية المختصرة" }
+]
+
+نص الكتاب المدرسي:
+"""
+${bookText}
+"""`;
+
+      document.getElementById('ai-prompt-output').value = prompt;
+      document.getElementById('ai-prompt-box').style.display = 'block';
+    }
+
+    function copyAIPrompt() {
+      const ta = document.getElementById('ai-prompt-output');
+      ta.style.display = 'block';
+      ta.select();
+      ta.setSelectionRange(0, 999999);
+      if(navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(ta.value)
+          .then(() => alert('✅ اتنسخ الطلب! روح الصقه في أي ذكاء اصطناعي (Claude أو ChatGPT).'))
+          .catch(() => alert('تعذر النسخ التلقائي. النص متحدد الآن، اضغط Ctrl+C (أو انسخ يدوياً).'));
+      } else {
+        alert('النص متحدد الآن، اضغط Ctrl+C (أو انسخ يدوياً).');
+      }
+    }
+
+    /* ✅ تحويل رد الذكاء الاصطناعي (JSON) لأسئلة جاهزة في منشئ الامتحان، للمراجعة قبل النشر */
+    function applyAIGeneratedQuestions() {
+      let raw = document.getElementById('ai-json-input').value.trim();
+      if(!raw) { alert('الصق رد الذكاء الاصطناعي أولاً.'); return; }
+
+      // لو الرد جايلك جوه ```json ... ``` أو فيه نص قبل/بعد الـ JSON، بنشيله
+      const match = raw.match(/\[[\s\S]*\]/);
+      if(match) raw = match[0];
+
+      let parsed;
+      try {
+        parsed = JSON.parse(raw);
+      } catch(e) {
+        alert('⚠️ الرد مش بصيغة JSON صحيحة. تأكد إنك لاصق رد الذكاء الاصطناعي كامل بدون تعديل، أو اطلب منه يعيد الرد بصيغة JSON فقط.');
+        return;
+      }
+      if(!Array.isArray(parsed) || parsed.length === 0) { alert('⚠️ الرد فاضي أو مش بالشكل المتوقع (مصفوفة أسئلة).'); return; }
+
+      const lesson = document.getElementById('ai-lesson-name').value.trim();
+      if(lesson) document.getElementById('new-exam-title').value = `امتحان (${lesson})`;
+
+      document.getElementById('new-exam-count').value = parsed.length;
       generateQuestionFields();
 
-      let targetCategory = "عام";
-      let lowerName = lessonName.toLowerCase();
-      if(lowerName.includes("أحياء") || lowerName.includes("دعامة")) targetCategory = "أحياء";
-      else if(lowerName.includes("فيزياء") || lowerName.includes("حث")) targetCategory = "فيزياء";
-      else if(lowerName.includes("حديث") || lowerName.includes("سنة")) targetCategory = "حديث";
-
-      let bankList = textbookBankMCQ[targetCategory] || textbookBankMCQ["عام"];
-      let shuffledMCQ = [...bankList].sort(() => 0.5 - Math.random());
-      let shuffledEssay = [...textbookBankEssay].sort(() => 0.5 - Math.random());
-
-      for(let i=1; i<=mcqCount; i++) {
-        let qData = shuffledMCQ[(i - 1) % shuffledMCQ.length];
-        document.getElementById(`q_type_${i}`).value = 'mcq';
+      parsed.forEach((qd, idx) => {
+        const i = idx + 1;
+        const typeVal = qd.type === 'essay' ? 'essay' : 'mcq';
+        const typeEl = document.getElementById(`q_type_${i}`);
+        if(!typeEl) return;
+        typeEl.value = typeVal;
         toggleQuestionTypeFields(i);
-        document.getElementById(`q_text_${i}`).value = qData.q;
-        document.getElementById(`q_opt1_${i}`).value = qData.o1;
-        document.getElementById(`q_opt2_${i}`).value = qData.o2;
-        document.getElementById(`q_opt3_${i}`).value = qData.o3;
-        document.getElementById(`q_opt4_${i}`).value = qData.o4;
-        document.getElementById(`q_ans_${i}`).value = qData.ans;
-      }
+        document.getElementById(`q_text_${i}`).value = qd.q || qd.questionText || `سؤال (${i})`;
 
-      for(let i=mcqCount + 1; i<=totalCount; i++) {
-        let essayIdx = (i - mcqCount - 1) % shuffledEssay.length;
-        let eData = shuffledEssay[essayIdx];
-        document.getElementById(`q_type_${i}`).value = 'essay';
-        toggleQuestionTypeFields(i);
-        document.getElementById(`q_text_${i}`).value = eData.q;
-        document.getElementById(`q_model_ans_${i}`).value = eData.modelAns;
-      }
+        if(typeVal === 'essay') {
+          document.getElementById(`q_model_ans_${i}`).value = qd.modelAns || qd.correctAnswer || '';
+        } else {
+          document.getElementById(`q_opt1_${i}`).value = qd.o1 || qd.option1 || '';
+          document.getElementById(`q_opt2_${i}`).value = qd.o2 || qd.option2 || '';
+          document.getElementById(`q_opt3_${i}`).value = qd.o3 || qd.option3 || '';
+          document.getElementById(`q_opt4_${i}`).value = qd.o4 || qd.option4 || '';
+          document.getElementById(`q_ans_${i}`).value = qd.ans || qd.correctAnswer || '';
+        }
+      });
 
-      alert(`✅ تم توليد أسئلة مادة (${lessonName}) بنجاح تام بدون تكرار! 📚`);
+      alert(`✅ اتحطت ${parsed.length} سؤال في منشئ الامتحان تحت. راجعهم كويس قبل ما تدوس "إضافة وجدولة الامتحان".`);
+      document.getElementById('dynamic-questions-builder').scrollIntoView({ behavior: 'smooth' });
     }
 
     function generateQuestionFields() {
@@ -2372,13 +2561,13 @@
       let q = activeQuestions[currentQuestionIndex];
       let timeLeft = q.timeSec || 30;
 
-      let timerHtml = `<div id="q-timer" style="background: #fee2e2; color: #ef4444; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: bold;">الوقت: ${timeLeft}ث</div>`;
-      document.getElementById('exam-global-timer').outerHTML = timerHtml;
+      let tBox0 = document.getElementById('exam-global-timer');
+      tBox0.style.display = 'block';
+      tBox0.innerText = `الوقت: ${timeLeft}ث`;
 
       questionTimerInterval = setInterval(() => {
         timeLeft--;
-        let tBox = document.getElementById('q-timer');
-        if(tBox) tBox.innerText = `الوقت: ${timeLeft}ث`;
+        tBox0.innerText = `الوقت: ${Math.max(timeLeft, 0)}ث`;
         
         if(timeLeft <= 0) {
           clearInterval(questionTimerInterval);
@@ -2395,24 +2584,28 @@
       if(q.type === 'essay') {
         container.innerHTML = `
           <div style="background:#f8fafc; padding:14px; border-radius:12px; margin-bottom:10px; text-align:right; border:1px solid #e2e8f0;">
-            <div style="font-size:15px; font-weight:bold; margin-bottom:8px; color:#0f172a; line-height: 1.5;">${questionTextValue}</div>
-            <textarea id="exam_essay_input" class="auth-input" placeholder="اكتب إجابتك هنا..." style="background:white; color:#1e293b; height:100px; font-size:14px;" oninput="saveStudentAnswer(${currentQuestionIndex}, this.value)">${savedAns}</textarea>
+            <div style="font-size:15px; font-weight:bold; margin-bottom:8px; color:#0f172a; line-height: 1.5;">${escHtml(questionTextValue)}</div>
+            <textarea id="exam_essay_input" class="auth-input" placeholder="اكتب إجابتك هنا..." style="background:white; color:#1e293b; height:100px; font-size:14px;" oninput="saveStudentAnswer(${currentQuestionIndex}, this.value)">${escHtml(savedAns)}</textarea>
           </div>
         `;
       } else {
-        let opt1 = q.o1 || q.option1 || q.opt1 || 'أ';
-        let opt2 = q.o2 || q.option2 || q.opt2 || 'ب';
-        let opt3 = q.o3 || q.option3 || q.opt3 || 'ج';
-        let opt4 = q.o4 || q.option4 || q.opt4 || 'د';
-        let correctAns = q.ans || q.correctAnswer || opt1;
+        let opts = [
+          q.o1 || q.option1 || q.opt1 || 'أ',
+          q.o2 || q.option2 || q.opt2 || 'ب',
+          q.o3 || q.option3 || q.opt3 || 'ج',
+          q.o4 || q.option4 || q.opt4 || 'د'
+        ];
+        let correctAns = q.ans || q.correctAnswer || opts[0];
+        window._currentCorrectAns = correctAns;
+
+        let optsHtml = opts.map((o, k) => `
+            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" ${savedAns === o ? 'checked' : ''} onchange="selectOption(${k}, this)"> ${escHtml(o)}</label>`).join('');
+        window._currentOpts = opts;
 
         container.innerHTML = `
           <div style="background:#f8fafc; padding:14px; border-radius:12px; margin-bottom:10px; text-align:right; border:1px solid #e2e8f0;">
-            <div style="font-size:15px; font-weight:bold; margin-bottom:12px; color:#0f172a; line-height: 1.5;">${questionTextValue}</div>
-            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${opt1}" ${savedAns === opt1 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${correctAns}', '${currentExamMode}')"> ${opt1}</label>
-            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${opt2}" ${savedAns === opt2 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${correctAns}', '${currentExamMode}')"> ${opt2}</label>
-            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${opt3}" ${savedAns === opt3 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${correctAns}', '${currentExamMode}')"> ${opt3}</label>
-            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${opt4}" ${savedAns === opt4 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${correctAns}', '${currentExamMode}')"> ${opt4}</label>
+            <div style="font-size:15px; font-weight:bold; margin-bottom:12px; color:#0f172a; line-height: 1.5;">${escHtml(questionTextValue)}</div>
+            ${optsHtml}
             <div id="practice_fb" style="font-size:12px; font-weight:bold; margin-top:6px;"></div>
           </div>
         `;
@@ -2434,13 +2627,20 @@
 
     function saveStudentAnswer(qIdx, val) { studentExamAnswers[qIdx] = val; }
 
-    function checkPracticeMode(el, correctAns, mode) {
+    function selectOption(k, el) {
+      const val = (window._currentOpts || [])[k];
+      saveStudentAnswer(currentQuestionIndex, val);
+      checkPracticeMode(val, window._currentCorrectAns, currentExamMode);
+    }
+
+    function checkPracticeMode(selected, correctAns, mode) {
       if(mode === 'practice') {
         let fb = document.getElementById('practice_fb');
-        if(evaluateSmartAnswer(el.value, correctAns)) {
+        if(!fb) return;
+        if(evaluateSmartAnswer(selected, correctAns)) {
           fb.style.color = '#059669'; fb.innerText = 'إجابة صحيحة ✓';
         } else {
-          fb.style.color = '#ef4444'; fb.innerText = `خطأ ✕ - الإجابة الصحيحة: (${correctAns})`;
+          fb.style.color = '#ef4444'; fb.innerText = `خطأ ✕ - الإجابة الصحيحة: (${correctAns})`; // innerText آمن
         }
       }
     }
@@ -2459,6 +2659,7 @@
       if(questionTimerInterval) clearInterval(questionTimerInterval);
       let box = document.getElementById('modal-box-inner');
       if(box) box.classList.remove('exam-secure-blur');
+      let tb = document.getElementById('exam-global-timer'); if(tb) tb.style.display = 'none';
       document.getElementById('exam-modal').style.display = 'none';
     }
 
@@ -2529,6 +2730,7 @@
       let container = document.getElementById('modal-questions-container');
       document.getElementById('modal-title').innerText = `نتيجة الامتحان (${sub.displayName || sub.studentName})`;
       document.getElementById('submit-exam-btn').style.display = 'none';
+      let tbr = document.getElementById('exam-global-timer'); if(tbr) tbr.style.display = 'none';
 
       let allLeaderboard = appData.leaderboard || [];
       let rankIndex = allLeaderboard.findIndex(l => l.studentName === sub.studentName && l.percentage === sub.percentage) + 1;
@@ -2547,11 +2749,11 @@
                 <span style="font-weight:bold; font-size:14px; color:#0f172a;">س${idx + 1} ${statusBadge}</span>
                 <span style="font-size:11px; color:#64748b;">${q.points || (q.isCorrect?1:0)}.00 درجات</span>
               </div>
-              <div style="font-size:14px; font-weight:bold; color:#1e293b; margin-bottom:8px;">${q.questionText}</div>
+              <div style="font-size:14px; font-weight:bold; color:#1e293b; margin-bottom:8px;">${escHtml(q.questionText)}</div>
               <div style="font-size:12px; color:#64748b;">إجابة الطالب:</div>
-              <div style="font-size:13px; font-weight:bold; color:${ansColor}; margin-bottom:6px;">${q.studentAnswer}</div>
+              <div style="font-size:13px; font-weight:bold; color:${ansColor}; margin-bottom:6px;">${escHtml(q.studentAnswer)}</div>
               <div style="font-size:12px; color:#64748b;">الإجابة الصحيحة / النموذجية:</div>
-              <div style="font-size:13px; font-weight:bold; color:#16a34a;">${q.correctAnswer}</div>
+              <div style="font-size:13px; font-weight:bold; color:#16a34a;">${escHtml(q.correctAnswer)}</div>
             </div>
           `;
         });
