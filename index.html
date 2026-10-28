@@ -743,6 +743,17 @@
         <button class="btn-main" onclick="updateAnnouncement()" style="width: 100%; background: #059669;">تحديث ونشر التنبيه سحابياً 🚀</button>
       </div>
       
+      <!-- ✨ إضافة الذكاء الاصطناعي لتوليد الأسئلة -->
+      <div style="background: #e0f2fe; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #7dd3fc;">
+        <div style="font-size: 11px; font-weight: bold; color: #0369a1; margin-bottom: 4px;">🪄 توليد أسئلة الامتحان تلقائياً (بالذكاء الاصطناعي):</div>
+        <input type="text" id="auto-lesson-name" class="auth-input" placeholder="اكتب اسم الدرس أو الوحدة (مثال: الباب الأول أحياء)..." style="background: white; color: #1e293b; margin-bottom: 6px; font-size: 11px;">
+        <div style="display: flex; gap: 6px; margin-bottom: 6px;">
+          <input type="number" id="auto-mcq-count" class="auth-input" placeholder="عدد اختر" value="3" style="background: white; color: #1e293b; font-size: 11px; margin-bottom:0;">
+          <input type="number" id="auto-essay-count" class="auth-input" placeholder="عدد المقالي" value="1" style="background: white; color: #1e293b; font-size: 11px; margin-bottom:0;">
+        </div>
+        <button class="btn-main" onclick="generateAutoQuestionsFromLesson()" style="width: 100%; background: #0284c7; font-size: 11px; padding: 6px;">🪄 توليد وتعبئة الأسئلة تلقائياً بالذكاء الاصطناعي</button>
+      </div>
+
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد:</div>
       <input type="text" id="new-exam-title" class="auth-input" placeholder="عنوان الامتحان..." style="background: white; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
       
@@ -780,7 +791,7 @@
         <button class="btn-main" onclick="addPdfFileDirect()" style="width: 100%; background: #7c3aed;">رفع وحفظ الملف سحابياً 📁✅</button>
       </div>
 
-      <button class="btn-main" onclick="showHomeworkSubmissionsModal()" style="width: 100%; background: #8b5cf6; margin-bottom: 6px;">📥 مراجعة إجابات الواجبات المرفوعة من الطلاب</button>
+      <button class="btn-main" onclick="showHomeworkSubmissionsModal()" style="width: 100%; background: #8b5cf6; margin-bottom: 6px;">📥 مراجعة إجابات الواجبات وصور الكشكول المرفوعة</button>
       <button class="btn-main" onclick="showRegisteredStudentsModal()" style="width: 100%; background: #059669; margin-bottom: 6px;">👥 سجل الطلاب والتفاصيل الدقيقة وتعديل الأسماء وحظرهم</button>
       <button class="btn-main" onclick="showStudentReports()" style="width: 100%; background: #4f46e5; margin-bottom: 6px;">📋 تقارير محاولات لقطات الشاشة والغش والنسخ</button>
     </div>
@@ -839,17 +850,20 @@
       <div id="homeworks-container"></div>
     </div>
 
-    <!-- 💬 قسم الجروب الجماعي التلقائي داخل المنصة -->
+    <!-- 💬 قسم الجروب الجماعي المطور مع صور وفويس -->
     <div id="sec-community" class="content-section">
       <div class="section-header-title">💬 جروب منصة فاهم الجماعي (مفتوح للجميع)</div>
       <div class="card-item" style="padding: 12px;">
-        <div style="font-size: 12px; color: #64748b; margin-bottom: 10px; text-align: right;">شارك أصدقائك الأسئلة والمناقشات الدراسية بحرية!</div>
+        <div style="font-size: 12px; color: #64748b; margin-bottom: 10px; text-align: right;">شارك أصدقائك الأسئلة والصور والملاحظات الدراسية بحرية!</div>
         
         <div id="community-messages-box" style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; height: 320px; overflow-y: auto; padding: 10px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px;"></div>
 
-        <div style="display: flex; gap: 6px;">
-          <input type="text" id="community-input" class="auth-input" placeholder="اكتب رسالتك في الجروب الجماعي..." style="background: white; color: #1e293b; margin-bottom: 0; font-size: 13px; padding-left: 12px;">
-          <button class="btn-main" onclick="sendCommunityMessage()" style="background: #0284c7; padding: 0 16px; font-size: 13px;">إرسال ✈️</button>
+        <div style="display: flex; gap: 6px; align-items: center;">
+          <input type="file" id="community-media-input" accept="image/*" style="display:none;" onchange="handleCommunityMediaUpload(this)">
+          <button type="button" class="btn-main" onclick="document.getElementById('community-media-input').click()" style="background: #475569; padding: 0 10px; font-size: 16px;" title="إرفاق صورة">📷</button>
+          <button type="button" class="btn-main" onclick="startCommunityVoiceInput()" style="background: #0284c7; padding: 0 10px; font-size: 16px;" title="تسجيل صوتي وتحويله لنص">🎤</button>
+          <input type="text" id="community-input" class="auth-input" placeholder="اكتب رسالة..." style="background: white; color: #1e293b; margin-bottom: 0; font-size: 13px; padding-left: 12px;" onkeydown="if(event.key==='Enter') sendCommunityMessage()">
+          <button class="btn-main" onclick="sendCommunityMessage()" style="background: #0284c7; padding: 0 14px; font-size: 13px;">➤</button>
         </div>
       </div>
     </div>
@@ -1262,7 +1276,7 @@
       setupSession(email);
     }
 
-    /* 💬 إدارة الجروب الجماعي التلقائي */
+    /* 💬 إدارة الجروب الجماعي المطور مع صور وفويس */
     async function sendCommunityMessage() {
       const email = localStorage.getItem('fahem_email');
       const textInput = document.getElementById('community-input');
@@ -1277,6 +1291,7 @@
         senderEmail: email,
         senderName: senderName,
         text: text,
+        mediaUrl: null,
         time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
       });
 
@@ -1284,6 +1299,43 @@
       textInput.value = '';
       renderCommunityMessages();
       sendPushNotification('رسالة جديدة في الجروب الجماعي 💬', `${senderName}: ${text}`);
+    }
+
+    function handleCommunityMediaUpload(input) {
+      if(input.files && input.files[0]) {
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+          const email = localStorage.getItem('fahem_email');
+          const senderName = getUserDisplayName(email);
+          if(!appData.communityMessages) appData.communityMessages = [];
+          
+          appData.communityMessages.push({
+            senderEmail: email,
+            senderName: senderName,
+            text: '📷 صورة مرفقة',
+            mediaUrl: e.target.result,
+            time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+          });
+
+          if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
+          renderCommunityMessages();
+          input.value = '';
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function startCommunityVoiceInput() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) { alert('متصفحك لا يدعم التسجيل الصوتي'); return; }
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'ar-EG';
+      recognition.start();
+      recognition.onresult = function(e) {
+        document.getElementById('community-input').value = e.results[0][0].transcript;
+        sendCommunityMessage();
+      };
     }
 
     function renderCommunityMessages() {
@@ -1302,11 +1354,13 @@
       msgs.forEach(m => {
         let isMe = m.senderEmail === email;
         let alignStyle = isMe ? 'align-self: flex-end; background: #e0f2fe; border-color: #38bdf8;' : 'align-self: flex-start; background: white; border-color: #cbd5e1;';
+        let mediaHtml = m.mediaUrl ? `<div style="margin-top:6px;"><img src="${m.mediaUrl}" style="max-width:100%; max-height:160px; border-radius:8px;" /></div>` : '';
         
         container.innerHTML += `
           <div style="${alignStyle} border: 1px solid; border-radius: 12px; padding: 8px 12px; max-width: 85%; text-align: right;">
             <div style="font-size: 11px; font-weight: bold; color: #0284c7; margin-bottom: 2px;">${m.senderName} ${m.senderEmail === ADMIN_EMAIL ? '👑' : ''}</div>
             <div style="font-size: 13px; color: #1e293b; word-break: break-word;">${m.text}</div>
+            ${mediaHtml}
             <div style="font-size: 9px; color: #94a3b8; text-align: left; margin-top: 2px;">${m.time}</div>
           </div>
         `;
@@ -1314,7 +1368,7 @@
       container.scrollTop = container.scrollHeight;
     }
 
-    /* 📝 الواجبات المنزليّة */
+    /* 📝 الواجبات المنزليّة وصور الكشكول */
     async function addNewHomework() {
       const title = document.getElementById('new-hw-title').value.trim();
       const desc = document.getElementById('new-hw-desc').value.trim();
@@ -1382,10 +1436,10 @@
 
       container.innerHTML = `
         <div style="text-align:right;">
-          <label style="font-size:12px; font-weight:bold; color:#0f172a; display:block; margin-bottom:6px;">اكتب إجابتك أو أي ملاحظة هنا (كتابة حرة ومفتوحة):</label>
+          <label style="font-size:12px; font-weight:bold; color:#0f172a; display:block; margin-bottom:6px;">اكتب إجابتك أو أي ملاحظة هنا:</label>
           <textarea id="hw-answer-text" class="auth-input" placeholder="اكتب إجابتك الشاملة هنا..." style="background:#f8fafc; color:#1e293b; height:100px; font-size:13px; margin-bottom:12px;"></textarea>
 
-          <label style="font-size:12px; font-weight:bold; color:#0f172a; display:block; margin-bottom:6px;">أو ارفع/صور صورة حل الواجب من الكشكول 📸:</label>
+          <label style="font-size:12px; font-weight:bold; color:#0f172a; display:block; margin-bottom:6px;">ارفع أو صور حل الواجب من الكشكول 📸:</label>
           <input type="file" id="hw-answer-image" accept="image/*" capture="environment" class="auth-input" style="background:#f8fafc; color:#1e293b; font-size:11px; margin-bottom:15px;">
 
           <button class="btn-main" onclick="submitHomeworkAnswer('${hwId}', '${hwTitle}')" style="width:100%; background:#8b5cf6; padding:12px; font-size:14px;">إرسال وتسليم الواجب للمعلم ✅</button>
@@ -1437,7 +1491,7 @@
 
     function showHomeworkSubmissionsModal() {
       let container = document.getElementById('modal-questions-container');
-      document.getElementById('modal-title').innerText = "📥 إجابات وتسليمات الواجبات من الطلاب";
+      document.getElementById('modal-title').innerText = "📥 إجابات وتسليمات الواجبات وصور الكشكول";
       document.getElementById('submit-exam-btn').style.display = 'none';
 
       let subs = appData.homeworkSubmissions || [];
@@ -1447,7 +1501,7 @@
         html += `<p style="text-align:center; color:#64748b;">لا توجد تسليمات حتى الآن.</p>`;
       } else {
         subs.slice().reverse().forEach(s => {
-          let imgPreview = s.imageAnswer ? `<div style="margin-top:8px;"><img src="${s.imageAnswer}" style="max-width:100%; max-height:200px; border-radius:8px; border:1px solid #cbd5e1;" /></div>` : '';
+          let imgPreview = s.imageAnswer ? `<div style="margin-top:8px;"><img src="${s.imageAnswer}" style="max-width:100%; max-height:220px; border-radius:8px; border:1px solid #cbd5e1;" /></div>` : '';
           html += `
             <div style="background:#f8fafc; border:1px solid #cbd5e1; padding:10px; border-radius:10px; margin-bottom:10px; text-align:right;">
               <div style="font-size:13px; font-weight:bold; color:#0f172a;">👤 ${s.studentName} (${s.studentEmail})</div>
@@ -1887,6 +1941,40 @@
         renderAll();
         openManageRankModal();
       }
+    }
+
+    /* ✨ دالة توليد الأسئلة بالذكاء الاصطناعي بناءً على اسم الدرس */
+    function generateAutoQuestionsFromLesson() {
+      const lessonName = document.getElementById('auto-lesson-name').value.trim();
+      const mcqCount = parseInt(document.getElementById('auto-mcq-count').value) || 3;
+      const essayCount = parseInt(document.getElementById('auto-essay-count').value) || 1;
+
+      if(!lessonName) { alert('اكتب اسم الدرس أو الوحدة أولاً!'); return; }
+
+      document.getElementById('new-exam-title').value = `امتحان درس: ${lessonName}`;
+      const totalCount = mcqCount + essayCount;
+      document.getElementById('new-exam-count').value = totalCount;
+      generateQuestionFields();
+
+      for(let i=1; i<=mcqCount; i++) {
+        document.getElementById(`q_type_${i}`).value = 'mcq';
+        toggleQuestionTypeFields(i);
+        document.getElementById(`q_text_${i}`).value = `سؤال اختر (${i}) في درس ${lessonName}: ما هو المفهوم الأساسي؟`;
+        document.getElementById(`q_opt1_${i}`).value = "الإجابة النموذجية الصحيحة";
+        document.getElementById(`q_opt2_${i}`).value = "احتمال خاطئ أول";
+        document.getElementById(`q_opt3_${i}`).value = "احتمال خاطئ ثانٍ";
+        document.getElementById(`q_opt4_${i}`).value = "احتمال خاطئ ثالث";
+        document.getElementById(`q_ans_${i}`).value = "الإجابة النموذجية الصحيحة";
+      }
+
+      for(let i=mcqCount + 1; i<=totalCount; i++) {
+        document.getElementById(`q_type_${i}`).value = 'essay';
+        toggleQuestionTypeFields(i);
+        document.getElementById(`q_text_${i}`).value = `سؤال مقالي (${i}) في ${lessonName}: اشرح باختصار أهم النقاط؟`;
+        document.getElementById(`q_model_ans_${i}`).value = `الإجابة النموذجية الشاملة لدرس ${lessonName}.`;
+      }
+
+      alert(`✨ تم توليد وتعبئة ${mcqCount} أسئلة اختر و ${essayCount} مقالي لدرس (${lessonName}) بنجاح!`);
     }
 
     function generateQuestionFields() {
