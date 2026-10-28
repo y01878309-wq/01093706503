@@ -2369,22 +2369,31 @@
       }, 1000);
 
       let savedAns = studentExamAnswers[currentQuestionIndex] || '';
+      
+      // استخراج نص السؤال مع دعم كل الاحتمالات (q أو questionText)
+      let questionTextValue = q.q || q.questionText || `سؤال رقم (${currentQuestionIndex + 1})`;
 
       if(q.type === 'essay') {
         container.innerHTML = `
           <div style="background:#f8fafc; padding:14px; border-radius:12px; margin-bottom:10px; text-align:right; border:1px solid #e2e8f0;">
-            <div style="font-size:15px; font-weight:bold; margin-bottom:8px; color:#0f172a;">${q.q || 'سؤال مقالي'}</div>
+            <div style="font-size:15px; font-weight:bold; margin-bottom:8px; color:#0f172a; line-height: 1.5;">${questionTextValue}</div>
             <textarea id="exam_essay_input" class="auth-input" placeholder="اكتب إجابتك هنا..." style="background:white; color:#1e293b; height:100px; font-size:14px;" oninput="saveStudentAnswer(${currentQuestionIndex}, this.value)">${savedAns}</textarea>
           </div>
         `;
       } else {
+        let opt1 = q.o1 || q.option1 || 'أ';
+        let opt2 = q.o2 || q.option2 || 'ب';
+        let opt3 = q.o3 || q.option3 || 'ج';
+        let opt4 = q.o4 || q.option4 || 'د';
+        let correctAns = q.ans || q.correctAnswer || opt1;
+
         container.innerHTML = `
           <div style="background:#f8fafc; padding:14px; border-radius:12px; margin-bottom:10px; text-align:right; border:1px solid #e2e8f0;">
-            <div style="font-size:15px; font-weight:bold; margin-bottom:12px; color:#0f172a;">${q.q || 'سؤال اختيار'}</div>
-            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o1 || ''}" ${savedAns === (q.o1 || '') ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans || ''}', '${currentExamMode}')"> ${q.o1 || ''}</label>
-            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o2 || ''}" ${savedAns === (q.o2 || '') ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans || ''}', '${currentExamMode}')"> ${q.o2 || ''}</label>
-            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o3 || ''}" ${savedAns === (q.o3 || '') ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans || ''}', '${currentExamMode}')"> ${q.o3 || ''}</label>
-            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o4 || ''}" ${savedAns === (q.o4 || '') ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans || ''}', '${currentExamMode}')"> ${q.o4 || ''}</label>
+            <div style="font-size:15px; font-weight:bold; margin-bottom:12px; color:#0f172a; line-height: 1.5;">${questionTextValue}</div>
+            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${opt1}" ${savedAns === opt1 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${correctAns}', '${currentExamMode}')"> ${opt1}</label>
+            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${opt2}" ${savedAns === opt2 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${correctAns}', '${currentExamMode}')"> ${opt2}</label>
+            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${opt3}" ${savedAns === opt3 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${correctAns}', '${currentExamMode}')"> ${opt3}</label>
+            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${opt4}" ${savedAns === opt4 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${correctAns}', '${currentExamMode}')"> ${opt4}</label>
             <div id="practice_fb" style="font-size:12px; font-weight:bold; margin-top:6px;"></div>
           </div>
         `;
@@ -2446,13 +2455,13 @@
 
       activeQuestions.forEach((q, i) => {
         let studentAns = studentExamAnswers[i] || 'لم يتم الإجابة';
-        let modelAnswer = q.type === 'essay' ? (q.modelAns || '') : q.ans;
+        let modelAnswer = q.type === 'essay' ? (q.modelAns || '') : (q.ans || q.correctAnswer);
         
         let isCorrect = evaluateSmartAnswer(studentAns, modelAnswer);
         if(isCorrect) score++;
 
         detailedQuestions.push({
-          questionText: q.q,
+          questionText: q.q || q.questionText || `سؤال (${i+1})`,
           studentAnswer: studentAns,
           correctAnswer: modelAnswer || 'إجابة نموذجية',
           isCorrect: isCorrect,
@@ -2741,7 +2750,7 @@
 
       const email = localStorage.getItem('fahem_email');
 
-      appData.pdfs.replace && appData.pdfs.forEach(p => {
+      appData.pdfs.forEach(p => {
         let pCont = p.isImage ? `<div class="media-preview-container"><img src="${p.link}" /></div>` : `<a class="btn-custom-open" href="${p.link}" target="_blank" download>تحميل أو فتح الملف 📄</a>`;
         let deletePdfBtn = email === ADMIN_EMAIL ? `<button class="btn-danger-sm" onclick="deletePdf('${p.id}')" style="margin-top:6px;">حذف الملف 🗑️</button>` : '';
 
@@ -2755,23 +2764,6 @@
           </div>
         `;
       });
-
-      if(appData.pdfs) {
-        appData.pdfs.forEach(p => {
-          let pCont = p.isImage ? `<div class="media-preview-container"><img src="${p.link}" /></div>` : `<a class="btn-custom-open" href="${p.link}" target="_blank" download>تحميل أو فتح الملف 📄</a>`;
-          let deletePdfBtn = email === ADMIN_EMAIL ? `<button class="btn-danger-sm" onclick="deletePdf('${p.id}')" style="margin-top:6px;">حذف الملف 🗑️</button>` : '';
-
-          container.innerHTML += `
-            <div class="card-item">
-              <div class="card-row">
-                <div class="card-info"><div class="card-title">${p.title}</div></div>
-                <div>${pCont}</div>
-              </div>
-              ${deletePdfBtn}
-            </div>
-          `;
-        });
-      }
     }
 
     function renderLeaderboards() {
