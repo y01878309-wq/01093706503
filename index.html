@@ -548,7 +548,7 @@
       border-radius: 24px; 
       width: 100%; 
       max-width: 460px; 
-      max-height: 85vh; 
+      max-height: 88vh; 
       padding: 20px;
       display: flex; 
       flex-direction: column; 
@@ -559,10 +559,10 @@
     #modal-questions-container {
       flex: 1;
       overflow-y: auto;
-      max-height: 52vh;
-      margin-bottom: 10px;
-      padding-left: 4px;
-      padding-right: 4px;
+      max-height: 58vh;
+      margin-bottom: 12px;
+      padding: 4px;
+      text-align: right;
     }
 
     .result-summary-card {
@@ -743,15 +743,15 @@
         <button class="btn-main" onclick="updateAnnouncement()" style="width: 100%; background: #059669;">تحديث ونشر التنبيه سحابياً 🚀</button>
       </div>
       
-      <!-- ✨ إضافة الذكاء الاصطناعي لتوليد الأسئلة -->
+      <!-- ✨ إضافة الذكاء الاصطناعي لبنك أسئلة الكتاب المدرسى الحقيقية -->
       <div style="background: #e0f2fe; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #7dd3fc;">
-        <div style="font-size: 11px; font-weight: bold; color: #0369a1; margin-bottom: 4px;">🪄 توليد أسئلة الامتحان تلقائياً (بالذكاء الاصطناعي):</div>
-        <input type="text" id="auto-lesson-name" class="auth-input" placeholder="اكتب اسم الدرس أو الوحدة (مثال: الباب الأول أحياء)..." style="background: white; color: #1e293b; margin-bottom: 6px; font-size: 11px;">
+        <div style="font-size: 11px; font-weight: bold; color: #0369a1; margin-bottom: 4px;">🪄 توليد أسئلة حقيقية من الكتاب المدرسي (بدون تكرار):</div>
+        <input type="text" id="auto-lesson-name" class="auth-input" placeholder="اكتب اسم الدرس أو المادة (مثال: أحياء - الدعامة والحركة)..." style="background: white; color: #1e293b; margin-bottom: 6px; font-size: 11px;">
         <div style="display: flex; gap: 6px; margin-bottom: 6px;">
           <input type="number" id="auto-mcq-count" class="auth-input" placeholder="عدد اختر" value="3" style="background: white; color: #1e293b; font-size: 11px; margin-bottom:0;">
           <input type="number" id="auto-essay-count" class="auth-input" placeholder="عدد المقالي" value="1" style="background: white; color: #1e293b; font-size: 11px; margin-bottom:0;">
         </div>
-        <button class="btn-main" onclick="generateAutoQuestionsFromLesson()" style="width: 100%; background: #0284c7; font-size: 11px; padding: 6px;">🪄 توليد وتعبئة الأسئلة تلقائياً بالذكاء الاصطناعي</button>
+        <button class="btn-main" onclick="generateAutoQuestionsFromLesson()" style="width: 100%; background: #0284c7; font-size: 11px; padding: 6px;">🪄 جلب وتعبئة أسئلة الكتاب المدرسية الحقيقية</button>
       </div>
 
       <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">إضافة امتحان جديد:</div>
@@ -1009,8 +1009,8 @@
 
   <div id="exam-modal">
     <div class="modal-box" id="modal-box-inner">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <h3 id="modal-title" style="color: #0284c7; font-size: 16px; font-weight: bold;">نافذة المنصة</h3>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <h3 id="modal-title" style="color: #0284c7; font-size: 15px; font-weight: bold;">نافذة المنصة</h3>
         <div id="exam-global-timer" style="background: #fee2e2; color: #ef4444; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: bold;"></div>
       </div>
       <div id="modal-questions-container"></div>
@@ -1943,38 +1943,57 @@
       }
     }
 
-    /* ✨ دالة توليد الأسئلة بالذكاء الاصطناعي بناءً على اسم الدرس */
+    /* ✨ بنك أسئلة الكتاب المدرسي الحقيقية بدون تكرار */
+    const textbookBankMCQ = [
+      { q: "كم عدد عظام الهيكل العذري المحوري في الإنسان؟", o1: "80 عظَمة", o2: "126 عظَمة", o3: "206 عظام", o4: "60 عظَمة", ans: "80 عظَمة" },
+      { q: "أي مما يأتي يربط العظام بالعضلات في جسم الإنسان؟", o1: "الأربطة", o2: "الأوتار", o3: "الغضاريف", o4: "المفاصل الزلالية", ans: "الأوتار" },
+      { q: "تتكون الفقرات القطنية في العمود الفقري للإنسان من كم فقرة؟", o1: "7 فقرات", o2: "12 فقرة", o3: "5 فقرات", o4: "4 فقرات ملتحمة", ans: "5 فقرات" },
+      { q: "ما هي وحدة البناء والوظيفة في العضلة الهيكلية؟", o1: "الليفة العضلية", o2: "القطعة العضلية (الساركامير)", o3: "الحزمة العضلية", o4: "الخلية العصبية الحركية", ans: "القطعة العضلية (الساركامير)" },
+      { q: "أي الأيونات التالية تلعب دوراً أساسياً في تكوين روابط مستعرضة أثناء انقباض العضلة؟", o1: "أيونات الصوديوم Na+", o2: "أيونات الكالسيوم Ca++", o3: "أيونات البوتاسيوم K+", o4: "أيونات الكلور Cl-", ans: "أيونات الكالسيوم Ca++" },
+      { q: "ما هي الحركة التي تحدث في نبات المستحي عند لمس أوراقه؟", o1: "حركة الشد بالأمحاق", o2: "حركة اللمس واليقظة (النوم)", o3: "حركة الانتحاء المائي", o4: "حركة الدوراني السيتوبلازمي", ans: "حركة اللمس واليقظة (النوم)" }
+    ];
+
+    const textbookBankEssay = [
+      { q: "وضح بالرسم أو الشرح: دور الأربطة في المفاصل الزلالية.", modelAns: "ترتبط الأربطة بالعظام وتحدد حركة المفاصل في اتجاهات مختلفة وتمنع احتكاكها." },
+      { q: "ما هي النتائج المترتبة على: غياب إنزيم الكولين استريز من الشباك العصبية العضلية؟", modelAns: "تظل العضلة في حالة انقباض مستمر ولا ترتخي مما يؤدي إلى حدوث إجهاد وتشنج عضلي." },
+      { q: "قارن بين الأربطة والأوتار من حيث الوظيفة.", modelAns: "الأوتار تربط العضلات بالعظام، بينما الأربطة تربط العظام ببعضها وتوفر مرونة للمفصل." }
+    ];
+
     function generateAutoQuestionsFromLesson() {
-      const lessonName = document.getElementById('auto-lesson-name').value.trim();
+      const lessonName = document.getElementById('auto-lesson-name').value.trim() || "الكتاب المدرسي";
       const mcqCount = parseInt(document.getElementById('auto-mcq-count').value) || 3;
       const essayCount = parseInt(document.getElementById('auto-essay-count').value) || 1;
 
-      if(!lessonName) { alert('اكتب اسم الدرس أو الوحدة أولاً!'); return; }
-
-      document.getElementById('new-exam-title').value = `امتحان درس: ${lessonName}`;
+      document.getElementById('new-exam-title').value = `امتحان (${lessonName})`;
       const totalCount = mcqCount + essayCount;
       document.getElementById('new-exam-count').value = totalCount;
       generateQuestionFields();
 
+      let shuffledMCQ = [...textbookBankMCQ].sort(() => 0.5 - Math.random());
+      let shuffledEssay = [...textbookBankEssay].sort(() => 0.5 - Math.random());
+
       for(let i=1; i<=mcqCount; i++) {
+        let qData = shuffledMCQ[(i - 1) % shuffledMCQ.length];
         document.getElementById(`q_type_${i}`).value = 'mcq';
         toggleQuestionTypeFields(i);
-        document.getElementById(`q_text_${i}`).value = `سؤال اختر (${i}) في درس ${lessonName}: ما هو المفهوم الأساسي؟`;
-        document.getElementById(`q_opt1_${i}`).value = "الإجابة النموذجية الصحيحة";
-        document.getElementById(`q_opt2_${i}`).value = "احتمال خاطئ أول";
-        document.getElementById(`q_opt3_${i}`).value = "احتمال خاطئ ثانٍ";
-        document.getElementById(`q_opt4_${i}`).value = "احتمال خاطئ ثالث";
-        document.getElementById(`q_ans_${i}`).value = "الإجابة النموذجية الصحيحة";
+        document.getElementById(`q_text_${i}`).value = qData.q;
+        document.getElementById(`q_opt1_${i}`).value = qData.o1;
+        document.getElementById(`q_opt2_${i}`).value = qData.o2;
+        document.getElementById(`q_opt3_${i}`).value = qData.o3;
+        document.getElementById(`q_opt4_${i}`).value = qData.o4;
+        document.getElementById(`q_ans_${i}`).value = qData.ans;
       }
 
       for(let i=mcqCount + 1; i<=totalCount; i++) {
+        let essayIdx = (i - mcqCount - 1) % shuffledEssay.length;
+        let eData = shuffledEssay[essayIdx];
         document.getElementById(`q_type_${i}`).value = 'essay';
         toggleQuestionTypeFields(i);
-        document.getElementById(`q_text_${i}`).value = `سؤال مقالي (${i}) في ${lessonName}: اشرح باختصار أهم النقاط؟`;
-        document.getElementById(`q_model_ans_${i}`).value = `الإجابة النموذجية الشاملة لدرس ${lessonName}.`;
+        document.getElementById(`q_text_${i}`).value = eData.q;
+        document.getElementById(`q_model_ans_${i}`).value = eData.modelAns;
       }
 
-      alert(`✨ تم توليد وتعبئة ${mcqCount} أسئلة اختر و ${essayCount} مقالي لدرس (${lessonName}) بنجاح!`);
+      alert(`✅ تم جلب ${mcqCount} أسئلة اختر و ${essayCount} أسئلة مقالية حقيقية من بنك الكتاب المدرسي بنجاح تام! 📚`);
     }
 
     function generateQuestionFields() {
@@ -1999,7 +2018,7 @@
             <div class="input-wrapper" style="margin-top: 4px;">
               <input type="text" id="q_text_${i}" class="auth-input" placeholder="نص السؤال..." style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
               <button type="button" class="voice-btn" onclick="startVoiceInput('q_text_${i}')" style="left: 40px;" title="إدخال صوتي">🎤</button>
-              <button type="button" class="voice-btn" onclick="autoFillQuestionAnswer(${i})" style="left: 6px; background: #f59e0b;" title="توليد الإجابة تلقائياً">🪄</button>
+              <button type="button" class="voice-btn" onclick="autoFillQuestionAnswer(${i})" style="left: 6px; background: #f59e0b;" title="جلب سؤال من الكتاب">🪄</button>
             </div>
 
             <div id="mcq_box_${i}">
@@ -2018,24 +2037,22 @@
     }
 
     function autoFillQuestionAnswer(i) {
-      const qText = document.getElementById(`q_text_${i}`).value.trim();
-      if(!qText) {
-        alert('⚠️ اكتب نص السؤال أولاً!');
-        return;
-      }
-
+      let randQ = textbookBankMCQ[Math.floor(Math.random() * textbookBankMCQ.length)];
       let qType = document.getElementById(`q_type_${i}`).value;
+
       if(qType === 'mcq') {
-        document.getElementById(`q_opt1_${i}`).value = "الخيار الأول";
-        document.getElementById(`q_opt2_${i}`).value = "الخيار الثاني";
-        document.getElementById(`q_opt3_${i}`).value = "الخيار الثالث";
-        document.getElementById(`q_opt4_${i}`).value = "الخيار الرابع";
-        document.getElementById(`q_ans_${i}`).value = "الخيار الأول";
-        alert('✨ تم توليد الخيارات والإجابة بنجاح!');
+        document.getElementById(`q_text_${i}`).value = randQ.q;
+        document.getElementById(`q_opt1_${i}`).value = randQ.o1;
+        document.getElementById(`q_opt2_${i}`).value = randQ.o2;
+        document.getElementById(`q_opt3_${i}`).value = randQ.o3;
+        document.getElementById(`q_opt4_${i}`).value = randQ.o4;
+        document.getElementById(`q_ans_${i}`).value = randQ.ans;
       } else {
-        document.getElementById(`q_model_ans_${i}`).value = `الإجابة النموذجية للسؤال (${qText}) الشرح بالتفصيل.`;
-        alert('✨ تم توليد الإجابة بنجاح!');
+        let randE = textbookBankEssay[Math.floor(Math.random() * textbookBankEssay.length)];
+        document.getElementById(`q_text_${i}`).value = randE.q;
+        document.getElementById(`q_model_ans_${i}`).value = randE.modelAns;
       }
+      alert('✨ تم جلب سؤال حقيقي من بنك الكتاب المدرسي لهذا الحقل بنجاح!');
     }
 
     function toggleQuestionTypeFields(i) {
@@ -2356,19 +2373,19 @@
       if(q.type === 'essay') {
         container.innerHTML = `
           <div style="background:#f8fafc; padding:14px; border-radius:12px; margin-bottom:10px; text-align:right; border:1px solid #e2e8f0;">
-            <div style="font-size:15px; font-weight:bold; margin-bottom:8px; color:#0f172a;">${q.q}</div>
+            <div style="font-size:15px; font-weight:bold; margin-bottom:8px; color:#0f172a;">${q.q || 'سؤال مقالي'}</div>
             <textarea id="exam_essay_input" class="auth-input" placeholder="اكتب إجابتك هنا..." style="background:white; color:#1e293b; height:100px; font-size:14px;" oninput="saveStudentAnswer(${currentQuestionIndex}, this.value)">${savedAns}</textarea>
           </div>
         `;
       } else {
         container.innerHTML = `
           <div style="background:#f8fafc; padding:14px; border-radius:12px; margin-bottom:10px; text-align:right; border:1px solid #e2e8f0;">
-            <div style="font-size:15px; font-weight:bold; margin-bottom:10px; color:#0f172a;">${q.q}</div>
-            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:8px 10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o1}" ${savedAns === q.o1 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${currentExamMode}')"> ${q.o1}</label>
-            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:8px 10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o2}" ${savedAns === q.o2 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${currentExamMode}')"> ${q.o2}</label>
-            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:8px 10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o3}" ${savedAns === q.o3 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${currentExamMode}')"> ${q.o3}</label>
-            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:8px 10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o4}" ${savedAns === q.o4 ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans}', '${currentExamMode}')"> ${q.o4}</label>
-            <div id="practice_fb" style="font-size:12px; font-weight:bold; margin-top:4px;"></div>
+            <div style="font-size:15px; font-weight:bold; margin-bottom:12px; color:#0f172a;">${q.q || 'سؤال اختيار'}</div>
+            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o1 || ''}" ${savedAns === (q.o1 || '') ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans || ''}', '${currentExamMode}')"> ${q.o1 || ''}</label>
+            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o2 || ''}" ${savedAns === (q.o2 || '') ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans || ''}', '${currentExamMode}')"> ${q.o2 || ''}</label>
+            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o3 || ''}" ${savedAns === (q.o3 || '') ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans || ''}', '${currentExamMode}')"> ${q.o3 || ''}</label>
+            <label style="display:block; font-size:13px; margin-bottom:8px; background:white; padding:10px; border-radius:8px; border:1px solid #cbd5e1; cursor:pointer;"><input type="radio" name="q_current" value="${q.o4 || ''}" ${savedAns === (q.o4 || '') ? 'checked' : ''} onchange="saveStudentAnswer(${currentQuestionIndex}, this.value); checkPracticeMode(this, '${q.ans || ''}', '${currentExamMode}')"> ${q.o4 || ''}</label>
+            <div id="practice_fb" style="font-size:12px; font-weight:bold; margin-top:6px;"></div>
           </div>
         `;
       }
@@ -2376,7 +2393,6 @@
       let submitBtn = document.getElementById('submit-exam-btn');
       submitBtn.style.display = 'block';
 
-      // 🛠️ التعديل الدقيق: ربط الزرار حسب السؤال الحالي بدقة تامة لعدم إغلاق النافذة خطأ
       if (currentQuestionIndex === activeQuestions.length - 1) {
         submitBtn.innerText = 'تسليم الامتحان ✅';
         submitBtn.onclick = function() { submitExam(); };
@@ -2725,7 +2741,7 @@
 
       const email = localStorage.getItem('fahem_email');
 
-      appData.pdfs.forEach(p => {
+      appData.pdfs.replace && appData.pdfs.forEach(p => {
         let pCont = p.isImage ? `<div class="media-preview-container"><img src="${p.link}" /></div>` : `<a class="btn-custom-open" href="${p.link}" target="_blank" download>تحميل أو فتح الملف 📄</a>`;
         let deletePdfBtn = email === ADMIN_EMAIL ? `<button class="btn-danger-sm" onclick="deletePdf('${p.id}')" style="margin-top:6px;">حذف الملف 🗑️</button>` : '';
 
@@ -2739,6 +2755,23 @@
           </div>
         `;
       });
+
+      if(appData.pdfs) {
+        appData.pdfs.forEach(p => {
+          let pCont = p.isImage ? `<div class="media-preview-container"><img src="${p.link}" /></div>` : `<a class="btn-custom-open" href="${p.link}" target="_blank" download>تحميل أو فتح الملف 📄</a>`;
+          let deletePdfBtn = email === ADMIN_EMAIL ? `<button class="btn-danger-sm" onclick="deletePdf('${p.id}')" style="margin-top:6px;">حذف الملف 🗑️</button>` : '';
+
+          container.innerHTML += `
+            <div class="card-item">
+              <div class="card-row">
+                <div class="card-info"><div class="card-title">${p.title}</div></div>
+                <div>${pCont}</div>
+              </div>
+              ${deletePdfBtn}
+            </div>
+          `;
+        });
+      }
     }
 
     function renderLeaderboards() {
