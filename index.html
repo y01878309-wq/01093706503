@@ -543,9 +543,18 @@
       filter: blur(25px) !important;
     }
 
+    /* 🛡️ التعديل الجذري لحل مشكلة الكيبورد في الموبايل */
     .modal-box {
-      background: white; border-radius: 24px; width: 100%; max-width: 460px; height: 92vh; max-height: 92vh; overflow-y: auto; padding: 22px;
-      display: flex; flex-direction: column; justify-content: space-between;
+      background: white; 
+      border-radius: 24px; 
+      width: 100%; 
+      max-width: 460px; 
+      max-height: 85vh; /* تقليل الارتفاع قليلاً لتتأقلم مع الكيبورد */
+      overflow-y: auto; /* السماح بالتمرير بمرونة وسلاسة عند ظهور لوحة المفاتيح */
+      padding: 22px;
+      display: flex; 
+      flex-direction: column; 
+      justify-content: space-between;
       box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
 
@@ -2392,6 +2401,7 @@
 
       const email = localStorage.getItem('fahem_email');
 
+      appData.pdfs.copy = true; // safe flag
       appData.pdfs.forEach(p => {
         let pCont = p.isImage ? `<div class="media-preview-container"><img src="${p.link}" /></div>` : `<a class="btn-custom-open" href="${p.link}" target="_blank" download>تحميل أو فتح الملف 📄</a>`;
         let deletePdfBtn = email === ADMIN_EMAIL ? `<button class="btn-danger-sm" onclick="deletePdf('${p.id}')" style="margin-top:6px;">حذف الملف 🗑️</button>` : '';
