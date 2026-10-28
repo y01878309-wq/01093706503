@@ -43,7 +43,7 @@
       padding-bottom: 90px;
     }
 
-    /* 🚨 شريط الإشعارات الخارجي (مخفي للطلاب، يظهر للأدمن فقط عند الحاجة) */
+    /* 🚨 شريط الإشعارات الخارجي */
     .external-alert-bar {
       width: 100%;
       background: linear-gradient(135deg, #f59e0b, #d97706);
@@ -746,7 +746,7 @@
       <!-- ✨ إضافة الذكاء الاصطناعي لبنك أسئلة الكتاب المدرسى الحقيقية -->
       <div style="background: #e0f2fe; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #7dd3fc;">
         <div style="font-size: 11px; font-weight: bold; color: #0369a1; margin-bottom: 4px;">🪄 توليد أسئلة حقيقية من الكتاب المدرسي (بدون تكرار):</div>
-        <input type="text" id="auto-lesson-name" class="auth-input" placeholder="اكتب اسم الدرس أو المادة (مثال: أحياء - الدعامة والحركة)..." style="background: white; color: #1e293b; margin-bottom: 6px; font-size: 11px;">
+        <input type="text" id="auto-lesson-name" class="auth-input" placeholder="اكتب اسم الدرس أو المادة (مثال: فيزياء - قانون فاراداي)..." style="background: white; color: #1e293b; margin-bottom: 6px; font-size: 11px;">
         <div style="display: flex; gap: 6px; margin-bottom: 6px;">
           <input type="number" id="auto-mcq-count" class="auth-input" placeholder="عدد اختر" value="3" style="background: white; color: #1e293b; font-size: 11px; margin-bottom:0;">
           <input type="number" id="auto-essay-count" class="auth-input" placeholder="عدد المقالي" value="1" style="background: white; color: #1e293b; font-size: 11px; margin-bottom:0;">
@@ -1015,7 +1015,7 @@
       </div>
       <div id="modal-questions-container"></div>
       <div style="margin-top: 10px;">
-        <button class="btn-main" id="submit-exam-btn" style="width: 100%; padding: 12px; font-size: 15px; display:none;">تسليم الامتحان 🎯</button>
+        <button class="btn-main" id="submit-exam-btn" style="width: 100%; padding: 12px; font-size: 15px; display:none;">السؤال التالي ➔</button>
         <button class="btn-main" onclick="closeExam()" style="background: #ef4444; width: 100%; padding: 12px; font-size: 14px; margin-top: 6px;">إغلاق ✕</button>
       </div>
     </div>
@@ -1943,24 +1943,30 @@
       }
     }
 
-    /* ✨ بنك أسئلة الكتاب المدرسي الحقيقية بدون تكرار */
-    const textbookBankMCQ = [
-      { q: "كم عدد عظام الهيكل العذري المحوري في الإنسان؟", o1: "80 عظَمة", o2: "126 عظَمة", o3: "206 عظام", o4: "60 عظَمة", ans: "80 عظَمة" },
-      { q: "أي مما يأتي يربط العظام بالعضلات في جسم الإنسان؟", o1: "الأربطة", o2: "الأوتار", o3: "الغضاريف", o4: "المفاصل الزلالية", ans: "الأوتار" },
-      { q: "تتكون الفقرات القطنية في العمود الفقري للإنسان من كم فقرة؟", o1: "7 فقرات", o2: "12 فقرة", o3: "5 فقرات", o4: "4 فقرات ملتحمة", ans: "5 فقرات" },
-      { q: "ما هي وحدة البناء والوظيفة في العضلة الهيكلية؟", o1: "الليفة العضلية", o2: "القطعة العضلية (الساركامير)", o3: "الحزمة العضلية", o4: "الخلية العصبية الحركية", ans: "القطعة العضلية (الساركامير)" },
-      { q: "أي الأيونات التالية تلعب دوراً أساسياً في تكوين روابط مستعرضة أثناء انقباض العضلة؟", o1: "أيونات الصوديوم Na+", o2: "أيونات الكالسيوم Ca++", o3: "أيونات البوتاسيوم K+", o4: "أيونات الكلور Cl-", ans: "أيونات الكالسيوم Ca++" },
-      { q: "ما هي الحركة التي تحدث في نبات المستحي عند لمس أوراقه؟", o1: "حركة الشد بالأمحاق", o2: "حركة اللمس واليقظة (النوم)", o3: "حركة الانتحاء المائي", o4: "حركة الدوراني السيتوبلازمي", ans: "حركة اللمس واليقظة (النوم)" }
-    ];
+    /* ✨ بنك الأسئلة الشامل للمواد المختلفة (أحياء، فيزياء، كيمياء، وغيرها) */
+    const textbookBankMCQ = {
+      "أحياء": [
+        { q: "كم عدد عظام الهيكل العذري المحوري في الإنسان؟", o1: "80 عظَمة", o2: "126 عظَمة", o3: "206 عظام", o4: "60 عظَمة", ans: "80 عظَمة" },
+        { q: "أي مما يأتي يربط العظام بالعضلات في جسم الإنسان؟", o1: "الأربطة", o2: "الأوتار", o3: "الغضاريف", o4: "المفاصل الزلالية", ans: "الأوتار" },
+        { q: "تتكون الفقرات القطنية في العمود الفقري للإنسان من كم فقرة؟", o1: "7 فقرات", o2: "12 فقرة", o3: "5 فقرات", o4: "4 فقرات ملتحمة", ans: "5 فقرات" }
+      ],
+      "فيزياء": [
+        { q: "ما هي وحدة قياس الفيض المغناطيسي؟", o1: "الويبر (Weber)", o2: "التسلا (Tesla)", o3: "الفولت (Volt)", o4: "الأمبير (Ampere)", ans: "الويبر (Weber)" },
+        { q: "قانون فاراداي للحث الكهرومغناطيسي ينص على أن قوة الدفع الكهربية المستحثة تتناسب طردياً مع:", o1: "معدل تغير الفيض المغناطيسي", o2: "المقاومة الكلية للدائرة", o3: "شدة التيار الاصلي", o4: "سعة البطارية", ans: "معدل تغير الفيض المغناطيسي" }
+      ],
+      "عام": [
+        { q: "أي مما يلي يعتبر مصدراً أساسياً للطاقة المتجددة؟", o1: "الفحم الحجري", o2: "النفط الخام", o3: "الطاقة الشمسية", o4: "الغاز الطبيعي", ans: "الطاقة الشمسية" },
+        { q: "ما هي عاصمة جمهورية مصر العربية؟", o1: "الإسكندرية", o2: "القاهرة", o3: "الأقصر", o4: "أسوان", ans: "القاهرة" }
+      ]
+    };
 
     const textbookBankEssay = [
       { q: "وضح بالرسم أو الشرح: دور الأربطة في المفاصل الزلالية.", modelAns: "ترتبط الأربطة بالعظام وتحدد حركة المفاصل في اتجاهات مختلفة وتمنع احتكاكها." },
-      { q: "ما هي النتائج المترتبة على: غياب إنزيم الكولين استريز من الشباك العصبية العضلية؟", modelAns: "تظل العضلة في حالة انقباض مستمر ولا ترتخي مما يؤدي إلى حدوث إجهاد وتشنج عضلي." },
-      { q: "قارن بين الأربطة والأوتار من حيث الوظيفة.", modelAns: "الأوتار تربط العضلات بالعظام، بينما الأربطة تربط العظام ببعضها وتوفر مرونة للمفصل." }
+      { q: "ما هي النتائج المترتبة على: غياب إنزيم الكولين استريز من الشباك العصبية العضلية؟", modelAns: "تظل العضلة في حالة انقباض مستمر ولا ترتخي مما يؤدي إلى حدوث إجهاد وتشنج عضلي." }
     ];
 
     function generateAutoQuestionsFromLesson() {
-      const lessonName = document.getElementById('auto-lesson-name').value.trim() || "الكتاب المدرسي";
+      const lessonName = document.getElementById('auto-lesson-name').value.trim() || "عام";
       const mcqCount = parseInt(document.getElementById('auto-mcq-count').value) || 3;
       const essayCount = parseInt(document.getElementById('auto-essay-count').value) || 1;
 
@@ -1969,7 +1975,12 @@
       document.getElementById('new-exam-count').value = totalCount;
       generateQuestionFields();
 
-      let shuffledMCQ = [...textbookBankMCQ].sort(() => 0.5 - Math.random());
+      let targetCategory = "عام";
+      if(lessonName.toLowerCase().includes("أحياء") || lessonName.toLowerCase().includes("دعامة")) targetCategory = "أحياء";
+      else if(lessonName.toLowerCase().includes("فيزياء") || lessonName.toLowerCase().includes("حث")) targetCategory = "فيزياء";
+
+      let bankList = textbookBankMCQ[targetCategory] || textbookBankMCQ["عام"];
+      let shuffledMCQ = [...bankList].sort(() => 0.5 - Math.random());
       let shuffledEssay = [...textbookBankEssay].sort(() => 0.5 - Math.random());
 
       for(let i=1; i<=mcqCount; i++) {
@@ -1993,7 +2004,7 @@
         document.getElementById(`q_model_ans_${i}`).value = eData.modelAns;
       }
 
-      alert(`✅ تم جلب ${mcqCount} أسئلة اختر و ${essayCount} أسئلة مقالية حقيقية من بنك الكتاب المدرسي بنجاح تام! 📚`);
+      alert(`✅ تم توليد أسئلة مادة (${lessonName}) بنجاح تام بدون تكرار! 📚`);
     }
 
     function generateQuestionFields() {
@@ -2018,7 +2029,7 @@
             <div class="input-wrapper" style="margin-top: 4px;">
               <input type="text" id="q_text_${i}" class="auth-input" placeholder="نص السؤال..." style="background: #f8fafc; color: #1e293b; margin-bottom: 4px;">
               <button type="button" class="voice-btn" onclick="startVoiceInput('q_text_${i}')" style="left: 40px;" title="إدخال صوتي">🎤</button>
-              <button type="button" class="voice-btn" onclick="autoFillQuestionAnswer(${i})" style="left: 6px; background: #f59e0b;" title="جلب سؤال من الكتاب">🪄</button>
+              <button type="button" class="voice-btn" onclick="autoFillQuestionAnswer(${i})" style="left: 6px; background: #f59e0b;" title="جلب سؤال">🪄</button>
             </div>
 
             <div id="mcq_box_${i}">
@@ -2037,7 +2048,7 @@
     }
 
     function autoFillQuestionAnswer(i) {
-      let randQ = textbookBankMCQ[Math.floor(Math.random() * textbookBankMCQ.length)];
+      let randQ = textbookBankMCQ["عام"][0];
       let qType = document.getElementById(`q_type_${i}`).value;
 
       if(qType === 'mcq') {
@@ -2048,11 +2059,11 @@
         document.getElementById(`q_opt4_${i}`).value = randQ.o4;
         document.getElementById(`q_ans_${i}`).value = randQ.ans;
       } else {
-        let randE = textbookBankEssay[Math.floor(Math.random() * textbookBankEssay.length)];
+        let randE = textbookBankEssay[0];
         document.getElementById(`q_text_${i}`).value = randE.q;
         document.getElementById(`q_model_ans_${i}`).value = randE.modelAns;
       }
-      alert('✨ تم جلب سؤال حقيقي من بنك الكتاب المدرسي لهذا الحقل بنجاح!');
+      alert('✨ تم جلب السؤال بنجاح!');
     }
 
     function toggleQuestionTypeFields(i) {
@@ -2334,6 +2345,7 @@
       showQuestionAt(0);
     }
 
+    /* ✨ العرض المستقل لكل سؤال في صفحة وحدها وجمع الدرجات في النهاية */
     function showQuestionAt(qIndex) {
       currentQuestionIndex = qIndex;
       isInsideExam = true;
@@ -2369,8 +2381,6 @@
       }, 1000);
 
       let savedAns = studentExamAnswers[currentQuestionIndex] || '';
-      
-      // استخراج نص السؤال مع دعم كل الاحتمالات (q أو questionText)
       let questionTextValue = q.q || q.questionText || `سؤال رقم (${currentQuestionIndex + 1})`;
 
       if(q.type === 'essay') {
@@ -2403,7 +2413,7 @@
       submitBtn.style.display = 'block';
 
       if (currentQuestionIndex === activeQuestions.length - 1) {
-        submitBtn.innerText = 'تسليم الامتحان ✅';
+        submitBtn.innerText = 'تسليم الامتحان وجمع الدرجات ✅';
         submitBtn.onclick = function() { submitExam(); };
       } else {
         submitBtn.innerText = 'السؤال التالي ➔';
