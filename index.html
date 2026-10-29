@@ -632,7 +632,8 @@
         <h2 style="margin-bottom: 5px; font-size: 20px;">تسجيل الدخول - منصة فاهم</h2>
         <p style="color: #94a3b8; font-size: 12px; margin-bottom: 20px;">إشراف: أ/ يوسف فرج 🛡️</p>
 
-        <a href="https://www.mediafire.com/file/196dzpxi66610m9/DOC-20261002-WA0027.apk/file" class="download-btn" target="_blank">📦 تحميل تطبيق المنصة (APK)</a>
+        <!-- زر التحميل المباشر للتطبيق APK -->
+        <a href="https://www.mediafire.com/file/196dzpxi66610m9/DOC-20261002-WA0027.apk/file" class="download-btn" target="_blank" download="Fahem_Platform.apk">📦 تحميل تطبيق المنصة (APK)</a>
 
         <div class="input-wrapper">
           <input type="email" id="login-email" class="auth-input" placeholder="البريد الإلكتروني (Gmail)">
@@ -727,7 +728,7 @@
         <button class="btn-main" onclick="updateAnnouncement()" style="width: 100%; background: #059669;">تحديث ونشر التنبيه سحابياً 🚀</button>
       </div>
       
-      <!-- ✨ مولّد أسئلة بالذكاء الاصطناعي من نص الكتاب (مجاني: تحضير طلب تنسخه لأي AI، ثم تلصق رده هنا) -->
+      <!-- ✨ مولّد أسئلة بالذكاء الاصطناعي من نص الكتاب -->
       <div style="background: #e0f2fe; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #7dd3fc;">
         <div style="font-size: 11px; font-weight: bold; color: #0369a1; margin-bottom: 4px;">🪄 مولّد أسئلة بالذكاء الاصطناعي (من نص الكتاب فقط):</div>
         <div style="font-size: 10px; color: #0369a1; margin-bottom: 6px; line-height:1.6;">
@@ -737,13 +738,13 @@
           ٤) الصق الرد في الصندوق التاني ودوس "تحويل الرد لأسئلة".
         </div>
 
-        <input type="text" id="ai-lesson-name" class="auth-input" placeholder="اسم الدرس أو المادة (مثال: التوحيد - الصف الأول الثانوي)..." style="background: white; color: #1e293b; margin-bottom: 6px; font-size: 11px;">
-        <input type="text" id="ai-grade-name" class="auth-input" placeholder="الصف الدراسي (اختياري، مثال: الصف الثالث الثانوي)..." style="background: white; color: #1e293b; margin-bottom: 6px; font-size: 11px;">
+        <input type="text" id="ai-lesson-name" class="auth-input" placeholder="اسم الدرس أو المادة..." style="background: white; color: #1e293b; margin-bottom: 6px; font-size: 11px;">
+        <input type="text" id="ai-grade-name" class="auth-input" placeholder="الصف الدراسي..." style="background: white; color: #1e293b; margin-bottom: 6px; font-size: 11px;">
         <div style="display: flex; gap: 6px; margin-bottom: 6px;">
           <input type="number" id="ai-mcq-count" class="auth-input" placeholder="عدد اختر" value="5" style="background: white; color: #1e293b; font-size: 11px; margin-bottom:0;">
           <input type="number" id="ai-essay-count" class="auth-input" placeholder="عدد المقالي" value="2" style="background: white; color: #1e293b; font-size: 11px; margin-bottom:0;">
         </div>
-        <textarea id="ai-book-text" class="auth-input" placeholder="الصق هنا نص الدرس من الكتاب المدرسي بالكامل أو الجزء المطلوب الامتحان فيه..." style="background: white; color: #1e293b; height: 90px; font-size: 11px; margin-bottom: 6px;"></textarea>
+        <textarea id="ai-book-text" class="auth-input" placeholder="الصق هنا نص الدرس من الكتاب المدرسي بالكامل..." style="background: white; color: #1e293b; height: 90px; font-size: 11px; margin-bottom: 6px;"></textarea>
 
         <button class="btn-main" onclick="buildAIExamPrompt()" style="width: 100%; background: #0284c7; font-size: 11px; padding: 6px; margin-bottom: 8px;">1️⃣ تجهيز طلب الذكاء الاصطناعي 🪄</button>
 
@@ -787,7 +788,7 @@
       </div>
 
       <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1;">
-        <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">📁 رفع ملف PDF أو صورة مباشرة من جهازك (يعمل 100% للطلاب):</div>
+        <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">📁 رفع ملف PDF أو صورة مباشرة من جهازك:</div>
         <input type="text" id="new-pdf-title" class="auth-input" placeholder="عنوان المذكرة أو الملخص..." style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 12px;">
         <input type="file" id="new-pdf-file" accept="application/pdf,image/*" class="auth-input" style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 11px;">
         <button class="btn-main" onclick="addPdfFileDirect()" style="width: 100%; background: #7c3aed;">رفع وحفظ الملف سحابياً 📁✅</button>
@@ -814,8 +815,7 @@
       </div>
 
       <!-- مكان إعلان Adsterra الرابع (مخفي للأدمن) -->
-      <div class="ad-slot-container" id="ad-slot-2">
-      </div>
+      <div class="ad-slot-container" id="ad-slot-2"></div>
 
       <div class="section-header-title">🏆 لوحة شرف المتصدرين</div>
       <div class="card-item" id="home-leaderboard-box"></div>
@@ -1095,13 +1095,12 @@
           renderAll();
         }
         window.appDataLoaded = true;
-        // أول مرة تتحمل البيانات والمستخدم مسجل دخول من قبل → ندخله المنصة
         if(!sessionAnnounced) {
           sessionAnnounced = true;
           if(!window.loginInProgress && window.onAuthReady) window.onAuthReady(userEmail);
         }
       }, (err) => {
-        console.error("تعذر قراءة البيانات (تأكد من قواعد Firebase):", err);
+        console.error("تعذر قراءة البيانات:", err);
         window.appDataLoaded = true;
       });
     }
@@ -1115,7 +1114,6 @@
       }
     });
 
-    /* 💾 الحفظ: الأدمن يحفظ كل شيء، والطالب يحفظ فقط الأقسام المسموحة له (بتطابق قواعد الأمان) */
     const STUDENT_WRITABLE_KEYS = ['leaderboard', 'communityMessages', 'homeworkSubmissions', 'registeredUsers', 'reports'];
     window.saveDatatoFirebase = async function() {
       try {
@@ -1204,7 +1202,6 @@
       recognition.onresult = function(e) { document.getElementById(targetId).value = e.results[0][0].transcript; };
     }
 
-    /* 🛡️ رصد النسخ واللصق والغش (الأدمن مستثنى عشان يقدر يستخدم مولّد أسئلة الذكاء الاصطناعي) */
     window.addEventListener('copy', function(e) {
       if(localStorage.getItem('fahem_email') === ADMIN_EMAIL) return;
       e.preventDefault();
@@ -1274,7 +1271,6 @@
       if(c === 'auth/invalid-email') return '⚠️ صيغة الإيميل غير صحيحة';
       if(c === 'auth/too-many-requests') return '⏳ محاولات كتير. استنى شوية وجرّب تاني، أو استخدم "نسيت كلمة المرور".';
       if(c === 'auth/network-request-failed') return '📶 مشكلة في الاتصال بالإنترنت';
-      if(c === 'auth/operation-not-allowed') return '⚙️ لازم الأدمن يفعّل Email/Password من Firebase Authentication';
       return '❌ حدث خطأ: ' + (c || (e && e.message) || 'غير معروف');
     }
 
@@ -1285,7 +1281,6 @@
       if(label) b.innerText = busy ? 'جاري التنفيذ...' : label;
     }
 
-    /* بعد نجاح الدخول: نتأكد من الحظر ونسأل عن الهاتف لو مش موجود */
     async function continueAfterAuth(email, phoneVal, nameVal) {
       await window.waitForAppData();
 
@@ -1410,7 +1405,6 @@
       setupSession(email);
     }
 
-    /* 💬 إدارة الجروب الجماعي المطور مع صور وفويس */
     async function sendCommunityMessage() {
       const email = localStorage.getItem('fahem_email');
       const textInput = document.getElementById('community-input');
@@ -1502,7 +1496,6 @@
       container.scrollTop = container.scrollHeight;
     }
 
-    /* 📝 الواجبات المنزليّة وصور الكشكول */
     async function addNewHomework() {
       const title = document.getElementById('new-hw-title').value.trim();
       const desc = document.getElementById('new-hw-desc').value.trim();
@@ -1766,12 +1759,10 @@
       return u && u.phone ? u.phone : 'غير متاح';
     }
 
-    /* 🛡️ هروب النصوص عشان أي علامة اقتباس أو < > ما تكسرش عرض السؤال */
     function escHtml(v) {
       return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
     }
 
-    /* 📢 الإعلانات: بتتحمل بعد تسجيل الدخول بس (للطالب العادي، مش الأدمن) ومرة واحدة */
     let platformAdsLoaded = false;
     function loadPlatformAds() {
       if(platformAdsLoaded) return;
@@ -1782,7 +1773,6 @@
         { id: 'ad-slot-2', key: 'b4a34288cd0cc6e58550e89ea0b5e827', h: 50,  w: 320 }
       ];
 
-      // الإعلانات بتستخدم متغير atOptions عام، فنحمّلها واحد ورا التاني
       const loadNext = (i) => {
         if(i >= slots.length) { loadSocialAd(); return; }
         const sl = slots[i];
@@ -2076,7 +2066,6 @@
       }
     }
 
-    /* ✨ بنك الأسئلة الشامل للمواد المختلفة (أحياء، فيزياء، حديث، وغيرها) */
     const textbookBankMCQ = {
       "أحياء": [
         { q: "كم عدد عظام الهيكل العذري المحوري في الإنسان؟", o1: "80 عظَمة", o2: "126 عظَمة", o3: "206 عظام", o4: "60 عظَمة", ans: "80 عظَمة" },
@@ -2102,7 +2091,6 @@
       { q: "ما هي النتائج المترتبة على: غياب إنزيم الكولين استريز من الشباك العصبية العضلية؟", modelAns: "تظل العضلة في حالة انقباض مستمر ولا ترتخي مما يؤدي إلى حدوث إجهاد وتشنج عضلي." }
     ];
 
-    /* 🪄 مولّد الأسئلة بالذكاء الاصطناعي: تجهيز الطلب فقط (مجاني، بدون أي مفتاح API) */
     function buildAIExamPrompt() {
       const lesson = document.getElementById('ai-lesson-name').value.trim();
       const grade = document.getElementById('ai-grade-name').value.trim();
@@ -2110,25 +2098,23 @@
       const essayCount = parseInt(document.getElementById('ai-essay-count').value) || 0;
       const bookText = document.getElementById('ai-book-text').value.trim();
 
-      if(!bookText || bookText.length < 40) { alert('الصق نص الدرس من الكتاب أولاً (نص كافي، مش جملة واحدة).'); return; }
-      if(mcqCount + essayCount < 1) { alert('حدد عدد أسئلة الاختيار و/أو المقالي.'); return; }
+      if(!bookText || bookText.length < 40) { alert('الصق نص الدرس من الكتاب أولاً.'); return; }
+      if(mcqCount + essayCount < 1) { alert('حدد عدد الأسئلة المطلوبة.'); return; }
 
       const prompt =
-`أنت معلم خبير. مهمتك تجهيز أسئلة امتحان بناءً على نص الكتاب المدرسي المرفق أسفل فقط، بدون أي معلومة من عندك أو من الإنترنت.
+`أنت معلم خبير. مهمتك تجهيز أسئلة امتحان بناءً على نص الكتاب المدرسي المرفق أسفل فقط، بدون أي معلومة خارجية.
 
 المادة/الدرس: ${lesson || "غير محدد"}
 الصف الدراسي: ${grade || "غير محدد"}
 المطلوب: ${mcqCount} سؤال اختيار من متعدد (4 اختيارات) و ${essayCount} سؤال مقالي.
 
 شروط إلزامية:
-- كل سؤال وكل إجابة (صحيحة أو مقالية) لازم تُستخرج حرفياً من معاني النص المرفق فقط.
-- لو النص غير كافٍ لعدد الأسئلة المطلوب، قلّل العدد بدل ما تخترع معلومة مش موجودة في النص.
-- الأسئلة باللغة العربية الفصحى وواضحة.
-- رجّع الناتج بصيغة JSON فقط، بدون أي شرح أو نص قبله أو بعده، بالشكل التالي بالضبط:
+- كل سؤال وكل إجابة مستخرجة حرفياً من معاني النص المرفق.
+- رجّع الناتج بصيغة JSON فقط، بدون أي نص قبله أو بعده، بالشكل التالي:
 
 [
-  { "type": "mcq", "q": "نص السؤال", "o1": "اختيار أ", "o2": "اختيار ب", "o3": "اختيار ج", "o4": "اختيار د", "ans": "نفس نص الاختيار الصحيح بالضبط" },
-  { "type": "essay", "q": "نص السؤال المقالي", "modelAns": "الإجابة النموذجية المختصرة" }
+  { "type": "mcq", "q": "نص السؤال", "o1": "اختيار أ", "o2": "اختيار ب", "o3": "اختيار ج", "o4": "اختيار د", "ans": "الاختيار الصحيح بالضبط" },
+  { "type": "essay", "q": "نص السؤال المقالي", "modelAns": "الإجابة النموذجية" }
 ]
 
 نص الكتاب المدرسي:
@@ -2144,22 +2130,17 @@ ${bookText}
       const ta = document.getElementById('ai-prompt-output');
       ta.style.display = 'block';
       ta.select();
-      ta.setSelectionRange(0, 999999);
       if(navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(ta.value)
-          .then(() => alert('✅ اتنسخ الطلب! روح الصقه في أي ذكاء اصطناعي (Claude أو ChatGPT).'))
-          .catch(() => alert('تعذر النسخ التلقائي. النص متحدد الآن، اضغط Ctrl+C (أو انسخ يدوياً).'));
+        navigator.clipboard.writeText(ta.value).then(() => alert('✅ اتنسخ الطلب!'));
       } else {
-        alert('النص متحدد الآن، اضغط Ctrl+C (أو انسخ يدوياً).');
+        alert('اضغط Ctrl+C لنسخ النص.');
       }
     }
 
-    /* ✅ تحويل رد الذكاء الاصطناعي (JSON) لأسئلة جاهزة في منشئ الامتحان، للمراجعة قبل النشر */
     function applyAIGeneratedQuestions() {
       let raw = document.getElementById('ai-json-input').value.trim();
       if(!raw) { alert('الصق رد الذكاء الاصطناعي أولاً.'); return; }
 
-      // لو الرد جايلك جوه ```json ... ``` أو فيه نص قبل/بعد الـ JSON، بنشيله
       const match = raw.match(/\[[\s\S]*\]/);
       if(match) raw = match[0];
 
@@ -2167,10 +2148,9 @@ ${bookText}
       try {
         parsed = JSON.parse(raw);
       } catch(e) {
-        alert('⚠️ الرد مش بصيغة JSON صحيحة. تأكد إنك لاصق رد الذكاء الاصطناعي كامل بدون تعديل، أو اطلب منه يعيد الرد بصيغة JSON فقط.');
+        alert('⚠️ صيغة الرد غير صحيحة (يجب أن يكون JSON مصفوفة أسئلة).');
         return;
       }
-      if(!Array.isArray(parsed) || parsed.length === 0) { alert('⚠️ الرد فاضي أو مش بالشكل المتوقع (مصفوفة أسئلة).'); return; }
 
       const lesson = document.getElementById('ai-lesson-name').value.trim();
       if(lesson) document.getElementById('new-exam-title').value = `امتحان (${lesson})`;
@@ -2198,7 +2178,7 @@ ${bookText}
         }
       });
 
-      alert(`✅ اتحطت ${parsed.length} سؤال في منشئ الامتحان تحت. راجعهم كويس قبل ما تدوس "إضافة وجدولة الامتحان".`);
+      alert(`✅ تم تحويل وإدراج ${parsed.length} سؤال في منشئ الامتحان بنجاح!`);
       document.getElementById('dynamic-questions-builder').scrollIntoView({ behavior: 'smooth' });
     }
 
@@ -2291,7 +2271,6 @@ ${bookText}
           let o3 = document.getElementById(`q_opt3_${i}`).value.trim() || 'ج';
           let o4 = document.getElementById(`q_opt4_${i}`).value.trim() || 'د';
           let ans = document.getElementById(`q_ans_${i}`).value.trim() || o1;
-          // حفظ المفاتيح المزدوجة لضمان الظهور 100% بدون أي أخطاء
           questionsArr.push({ type: 'mcq', q: qText, questionText: qText, timeSec: qSec, o1: o1, option1: o1, o2: o2, option2: o2, o3: o3, option3: o3, o4: o4, option4: o4, ans: ans, correctAnswer: ans });
         }
       }
@@ -2541,7 +2520,6 @@ ${bookText}
       showQuestionAt(0);
     }
 
-    /* ✨ عرض السؤال بضمان كامل ومفاتيح مرنة لظهور النص والاختيارات 100% */
     function showQuestionAt(qIndex) {
       currentQuestionIndex = qIndex;
       isInsideExam = true;
@@ -2577,8 +2555,6 @@ ${bookText}
       }, 1000);
 
       let savedAns = studentExamAnswers[currentQuestionIndex] || '';
-      
-      // جلب نص السؤال بأمان تام لضمان عدم ظهوره فارغاً أبداً
       let questionTextValue = q.q || q.questionText || q.text || `سؤال رقم (${currentQuestionIndex + 1})`;
 
       if(q.type === 'essay') {
@@ -2640,7 +2616,7 @@ ${bookText}
         if(evaluateSmartAnswer(selected, correctAns)) {
           fb.style.color = '#059669'; fb.innerText = 'إجابة صحيحة ✓';
         } else {
-          fb.style.color = '#ef4444'; fb.innerText = `خطأ ✕ - الإجابة الصحيحة: (${correctAns})`; // innerText آمن
+          fb.style.color = '#ef4444'; fb.innerText = `خطأ ✕ - الإجابة الصحيحة: (${correctAns})`;
         }
       }
     }
