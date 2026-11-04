@@ -7,9 +7,7 @@
   <meta name="description" content="منصة فاهم التعليمية - منصة يوسف فرج التعليمية للمناهج والامتحانات والفيديوهات والشروحات الدراسية.">
   <title>منصة فاهم التعليمية - يوسف فرج</title>
 
-  <!-- إعلانات Adsterra بتتحمل من داخل المنصة بس بعد تسجيل الدخول (دالة loadPlatformAds) -->
-
-  <!-- كود إثبات ملكية Google AdSense الخاص بك -->
+  <!-- Google AdSense: السكريبت بيتحمل مع الصفحة زي ما جوجل طالبة، لكن الإعلانات نفسها (adsbygoogle.push) بتتفعّل بعد تسجيل الدخول بس، من داخل دالة loadPlatformAds، وللطالب مش للأدمن -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5773220233633978"
      crossorigin="anonymous"></script>
   
@@ -604,9 +602,77 @@
     .btn-block { background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
     .btn-unblock { background: #10b981; color: white; border: none; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
     .btn-details { background: #0284c7; color: white; border: none; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; margin-left: 4px; }
+    /* 🎬 شاشة الدخول المتحركة (Intro Splash) */
+    #intro-splash {
+      position: fixed; inset: 0; z-index: 99999;
+      background: radial-gradient(circle at 50% 35%, #152338 0%, #060a12 70%);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; text-align: center; overflow: hidden; cursor: pointer;
+      transition: opacity .6s ease;
+    }
+    #intro-splash.hidden { opacity: 0; pointer-events: none; }
+    .intro-rays {
+      position: absolute; width: 140vmax; height: 140vmax;
+      background: repeating-conic-gradient(from 0deg, rgba(56,189,248,0.16) 0deg 4deg, transparent 4deg 18deg);
+      animation: introSpin 18s linear infinite;
+      opacity: 0; transition: opacity 1s ease;
+    }
+    .intro-rays.show { opacity: 1; }
+    @keyframes introSpin { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+    .intro-stage1 { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; }
+    .intro-logo-img {
+      width: 110px; height: 110px; border-radius: 26px; object-fit: cover;
+      box-shadow: 0 0 40px 10px rgba(56,189,248,0.45);
+      transform: scale(0.3); opacity: 0;
+      transition: transform 1.1s cubic-bezier(.34,1.56,.64,1), opacity 1.1s ease;
+    }
+    .intro-logo-img.show { transform: scale(1); opacity: 1; }
+    .intro-brand-text { margin-top: 18px; opacity: 0; transform: translateY(10px); transition: all .8s ease; }
+    .intro-brand-text.show { opacity: 1; transform: translateY(0); }
+    .intro-brand-text h1 { font-size: 22px; font-weight: 800; letter-spacing: .5px; }
+    .intro-brand-text p { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+    .intro-stage2 {
+      position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity .8s ease; z-index: 3;
+    }
+    .intro-stage2.show { opacity: 1; pointer-events: auto; }
+    .intro-avatar-ring {
+      width: 110px; height: 110px; border-radius: 50%; padding: 3px;
+      background: conic-gradient(from 0deg, #38bdf8, #0ea5e9, #22d3ee, #38bdf8);
+      animation: introSpin 4s linear infinite;
+    }
+    .intro-avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid #0b0f1a; display: block; }
+    .intro-name { margin-top: 14px; font-size: 18px; font-weight: 800; }
+    .intro-role { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+    .intro-greeting { margin-top: 16px; font-size: 14px; font-weight: 600; min-height: 20px; color: #67e8f9; padding: 0 20px; }
+    .intro-tap-hint { margin-top: 22px; font-size: 11px; color: #64748b; animation: introPulse 1.6s ease-in-out infinite; display: none; }
+    @keyframes introPulse { 0%,100%{opacity:.4;} 50%{opacity:1;} }
   </style>
 </head>
 <body>
+
+  <!-- 🎬 شاشة الدخول المتحركة -->
+  <div id="intro-splash">
+    <div class="intro-rays" id="intro-rays"></div>
+
+    <div class="intro-stage1" id="intro-stage1">
+      <img src="farag-logo.jpg" alt="منصة فاهم" class="intro-logo-img" id="intro-logo-img">
+      <div class="intro-brand-text" id="intro-brand-text">
+        <h1>منصة فاهم</h1>
+        <p>Youseeffarag</p>
+      </div>
+    </div>
+
+    <div class="intro-stage2" id="intro-stage2">
+      <div class="intro-avatar-ring">
+        <img src="farag-avatar.jpg" alt="Youseeffarag" class="intro-avatar-img">
+      </div>
+      <div class="intro-name">Youseeffarag</div>
+      <div class="intro-role">منصة فاهم التعليمية</div>
+      <div class="intro-greeting" id="intro-greeting"></div>
+      <div class="intro-tap-hint" id="intro-tap-hint">اضغط في أي مكان للمتابعة</div>
+    </div>
+  </div>
 
   <!-- 🚨 شريط الإشعارات الخارجي -->
   <div class="external-alert-bar" id="external-alert-bar-div">
@@ -693,8 +759,16 @@
       <div class="admin-badge-top" id="role-badge" style="display:none;">أدمن (يوسف فرج)</div>
     </div>
 
-    <!-- مكان إعلان Adsterra الثالث (مخفي للأدمن) -->
-    <div class="ad-slot-container" id="ad-slot-1"></div>
+    <!-- إعلان Google AdSense الأول (مخفي للأدمن، بيظهر للطالب بعد الدخول) -->
+    <!-- غيّر data-ad-slot بالرقم اللي هياخدك إياه AdSense لما تعمل "وحدة إعلانية" جديدة -->
+    <div class="ad-slot-container" id="ad-slot-1">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-5773220233633978"
+           data-ad-slot="0000000000"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+    </div>
 
     <!-- لوحة تحكم الأدمن -->
     <div id="admin-panel-box">
@@ -732,19 +806,34 @@
       <div style="background: #e0f2fe; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #7dd3fc;">
         <div style="font-size: 11px; font-weight: bold; color: #0369a1; margin-bottom: 4px;">🪄 مولّد أسئلة بالذكاء الاصطناعي (من نص الكتاب فقط):</div>
         <div style="font-size: 10px; color: #0369a1; margin-bottom: 6px; line-height:1.6;">
-          ١) الصق نص الدرس من الكتاب تحت.<br>
+          ١) اكتب بيانات الدرس تحت، ولو عندك وقت الصق نص الدرس كمان (أدق).<br>
           ٢) دوس "تجهيز طلب الذكاء الاصطناعي" وانسخه.<br>
           ٣) الصقه في أي ذكاء اصطناعي (Claude أو ChatGPT)، وهاتي رده.<br>
           ٤) الصق الرد في الصندوق التاني ودوس "تحويل الرد لأسئلة".
         </div>
 
-        <input type="text" id="ai-lesson-name" class="auth-input" placeholder="اسم الدرس أو المادة..." style="background: white; color: #1e293b; margin-bottom: 6px; font-size: 11px;">
-        <input type="text" id="ai-grade-name" class="auth-input" placeholder="الصف الدراسي..." style="background: white; color: #1e293b; margin-bottom: 6px; font-size: 11px;">
+        <input type="text" id="ai-lesson-name" class="auth-input" placeholder="اسم الدرس / الوحدة / الكتاب..." style="background: white; color: #1e293b; margin-bottom: 6px; font-size: 11px;">
+        <div style="display: flex; gap: 6px; margin-bottom: 6px;">
+          <input type="text" id="ai-grade-name" class="auth-input" placeholder="الصف الدراسي..." style="background: white; color: #1e293b; font-size: 11px; margin-bottom:0;">
+          <select id="ai-semester" class="auth-input" style="background: white; color: #1e293b; font-size: 11px; margin-bottom:0;">
+            <option value="">الفصل الدراسي (اختياري)</option>
+            <option value="الفصل الدراسي الأول">الترم الأول</option>
+            <option value="الفصل الدراسي الثاني">الترم الثاني</option>
+          </select>
+        </div>
         <div style="display: flex; gap: 6px; margin-bottom: 6px;">
           <input type="number" id="ai-mcq-count" class="auth-input" placeholder="عدد اختر" value="5" style="background: white; color: #1e293b; font-size: 11px; margin-bottom:0;">
           <input type="number" id="ai-essay-count" class="auth-input" placeholder="عدد المقالي" value="2" style="background: white; color: #1e293b; font-size: 11px; margin-bottom:0;">
         </div>
-        <textarea id="ai-book-text" class="auth-input" placeholder="الصق هنا نص الدرس من الكتاب المدرسي بالكامل..." style="background: white; color: #1e293b; height: 90px; font-size: 11px; margin-bottom: 6px;"></textarea>
+
+        <div style="font-size: 10px; color: #0369a1; margin-bottom: 4px;">(اختياري بس أدق) بدل ما تكتب النص بنفسك، ارفع صورة الدرس أو ملف PDF وهنستخرجلك النص تلقائياً:</div>
+        <div style="display: flex; gap: 6px; margin-bottom: 4px;">
+          <input type="file" id="ai-lesson-file" accept="application/pdf,image/*" class="auth-input" style="background: white; color: #1e293b; font-size: 10px; margin-bottom: 0; flex: 1;">
+          <button type="button" class="btn-main" onclick="extractTextFromLessonFile()" style="background: #7c3aed; font-size: 10px; padding: 6px 8px; white-space: nowrap; margin-bottom: 0;">📎 استخراج النص</button>
+        </div>
+        <div id="ai-extract-status" style="font-size: 10px; color: #0369a1; margin-bottom: 6px; display:none;"></div>
+
+        <textarea id="ai-book-text" class="auth-input" placeholder="(اختياري) الصق هنا نص الدرس من الكتاب المدرسي. لو سبته فاضي، الذكاء الاصطناعي هيعتمد على معرفته العامة بالمنهج، ولازم تراجع الأسئلة كويس قبل النشر." style="background: white; color: #1e293b; height: 90px; font-size: 11px; margin-bottom: 6px;"></textarea>
 
         <button class="btn-main" onclick="buildAIExamPrompt()" style="width: 100%; background: #0284c7; font-size: 11px; padding: 6px; margin-bottom: 8px;">1️⃣ تجهيز طلب الذكاء الاصطناعي 🪄</button>
 
@@ -797,6 +886,10 @@
       <button class="btn-main" onclick="showHomeworkSubmissionsModal()" style="width: 100%; background: #8b5cf6; margin-bottom: 6px;">📥 مراجعة إجابات الواجبات وصور الكشكول المرفوعة</button>
       <button class="btn-main" onclick="showRegisteredStudentsModal()" style="width: 100%; background: #059669; margin-bottom: 6px;">👥 سجل الطلاب والتفاصيل الدقيقة وتعديل الأسماء وحظرهم</button>
       <button class="btn-main" onclick="showStudentReports()" style="width: 100%; background: #4f46e5; margin-bottom: 6px;">📋 تقارير محاولات لقطات الشاشة والغش والنسخ</button>
+      <button class="btn-main" onclick="showActivityLogModal()" style="width: 100%; background: #0891b2; margin-bottom: 6px;">🕒 سجل نشاط الطلاب لحظة بلحظة</button>
+      <button class="btn-main" onclick="showExportExcelModal()" style="width: 100%; background: #15803d; margin-bottom: 6px;">📊 تصدير نتائج امتحان Excel</button>
+      <button class="btn-main" onclick="showMostMissedModal()" style="width: 100%; background: #b45309; margin-bottom: 6px;">🧠 الأسئلة الأكثر خطأ في كل امتحان</button>
+      <button class="btn-main" onclick="downloadBackupNow()" style="width: 100%; background: #475569; margin-bottom: 6px;">💾 تنزيل نسخة احتياطية كاملة الآن</button>
     </div>
 
     <div id="sec-home" class="content-section active-section">
@@ -814,8 +907,15 @@
         <div class="action-card" onclick="switchTab('sec-community', 'nav-community')"><div class="stat-icon">💬</div><div class="stat-label">الجروب الجماعي</div></div>
       </div>
 
-      <!-- مكان إعلان Adsterra الرابع (مخفي للأدمن) -->
-      <div class="ad-slot-container" id="ad-slot-2"></div>
+      <!-- إعلان Google AdSense الثاني (مخفي للأدمن، بيظهر للطالب بعد الدخول) -->
+      <div class="ad-slot-container" id="ad-slot-2">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-5773220233633978"
+             data-ad-slot="0000000000"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+      </div>
 
       <div class="section-header-title">🏆 لوحة شرف المتصدرين</div>
       <div class="card-item" id="home-leaderboard-box"></div>
@@ -981,7 +1081,27 @@
   <div id="privacyModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; justify-content: center; align-items: center; padding: 15px;">
     <div style="background: #fff; width: 100%; max-width: 550px; max-height: 85vh; overflow-y: auto; padding: 22px; border-radius: 18px; direction: rtl; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
       <h2 style="color: #0f172a; border-bottom: 2px solid #0284c7; padding-bottom: 8px; margin-top: 0; font-size: 18px;">سياسة الخصوصية وشروط الاستخدام</h2>
-      <p style="font-size: 13px; color: #334155; margin-top: 10px; line-height: 1.6;">أهلاً بكم في <strong>منصة فاهم التعليمية</strong> بإشراف الأستاذ يوسف فرج. نحن نلتزم بحماية خصوصية مستخدمينا وتوفير بيئة تعليمية آمنة.</p>
+      <div style="font-size: 12.5px; color: #334155; margin-top: 10px; line-height: 1.8;">
+        <p>أهلاً بكم في <strong>منصة فاهم التعليمية</strong> بإشراف الأستاذ يوسف فرج. باستخدامك للمنصة فإنك توافق على هذه السياسة.</p>
+
+        <h3 style="font-size:13.5px; color:#0284c7; margin-top:14px;">١) البيانات التي نجمعها</h3>
+        <p>البريد الإلكتروني، كلمة المرور (مخزّنة بشكل مشفّر عبر Firebase Authentication ولا يطّلع عليها أحد بما فيهم الإدارة)، الاسم، رقم الهاتف (اختياري)، نتائج الامتحانات والواجبات، وبيانات استخدام عامة مثل الأقسام التي تمت زيارتها وتوقيتها.</p>
+
+        <h3 style="font-size:13.5px; color:#0284c7; margin-top:14px;">٢) استخدام البيانات</h3>
+        <p>نستخدم هذه البيانات لتشغيل المنصة، متابعة المستوى الدراسي، التواصل بخصوص الامتحانات والواجبات، وتحسين الخدمة. لا تُباع بياناتك لأي طرف ثالث.</p>
+
+        <h3 style="font-size:13.5px; color:#0284c7; margin-top:14px;">٣) الإعلانات وملفات تعريف الارتباط (Cookies)</h3>
+        <p>تعرض المنصة إعلانات عبر Google AdSense. قد تستخدم Google وشركاؤها ملفات تعريف الارتباط لعرض إعلانات بناءً على زياراتك لهذا الموقع أو مواقع أخرى. يمكنك إدارة تفضيلات الإعلانات المخصّصة من خلال <a href="https://adssettings.google.com" target="_blank" style="color:#0284c7;">إعدادات إعلانات Google</a>، أو من <a href="https://www.aboutads.info/choices/" target="_blank" style="color:#0284c7;">aboutads.info</a>.</p>
+
+        <h3 style="font-size:13.5px; color:#0284c7; margin-top:14px;">٤) القُصّر</h3>
+        <p>قد يستخدم المنصة طلاب دون سن 18 عامًا بإشراف أولياء أمورهم أو مدرّسيهم. لا نجمع بيانات حساسة عن القُصّر عمدًا، ونرحّب بتواصل ولي الأمر معنا لمراجعة أو حذف بيانات ابنه/ابنته.</p>
+
+        <h3 style="font-size:13.5px; color:#0284c7; margin-top:14px;">٥) أمان البيانات</h3>
+        <p>تُخزَّن البيانات على خوادم Google Firebase، ويُمنع الدخول إليها إلا بحساب مُوثّق. مع ذلك لا يمكن ضمان أمان مطلق لأي نظام إلكتروني بنسبة 100%.</p>
+
+        <h3 style="font-size:13.5px; color:#0284c7; margin-top:14px;">٦) التواصل وحذف البيانات</h3>
+        <p>لأي استفسار أو طلب حذف لبياناتك، تواصل معنا عبر واتساب الأستاذ يوسف فرج الظاهر في المنصة.</p>
+      </div>
       <div style="text-align: center; margin-top: 20px;">
         <button onclick="closePolicyModal()" style="background: #0284c7; color: #fff; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold;">إغلاق النافذة ✕</button>
       </div>
@@ -1001,10 +1121,11 @@
 
   <div id="exam-modal">
     <div class="modal-box" id="modal-box-inner">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; gap: 6px;">
         <h3 id="modal-title" style="color: #0284c7; font-size: 15px; font-weight: bold;">نافذة المنصة</h3>
-        <div id="exam-global-timer" style="display:none; background: #fee2e2; color: #ef4444; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: bold;"></div>
+        <div id="exam-global-timer" style="display:none; background: #fee2e2; color: #ef4444; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: bold; white-space:nowrap;"></div>
       </div>
+      <div id="exam-total-timer" style="display:none; text-align:center; background:#eff6ff; color:#1d4ed8; padding:5px 8px; border-radius:8px; font-size:11px; font-weight:bold; margin-bottom:8px;"></div>
       <div id="modal-questions-container"></div>
       <div style="margin-top: 10px;">
         <button class="btn-main" id="submit-exam-btn" style="width: 100%; padding: 12px; font-size: 15px; display:none;">السؤال التالي ➔</button>
@@ -1083,6 +1204,8 @@
           if(!window.appData.reports) window.appData.reports = [];
           if(!window.appData.registeredUsers) window.appData.registeredUsers = [];
           if(!window.appData.blockedUsers) window.appData.blockedUsers = [];
+          if(!window.appData.activeSessions) window.appData.activeSessions = {};
+          if(!window.appData.activityLog) window.appData.activityLog = [];
           if(!window.appData.telegramUrl) window.appData.telegramUrl = "https://t.me/";
           if(!window.appData.youtubeUrl) window.appData.youtubeUrl = "https://youtube.com/";
 
@@ -1114,7 +1237,7 @@
       }
     });
 
-    const STUDENT_WRITABLE_KEYS = ['leaderboard', 'communityMessages', 'homeworkSubmissions', 'registeredUsers', 'reports'];
+    const STUDENT_WRITABLE_KEYS = ['leaderboard', 'communityMessages', 'homeworkSubmissions', 'registeredUsers', 'reports', 'activityLog', 'activeSessions'];
     window.saveDatatoFirebase = async function() {
       try {
         const u = auth.currentUser;
@@ -1142,6 +1265,20 @@
     let questionTimerInterval = null;
     let currentQuestionIndex = 0;
     let studentExamAnswers = {};
+    let examStartTimestamp = null;
+    let questionStartTimestamp = null;
+    let studentQuestionTimes = {};
+    let examTotalTimerInterval = null;
+    let examOneMinuteWarned = false;
+
+    function shuffleArray(arr) {
+      const a = arr.slice();
+      for(let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
     let isInsideExam = false;
 
     window.appData = {
@@ -1180,8 +1317,27 @@
 
     function sendPushNotification(title, body) {
       if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification(title, { body: body, icon: '1000514471_2.jpg' });
+        new Notification(title, { body: body, icon: 'farag-logo.jpg' });
       }
+    }
+
+    /* 🆕 تنبيه فوري للأدمن (في متصفحه هو بس، ولازم يكون فاتح المنصة أو تاب مفتوح) لما طالب جديد يسجل */
+    let knownStudentEmails = null;
+    function checkForNewStudents() {
+      const myEmail = localStorage.getItem('fahem_email');
+      if(myEmail !== ADMIN_EMAIL) return;
+      const currentEmails = (appData.registeredUsers || []).map(u => u.email);
+      if(knownStudentEmails === null) {
+        knownStudentEmails = new Set(currentEmails);
+        return;
+      }
+      currentEmails.forEach(em => {
+        if(!knownStudentEmails.has(em)) {
+          knownStudentEmails.add(em);
+          const u = (appData.registeredUsers || []).find(x => x.email === em);
+          sendPushNotification('🆕 طالب جديد سجل في المنصة', `${(u && u.name) || em} — ${em}`);
+        }
+      });
     }
 
     function openPolicyModal() { document.getElementById('privacyModal').style.display = 'flex'; }
@@ -1227,6 +1383,20 @@
     window.addEventListener("focus", function() {
       let box = document.getElementById('modal-box-inner');
       if(box) box.classList.remove('exam-secure-blur');
+    });
+
+    /* 📵 وضع التركيز: Page Visibility API أدق من blur على الموبايل (تبديل تطبيقات، تبديل تابات) */
+    let lastFocusLogTs = 0;
+    document.addEventListener("visibilitychange", function() {
+      if(isInsideExam && document.hidden) {
+        const now = Date.now();
+        if(now - lastFocusLogTs > 2000) {
+          lastFocusLogTs = now;
+          let box = document.getElementById('modal-box-inner');
+          if(box) box.classList.add('exam-secure-blur');
+          logCheat("خروج من صفحة الامتحان (تبديل تطبيق/تاب) 📵⚠️");
+        }
+      }
     });
 
     window.addEventListener("keydown", function(e) {
@@ -1377,7 +1547,8 @@
       }
 
       localStorage.setItem('fahem_email', email);
-      
+      claimNewDeviceSession(email);
+
       let userObj = (appData.registeredUsers || []).find(u => u.email === email);
       const userAgentStr = navigator.userAgent.includes("Mobile") ? "📱 موبايل" : "💻 كمبيوتر/لاب";
       const nowTimeStr = new Date().toLocaleString('ar-EG');
@@ -1653,6 +1824,56 @@
       alert('تم مسح الواجب بنجاح! 🗑️');
     }
 
+    /* 🎬 تشغيل شاشة الدخول المتحركة (مرة واحدة لكل جلسة متصفح) */
+    function runIntroSplash() {
+      const splash = document.getElementById('intro-splash');
+      if(!splash) return;
+
+      try {
+        if(sessionStorage.getItem('fahem_intro_shown') === '1') {
+          splash.remove();
+          return;
+        }
+      } catch(e) {}
+
+      const rays = document.getElementById('intro-rays');
+      const logoImg = document.getElementById('intro-logo-img');
+      const brandText = document.getElementById('intro-brand-text');
+      const stage2 = document.getElementById('intro-stage2');
+      const greetingEl = document.getElementById('intro-greeting');
+      const tapHint = document.getElementById('intro-tap-hint');
+
+      let finished = false;
+      function finishIntro() {
+        if(finished) return;
+        finished = true;
+        splash.classList.add('hidden');
+        try { sessionStorage.setItem('fahem_intro_shown', '1'); } catch(e) {}
+        setTimeout(() => { if(splash.parentNode) splash.remove(); }, 700);
+      }
+      splash.addEventListener('click', finishIntro);
+
+      setTimeout(() => rays.classList.add('show'), 100);
+      setTimeout(() => logoImg.classList.add('show'), 300);
+      setTimeout(() => brandText.classList.add('show'), 1400);
+
+      setTimeout(() => {
+        stage2.classList.add('show');
+        const greetingText = 'أهلاً بيك في منصة فاهم.. يلا نبدأ 👋';
+        let idx = 0;
+        const typeInterval = setInterval(() => {
+          idx++;
+          greetingEl.innerText = greetingText.slice(0, idx);
+          if(idx >= greetingText.length) {
+            clearInterval(typeInterval);
+            tapHint.style.display = 'block';
+            setTimeout(finishIntro, 3500);
+          }
+        }, 55);
+      }, 3200);
+    }
+    document.addEventListener('DOMContentLoaded', runIntroSplash);
+
     window.onload = function() {
       const savedEmail = localStorage.getItem('fahem_email');
       if (savedEmail) { setupSession(savedEmail); }
@@ -1763,37 +1984,48 @@
       return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
     }
 
+    /* 📢 Google AdSense بس: بتظهر للطالب بعد تسجيل الدخول فقط، مرة واحدة لكل تحميل صفحة */
     let platformAdsLoaded = false;
     function loadPlatformAds() {
       if(platformAdsLoaded) return;
       platformAdsLoaded = true;
 
-      const slots = [
-        { id: 'ad-slot-1', key: '189ff7baba758fc0156d38c54ad33b15', h: 250, w: 300 },
-        { id: 'ad-slot-2', key: 'b4a34288cd0cc6e58550e89ea0b5e827', h: 50,  w: 320 }
-      ];
+      document.querySelectorAll('.ad-slot-container ins.adsbygoogle').forEach(ins => {
+        ins.closest('.ad-slot-container').style.display = 'block';
+        try {
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+        } catch(e) {
+          console.error('تعذر تحميل إعلان AdSense:', e);
+        }
+      });
+    }
 
-      const loadNext = (i) => {
-        if(i >= slots.length) { loadSocialAd(); return; }
-        const sl = slots[i];
-        const box = document.getElementById(sl.id);
-        if(!box) { loadNext(i + 1); return; }
-        box.style.display = 'block';
-        window.atOptions = { key: sl.key, format: 'iframe', height: sl.h, width: sl.w, params: {} };
-        const sc = document.createElement('script');
-        sc.src = 'https://bauval.org/22/' + sl.key;
-        sc.onload = sc.onerror = () => setTimeout(() => loadNext(i + 1), 300);
-        box.appendChild(sc);
-      };
+    /* 🔒 منع تسجيل الدخول من جهازين في نفس الوقت */
+    function safeSessionKey(email) { return email.replace(/[.#$\[\]]/g, '_'); }
 
-      const loadSocialAd = () => {
-        const sc = document.createElement('script');
-        sc.setAttribute('data-cfasync', 'false');
-        sc.src = 'https://abscloud.org/1/1cad8059e24887e3e849006dda943d5f';
-        document.body.appendChild(sc);
-      };
+    function claimNewDeviceSession(email) {
+      const sid = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : (Date.now() + '-' + Math.random().toString(36).slice(2));
+      localStorage.setItem('fahem_session_id', sid);
+      if(!appData.activeSessions) appData.activeSessions = {};
+      appData.activeSessions[safeSessionKey(email)] = sid;
+      if(window.saveDatatoFirebase) window.saveDatatoFirebase();
+      return sid;
+    }
 
-      loadNext(0);
+    function ensureDeviceSessionOnResume(email) {
+      if(!localStorage.getItem('fahem_session_id')) claimNewDeviceSession(email);
+    }
+
+    function checkDeviceSessionConflict() {
+      const email = localStorage.getItem('fahem_email');
+      if(!email) return;
+      const mySid = localStorage.getItem('fahem_session_id');
+      if(!mySid) return;
+      const serverSid = appData.activeSessions && appData.activeSessions[safeSessionKey(email)];
+      if(serverSid && serverSid !== mySid) {
+        alert('⚠️ تم تسجيل الدخول بنفس حسابك من جهاز تاني، فهيتم تسجيل خروجك من هنا تلقائياً.');
+        logout();
+      }
     }
 
     function setupSession(email) {
@@ -1802,6 +2034,8 @@
         logout();
         return;
       }
+
+      ensureDeviceSessionOnResume(email);
 
       document.getElementById('auth-screen-container').style.display = 'none';
       document.getElementById('dashboard-view').style.display = 'block';
@@ -2091,36 +2325,150 @@
       { q: "ما هي النتائج المترتبة على: غياب إنزيم الكولين استريز من الشباك العصبية العضلية؟", modelAns: "تظل العضلة في حالة انقباض مستمر ولا ترتخي مما يؤدي إلى حدوث إجهاد وتشنج عضلي." }
     ];
 
+    /* 📎 استخراج نص الدرس من PDF أو صورة (كله في المتصفح، مجاني، بدون أي مفتاح API) */
+    function loadScriptOnce(src) {
+      return new Promise((resolve, reject) => {
+        const existing = document.querySelector(`script[data-dyn-src="${src}"]`);
+        if(existing) {
+          if(existing.dataset.loaded === '1') { resolve(); return; }
+          existing.addEventListener('load', () => resolve());
+          existing.addEventListener('error', () => reject(new Error('تعذر تحميل: ' + src)));
+          return;
+        }
+        const s = document.createElement('script');
+        s.src = src;
+        s.dataset.dynSrc = src;
+        s.onload = () => { s.dataset.loaded = '1'; resolve(); };
+        s.onerror = () => reject(new Error('تعذر تحميل مكتبة الاستخراج. تأكد من الاتصال بالإنترنت.'));
+        document.body.appendChild(s);
+      });
+    }
+
+    async function ensurePdfJs() {
+      if(window.pdfjsLib) return;
+      await loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+
+    async function ensureTesseract() {
+      if(window.Tesseract) return;
+      await loadScriptOnce('https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js');
+    }
+
+    async function ocrImageSource(src, statusEl, label) {
+      const result = await window.Tesseract.recognize(src, 'ara+eng', {
+        logger: m => {
+          if(statusEl && m.status === 'recognizing text') {
+            statusEl.innerText = `⏳ جاري التعرف على النص (${label}): ${Math.round((m.progress || 0) * 100)}%`;
+          }
+        }
+      });
+      return (result && result.data && result.data.text) || '';
+    }
+
+    async function extractTextFromLessonFile() {
+      const fileInput = document.getElementById('ai-lesson-file');
+      const statusEl = document.getElementById('ai-extract-status');
+      const file = fileInput.files && fileInput.files[0];
+      if(!file) { alert('اختار ملف PDF أو صورة أولاً'); return; }
+
+      statusEl.style.display = 'block';
+      statusEl.innerText = '⏳ جاري تحميل أدوات الاستخراج (أول مرة بس)...';
+
+      try {
+        let extractedText = '';
+
+        if(file.type === 'application/pdf') {
+          await ensurePdfJs();
+          statusEl.innerText = '⏳ جاري قراءة ملف PDF...';
+          const buf = await file.arrayBuffer();
+          const pdf = await window.pdfjsLib.getDocument({ data: buf }).promise;
+          const maxPages = Math.min(pdf.numPages, 15);
+
+          for(let p = 1; p <= maxPages; p++) {
+            statusEl.innerText = `⏳ جاري قراءة صفحة ${p} من ${maxPages}...`;
+            const page = await pdf.getPage(p);
+            const content = await page.getTextContent();
+            extractedText += content.items.map(it => it.str).join(' ') + '\n';
+          }
+
+          if(extractedText.trim().length < 100) {
+            statusEl.innerText = '⏳ الملف يبدو ممسوحاً ضوئياً (صور)، جاري تحويل الصفحات لصور وقراءتها (OCR)... ده بياخد وقت أطول.';
+            await ensureTesseract();
+            extractedText = '';
+            for(let p = 1; p <= maxPages; p++) {
+              const page = await pdf.getPage(p);
+              const viewport = page.getViewport({ scale: 2 });
+              const canvas = document.createElement('canvas');
+              canvas.width = viewport.width;
+              canvas.height = viewport.height;
+              await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+              extractedText += (await ocrImageSource(canvas, statusEl, `صفحة ${p}`)) + '\n';
+            }
+          }
+        } else if(file.type.startsWith('image/')) {
+          await ensureTesseract();
+          extractedText = await ocrImageSource(file, statusEl, 'الصورة');
+        } else {
+          alert('الملف لازم يكون PDF أو صورة (JPG/PNG).');
+          statusEl.style.display = 'none';
+          return;
+        }
+
+        extractedText = extractedText.replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+
+        if(!extractedText || extractedText.length < 20) {
+          statusEl.innerText = '⚠️ معرفناش نستخرج نص واضح من الملف. جرب صورة أوضح/أعلى دقة، أو اكتب النص يدوياً.';
+          return;
+        }
+
+        const bookTextArea = document.getElementById('ai-book-text');
+        bookTextArea.value = (bookTextArea.value.trim() ? bookTextArea.value.trim() + '\n\n' : '') + extractedText;
+        statusEl.innerText = `✅ تم استخراج حوالي ${extractedText.length} حرف. راجع النص تحت كويس (ممكن يبقى فيه أخطاء بسيطة من القراءة الآلية) قبل ما تجهّز طلب الذكاء الاصطناعي.`;
+      } catch(e) {
+        console.error(e);
+        statusEl.innerText = '❌ حصل خطأ أثناء الاستخراج: ' + (e.message || 'غير معروف') + '. جرب تاني أو اكتب النص يدوياً.';
+      }
+    }
+
     function buildAIExamPrompt() {
       const lesson = document.getElementById('ai-lesson-name').value.trim();
       const grade = document.getElementById('ai-grade-name').value.trim();
+      const semester = document.getElementById('ai-semester').value;
       const mcqCount = parseInt(document.getElementById('ai-mcq-count').value) || 0;
       const essayCount = parseInt(document.getElementById('ai-essay-count').value) || 0;
       const bookText = document.getElementById('ai-book-text').value.trim();
 
-      if(!bookText || bookText.length < 40) { alert('الصق نص الدرس من الكتاب أولاً.'); return; }
+      if(!lesson) { alert('اكتب اسم الدرس أو الوحدة أو الكتاب على الأقل.'); return; }
       if(mcqCount + essayCount < 1) { alert('حدد عدد الأسئلة المطلوبة.'); return; }
 
-      const prompt =
-`أنت معلم خبير. مهمتك تجهيز أسئلة امتحان بناءً على نص الكتاب المدرسي المرفق أسفل فقط، بدون أي معلومة خارجية.
+      const hasBookText = bookText.length >= 40;
 
-المادة/الدرس: ${lesson || "غير محدد"}
+      const sourceInstruction = hasBookText
+        ? `مهمتك تجهيز أسئلة امتحان بناءً على نص الكتاب المدرسي المرفق أسفل فقط، بدون أي معلومة خارجية. كل سؤال وكل إجابة لازم تُستخرج حرفياً من معاني النص المرفق، ولو النص مش كافٍ لعدد الأسئلة المطلوب، قلّل العدد بدل ما تخترع معلومة مش موجودة فيه.`
+        : `مفيش نص كتاب مرفق هنا، فاعتمد على معرفتك العامة بالمنهج المصري لنفس المادة/الدرس/الصف/الفصل الدراسي المذكورين تحت. نبّه في أول ردك بسطر تعليق (قبل الـ JSON) إن الأسئلة دي من معرفتك العامة ولازم المعلّم يراجعها ويتأكد من مطابقتها لنص الكتاب الرسمي.`;
+
+      const prompt =
+`أنت معلم خبير. ${sourceInstruction}
+
+المادة/الدرس/الوحدة: ${lesson}
 الصف الدراسي: ${grade || "غير محدد"}
+الفصل الدراسي: ${semester || "غير محدد"}
 المطلوب: ${mcqCount} سؤال اختيار من متعدد (4 اختيارات) و ${essayCount} سؤال مقالي.
 
 شروط إلزامية:
-- كل سؤال وكل إجابة مستخرجة حرفياً من معاني النص المرفق.
-- رجّع الناتج بصيغة JSON فقط، بدون أي نص قبله أو بعده، بالشكل التالي:
+- الأسئلة باللغة العربية الفصحى وواضحة.
+- رجّع الناتج بصيغة JSON فقط، بدون أي شرح أو نص قبله أو بعده، بالشكل التالي بالضبط:
 
 [
-  { "type": "mcq", "q": "نص السؤال", "o1": "اختيار أ", "o2": "اختيار ب", "o3": "اختيار ج", "o4": "اختيار د", "ans": "الاختيار الصحيح بالضبط" },
-  { "type": "essay", "q": "نص السؤال المقالي", "modelAns": "الإجابة النموذجية" }
-]
+  { "type": "mcq", "q": "نص السؤال", "o1": "اختيار أ", "o2": "اختيار ب", "o3": "اختيار ج", "o4": "اختيار د", "ans": "نفس نص الاختيار الصحيح بالضبط" },
+  { "type": "essay", "q": "نص السؤال المقالي", "modelAns": "الإجابة النموذجية المختصرة" }
+]` + (hasBookText ? `
 
 نص الكتاب المدرسي:
 """
 ${bookText}
-"""`;
+"""` : '');
 
       document.getElementById('ai-prompt-output').value = prompt;
       document.getElementById('ai-prompt-box').style.display = 'block';
@@ -2391,6 +2739,179 @@ ${bookText}
       renderPdfs();
       renderLeaderboards();
       renderStats();
+      checkForNewStudents();
+      checkDeviceSessionConflict();
+      if(typeof activityModalOpen !== 'undefined' && activityModalOpen) showActivityLogModal();
+    }
+
+    /* 📋 سجل نشاط الطلاب: كل حركة (دخول امتحان، فتح قسم، إلخ) بتوقيتها، يظهر للأدمن */
+    function logStudentActivity(action, detail) {
+      const email = localStorage.getItem('fahem_email');
+      if(!email || email === ADMIN_EMAIL) return;
+      if(!appData.activityLog) appData.activityLog = [];
+      appData.activityLog.unshift({
+        email: email,
+        name: getUserDisplayName(email),
+        action: action,
+        detail: detail || '',
+        time: new Date().toLocaleString('ar-EG'),
+        ts: Date.now()
+      });
+      if(appData.activityLog.length > 300) appData.activityLog.length = 300;
+      if(window.saveDatatoFirebase) window.saveDatatoFirebase();
+    }
+
+    let activityModalOpen = false;
+    function showActivityLogModal() {
+      activityModalOpen = true;
+      let container = document.getElementById('modal-questions-container');
+      document.getElementById('modal-title').innerText = "📋 سجل نشاط الطلاب (آخر الحركات)";
+      document.getElementById('submit-exam-btn').style.display = 'none';
+
+      const log = (appData.activityLog || []);
+      let html = `<div style="font-size:11px; color:#64748b; margin-bottom:10px;">آخر ${Math.min(log.length, 150)} حركة، الأحدث فوق. بيتحدّث تلقائياً.</div>`;
+
+      if(log.length === 0) {
+        html += `<p style="text-align:center; color:#64748b;">لا يوجد نشاط مسجل حتى الآن.</p>`;
+      } else {
+        log.slice(0, 150).forEach(item => {
+          html += `
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; padding:8px 10px; border-radius:8px; margin-bottom:6px; text-align:right;">
+              <div style="font-size:12px; font-weight:bold; color:#0f172a;">${escHtml(item.name || item.email)} — <span style="color:#0284c7;">${escHtml(item.action)}</span></div>
+              ${item.detail ? `<div style="font-size:11px; color:#334155;">${escHtml(item.detail)}</div>` : ''}
+              <div style="font-size:10px; color:#94a3b8; margin-top:2px;">⏰ ${item.time}</div>
+            </div>
+          `;
+        });
+      }
+      container.innerHTML = html;
+      document.getElementById('exam-modal').style.display = 'flex';
+    }
+
+    /* 💾 نسخة احتياطية فورية (مجانية): تنزيل كل appData كملف JSON */
+    function downloadBackupNow() {
+      try {
+        const dataStr = JSON.stringify(appData, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+        a.href = url;
+        a.download = `fahem-backup-${stamp}.json`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+      } catch(e) {
+        console.error(e);
+        alert('حصل خطأ أثناء إنشاء النسخة الاحتياطية.');
+      }
+    }
+
+    /* 🧠 تقرير الأسئلة الأكثر خطأ لكل امتحان */
+    function showMostMissedModal() {
+      activityModalOpen = false;
+      let container = document.getElementById('modal-questions-container');
+      document.getElementById('modal-title').innerText = "🧠 الأسئلة الأكثر خطأ";
+      document.getElementById('submit-exam-btn').style.display = 'none';
+
+      const byExam = {};
+      (appData.leaderboard || []).forEach(sub => {
+        if(!sub.detailedQuestions) return;
+        if(!byExam[sub.examTitle]) byExam[sub.examTitle] = {};
+        sub.detailedQuestions.forEach(q => {
+          const key = q.questionText || 'سؤال غير معروف';
+          if(!byExam[sub.examTitle][key]) byExam[sub.examTitle][key] = { wrong: 0, total: 0 };
+          byExam[sub.examTitle][key].total++;
+          if(!q.isCorrect) byExam[sub.examTitle][key].wrong++;
+        });
+      });
+
+      let html = '';
+      const examTitles = Object.keys(byExam);
+      if(examTitles.length === 0) {
+        html = '<p style="text-align:center; color:#64748b;">لا توجد نتائج كافية حتى الآن لعمل التقرير.</p>';
+      } else {
+        examTitles.forEach(title => {
+          const qs = Object.entries(byExam[title])
+            .map(([q, st]) => ({ q, ...st, pct: st.total ? Math.round((st.wrong / st.total) * 100) : 0 }))
+            .sort((a, b) => b.pct - a.pct)
+            .slice(0, 5);
+          html += `<div style="font-size:13px; font-weight:bold; color:#0284c7; margin:12px 0 6px;">📝 ${escHtml(title)}</div>`;
+          qs.forEach(item => {
+            html += `
+              <div style="background:#fff7ed; border:1px solid #fed7aa; padding:8px 10px; border-radius:8px; margin-bottom:6px; text-align:right;">
+                <div style="font-size:12px; color:#1e293b;">${escHtml(item.q)}</div>
+                <div style="font-size:11px; color:#c2410c; font-weight:bold; margin-top:3px;">❌ غلط فيه ${item.wrong} من ${item.total} طالب (${item.pct}%)</div>
+              </div>
+            `;
+          });
+        });
+      }
+      container.innerHTML = html;
+      document.getElementById('exam-modal').style.display = 'flex';
+    }
+
+    /* 📊 تصدير نتائج امتحان لملف Excel (SheetJS، بيتحمّل أول مرة بس) */
+    async function ensureSheetJs() {
+      if(window.XLSX) return;
+      await loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js');
+    }
+
+    function showExportExcelModal() {
+      activityModalOpen = false;
+      let container = document.getElementById('modal-questions-container');
+      document.getElementById('modal-title').innerText = "📊 تصدير نتائج امتحان";
+      document.getElementById('submit-exam-btn').style.display = 'none';
+
+      const titles = [...new Set((appData.leaderboard || []).map(s => s.examTitle))];
+      let html = '';
+      if(titles.length === 0) {
+        html = '<p style="text-align:center; color:#64748b;">لا توجد نتائج امتحانات حتى الآن.</p>';
+      } else {
+        titles.forEach(title => {
+          const count = (appData.leaderboard || []).filter(s => s.examTitle === title).length;
+          html += `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#f0fdf4; border:1px solid #bbf7d0; padding:10px; border-radius:8px; margin-bottom:8px;">
+              <button class="btn-main" style="background:#15803d; font-size:11px; padding:6px 10px; margin-bottom:0;" onclick="exportExamResultsToExcel('${title.replace(/'/g, "\\'")}')">تصدير 📥</button>
+              <div style="text-align:right;">
+                <div style="font-size:12px; font-weight:bold; color:#166534;">${escHtml(title)}</div>
+                <div style="font-size:10px; color:#64748b;">${count} طالب سلّموا</div>
+              </div>
+            </div>
+          `;
+        });
+      }
+      container.innerHTML = html;
+      document.getElementById('exam-modal').style.display = 'flex';
+    }
+
+    async function exportExamResultsToExcel(examTitle) {
+      try {
+        await ensureSheetJs();
+        const rows = (appData.leaderboard || [])
+          .filter(s => s.examTitle === examTitle)
+          .map(s => ({
+            'اسم الطالب': s.displayName || s.studentName,
+            'الإيميل': s.studentName,
+            'الدرجة': s.score,
+            'من إجمالي': s.total,
+            'النسبة %': s.percentage,
+            'وقت بداية الامتحان': s.examStartTime || '',
+            'الزمن الكلي (ث)': s.totalTimeSec != null ? s.totalTimeSec : '',
+            'وقت التسليم': s.time
+          }));
+        if(rows.length === 0) { alert('لا توجد نتائج لهذا الامتحان.'); return; }
+
+        const ws = window.XLSX.utils.json_to_sheet(rows);
+        const wb = window.XLSX.utils.book_new();
+        window.XLSX.utils.book_append_sheet(wb, ws, 'النتائج');
+        const safeName = examTitle.replace(/[\\/:*?"<>|]/g, '_').slice(0, 40);
+        window.XLSX.writeFile(wb, `نتائج-${safeName}.xlsx`);
+      } catch(e) {
+        console.error(e);
+        alert('تعذر إنشاء ملف Excel. تأكد من الاتصال بالإنترنت وجرب تاني.');
+      }
     }
 
     function switchTab(sectionId, navId) {
@@ -2398,6 +2919,13 @@ ${bookText}
       document.getElementById(sectionId).classList.add('active-section');
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
       document.getElementById(navId).classList.add('active');
+
+      const sectionLabels = {
+        'sec-home': 'الرئيسية', 'sec-exams': 'الامتحانات', 'sec-homeworks': 'الواجبات',
+        'sec-community': 'الجروب', 'sec-videos': 'الفيديوهات', 'sec-pdfs': 'PDF',
+        'sec-leaderboard': 'الترتيب', 'sec-settings': 'الإعدادات'
+      };
+      if(sectionLabels[sectionId]) logStudentActivity('فتح قسم', sectionLabels[sectionId]);
     }
 
     function switchExamTab(tabName) {
@@ -2514,14 +3042,53 @@ ${bookText}
       currentExamId = examObj.id;
       currentExamTitle = examObj.title;
       currentExamMode = examObj.mode || 'eval';
-      activeQuestions = examObj.questions || [];
+      // ترتيب مخلوط لكل طالب لوحده، عشان لو طالبين جنب بعض ميشوفوش نفس ترتيب الأسئلة (ضد الغش)
+      activeQuestions = shuffleArray(examObj.questions || []);
       studentExamAnswers = {};
+      studentQuestionTimes = {};
+      examStartTimestamp = Date.now();
 
+      logStudentActivity('دخل امتحان', currentExamTitle);
+      startOverallExamTimer(examObj.totalTimeMinutes);
       showQuestionAt(0);
+    }
+
+    /* ⏰ مؤقت الوقت الكلي للامتحان + تنبيه قبل الانتهاء بدقيقة */
+    function startOverallExamTimer(totalMinutes) {
+      if(examTotalTimerInterval) clearInterval(examTotalTimerInterval);
+      examOneMinuteWarned = false;
+      const box = document.getElementById('exam-total-timer');
+      if(!totalMinutes || totalMinutes <= 0) { box.style.display = 'none'; return; }
+
+      let secondsLeft = Math.round(totalMinutes * 60);
+      const renderBox = () => {
+        const m = Math.floor(secondsLeft / 60);
+        const s = secondsLeft % 60;
+        box.innerText = `⏰ الوقت الكلي المتبقي للامتحان: ${m}:${s < 10 ? '0' : ''}${s}`;
+      };
+      box.style.display = 'block';
+      renderBox();
+
+      examTotalTimerInterval = setInterval(() => {
+        secondsLeft--;
+        if(secondsLeft === 60 && !examOneMinuteWarned) {
+          examOneMinuteWarned = true;
+          alert('⏰ تنبيه: تبقّى دقيقة واحدة فقط على انتهاء وقت الامتحان الكلي!');
+        }
+        if(secondsLeft <= 0) {
+          clearInterval(examTotalTimerInterval);
+          box.innerText = '⏰ انتهى الوقت الكلي، جاري تسليم الامتحان تلقائياً...';
+          alert('⏰ انتهى الوقت الكلي للامتحان! سيتم تسليمه تلقائياً الآن.');
+          submitExam();
+          return;
+        }
+        renderBox();
+      }, 1000);
     }
 
     function showQuestionAt(qIndex) {
       currentQuestionIndex = qIndex;
+      questionStartTimestamp = Date.now();
       isInsideExam = true;
 
       document.getElementById('modal-title').innerText = `${currentExamTitle} (السؤال ${currentQuestionIndex + 1} من ${activeQuestions.length})`;
@@ -2621,7 +3188,15 @@ ${bookText}
       }
     }
 
+    function recordTimeForCurrentQuestion() {
+      if(questionStartTimestamp == null) return;
+      const elapsed = Math.max(0, Math.round((Date.now() - questionStartTimestamp) / 1000));
+      studentQuestionTimes[currentQuestionIndex] = elapsed;
+      questionStartTimestamp = null;
+    }
+
     function nextQuestion() {
+      recordTimeForCurrentQuestion();
       if(questionTimerInterval) clearInterval(questionTimerInterval);
       if(currentQuestionIndex + 1 < activeQuestions.length) {
         showQuestionAt(currentQuestionIndex + 1);
@@ -2631,15 +3206,26 @@ ${bookText}
     }
 
     function closeExam() {
+      // لو الطالب قافل وهو لسه جوه امتحان شغّال، نعتبر ده تسليم فعلي بإجاباته لحد دلوقتي
+      // (عشان محدش يقفل ويفتح الامتحان تاني يحاول يجاوب من جديد أو ياخد تايمر جديد)
+      if(isInsideExam && activeQuestions && activeQuestions.length > 0) {
+        if(!confirm('لو قفلت دلوقتي هيتحسب الامتحان مُسلَّم بإجاباتك لحد دلوقتي، ومش هتقدر تعيده تاني. متأكد؟')) return;
+        submitExam();
+        return;
+      }
       isInsideExam = false;
+      activityModalOpen = false;
       if(questionTimerInterval) clearInterval(questionTimerInterval);
+      if(examTotalTimerInterval) clearInterval(examTotalTimerInterval);
       let box = document.getElementById('modal-box-inner');
       if(box) box.classList.remove('exam-secure-blur');
       let tb = document.getElementById('exam-global-timer'); if(tb) tb.style.display = 'none';
+      let tbt = document.getElementById('exam-total-timer'); if(tbt) tbt.style.display = 'none';
       document.getElementById('exam-modal').style.display = 'none';
     }
 
     async function submitExam() {
+      recordTimeForCurrentQuestion();
       isInsideExam = false;
       if(questionTimerInterval) clearInterval(questionTimerInterval);
       let box = document.getElementById('modal-box-inner');
@@ -2652,7 +3238,7 @@ ${bookText}
       activeQuestions.forEach((q, i) => {
         let studentAns = studentExamAnswers[i] || 'لم يتم الإجابة';
         let modelAnswer = q.type === 'essay' ? (q.modelAns || '') : (q.ans || q.correctAnswer);
-        
+
         let isCorrect = evaluateSmartAnswer(studentAns, modelAnswer);
         if(isCorrect) score++;
 
@@ -2661,15 +3247,17 @@ ${bookText}
           studentAnswer: studentAns,
           correctAnswer: modelAnswer || 'إجابة نموذجية',
           isCorrect: isCorrect,
-          points: isCorrect ? 1 : 0
+          points: isCorrect ? 1 : 0,
+          timeSpentSec: studentQuestionTimes[i] || 0
         });
       });
 
       let percentVal = total > 0 ? ((score / total) * 100).toFixed(1) : '100';
       const email = localStorage.getItem('fahem_email');
+      const totalTimeSec = examStartTimestamp ? Math.round((Date.now() - examStartTimestamp) / 1000) : null;
 
       if(!appData.leaderboard) appData.leaderboard = [];
-      
+
       const newSubmission = {
         studentName: email,
         displayName: getUserDisplayName(email),
@@ -2678,17 +3266,23 @@ ${bookText}
         total: total,
         percentage: percentVal,
         time: new Date().toLocaleString('ar-EG'),
+        examStartTime: examStartTimestamp ? new Date(examStartTimestamp).toLocaleString('ar-EG') : null,
+        totalTimeSec: totalTimeSec,
         detailedQuestions: detailedQuestions
       };
 
       appData.leaderboard.push(newSubmission);
       appData.leaderboard.sort((a, b) => parseFloat(b.percentage) - parseFloat(a.percentage));
-      
+
       if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
 
+      logStudentActivity('سلّم امتحان', `${currentExamTitle} (${percentVal}%)`);
+
       studentExamAnswers = {};
+      studentQuestionTimes = {};
+      examStartTimestamp = null;
       renderAll();
-      
+
       switchExamTab('submissions');
       switchTab('sec-exams', 'nav-exams');
 
@@ -2726,6 +3320,7 @@ ${bookText}
                 <span style="font-size:11px; color:#64748b;">${q.points || (q.isCorrect?1:0)}.00 درجات</span>
               </div>
               <div style="font-size:14px; font-weight:bold; color:#1e293b; margin-bottom:8px;">${escHtml(q.questionText)}</div>
+              ${q.timeSpentSec != null ? `<div style="font-size:11px; color:#7c3aed; margin-bottom:6px;">⏱ الوقت المستغرق: ${q.timeSpentSec} ث</div>` : ''}
               <div style="font-size:12px; color:#64748b;">إجابة الطالب:</div>
               <div style="font-size:13px; font-weight:bold; color:${ansColor}; margin-bottom:6px;">${escHtml(q.studentAnswer)}</div>
               <div style="font-size:12px; color:#64748b;">الإجابة الصحيحة / النموذجية:</div>
