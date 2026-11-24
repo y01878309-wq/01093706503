@@ -1238,6 +1238,7 @@
         if(!window.appData.activityLog) window.appData.activityLog = [];
         if(!window.appData.telegramUrl) window.appData.telegramUrl = "https://t.me/";
         if(!window.appData.youtubeUrl) window.appData.youtubeUrl = "https://youtube.com/";
+        if(!window.appData.pushSubscriptions) window.appData.pushSubscriptions = [];
 
         if(window.appData.announcementText) {
           document.getElementById('header-announcement-text').innerText = window.appData.announcementText;
@@ -1284,7 +1285,7 @@
       }
     });
 
-    const STUDENT_WRITABLE_KEYS = ['leaderboard', 'communityMessages', 'homeworkSubmissions', 'registeredUsers', 'reports', 'activityLog', 'activeSessions'];
+    const STUDENT_WRITABLE_KEYS = ['leaderboard', 'communityMessages', 'homeworkSubmissions', 'registeredUsers', 'reports', 'activityLog', 'activeSessions', 'pushSubscriptions'];
     window.saveDatatoFirebase = async function() {
       try {
         const u = auth.currentUser;
@@ -1415,22 +1416,79 @@
     let tempGradeForLogin = null;
     window.loginInProgress = false;
 
-    function requestNotificationPermission() {
-      if ('Notification' in window) {
-        Notification.requestPermission().then(permission => {
-          if (permission === 'granted') {
-            alert('✅ تم تفعيل الإشعارات الفورية بنجاح!');
-            sendPushNotification('منصة فاهم التعليمية', 'الإشعارات تعمل بكفاءة 🔔');
-          } else {
-            alert('⚠️ لم يتم السماح بالإشعارات في متصفحك.');
-          }
-        });
+    /* 🔔 إشعارات Push حقيقية (بتوصل حتى لو التطبيق/المتصفح قافل خالص) */
+    const VAPID_PUBLIC_KEY = 'BIK-j4c1ENN5bcA8YaVBdaXPsBG-TMjL-XneesCKEqOd8axqJN6WGkdpfYoBiwKIxAoQM7Qknyt0J9wZQvfY2Gs';
+
+    function urlBase64ToUint8Array(base64String) {
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+      const rawData = atob(base64);
+      const outputArray = new Uint8Array(rawData.length);
+      for (let i = 0; i < rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i);
+      return outputArray;
+    }
+
+    async function enableRealPushNotifications() {
+      try {
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) return false;
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') return false;
+
+        const reg = await navigator.serviceWorker.register('/push-sw.js');
+        await navigator.serviceWorker.ready;
+
+        let sub = await reg.pushManager.getSubscription();
+        if (!sub) {
+          sub = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+          });
+        }
+
+        const email = localStorage.getItem('fahem_email');
+        const subJson = sub.toJSON();
+        if (!appData.pushSubscriptions) appData.pushSubscriptions = [];
+        const already = appData.pushSubscriptions.some(s => (s.subscription || s).endpoint === subJson.endpoint);
+        if (!already) {
+          appData.pushSubscriptions.push({ email: email, subscription: subJson, savedAt: Date.now() });
+          if (window.saveDatatoFirebase) await window.saveDatatoFirebase();
+        }
+        return true;
+      } catch (e) {
+        console.warn('push subscribe failed', e);
+        return false;
       }
     }
 
+    function requestNotificationPermission() {
+      enableRealPushNotifications().then(ok => {
+        if (ok) {
+          alert('✅ تم تفعيل الإشعارات الفورية بنجاح! هتوصلك حتى لو التطبيق قافل.');
+        } else {
+          alert('⚠️ لم يتم السماح بالإشعارات، أو متصفحك/تطبيقك لا يدعمها.');
+        }
+      });
+    }
+
+    /* إشعار محلي بسيط (بيظهر بس لو التبويب/التطبيق مفتوح عندك إنت) - مستخدم لتنبيهات الأدمن الداخلية فقط */
     function sendPushNotification(title, body) {
       if ('Notification' in window && Notification.permission === 'granted') {
         new Notification(title, { body: body, icon: '1790892487258.jpg' });
+      }
+    }
+
+    /* 📢 بث إشعار حقيقي لكل الطلاب المشتركين (بيوصل حتى لو قافلين التطبيق) */
+    async function broadcastRealPush(title, body) {
+      try {
+        const subs = (appData.pushSubscriptions || []).filter(s => s && (s.subscription || s).endpoint);
+        if (!subs.length) return;
+        await fetch('/api/send-push', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, body, subscriptions: subs })
+        });
+      } catch (e) {
+        console.warn('broadcast push failed', e);
       }
     }
 
@@ -1838,6 +1896,7 @@
       document.getElementById('new-hw-desc').value = '';
       renderHomeworks();
       sendPushNotification('واجب منزلي جديد 📝', `نشر الأستاذ يوسف فرج واجباً جديداً: (${title})`);
+      broadcastRealPush('واجب منزلي جديد 📝', `نشر الأستاذ يوسف فرج واجباً جديداً: (${title})`);
       alert('تم نشر الواجب وإرسال التنبيه للطلاب بنجاح! 📝🚀');
     }
 
@@ -3052,6 +3111,7 @@ ${JSON.stringify(items)}`;
       if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
       renderAll();
       sendPushNotification('امتحان جديد 📝', `نشر الأستاذ يوسف فرج امتحاناً جديداً: (${title})`);
+      broadcastRealPush('امتحان جديد 📝', `نشر الأستاذ يوسف فرج امتحاناً جديداً: (${title})`);
       alert('تم إضافة وجدولة الامتحان وإرسال الإشعارات بنجاح! ⏰🚀');
     }
 
@@ -3113,6 +3173,7 @@ ${JSON.stringify(items)}`;
           renderAll();
           document.getElementById('new-video-title').value = '';
           fileInput.value = '';
+          broadcastRealPush('فيديو جديد 🎥', `نشر الأستاذ يوسف فرج فيديو جديداً: (${title})`);
           alert('تم رفع الفيديو بنجاح! 🎥');
         } catch(e) {
           console.error(e);
@@ -3126,6 +3187,7 @@ ${JSON.stringify(items)}`;
         appData.videos.push({ grade: gradeVal('new-video-grade'), id: 'vid_' + Date.now(), title: title, content: embedLink, isLocalFile: false });
         if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
         renderAll();
+        broadcastRealPush('فيديو جديد 🎥', `نشر الأستاذ يوسف فرج فيديو جديداً: (${title})`);
         alert('تم إضافة الفيديو بنجاح على السيرفر! 🎥');
       }
     }
@@ -3161,6 +3223,7 @@ ${JSON.stringify(items)}`;
         document.getElementById('new-pdf-title').value = '';
         document.getElementById('new-pdf-file').value = '';
         renderAll();
+        broadcastRealPush('ملف جديد 📄', `نشر الأستاذ يوسف فرج ملفاً جديداً: (${title})`);
         alert('✅ تم رفع وحفظ الملف بنجاح، وسيعمل مع جميع الطلاب مباشرة!');
       };
 
