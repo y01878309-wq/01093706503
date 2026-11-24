@@ -726,6 +726,7 @@
         <input type="text" id="reg-name" class="auth-input" placeholder="الاسم الكامل" style="padding-left: 12px; margin-bottom: 8px;">
         <input type="email" id="reg-email" class="auth-input" placeholder="البريد الإلكتروني (Gmail)" style="padding-left: 12px; margin-bottom: 8px;">
         <input type="tel" id="reg-phone" class="auth-input" placeholder="رقم الهاتف (اختياري)" style="padding-left: 12px; margin-bottom: 8px;">
+        <select class="auth-input grade-select" id="reg-grade" data-required="1" style="background:white;color:#1e293b;padding-left:12px;margin-bottom:8px;"></select>
         <input type="password" id="reg-pass" class="auth-input" placeholder="كلمة المرور (6 أحرف على الأقل)" style="padding-left: 12px; margin-bottom: 8px;">
         <input type="password" id="reg-pass2" class="auth-input" placeholder="تأكيد كلمة المرور" style="padding-left: 12px; margin-bottom: 12px;">
         <button class="auth-btn" id="register-btn" onclick="handleRegister()">إنشاء الحساب ✅</button>
@@ -1205,6 +1206,7 @@
     };
 
     window.appDataLoaded = false;
+    window.appData = window.appData || {};
     window.waitForAppData = function(timeoutMs = 8000) {
       return new Promise(resolve => {
         const t0 = Date.now();
@@ -1217,45 +1219,60 @@
 
     let dbListening = false;
     let sessionAnnounced = false;
+    let appDataPollTimer = null;
 
+    function applyAppDataSnapshot(val, userEmail) {
+      if (val) {
+        window.appData = val;
+        if(!window.appData.exams) window.appData.exams = [];
+        if(!window.appData.homeworks) window.appData.homeworks = [];
+        if(!window.appData.homeworkSubmissions) window.appData.homeworkSubmissions = [];
+        if(!window.appData.communityMessages) window.appData.communityMessages = [];
+        if(!window.appData.videos) window.appData.videos = [];
+        if(!window.appData.pdfs) window.appData.pdfs = [];
+        if(!window.appData.leaderboard) window.appData.leaderboard = [];
+        if(!window.appData.reports) window.appData.reports = [];
+        if(!window.appData.registeredUsers) window.appData.registeredUsers = [];
+        if(!window.appData.blockedUsers) window.appData.blockedUsers = [];
+        if(!window.appData.activeSessions) window.appData.activeSessions = {};
+        if(!window.appData.activityLog) window.appData.activityLog = [];
+        if(!window.appData.telegramUrl) window.appData.telegramUrl = "https://t.me/";
+        if(!window.appData.youtubeUrl) window.appData.youtubeUrl = "https://youtube.com/";
+
+        if(window.appData.announcementText) {
+          document.getElementById('header-announcement-text').innerText = window.appData.announcementText;
+        }
+        if(window.appData.externalAnnouncement) {
+          document.getElementById('external-announcement-text').innerText = window.appData.externalAnnouncement;
+        }
+        // منمنعش تحديث واجهة الامتحان لو الطالب جوه امتحان شغّال دلوقتي، عشان منقطعش عليه
+        if(!window.isInsideExam) renderAll();
+      }
+      window.appDataLoaded = true;
+      if(!sessionAnnounced) {
+        sessionAnnounced = true;
+        if(!window.loginInProgress && window.onAuthReady) window.onAuthReady(userEmail);
+      }
+    }
+
+    async function fetchAppDataOnce(userEmail) {
+      try {
+        const snapshot = await get(ref(db, 'appData'));
+        applyAppDataSnapshot(snapshot.exists() ? snapshot.val() : null, userEmail);
+      } catch (err) {
+        console.error("تعذر قراءة البيانات:", err);
+        window.appDataLoaded = true;
+      }
+    }
+
+    // 🔁 بدل الاتصال المباشر الدائم (اللي بيستهلك حد الاتصالات المتزامنة عند Firebase بسرعة
+    // خصوصاً وقت دخول كل الطلاب الامتحان في نفس اللحظة)، بنعمل تحديث دوري خفيف كل فترة قصيرة.
+    // كل تحديث بيفتح ويقفل فوراً، فمش بيفضل "ماسك" اتصال مفتوح طول الوقت زي onValue.
     function startAppDataListener(userEmail) {
       if(dbListening) return;
       dbListening = true;
-      onValue(ref(db, 'appData'), (snapshot) => {
-        if (snapshot.exists()) {
-          window.appData = snapshot.val();
-          if(!window.appData.exams) window.appData.exams = [];
-          if(!window.appData.homeworks) window.appData.homeworks = [];
-          if(!window.appData.homeworkSubmissions) window.appData.homeworkSubmissions = [];
-          if(!window.appData.communityMessages) window.appData.communityMessages = [];
-          if(!window.appData.videos) window.appData.videos = [];
-          if(!window.appData.pdfs) window.appData.pdfs = [];
-          if(!window.appData.leaderboard) window.appData.leaderboard = [];
-          if(!window.appData.reports) window.appData.reports = [];
-          if(!window.appData.registeredUsers) window.appData.registeredUsers = [];
-          if(!window.appData.blockedUsers) window.appData.blockedUsers = [];
-          if(!window.appData.activeSessions) window.appData.activeSessions = {};
-          if(!window.appData.activityLog) window.appData.activityLog = [];
-          if(!window.appData.telegramUrl) window.appData.telegramUrl = "https://t.me/";
-          if(!window.appData.youtubeUrl) window.appData.youtubeUrl = "https://youtube.com/";
-
-          if(window.appData.announcementText) {
-            document.getElementById('header-announcement-text').innerText = window.appData.announcementText;
-          }
-          if(window.appData.externalAnnouncement) {
-            document.getElementById('external-announcement-text').innerText = window.appData.externalAnnouncement;
-          }
-          renderAll();
-        }
-        window.appDataLoaded = true;
-        if(!sessionAnnounced) {
-          sessionAnnounced = true;
-          if(!window.loginInProgress && window.onAuthReady) window.onAuthReady(userEmail);
-        }
-      }, (err) => {
-        console.error("تعذر قراءة البيانات:", err);
-        window.appDataLoaded = true;
-      });
+      fetchAppDataOnce(userEmail);
+      appDataPollTimer = setInterval(() => fetchAppDataOnce(userEmail), 15000);
     }
 
     onAuthStateChanged(auth, (user) => {
@@ -1374,6 +1391,7 @@
       return a;
     }
     let isInsideExam = false;
+    window.isInsideExam = false;
 
     window.appData = {
       exams: [],
@@ -1394,6 +1412,7 @@
 
     let tempEmailForLogin = "";
     let tempNameForLogin = null;
+    let tempGradeForLogin = null;
     window.loginInProgress = false;
 
     function requestNotificationPermission() {
@@ -1553,7 +1572,7 @@
       if(label) b.innerText = busy ? 'جاري التنفيذ...' : label;
     }
 
-    async function continueAfterAuth(email, phoneVal, nameVal) {
+    async function continueAfterAuth(email, phoneVal, nameVal, gradeVal2) {
       await window.waitForAppData();
 
       if(appData.blockedUsers && appData.blockedUsers.includes(email)) {
@@ -1565,11 +1584,12 @@
 
       tempEmailForLogin = email;
       tempNameForLogin = nameVal || null;
+      tempGradeForLogin = gradeVal2 || null;
 
       let userObj = (appData.registeredUsers || []).find(u => u.email === email);
       const hasPhone = (userObj && userObj.phone && userObj.phone !== 'غير متاح') || phoneVal;
       if(hasPhone) {
-        await finishLoginProcess(email, phoneVal, nameVal);
+        await finishLoginProcess(email, phoneVal, nameVal, gradeVal2);
       } else {
         window.loginInProgress = true;
         document.getElementById('pane-login').classList.remove('active');
@@ -1601,8 +1621,10 @@
       const phone = document.getElementById('reg-phone').value.trim();
       const pass = document.getElementById('reg-pass').value;
       const pass2 = document.getElementById('reg-pass2').value;
+      const grade = gradeVal('reg-grade');
 
       if(!name || !email || !pass) { alert('أدخل الاسم والإيميل وكلمة المرور'); return; }
+      if(!grade) { alert('اختار صفك الدراسي أولاً'); return; }
       if(pass.length < 6) { alert('كلمة المرور لازم تكون 6 أحرف على الأقل'); return; }
       if(pass !== pass2) { alert('كلمتا المرور غير متطابقتين!'); return; }
 
@@ -1610,7 +1632,7 @@
       setBtnBusy('register-btn', true, 'إنشاء الحساب ✅');
       try {
         const cred = await window.fbSignUp(email, pass);
-        await continueAfterAuth(cred.user.email, phone || null, name);
+        await continueAfterAuth(cred.user.email, phone || null, name, grade);
       } catch(e) {
         window.loginInProgress = false;
         alert(authErrMsg(e));
@@ -1635,12 +1657,12 @@
     async function completeLoginWithPhone() {
       const phone = document.getElementById('user-phone').value.trim();
       if(!phone) { alert('أدخل رقم الهاتف أو اضغط تخطي'); return; }
-      finishLoginProcess(tempEmailForLogin, phone, tempNameForLogin);
+      finishLoginProcess(tempEmailForLogin, phone, tempNameForLogin, tempGradeForLogin);
     }
 
-    function skipPhoneStep() { finishLoginProcess(tempEmailForLogin, null, tempNameForLogin); }
+    function skipPhoneStep() { finishLoginProcess(tempEmailForLogin, null, tempNameForLogin, tempGradeForLogin); }
 
-    async function finishLoginProcess(email, phoneVal = null, nameVal = null) {
+    async function finishLoginProcess(email, phoneVal = null, nameVal = null, gradeVal2 = null) {
       // ننتظر تحميل البيانات الحقيقية من فايربيز الأول، عشان منبنيش على appData فاضي ونمسح بيانات حقيقية
       await window.waitForAppData();
 
@@ -1664,6 +1686,7 @@
           email: email,
           name: nameVal || email.split('@')[0],
           phone: phoneVal || 'غير متاح',
+          grade: gradeVal2 || '',
           joinTime: nowTimeStr,
           lastActive: nowTimeStr,
           loginCount: 1,
@@ -2011,6 +2034,7 @@
       const savedEmail = localStorage.getItem('fahem_email');
       if (savedEmail) { setupSession(savedEmail); }
       generateQuestionFields();
+      try { fillGradeSelects(); } catch(e) { console.warn(e); }
     };
 
     async function handleTelegramClick() {
@@ -3489,6 +3513,29 @@ ${JSON.stringify(items)}`;
       showQuestionAt(0);
     }
 
+    /* 🔊 تنبيه صوتي غير معطّل (مش زي alert اللي بيوقف الصفحة) */
+    function speakExamAlert(text) {
+      try {
+        if('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(text);
+          u.lang = 'ar-EG';
+          u.rate = 0.95;
+          window.speechSynthesis.speak(u);
+        }
+      } catch(e) { console.warn(e); }
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.connect(g); g.connect(audioCtx.destination);
+        o.frequency.value = 880;
+        g.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        o.start();
+        o.stop(audioCtx.currentTime + 0.4);
+      } catch(e) { console.warn(e); }
+    }
+
     /* ⏰ مؤقت الوقت الكلي للامتحان + تنبيه قبل الانتهاء بدقيقة */
     function startOverallExamTimer(totalMinutes) {
       if(examTotalTimerInterval) clearInterval(examTotalTimerInterval);
@@ -3509,7 +3556,8 @@ ${JSON.stringify(items)}`;
         secondsLeft--;
         if(secondsLeft === 60 && !examOneMinuteWarned) {
           examOneMinuteWarned = true;
-          alert('⏰ تنبيه: تبقّى دقيقة واحدة فقط على انتهاء وقت الامتحان الكلي!');
+          box.style.color = '#ef4444';
+          speakExamAlert('تنبيه، تبقى دقيقة واحدة فقط على انتهاء وقت الامتحان');
         }
         if(secondsLeft <= 0) {
           clearInterval(examTotalTimerInterval);
@@ -3526,6 +3574,7 @@ ${JSON.stringify(items)}`;
       currentQuestionIndex = qIndex;
       questionStartTimestamp = Date.now();
       isInsideExam = true;
+      window.isInsideExam = true;
 
       document.getElementById('modal-title').innerText = `${currentExamTitle} (السؤال ${currentQuestionIndex + 1} من ${activeQuestions.length})`;
       
@@ -3650,6 +3699,7 @@ ${JSON.stringify(items)}`;
         return;
       }
       isInsideExam = false;
+      window.isInsideExam = false;
       activityModalOpen = false;
       if(questionTimerInterval) clearInterval(questionTimerInterval);
       if(examTotalTimerInterval) clearInterval(examTotalTimerInterval);
@@ -3668,6 +3718,7 @@ ${JSON.stringify(items)}`;
       try { const __ts = Object.values(studentQuestionTimes || {}).map(Number); const __n = (activeQuestions || []).length;
         if(__n >= 5 && __ts.length) { const __avg = __ts.reduce((a, b) => a + b, 0) / __n; if(__avg < 3) logCheat('إجابات سريعة جداً (متوسط ' + __avg.toFixed(1) + ' ث للسؤال) ⚡'); } } catch(e) {}
       isInsideExam = false;
+      window.isInsideExam = false;
       if(questionTimerInterval) clearInterval(questionTimerInterval);
       let box = document.getElementById('modal-box-inner');
       if(box) box.classList.remove('exam-secure-blur');
