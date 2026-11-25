@@ -1428,11 +1428,15 @@
       return outputArray;
     }
 
+    // بيرجع { ok: true } أو { ok: false, reason: '...' } عشان نقدر نقول للمستخدم السبب بالظبط
     async function enableRealPushNotifications() {
+      if (!('Notification' in window)) return { ok: false, reason: 'no-notification-api' };
+      if (!('serviceWorker' in navigator)) return { ok: false, reason: 'no-service-worker' };
+      if (!('PushManager' in window)) return { ok: false, reason: 'no-push-manager' };
+
       try {
-        if (!('serviceWorker' in navigator) || !('PushManager' in window)) return false;
         const permission = await Notification.requestPermission();
-        if (permission !== 'granted') return false;
+        if (permission !== 'granted') return { ok: false, reason: 'denied' };
 
         const reg = await navigator.serviceWorker.register('/push-sw.js');
         await navigator.serviceWorker.ready;
@@ -1453,20 +1457,27 @@
           appData.pushSubscriptions.push({ email: email, subscription: subJson, savedAt: Date.now() });
           if (window.saveDatatoFirebase) await window.saveDatatoFirebase();
         }
-        return true;
+        return { ok: true };
       } catch (e) {
         console.warn('push subscribe failed', e);
-        return false;
+        return { ok: false, reason: 'error', error: e };
       }
     }
 
     function requestNotificationPermission() {
-      enableRealPushNotifications().then(ok => {
-        if (ok) {
+      enableRealPushNotifications().then(result => {
+        if (result.ok) {
           alert('✅ تم تفعيل الإشعارات الفورية بنجاح! هتوصلك حتى لو التطبيق قافل.');
-        } else {
-          alert('⚠️ لم يتم السماح بالإشعارات، أو متصفحك/تطبيقك لا يدعمها.');
+          return;
         }
+        const messages = {
+          'no-notification-api': '⚠️ المتصفح أو التطبيق الحالي مش بيدعم الإشعارات خالص (غالباً لو بتفتح من تطبيق APK المحول من موقع). جرب تفتح المنصة من متصفح Chrome العادي.',
+          'no-service-worker': '⚠️ المتصفح أو التطبيق الحالي مش بيدعم تشغيل الإشعارات في الخلفية. جرب تفتح المنصة من متصفح Chrome العادي.',
+          'no-push-manager': '⚠️ التطبيق/المتصفح الحالي مش بيدعم الإشعارات الفورية (Push) — غالباً لو بتفتح من تطبيق APK المحوّل من الموقع، فده قيد في التطبيق نفسه مش في المنصة. جرب تفتح farag1.vercel.app من متصفح Chrome العادي على الموبايل وفعّلها من هناك.',
+          'denied': '⚠️ لازم توافق على إذن الإشعارات لما المتصفح يسألك، وبعدين اضغط الزرار تاني.',
+          'error': '⚠️ حصل خطأ غير متوقع أثناء التفعيل. جرب تاني بعد شوية.'
+        };
+        alert(messages[result.reason] || '⚠️ لم يتم السماح بالإشعارات، أو متصفحك/تطبيقك لا يدعمها.');
       });
     }
 
@@ -2165,6 +2176,7 @@
       if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
       document.getElementById('header-announcement-text').innerText = newText;
       document.getElementById('admin-announcement-input').value = '';
+      broadcastRealPush('تنبيه جديد من الأستاذ يوسف فرج 📢', newText);
       alert('تم نشر التنبيه بنجاح في شريط المنصة! 🚀');
     }
 
@@ -2176,6 +2188,7 @@
       if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
       document.getElementById('external-announcement-text').innerText = newText;
       document.getElementById('admin-external-announcement-input').value = '';
+      broadcastRealPush('تنبيه عاجل من الأستاذ يوسف فرج 🚨', newText);
       alert('تم نشر التنبيه الخارجي بنجاح للطلاب! 🚨🚀');
     }
 
