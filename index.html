@@ -1799,30 +1799,33 @@
       sendPushNotification('رسالة جديدة في الجروب الجماعي 💬', `${senderName}: ${text}`);
     }
 
-    function handleCommunityMediaUpload(input) {
+    async function handleCommunityMediaUpload(input) {
       if(input.files && input.files[0]) {
         const file = input.files[0];
-        const reader = new FileReader();
-        reader.onload = async function(e) {
+        try {
+          const url = await uploadFileToCloudinary(file);
           const email = localStorage.getItem('fahem_email');
           const senderName = getUserDisplayName(email);
           if(!appData.communityMessages) appData.communityMessages = [];
-          
+
           appData.communityMessages.push({
             id: Date.now() + '-' + Math.random().toString(36).slice(2),
             senderEmail: email,
             grade: (isAdminEmail(email) ? '' : myGrade()),
             senderName: senderName,
             text: '📷 صورة مرفقة',
-            mediaUrl: e.target.result,
+            mediaUrl: url,
             time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
           });
 
           if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
           renderCommunityMessages();
+        } catch(e) {
+          console.error(e);
+          alert('حصل خطأ أثناء رفع الصورة. تأكد من اتصال النت وحاول تاني.');
+        } finally {
           input.value = '';
-        };
-        reader.readAsDataURL(file);
+        }
       }
     }
 
@@ -1983,11 +1986,13 @@
 
       if(imgInput.files && imgInput.files[0]) {
         const file = imgInput.files[0];
-        const reader = new FileReader();
-        reader.onload = async function(e) {
-          saveHomeworkSubmissionObj(hwId, hwTitle, email, textAns, e.target.result);
-        };
-        reader.readAsDataURL(file);
+        try {
+          const url = await uploadFileToCloudinary(file);
+          await saveHomeworkSubmissionObj(hwId, hwTitle, email, textAns, url);
+        } catch(e) {
+          console.error(e);
+          alert('حصل خطأ أثناء رفع الصورة. تأكد من اتصال النت وحاول تاني.');
+        }
       } else {
         await saveHomeworkSubmissionObj(hwId, hwTitle, email, textAns, null);
       }
@@ -3153,6 +3158,27 @@ ${JSON.stringify(items)}`;
     function setUploadProgress(p) { const w = document.getElementById('upload-progress-wrap'); if(!w) return; w.style.display = 'block'; w.querySelector('.up-fill').style.width = p + '%'; w.querySelector('.up-text').innerText = p + '%'; }
     function hideUploadProgress() { const w = document.getElementById('upload-progress-wrap'); if(w) w.style.display = 'none'; }
 
+    // ☁️ رفع عام لأي ملف (صور/PDF) على Cloudinary بدل تخزينه base64 جوه قاعدة البيانات نفسها.
+    // استخدام endpoint "auto" عشان كلاوديناري يحدد نوع الملف لوحده (صورة أو ملف خام زي PDF).
+    function uploadFileToCloudinary(file, onProgress) {
+      return new Promise((resolve, reject) => {
+        const fd = new FormData();
+        fd.append('file', file);
+        fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+        const x = new XMLHttpRequest();
+        x.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`);
+        x.upload.onprogress = e => { if(e.lengthComputable && onProgress) onProgress(Math.round(e.loaded / e.total * 100)); };
+        x.onload = () => {
+          try {
+            const data = JSON.parse(x.responseText);
+            if(data.secure_url) resolve(data.secure_url); else reject(data);
+          } catch(e) { reject(e); }
+        };
+        x.onerror = () => reject(new Error('network error'));
+        x.send(fd);
+      });
+    }
+
     async function addVideo() {
       const title = document.getElementById('new-video-title').value.trim();
       let link = document.getElementById('new-video-link').value.trim();
@@ -3221,14 +3247,19 @@ ${JSON.stringify(items)}`;
       if(!fileInput.files || !fileInput.files[0]) { alert('اختر ملف PDF أو صورة من جهازك'); return; }
 
       const file = fileInput.files[0];
-      const reader = new FileReader();
+      if(file.size > 10 * 1024 * 1024) { alert('❌ حجم الملف أكبر من 10 ميجا (حد Cloudinary المجاني للملفات). قسّمه أو اضغطه الأول.'); return; }
 
-      reader.onload = async function(e) {
+      const addBtn = document.querySelector('[onclick="addPdfFileDirect()"]');
+      const originalBtnText = addBtn ? addBtn.innerText : '';
+      if(addBtn) { addBtn.innerText = '⏳ جاري الرفع...'; addBtn.disabled = true; }
+
+      try {
+        const url = await uploadFileToCloudinary(file);
         if(!appData.pdfs) appData.pdfs = [];
         appData.pdfs.push({ grade: gradeVal('new-pdf-grade'),
           id: 'pdf_' + Date.now(),
           title: title,
-          link: e.target.result,
+          link: url,
           isImage: file.type.startsWith('image/')
         });
 
@@ -3238,9 +3269,12 @@ ${JSON.stringify(items)}`;
         renderAll();
         broadcastRealPush('ملف جديد 📄', `نشر الأستاذ يوسف فرج ملفاً جديداً: (${title})`);
         alert('✅ تم رفع وحفظ الملف بنجاح، وسيعمل مع جميع الطلاب مباشرة!');
-      };
-
-      reader.readAsDataURL(file);
+      } catch(e) {
+        console.error(e);
+        alert('حصل خطأ أثناء رفع الملف. تأكد من اتصال النت وحاول تاني.');
+      } finally {
+        if(addBtn) { addBtn.innerText = originalBtnText; addBtn.disabled = false; }
+      }
     }
 
     async function deletePdf(pdfId) {
