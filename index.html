@@ -3115,14 +3115,17 @@ ${JSON.stringify(items)}`;
       }
 
       if(!appData.exams) appData.exams = [];
+      const publishTimeMs = publishTimeVal ? new Date(publishTimeVal).getTime() : Date.now();
+      const endTimeMs = endTimeVal ? new Date(endTimeVal).getTime() : null;
+
       appData.exams.push({ grade: gradeVal('new-exam-grade'),
         id: 'exam_' + Date.now(),
         title: title,
         mode: mode,
         totalTimeMinutes: totalTimeVal,
         questions: questionsArr,
-        publishTime: publishTimeVal ? new Date(publishTimeVal).getTime() : Date.now(),
-        endTime: endTimeVal ? new Date(endTimeVal).getTime() : null,
+        publishTime: publishTimeMs,
+        endTime: endTimeMs,
         info: `عدد الأسئلة: ${countVal} | الوقت الكلي: ${totalTimeVal} دقيقة`
       });
 
@@ -3130,7 +3133,16 @@ ${JSON.stringify(items)}`;
       renderAll();
       sendPushNotification('امتحان جديد 📝', `نشر الأستاذ يوسف فرج امتحاناً جديداً: (${title})`);
       broadcastRealPush('امتحان جديد 📝', `نشر الأستاذ يوسف فرج امتحاناً جديداً: (${title})`);
-      alert('تم إضافة وجدولة الامتحان وإرسال الإشعارات بنجاح! ⏰🚀');
+
+      // 🧹 نفضي حقول الميعاد عشان متفضلش عالقة وتتطبق غلط على الامتحان اللي بعده
+      document.getElementById('new-exam-publish-time').value = '';
+      document.getElementById('new-exam-end-time').value = '';
+
+      if(publishTimeMs > Date.now() + 60000) {
+        alert(`⚠️ تنبيه: الامتحان ده متجدول يبدأ الساعة ${new Date(publishTimeMs).toLocaleString('ar-EG')} ولن يظهر للطلاب قبلها (هو ظاهر عندك إنت بس كأدمن). لو عايزه يظهر حالاً، احذفه وأعد إنشاءه من غير ما تحدد موعد بداية.`);
+      } else {
+        alert('تم إضافة الامتحان ونشره للطلاب فوراً وإرسال الإشعارات بنجاح! ⏰🚀');
+      }
     }
 
     async function deleteExam(examId) {
