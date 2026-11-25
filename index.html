@@ -1205,6 +1205,7 @@
       await updatePassword(u, newPass);
     };
 
+    window.APP_BUILD_VERSION = "2026-11-25T05:10:46Z";
     window.appDataLoaded = false;
     window.appData = window.appData || {};
     window.waitForAppData = function(timeoutMs = 8000) {
@@ -1274,7 +1275,25 @@
       dbListening = true;
       fetchAppDataOnce(userEmail);
       appDataPollTimer = setInterval(() => fetchAppDataOnce(userEmail), 15000);
+      checkForNewVersion();
+      setInterval(checkForNewVersion, 60000);
     }
+
+    // 🔄 تحديث تلقائي: عشان تطبيق الـ APK (محول من الموقع) مفيهوش زرار ريفرش يدوي.
+    // كل فترة بنتأكد إن النسخة اللي شغالة فعلاً هي أحدث نسخة منشورة، ولو فيه نسخة جديدة
+    // بنعمل تحديث تلقائي للصفحة (غير وقت الامتحان عشان منقطعش على الطالب).
+    async function checkForNewVersion() {
+      try {
+        if (window.isInsideExam) return;
+        const res = await fetch('/version.json?_=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data && data.v && window.APP_BUILD_VERSION && data.v !== window.APP_BUILD_VERSION) {
+          location.reload();
+        }
+      } catch (e) { /* تجاهل أي خطأ شبكة هنا */ }
+    }
+    window.checkForNewVersion = checkForNewVersion;
 
     onAuthStateChanged(auth, (user) => {
       if(user) {
@@ -1521,6 +1540,38 @@
         }
       });
     }
+
+    /* 🔵 تنبيه فوري للأدمن أول ما أي طالب (مش بس الجداد) يفتح المنصة */
+    let knownLastActiveMap = null;
+    function checkForLoginActivity() {
+      const myEmail = localStorage.getItem('fahem_email');
+      if(!isAdminEmail(myEmail)) return;
+      const users = appData.registeredUsers || [];
+      if(knownLastActiveMap === null) {
+        knownLastActiveMap = new Map(users.map(u => [u.email, u.lastActive]));
+        return;
+      }
+      users.forEach(u => {
+        const prev = knownLastActiveMap.get(u.email);
+        if(prev !== undefined && prev !== u.lastActive) {
+          knownLastActiveMap.set(u.email, u.lastActive);
+          sendPushNotification('🔵 طالب دخل المنصة الآن', `${u.name || u.email}`);
+        } else if(prev === undefined) {
+          knownLastActiveMap.set(u.email, u.lastActive);
+        }
+      });
+    }
+
+    /* 👣 بيتسجل مرة واحدة أول ما بيانات الجلسة الحقيقية تتحمل (أول فتح للمنصة في الجلسة دي) */
+    window.onAuthReady = async function(email) {
+      try {
+        if(isAdminEmail(email)) return; // مش محتاجين نتابع دخول الأدمن نفسه
+        const u = (appData.registeredUsers || []).find(x => x.email === email);
+        if(!u) return;
+        u.lastActive = new Date().toLocaleString('ar-EG');
+        if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
+      } catch(e) { console.warn(e); }
+    };
 
     function openPolicyModal() { document.getElementById('privacyModal').style.display = 'flex'; }
     function closePolicyModal() { document.getElementById('privacyModal').style.display = 'none'; }
@@ -2110,6 +2161,7 @@
       if (savedEmail) { setupSession(savedEmail); }
       generateQuestionFields();
       try { fillGradeSelects(); } catch(e) { console.warn(e); }
+      try { if(window.checkForNewVersion) window.checkForNewVersion(); } catch(e) { console.warn(e); }
     };
 
     async function handleTelegramClick() {
@@ -3307,6 +3359,7 @@ ${JSON.stringify(items)}`;
       renderLeaderboards();
       renderStats();
       checkForNewStudents();
+      checkForLoginActivity();
       checkDeviceSessionConflict();
       try { maybeAutoReview(); } catch(e) { console.warn(e); }
       if(typeof activityModalOpen !== 'undefined' && activityModalOpen) showActivityLogModal();
