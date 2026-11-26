@@ -1522,6 +1522,21 @@
       }
     }
 
+    /* 📢 بث إشعار حقيقي للأدمن (أو الأدمنز) بس، بيوصل حتى لو قافل المنصة خالص */
+    async function pushToAdminOnly(title, body) {
+      try {
+        const subs = (appData.pushSubscriptions || []).filter(s => s && s.email && isAdminEmail(s.email) && (s.subscription || s).endpoint);
+        if (!subs.length) return;
+        await fetch('/api/send-push', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, body, subscriptions: subs })
+        });
+      } catch (e) {
+        console.warn('admin push failed', e);
+      }
+    }
+
     /* 🆕 تنبيه فوري للأدمن (في متصفحه هو بس، ولازم يكون فاتح المنصة أو تاب مفتوح) لما طالب جديد يسجل */
     let knownStudentEmails = null;
     function checkForNewStudents() {
@@ -1537,6 +1552,7 @@
           knownStudentEmails.add(em);
           const u = (appData.registeredUsers || []).find(x => x.email === em);
           sendPushNotification('🆕 طالب جديد سجل في المنصة', `${(u && u.name) || em} — ${em}`);
+          pushToAdminOnly('🆕 طالب جديد سجل في المنصة', `${(u && u.name) || em} — ${em}`);
         }
       });
     }
@@ -1556,6 +1572,7 @@
         if(prev !== undefined && prev !== u.lastActive) {
           knownLastActiveMap.set(u.email, u.lastActive);
           sendPushNotification('🔵 طالب دخل المنصة الآن', `${u.name || u.email}`);
+          pushToAdminOnly('🔵 طالب دخل المنصة الآن', `${u.name || u.email}`);
         } else if(prev === undefined) {
           knownLastActiveMap.set(u.email, u.lastActive);
         }
@@ -2174,7 +2191,7 @@
           alert("تم حفظ وتحديث رابط التليجرام بنجاح! 🚀");
         }
       } else {
-        window.open(appData.telegramUrl || "https://t.me/", "_blank");
+        openLinkReliably(appData.telegramUrl || "https://t.me/");
       }
     }
 
@@ -2188,7 +2205,18 @@
           alert("تم حفظ وتحديث رابط اليوتيوب بنجاح! 🚀");
         }
       } else {
-        window.open(appData.youtubeUrl || "https://youtube.com/", "_blank");
+        openLinkReliably(appData.youtubeUrl || "https://youtube.com/");
+      }
+    }
+
+    // 📲 بعض تطبيقات الـ WebView (زي تطبيقات تحويل المواقع لـ APK) بتمنع فتح تاب جديد (window.open).
+    // لو حصل كده، نرجع نفتح اللينك في نفس الصفحة عشان يفضل شغال جوه التطبيق.
+    function openLinkReliably(url) {
+      try {
+        const w = window.open(url, '_blank');
+        if (!w) location.href = url;
+      } catch (e) {
+        location.href = url;
       }
     }
 
@@ -2333,7 +2361,7 @@
         if(statsCard) statsCard.style.display = '';
         const pdfCard = document.getElementById('stat-pdf-card'); if(pdfCard) pdfCard.style.display = 'none';
         document.getElementById('admin-rank-manage-btn').style.display = 'block';
-        document.getElementById('external-alert-bar-div').style.display = 'flex';
+        document.getElementById('external-alert-bar-div').style.display = 'none'; // 🔕 اتشال، الإشعارات الفورية بقت كافية
         const coAdminBox = document.getElementById('co-admin-box');
         if(coAdminBox) {
           coAdminBox.style.display = (email === ADMIN_EMAIL) ? 'block' : 'none';
@@ -2345,7 +2373,7 @@
         if(statsCard) statsCard.style.display = 'none'; // 👑 عدد الطلاب المسجلين يظهر للأدمن فقط
         const pdfCard = document.getElementById('stat-pdf-card'); if(pdfCard) pdfCard.style.display = '';
         document.getElementById('admin-rank-manage-btn').style.display = 'none';
-        document.getElementById('external-alert-bar-div').style.display = 'flex';
+        document.getElementById('external-alert-bar-div').style.display = 'none'; // 🔕 اتشال، الإشعارات الفورية بقت كافية
       }
       renderAll();
     }
@@ -3243,6 +3271,28 @@ ${JSON.stringify(items)}`;
       });
     }
 
+    // 🎬 بيحوّل أي صيغة لينك يوتيوب شائعة (watch?v=, youtu.be, shorts, فيه باراميترات زيادة زي &t=30s)
+    // للصيغة اللي ممكن تتفتح جوه iframe داخل المنصة (embed). أي لينك مش يوتيوب (زي تليجرام) بيرجع زي ما هو.
+    function toYoutubeEmbedUrl(link) {
+      try {
+        const url = new URL(link.trim());
+        let videoId = null;
+        if (url.hostname.includes('youtu.be')) {
+          videoId = url.pathname.split('/').filter(Boolean)[0];
+        } else if (url.hostname.includes('youtube.com')) {
+          if (url.pathname.startsWith('/watch')) {
+            videoId = url.searchParams.get('v');
+          } else if (url.pathname.startsWith('/embed/')) {
+            videoId = url.pathname.split('/')[2];
+          } else if (url.pathname.startsWith('/shorts/')) {
+            videoId = url.pathname.split('/')[2];
+          }
+        }
+        if (videoId) return 'https://www.youtube.com/embed/' + videoId;
+      } catch (e) { /* مش لينك قياسي، هنستخدمه زي ما هو */ }
+      return link;
+    }
+
     async function addVideo() {
       const title = document.getElementById('new-video-title').value.trim();
       let link = document.getElementById('new-video-link').value.trim();
@@ -3286,7 +3336,7 @@ ${JSON.stringify(items)}`;
           hideUploadProgress();
         }
       } else if(link) {
-        let embedLink = link.includes('watch?v=') ? link.replace('watch?v=', 'embed/') : link;
+        let embedLink = toYoutubeEmbedUrl(link);
         appData.videos.push({ grade: gradeVal('new-video-grade'), id: 'vid_' + Date.now(), title: title, content: embedLink, isLocalFile: false });
         if(window.saveDatatoFirebase) await window.saveDatatoFirebase();
         renderAll();
