@@ -1080,10 +1080,13 @@
 
         <div class="settings-group-title">التفضيلات</div>
         <div class="settings-card-group">
-          <div class="settings-row-item" onclick="requestNotificationPermission()">
+          <div class="settings-row-item" id="notif-toggle-row" onclick="toggleNotifications()">
             <div class="settings-row-left">
               <span class="settings-row-icon">🔔</span>
-              <span>تفعيل الإشعارات الفورية (Push)</span>
+              <div>
+                <div>تفعيل / إيقاف الإشعارات الفورية (Push)</div>
+                <div id="notif-status-label" style="font-size: 11px; color: #64748b; font-weight: normal;">جاري التحقق...</div>
+              </div>
             </div>
             <span class="settings-arrow">‹</span>
           </div>
@@ -1497,7 +1500,52 @@
           'error': '⚠️ حصل خطأ غير متوقع أثناء التفعيل. جرب تاني بعد شوية.'
         };
         alert(messages[result.reason] || '⚠️ لم يتم السماح بالإشعارات، أو متصفحك/تطبيقك لا يدعمها.');
-      });
+      }).finally(() => updateNotifStatusLabel());
+    }
+
+    // 🔔 زرار واحد بيفعّل أو يوقف الإشعارات حسب الحالة الحالية لنفس الجهاز
+    async function toggleNotifications() {
+      try {
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+          requestNotificationPermission(); // هيدّي رسالة تشخيص واضحة ليه مش مدعومة
+          return;
+        }
+        const reg = await navigator.serviceWorker.getRegistration('/push-sw.js');
+        const existingSub = reg ? await reg.pushManager.getSubscription() : null;
+
+        if (existingSub) {
+          if (!confirm('الإشعارات الفورية مفعّلة على الجهاز ده. عايز توقفها؟')) return;
+          const endpoint = existingSub.endpoint;
+          await existingSub.unsubscribe();
+          if (appData.pushSubscriptions) {
+            appData.pushSubscriptions = appData.pushSubscriptions.filter(s => (s.subscription || s).endpoint !== endpoint);
+            if (window.saveDatatoFirebase) await window.saveDatatoFirebase();
+          }
+          alert('🔕 تم إيقاف الإشعارات الفورية عن هذا الجهاز.');
+          updateNotifStatusLabel();
+        } else {
+          requestNotificationPermission();
+        }
+      } catch (e) {
+        console.warn(e);
+        requestNotificationPermission();
+      }
+    }
+
+    async function updateNotifStatusLabel() {
+      const label = document.getElementById('notif-status-label');
+      if (!label) return;
+      try {
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+          label.innerText = 'غير مدعومة في هذا المتصفح/التطبيق ⚠️';
+          return;
+        }
+        const reg = await navigator.serviceWorker.getRegistration('/push-sw.js');
+        const sub = reg ? await reg.pushManager.getSubscription() : null;
+        label.innerText = sub ? 'مفعّلة على هذا الجهاز ✅ (اضغط للإيقاف)' : 'متوقفة (اضغط للتفعيل)';
+      } catch (e) {
+        label.innerText = '';
+      }
     }
 
     /* إشعار محلي بسيط (بيظهر بس لو التبويب/التطبيق مفتوح عندك إنت) - مستخدم لتنبيهات الأدمن الداخلية فقط */
@@ -2179,6 +2227,7 @@
       generateQuestionFields();
       try { fillGradeSelects(); } catch(e) { console.warn(e); }
       try { if(window.checkForNewVersion) window.checkForNewVersion(); } catch(e) { console.warn(e); }
+      try { updateNotifStatusLabel(); } catch(e) { console.warn(e); }
     };
 
     async function handleTelegramClick() {
