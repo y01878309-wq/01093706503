@@ -1308,6 +1308,11 @@
     });
 
     const STUDENT_WRITABLE_KEYS = ['leaderboard', 'communityMessages', 'homeworkSubmissions', 'registeredUsers', 'reports', 'activityLog', 'activeSessions', 'pushSubscriptions'];
+    // سجلات "تراكمية" بس (إضافة جديدة من غير تعديل قديم) - مفيش فيها id ثابت، فبندمج بمقارنة المحتوى نفسه
+    const APPEND_ONLY_KEYS = ['leaderboard', 'communityMessages', 'homeworkSubmissions', 'reports', 'activityLog'];
+    // سجلات "فيها سجل واحد لكل طالب" ممكن يتعدّل (زي آخر ظهور/اشتراك الإشعارات) - بنستبدل بس سجل المستخدم الحالي
+    const OWNED_BY_EMAIL_KEYS = ['registeredUsers', 'pushSubscriptions'];
+
     window.saveDatatoFirebase = async function() {
       try {
         const u = auth.currentUser;
@@ -1320,11 +1325,50 @@
         }
         if(u.email === ADMIN_EMAIL_FB || (window.isAdminEmail && window.isAdminEmail(u.email))) {
           await set(ref(db, 'appData'), window.appData);
-        } else {
-          const payload = {};
-          STUDENT_WRITABLE_KEYS.forEach(k => { payload[k] = window.appData[k] || null; });
-          await update(ref(db, 'appData'), payload);
+          return;
         }
+
+        // 🛡️ منع فقدان بيانات طلاب تانيين: بما إن التحديث دلوقتي دوري كل 15 ثانية (مش اتصال مباشر دايم)،
+        // نسخة الطالب المحلية ممكن تبقى أقدم شوية من السيرفر. فبدل ما نكتب فوق المصفوفات كاملة من ذاكرتنا
+        // (وده ممكن يمسح تسجيل/رسائل طالب تاني حصلت في نفس الوقت)، بنجيب أحدث نسخة من السيرفر الأول،
+        // وندمج فيها بس التغييرات اللي بتخص المستخدم الحالي، من غير ما نلمس بيانات حد تاني.
+        const myEmail = u.email;
+        let fresh = {};
+        try {
+          const freshSnap = await get(ref(db, 'appData'));
+          fresh = freshSnap.exists() ? freshSnap.val() : {};
+        } catch (e) { /* لو فشل الجلب، هنكمل بالمصفوفات المحلية كحل أخير */ }
+
+        const payload = {};
+
+        APPEND_ONLY_KEYS.forEach(k => {
+          const serverArr = Array.isArray(fresh[k]) ? fresh[k] : [];
+          const localArr = Array.isArray(window.appData[k]) ? window.appData[k] : [];
+          const serverSet = new Set(serverArr.map(x => JSON.stringify(x)));
+          const newOnes = localArr.filter(x => !serverSet.has(JSON.stringify(x)));
+          payload[k] = serverArr.concat(newOnes);
+          window.appData[k] = payload[k];
+        });
+
+        OWNED_BY_EMAIL_KEYS.forEach(k => {
+          const serverArr = Array.isArray(fresh[k]) ? fresh[k] : [];
+          const localArr = Array.isArray(window.appData[k]) ? window.appData[k] : [];
+          const mine = localArr.filter(x => x && x.email === myEmail);
+          const others = serverArr.filter(x => !(x && x.email === myEmail));
+          payload[k] = others.concat(mine);
+          window.appData[k] = payload[k];
+        });
+
+        // activeSessions كائن (مش مصفوفة) فيه مفتاح واحد لكل طالب - بنحدّث بس مفتاح المستخدم الحالي
+        const serverSessions = (fresh.activeSessions && typeof fresh.activeSessions === 'object') ? fresh.activeSessions : {};
+        const localSessions = (window.appData.activeSessions && typeof window.appData.activeSessions === 'object') ? window.appData.activeSessions : {};
+        const myKey = (window.safeSessionKey) ? window.safeSessionKey(myEmail) : myEmail;
+        const mergedSessions = Object.assign({}, serverSessions);
+        if(myKey in localSessions) mergedSessions[myKey] = localSessions[myKey];
+        payload.activeSessions = mergedSessions;
+        window.appData.activeSessions = mergedSessions;
+
+        await update(ref(db, 'appData'), payload);
       } catch (err) {
         console.error("خطأ في الحفظ السحابي:", err);
       }
