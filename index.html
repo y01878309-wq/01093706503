@@ -1320,15 +1320,11 @@
     // كل فترة بنتأكد إن النسخة اللي شغالة فعلاً هي أحدث نسخة منشورة، ولو فيه نسخة جديدة
     // بنعمل تحديث تلقائي للصفحة (غير وقت الامتحان عشان منقطعش على الطالب).
     async function checkForNewVersion() {
-      try {
-        if (window.isInsideExam) return;
-        const res = await fetch('/version.json?_=' + Date.now(), { cache: 'no-store' });
-        if (!res.ok) return;
-        const data = await res.json();
-        if (data && data.v && window.APP_BUILD_VERSION && data.v !== window.APP_BUILD_VERSION) {
-          location.reload();
-        }
-      } catch (e) { /* تجاهل أي خطأ شبكة هنا */ }
+      // 🛑 معطّلة مؤقتاً بطلب الأدمن: كانت بتعمل تحديث تلقائي للصفحة، وده سبب حلقة تحميل
+      // لا نهائية جوه تطبيق الـ APK (على الأغلب بسبب تخزين مؤقت قديم للصفحة جوه التطبيق نفسه).
+      // التطبيق الأساسي (المتصفح) مفيهوش المشكلة دي، بس هنسيبها معطلة للكل لحد ما نعيد تصميمها
+      // بشكل آمن (مثلاً: تنبيه بسيط من غير إجبار على تحديث الصفحة).
+      return;
     }
     window.checkForNewVersion = checkForNewVersion;
 
