@@ -3698,9 +3698,18 @@ ${JSON.stringify(items)}`;
             videoId = url.pathname.split('/')[2];
           }
         }
-        if (videoId) return 'https://www.youtube.com/embed/' + videoId;
+        // rel=0: يقلل اقتراحات فيديوهات قنوات تانية بعد الفيديو. modestbranding=1: يقلل شعار يوتيوب.
+        // iv_load_policy=3: يمنع بطاقات/تلميحات الفيديو (الكروت اللي بتظهر فوق الفيديو أثناء التشغيل).
+        if (videoId) return 'https://www.youtube.com/embed/' + videoId + '?rel=0&modestbranding=1&iv_load_policy=3';
       } catch (e) { /* مش لينك قياسي، هنستخدمه زي ما هو */ }
       return link;
+    }
+
+    // 🎥 بيضمن إن أي لينك يوتيوب (قديم أو جديد) يتعرض بأقل شعار واقتراحات ممكنة، حتى لو اتحفظ في قاعدة البيانات زمان من غير البارامترات دي
+    function cleanYoutubeEmbedParams(src) {
+      if (!src || !src.includes('youtube.com/embed/')) return src;
+      const base = src.split('?')[0];
+      return base + '?rel=0&modestbranding=1&iv_load_policy=3';
     }
 
     async function addVideo() {
@@ -4667,7 +4676,7 @@ ${JSON.stringify(items)}`;
       const email = localStorage.getItem('fahem_email');
 
       gradeList(appData.videos).forEach(v => {
-        let vCont = v.isLocalFile ? `<video src="${v.content}" controls style="width:100%; height:100%; border-radius:10px;"></video>` : `<iframe src="${v.content}" allowfullscreen></iframe>`;
+        let vCont = v.isLocalFile ? `<video src="${v.content}" controls style="width:100%; height:100%; border-radius:10px;"></video>` : `<iframe src="${cleanYoutubeEmbedParams(v.content)}" allowfullscreen></iframe>`;
         let deleteVideoBtn = isAdminEmail(email) ? `<button class="btn-danger-sm" onclick="deleteVideo('${v.id}')" style="margin-top:6px;">حذف الفيديو 🗑️</button>` : '';
 
         container.innerHTML += `
