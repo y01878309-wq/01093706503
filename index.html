@@ -706,7 +706,7 @@
         <p style="color: #94a3b8; font-size: 12px; margin-bottom: 20px;">إشراف: أ/ يوسف فرج 🛡️</p>
 
         <!-- زر التحميل المباشر للتطبيق APK -->
-        <a href="https://www.mediafire.com/file/196dzpxi66610m9/DOC-20261002-WA0027.apk/file" class="download-btn" target="_blank" download="Fahem_Platform.apk">📦 تحميل تطبيق المنصة (APK)</a>
+        <a href="https://youseeffarag.itch.io/fahem-educational-platform-farag" class="download-btn" target="_blank" rel="noopener">📦 تحميل تطبيق المنصة (APK)</a>
 
         <div class="input-wrapper">
           <input type="email" id="login-email" class="auth-input" placeholder="البريد الإلكتروني (Gmail)">
@@ -916,6 +916,12 @@
         <input type="file" id="new-video-file" accept="video/*" class="auth-input" style="background: #f8fafc; color: #1e293b; margin-bottom: 6px; padding-left: 12px; font-size: 11px;">
         <div id="upload-progress-wrap" style="display:none; background:#e2e8f0; border-radius:10px; height:22px; margin:0 0 8px; position:relative; overflow:hidden;"><div class="up-fill" style="background:linear-gradient(90deg,#0284c7,#22c55e); height:100%; width:0%; transition:width .2s;"></div><div class="up-text" style="position:absolute; inset:0; text-align:center; font-size:12px; font-weight:bold; line-height:22px; color:#0f172a;">0%</div></div>
         <button class="btn-main" onclick="addVideo()" style="width: 100%; background: #0284c7;">إضافة الفيديو للمنصة 🎥</button>
+      </div>
+
+      <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1; opacity:0.75;">
+        <div style="font-size: 11px; font-weight: bold; color: #475569; margin-bottom: 4px;">🔴 بث مباشر مع كل الطلبة</div>
+        <div style="font-size: 10px; color: #64748b; margin-bottom: 8px;">محتاج سيرفر بث مخصص (جاري تجهيزه) - هيتفعل قريبًا</div>
+        <button class="btn-main" disabled style="width: 100%; background: #94a3b8; cursor:not-allowed;">قريباً 🚧</button>
       </div>
 
       <div style="background: white; padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #cbd5e1;">
@@ -1152,6 +1158,29 @@
     <button class="nav-item" id="nav-settings" onclick="switchTab('sec-settings', 'nav-settings')"><span>⚙️</span> الإعدادات</button>
   </div>
 
+  <div id="video-call-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.92); z-index:99999; align-items:center; justify-content:center; padding:16px;">
+    <div id="vc-ringing-box" style="display:none; background:white; border-radius:14px; padding:22px; text-align:center; max-width:320px; width:100%;">
+      <div style="font-size:40px; margin-bottom:8px;">📹</div>
+      <div id="vc-ringing-text" style="font-size:15px; font-weight:bold; color:#0f172a; margin-bottom:16px;">مكالمة فيديو واردة...</div>
+      <div style="display:flex; gap:10px;">
+        <button class="btn-main" style="flex:1; background:#16a34a;" onclick="acceptIncomingCall()">قبول ✅</button>
+        <button class="btn-main" style="flex:1; background:#ef4444;" onclick="declineIncomingCall()">رفض ✕</button>
+      </div>
+    </div>
+    <div id="vc-active-box" style="display:none; width:100%; max-width:420px;">
+      <div style="position:relative; background:#000; border-radius:14px; overflow:hidden; aspect-ratio:3/4;">
+        <video id="vc-remote-video" autoplay playsinline style="width:100%; height:100%; object-fit:cover;"></video>
+        <video id="vc-local-video" autoplay playsinline muted style="position:absolute; bottom:10px; left:10px; width:90px; height:120px; object-fit:cover; border-radius:8px; border:2px solid white; background:#111;"></video>
+        <div id="vc-status-text" style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.55); color:white; font-size:11px; padding:4px 8px; border-radius:6px;">جاري الاتصال...</div>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:10px;">
+        <button class="btn-main" style="flex:1; background:#64748b; font-size:11px; padding:10px 4px;" id="vc-cam-btn" onclick="toggleCallCamera()">📷 كتم الكاميرا</button>
+        <button class="btn-main" style="flex:1; background:#64748b; font-size:11px; padding:10px 4px;" id="vc-mic-btn" onclick="toggleCallMic()">🎙️ كتم الصوت</button>
+        <button class="btn-main" style="flex:1; background:#ef4444; font-size:11px; padding:10px 4px;" onclick="endVideoCall()">إنهاء ✕</button>
+      </div>
+    </div>
+  </div>
+
   <div id="exam-modal">
     <div class="modal-box" id="modal-box-inner">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; gap: 6px;">
@@ -1169,7 +1198,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, update, onValue, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, update, onValue, get, child, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -1192,6 +1221,7 @@
     window.dbOnValue = onValue;
     window.dbGet = get;
     window.dbUpdate = update;
+    window.dbRemove = remove;
 
     const auth = getAuth(app);
     const ADMIN_EMAIL_FB = "y01878309@gmail.com";
@@ -1268,6 +1298,10 @@
         console.error("تعذر قراءة البيانات:", err);
         window.appDataLoaded = true;
       }
+      // 📹 نتحقق من وجود مكالمة فيديو واردة - حتى لو الطالب جوه امتحان دلوقتي (مهم لحالة المراقبة)
+      try {
+        if (userEmail && window.checkIncomingCall) await window.checkIncomingCall(userEmail);
+      } catch (e) { /* تجاهل أي خطأ هنا عشان منوقفش التحديث الدوري */ }
     }
 
     // 🔁 بدل الاتصال المباشر الدائم (اللي بيستهلك حد الاتصالات المتزامنة عند Firebase بسرعة
@@ -1373,6 +1407,16 @@
         console.error("خطأ في الحفظ السحابي:", err);
       }
     };
+
+    // 📹 لو الـ Service Worker استقبل إشعار "مكالمة فيديو" وهو مفتوح (تبويب شغال)، يبلغنا فورًا من غير ما ننتظر دورة التحديث كل 15 ثانية
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('message', (event) => {
+        const data = event.data || {};
+        if (data.type === 'incoming_call' && window.handleIncomingCallSignal) {
+          window.handleIncomingCallSignal(data.callId, data.from);
+        }
+      });
+    }
   </script>
 
   <script>
@@ -1628,6 +1672,254 @@
         console.warn('admin push failed', e);
       }
     }
+
+    /* 📢 بث إشعار حقيقي لإيميل واحد بس (مستخدم لإشعار "مكالمة فيديو واردة") - ممكن يوصل بيانات إضافية (data) زي رقم المكالمة */
+    async function pushToOneEmail(targetEmail, title, body, data) {
+      try {
+        const subs = (appData.pushSubscriptions || []).filter(s => s && s.email === targetEmail && (s.subscription || s).endpoint);
+        if (!subs.length) return false;
+        await fetch('/api/send-push', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, body, subscriptions: subs, data: data || {} })
+        });
+        return true;
+      } catch (e) {
+        console.warn('single push failed', e);
+        return false;
+      }
+    }
+
+    /* ======================= 📹 مكالمة فيديو مباشرة (أدمن ⇆ طالب) =======================
+       - الصوت والصورة بتمشي مباشرة بين الجهازين (WebRTC) - مفيش فيديو بيعدي على سيرفرنا خالص.
+       - فايربيز بيستخدم بس لحظيًا كـ"بريد" لتبادل بيانات الاتصال (offer/answer/ICE)، ولفترة المكالمة بس،
+         فمش بيضيف اتصال دائم زي المشكلة اللي اتحلت قبل كدا مع appData.
+       - في حالة إن الطالب جوه امتحان (مراقبة): بتظهرله نافذة قبول/رفض عائمة فوق الامتحان، والامتحان نفسه
+         ما بيتوقفش ولا بيتأثر - بس لو وافق يشتغل كاميرته. */
+    const RTC_ICE_CONFIG = { iceServers: [
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'stun:stun1.l.google.com:19302' }
+    ] };
+
+    let activeCall = null; // { callId, peerEmail, pc, localStream, isCaller, candTimer }
+    let lastSeenIncomingCallId = null;
+
+    function genCallId() { return 'call_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8); }
+
+    function vcShow(boxId) {
+      document.getElementById('video-call-modal').style.display = 'flex';
+      ['vc-ringing-box', 'vc-active-box'].forEach(id => {
+        document.getElementById(id).style.display = (id === boxId) ? 'block' : 'none';
+      });
+    }
+    function vcHideAll() {
+      document.getElementById('video-call-modal').style.display = 'none';
+    }
+
+    /* 🔴 الأدمن بيبدأ مكالمة مع طالب معين (من صفحة تفاصيل الطالب) */
+    async function adminStartVideoCall(studentEmail) {
+      const myEmail = localStorage.getItem('fahem_email');
+      if (!isAdminEmail(myEmail)) { alert('⚠️ الاتصال بالطلاب متاح للأدمن بس'); return; }
+      if (activeCall) { alert('⚠️ فيه مكالمة شغالة بالفعل، اقفلها الأول'); return; }
+      const callId = genCallId();
+      try {
+        await window.dbSet(window.dbRef(window.db, 'videoCalls/' + callId), {
+          from: myEmail, to: studentEmail, status: 'ringing', createdAt: Date.now()
+        });
+        await window.dbSet(window.dbRef(window.db, 'callInbox/' + safeSessionKey(studentEmail)), {
+          callId, from: myEmail, status: 'ringing', createdAt: Date.now()
+        });
+      } catch (e) {
+        alert('تعذر بدء المكالمة، تأكد من الاتصال بالإنترنت');
+        return;
+      }
+      pushToOneEmail(studentEmail, '📹 مكالمة فيديو من الأدمن', 'اضغط هنا للرد على المكالمة الآن', { type: 'video_call', callId });
+      activeCall = { callId, peerEmail: studentEmail, pc: null, localStream: null, isCaller: true };
+      document.getElementById('exam-modal').style.display = 'none';
+      vcShow('vc-active-box');
+      document.getElementById('vc-status-text').innerText = 'جاري الاتصال... في انتظار رد الطالب';
+      await vcSetupMedia();
+      await vcCreatePeerAndOffer();
+      vcListenToCallDoc();
+    }
+
+    /* 📞 بيتنادى كل 15 ثانية من التحديث الدوري (حتى لو الطالب جوه امتحان) - بيدور على مكالمة واردة */
+    async function checkIncomingCall(myEmail) {
+      if (isAdminEmail(myEmail)) return; // المراقبة من الأدمن بس
+      if (activeCall) return; // أصلاً في مكالمة شغالة
+      try {
+        const snap = await window.dbGet(window.dbRef(window.db, 'callInbox/' + safeSessionKey(myEmail)));
+        if (!snap.exists()) return;
+        const val = snap.val();
+        if (val && val.status === 'ringing' && val.callId !== lastSeenIncomingCallId) {
+          showIncomingCallUI(val.callId, val.from);
+        }
+      } catch (e) { /* تجاهل */ }
+    }
+    window.checkIncomingCall = checkIncomingCall;
+
+    function showIncomingCallUI(callId, fromEmail) {
+      if (activeCall) return;
+      lastSeenIncomingCallId = callId;
+      activeCall = { callId, peerEmail: fromEmail, pc: null, localStream: null, isCaller: false, pending: true };
+      document.getElementById('vc-ringing-text').innerText = '📹 مكالمة فيديو واردة من الأدمن...';
+      vcShow('vc-ringing-box');
+    }
+
+    /* الطالب بيستقبل مكالمة حتى لو جوه الامتحان (من الـ Service Worker أو الإشعار) */
+    window.handleIncomingCallSignal = function (callId, fromEmail) {
+      try { showIncomingCallUI(callId, fromEmail || 'الأدمن'); } catch (e) { console.warn(e); }
+    };
+
+    async function acceptIncomingCall() {
+      if (!activeCall || !activeCall.pending) return;
+      activeCall.pending = false;
+      document.getElementById('vc-status-text') && (document.getElementById('vc-status-text').innerText = 'جاري الاتصال...');
+      vcShow('vc-active-box');
+      try {
+        await window.dbUpdate(window.dbRef(window.db, 'videoCalls/' + activeCall.callId), { status: 'accepted' });
+        await window.dbUpdate(window.dbRef(window.db, 'callInbox/' + safeSessionKey(localStorage.getItem('fahem_email'))), { status: 'accepted' });
+      } catch (e) {}
+      await vcSetupMedia();
+      vcListenToCallDoc();
+    }
+
+    async function declineIncomingCall() {
+      if (!activeCall) return;
+      try {
+        await window.dbUpdate(window.dbRef(window.db, 'videoCalls/' + activeCall.callId), { status: 'declined' });
+        await window.dbRemove(window.dbRef(window.db, 'callInbox/' + safeSessionKey(localStorage.getItem('fahem_email'))));
+      } catch (e) {}
+      vcCleanup();
+    }
+
+    async function vcSetupMedia() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        activeCall.localStream = stream;
+        const localVid = document.getElementById('vc-local-video');
+        if (localVid) localVid.srcObject = stream;
+      } catch (e) {
+        console.warn('تعذر تشغيل الكاميرا/الميكروفون', e);
+        activeCall.localStream = null;
+      }
+    }
+
+    function vcBuildPeerConnection() {
+      const pc = new RTCPeerConnection(RTC_ICE_CONFIG);
+      if (activeCall.localStream) {
+        activeCall.localStream.getTracks().forEach(t => pc.addTrack(t, activeCall.localStream));
+      }
+      pc.ontrack = (ev) => {
+        const remoteVid = document.getElementById('vc-remote-video');
+        if (remoteVid && ev.streams && ev.streams[0]) remoteVid.srcObject = ev.streams[0];
+      };
+      pc.onconnectionstatechange = () => {
+        const st = document.getElementById('vc-status-text');
+        if (!st) return;
+        if (pc.connectionState === 'connected') st.innerText = '🟢 متصل الآن';
+        else if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') st.innerText = '🔴 انقطع الاتصال';
+      };
+      const myField = activeCall.isCaller ? 'candidatesCaller' : 'candidatesCallee';
+      pc.onicecandidate = (ev) => {
+        if (ev.candidate && activeCall) {
+          window.dbUpdate(window.dbRef(window.db, 'videoCalls/' + activeCall.callId + '/' + myField), {
+            ['c_' + Date.now() + '_' + Math.floor(Math.random() * 10000)]: ev.candidate.toJSON()
+          }).catch(() => {});
+        }
+      };
+      return pc;
+    }
+
+    async function vcCreatePeerAndOffer() {
+      const pc = vcBuildPeerConnection();
+      activeCall.pc = pc;
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+      await window.dbUpdate(window.dbRef(window.db, 'videoCalls/' + activeCall.callId), {
+        offer: { type: offer.type, sdp: offer.sdp }
+      });
+    }
+
+    /* بعد القبول، بنتابع لحظيًا (onValue قصيرة العمر، بتتقفل أول ما المكالمة تخلص) نفس مستند المكالمة بس،
+       مش كل appData، فده آمن على حد الاتصالات المتزامنة */
+    function vcListenToCallDoc() {
+      if (!activeCall) return;
+      const callRef = window.dbRef(window.db, 'videoCalls/' + activeCall.callId);
+      const appliedCandidates = new Set();
+      activeCall.unsub = window.dbOnValue(callRef, async (snap) => {
+        if (!activeCall) return;
+        const val = snap.val();
+        if (!val) { vcCleanup(); return; }
+
+        if (val.status === 'declined' && activeCall.isCaller) {
+          document.getElementById('vc-status-text') && (document.getElementById('vc-status-text').innerText = '❌ الطالب رفض المكالمة');
+          setTimeout(() => endVideoCall(true), 1500);
+          return;
+        }
+        if (val.status === 'ended') { vcCleanup(); return; }
+
+        const pc = activeCall.pc;
+        if (!pc) return;
+
+        // المتصل: ياخد الإجابة لو جت
+        if (activeCall.isCaller && val.answer && !pc.currentRemoteDescription) {
+          await pc.setRemoteDescription(new RTCSessionDescription(val.answer));
+        }
+        // المستقبل: ياخد العرض ويرد بإجابة
+        if (!activeCall.isCaller && val.offer && !pc.currentRemoteDescription) {
+          await pc.setRemoteDescription(new RTCSessionDescription(val.offer));
+          const answer = await pc.createAnswer();
+          await pc.setLocalDescription(answer);
+          await window.dbUpdate(callRef, { answer: { type: answer.type, sdp: answer.sdp } });
+        }
+        // تبادل الـ ICE candidates
+        const theirField = activeCall.isCaller ? 'candidatesCallee' : 'candidatesCaller';
+        const theirs = val[theirField] || {};
+        for (const key in theirs) {
+          if (appliedCandidates.has(key)) continue;
+          appliedCandidates.add(key);
+          try { await pc.addIceCandidate(new RTCIceCandidate(theirs[key])); } catch (e) {}
+        }
+      });
+    }
+
+    function toggleCallCamera() {
+      if (!activeCall || !activeCall.localStream) return;
+      const tracks = activeCall.localStream.getVideoTracks();
+      tracks.forEach(t => t.enabled = !t.enabled);
+      const btn = document.getElementById('vc-cam-btn');
+      if (btn) btn.innerText = tracks[0] && tracks[0].enabled ? '📷 كتم الكاميرا' : '📷 تشغيل الكاميرا';
+    }
+    function toggleCallMic() {
+      if (!activeCall || !activeCall.localStream) return;
+      const tracks = activeCall.localStream.getAudioTracks();
+      tracks.forEach(t => t.enabled = !t.enabled);
+      const btn = document.getElementById('vc-mic-btn');
+      if (btn) btn.innerText = tracks[0] && tracks[0].enabled ? '🎙️ كتم الصوت' : '🎙️ تشغيل الصوت';
+    }
+
+    async function endVideoCall(skipRemoteUpdate) {
+      if (activeCall && !skipRemoteUpdate) {
+        try { await window.dbUpdate(window.dbRef(window.db, 'videoCalls/' + activeCall.callId), { status: 'ended' }); } catch (e) {}
+      }
+      if (activeCall) {
+        try { await window.dbRemove(window.dbRef(window.db, 'callInbox/' + safeSessionKey(activeCall.peerEmail))); } catch (e) {}
+        try { await window.dbRemove(window.dbRef(window.db, 'callInbox/' + safeSessionKey(localStorage.getItem('fahem_email')))); } catch (e) {}
+      }
+      vcCleanup();
+    }
+
+    function vcCleanup() {
+      if (activeCall) {
+        if (activeCall.unsub) { try { activeCall.unsub(); } catch (e) {} }
+        if (activeCall.pc) { try { activeCall.pc.close(); } catch (e) {} }
+        if (activeCall.localStream) { try { activeCall.localStream.getTracks().forEach(t => t.stop()); } catch (e) {} }
+      }
+      activeCall = null;
+      vcHideAll();
+    }
+    /* ======================= نهاية كود مكالمة الفيديو ======================= */
 
     /* 🆕 تنبيه فوري للأدمن (في متصفحه هو بس، ولازم يكون فاتح المنصة أو تاب مفتوح) لما طالب جديد يسجل */
     let knownStudentEmails = null;
@@ -2272,6 +2564,14 @@
       try { fillGradeSelects(); } catch(e) { console.warn(e); }
       try { if(window.checkForNewVersion) window.checkForNewVersion(); } catch(e) { console.warn(e); }
       try { updateNotifStatusLabel(); } catch(e) { console.warn(e); }
+      // 📹 لو اتفتحنا بسبب الضغط على إشعار "مكالمة فيديو واردة" (?call=ID)
+      try {
+        const callParam = new URLSearchParams(location.search).get('call');
+        if (callParam && window.handleIncomingCallSignal) {
+          setTimeout(() => window.handleIncomingCallSignal(callParam, 'الأدمن'), 500);
+          history.replaceState(null, '', location.pathname);
+        }
+      } catch(e) { console.warn(e); }
     };
 
     async function handleTelegramClick() {
@@ -4296,6 +4596,7 @@ ${JSON.stringify(items)}`;
           <div>🔄 <b>عدد مرات الدخول:</b> ${userObj.loginCount || 1} مرة</div>
           <div>💻 <b>الجهاز:</b> ${userObj.device || 'غير محدد'}</div>
         </div>
+        <button class="btn-main" style="width:100%; background:#0284c7; margin-bottom:10px;" onclick="adminStartVideoCall('${emailTarget}')">📹 مكالمة فيديو مع الطالب</button>
         <div style="font-size:12px; font-weight:bold; color:#0284c7; margin-bottom:6px; text-align:right;">📝 امتحانات الطالب وإجاباته:</div>
       `;
 

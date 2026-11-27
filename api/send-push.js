@@ -23,7 +23,7 @@ export default async function handler(req, res) {
     }
     body = body || {};
 
-    const { title, body: msgBody, subscriptions } = body;
+    const { title, body: msgBody, subscriptions, data } = body;
     if (!title || !Array.isArray(subscriptions) || subscriptions.length === 0) {
       res.status(400).json({ error: 'Missing title or subscriptions' });
       return;
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
 
     webpush.setVapidDetails('mailto:y01878309@gmail.com', vapidPublic, vapidPrivate);
 
-    const payload = JSON.stringify({ title, body: msgBody || '', url: '/' });
+    const payload = JSON.stringify({ title, body: msgBody || '', url: '/', data: data || {} });
 
     let sent = 0;
     let failed = 0;
